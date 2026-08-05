@@ -11,6 +11,60 @@
         android:text="@string/settings_menu_tax" android:textSize="22sp" android:textStyle="bold"
         android:textColor="@color/accent_cyan" android:layout_marginBottom="16dp"/>
 
+    <!-- Форма деятельности -->
+    <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:text="@string/activity_type_title" android:textSize="16sp" android:textStyle="bold"
+        android:textColor="@color/text_primary" android:layout_marginBottom="4dp"/>
+    <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:text="@string/activity_type_hint" android:textSize="12sp"
+        android:textColor="#9AA0C0" android:layout_marginBottom="10dp"/>
+
+    <RadioGroup android:id="@+id/rg_activity_type" android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:orientation="vertical" android:background="@drawable/card_bg" android:padding="12dp"
+        android:layout_marginBottom="16dp">
+
+        <RadioButton android:id="@+id/rb_niezarejestrowana" android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:text="@string/activity_type_niezarejestrowana" android:textColor="@color/text_primary" android:textSize="14sp"
+            android:paddingBottom="10dp"/>
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:text="@string/activity_type_niezarejestrowana_desc" android:textSize="12sp"
+            android:textColor="#9AA0C0" android:paddingStart="32dp" android:paddingBottom="14dp"/>
+
+        <RadioButton android:id="@+id/rb_jdg_skala" android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:text="@string/activity_type_jdg_skala" android:textColor="@color/text_primary" android:textSize="14sp"
+            android:paddingBottom="10dp"/>
+
+        <RadioButton android:id="@+id/rb_jdg_liniowy" android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:text="@string/activity_type_jdg_liniowy" android:textColor="@color/text_primary" android:textSize="14sp"
+            android:paddingBottom="10dp"/>
+
+        <RadioButton android:id="@+id/rb_jdg_ryczalt" android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:text="@string/activity_type_jdg_ryczalt" android:textColor="@color/text_primary" android:textSize="14sp"/>
+
+    </RadioGroup>
+
+    <!-- Ставка ryczałtu — видна только если выбран ryczałt -->
+    <LinearLayout android:id="@+id/layout_ryczalt_rate" android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:orientation="vertical" android:visibility="gone" android:layout_marginBottom="16dp">
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:text="@string/ryczalt_rate_label" android:textSize="13sp"
+            android:textColor="@color/text_secondary" android:layout_marginBottom="8dp"/>
+        <EditText android:id="@+id/et_ryczalt_rate" android:layout_width="match_parent" android:layout_height="56dp"
+            android:background="@drawable/input_field_bg" android:paddingStart="18dp" android:paddingEnd="18dp"
+            android:textColor="@color/text_primary" android:inputType="numberDecimal" android:hint="@string/ryczalt_rate_hint"/>
+    </LinearLayout>
+
+    <!-- Минимальное вознаграждение (для лимита 75%) -->
+    <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:text="@string/min_wage_label" android:textSize="13sp"
+        android:textColor="@color/text_secondary" android:layout_marginBottom="8dp"/>
+    <EditText android:id="@+id/et_min_wage" android:layout_width="match_parent" android:layout_height="56dp"
+        android:background="@drawable/input_field_bg" android:paddingStart="18dp" android:paddingEnd="18dp"
+        android:textColor="@color/text_primary" android:inputType="numberDecimal"
+        android:layout_marginBottom="8dp"/>
+    <TextView android:id="@+id/tv_monthly_limit_preview" android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:textSize="12sp" android:textColor="#9AA0C0" android:layout_marginBottom="20dp"/>
+
     <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
         android:orientation="vertical" android:background="@drawable/card_bg" android:padding="16dp"
         android:layout_marginBottom="24dp">

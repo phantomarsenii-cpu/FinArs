@@ -1,17 +1,24 @@
 package com.example.fa_ksiegowy
 
+import android.Manifest
 import android.app.AlertDialog
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.view.MotionEvent
+import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import com.google.android.gms.ads.AdView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -21,6 +28,9 @@ import java.util.Locale
 
 class MineActivity : BaseActivity() {
     private lateinit var db: AppDatabase
+
+    private val notificationPermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { /* результат не критичен для UI */ }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,8 +54,21 @@ class MineActivity : BaseActivity() {
         }
 
 
-        AdsManager.setupAndLoadBanner(this, findViewById(R.id.ad_banner))
+        AdsManager.setupAndLoadBanner(this, findViewById(R.id.ad_banner), findViewById(R.id.tv_ad_debug))
         setupHiddenDevCodeGesture()
+        requestNotificationPermissionIfNeeded()
+        LimitsNotificationWorker.schedule(this)
+    }
+
+    /** На Android 13+ уведомления требуют явного разрешения — запрашиваем один раз при первом запуске экрана. */
+    private fun requestNotificationPermissionIfNeeded() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            val granted = ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) ==
+                PackageManager.PERMISSION_GRANTED
+            if (!granted) {
+                notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+            }
+        }
     }
 
     /**
@@ -102,6 +125,7 @@ class MineActivity : BaseActivity() {
     override fun onResume() {
         super.onResume()
         loadData()
+        loadLimits()
         if (BillingManager.isPro(this)) {
             AdsManager.hideBanner(findViewById(R.id.ad_banner))
         }
@@ -121,23 +145,68 @@ class MineActivity : BaseActivity() {
 
             val prefs = getSharedPreferences("settings", MODE_PRIVATE)
             val otherIncome = TaxHelper.getOtherIncome(prefs, year)
-            val taxResult = TaxHelper.calc(profit, otherIncome)
+            val activityType = ActivityTypeHelper.get(prefs)
+            val ryczaltRate = ActivityTypeHelper.getRyczaltRate(prefs)
+            val taxResult = when (activityType) {
+                ActivityType.NIEZAREJESTROWANA, ActivityType.JDG_SKALA -> TaxHelper.calc(profit, otherIncome)
+                ActivityType.JDG_LINIOWY -> TaxHelper.calcLiniowy(profit)
+                ActivityType.JDG_RYCZALT -> TaxHelper.calcRyczalt(income, ryczaltRate)
+            }
+            val taxLabelRes = when (activityType) {
+                ActivityType.JDG_LINIOWY -> R.string.tax_label_liniowy
+                ActivityType.JDG_RYCZALT -> R.string.tax_label_ryczalt
+                else -> TaxHelper.taxLabelResId(profit)
+            }
 
             withContext(Dispatchers.Main) {
                 findViewById<TextView>(R.id.tv_balance).text = formatMoney(profit)
                 findViewById<TextView>(R.id.tv_stat_income).text = formatMoney(income)
                 findViewById<TextView>(R.id.tv_stat_expense).text = formatMoney(expense)
                 findViewById<TextView>(R.id.tv_stat_profit).text = formatMoney(profit)
-                // Реальная (эффективная) ставка по прогрессивной шкале, а не сохранённое
-                // ранее число — раньше здесь всегда показывалось то, что было один раз
-                // введено вручную (обычно 12%), даже если фактический налог был другим.
-                findViewById<TextView>(R.id.tv_stat_tax_label).text =
-                    getString(R.string.stat_tax_format, taxResult.effectiveRatePercent)
+                // Динамическая подпись налога: "0% — необлагаемый минимум" / "12%" /
+                // "Прогрессивная шкала 12%/32%" для skali, либо своя подпись для
+                // liniowy/ryczałt — вместо одной фиксированной формулировки.
+                findViewById<TextView>(R.id.tv_stat_tax_label).text = getString(taxLabelRes)
                 findViewById<TextView>(R.id.tv_stat_tax).text = formatMoney(taxResult.tax)
-                // Чистая прибыль = прибыль минус налог, рассчитанный TaxHelper
-                // (с учётом годового лимита 30 000 zł, прогрессивной шкалы 12%/32%
-                // и прочих доходов из настроек).
+                // Чистая прибыль = прибыль минус налог по выбранной форме налогообложения.
                 findViewById<TextView>(R.id.tv_stat_net_profit).text = formatMoney(profit - taxResult.tax)
+            }
+        }
+    }
+
+    /** Обновляет три гейджа лимитов и красный баннер превышения лимита niezarejestrowanej działalności. */
+    private fun loadLimits() {
+        CoroutineScope(Dispatchers.IO).launch {
+            val limits = LimitsHelper.compute(this@MineActivity)
+            withContext(Dispatchers.Main) {
+                findViewById<TextView>(R.id.tv_limit_monthly_label).text =
+                    getString(
+                        R.string.limit_monthly_label,
+                        formatMoney(limits.monthly.current), formatMoney(limits.monthly.limit)
+                    )
+                findViewById<ProgressBar>(R.id.pb_limit_monthly).progress = limits.monthly.percent.coerceAtMost(100)
+
+                findViewById<TextView>(R.id.tv_limit_bracket_label).text =
+                    getString(
+                        R.string.limit_bracket_label,
+                        formatMoney(limits.bracket.current), formatMoney(limits.bracket.limit)
+                    )
+                findViewById<ProgressBar>(R.id.pb_limit_bracket).progress = limits.bracket.percent.coerceAtMost(100)
+
+                findViewById<TextView>(R.id.tv_limit_vat_label).text =
+                    getString(
+                        R.string.limit_vat_label,
+                        formatMoney(limits.vat.current), formatMoney(limits.vat.limit)
+                    )
+                findViewById<ProgressBar>(R.id.pb_limit_vat).progress = limits.vat.percent.coerceAtMost(100)
+
+                val warning = findViewById<TextView>(R.id.tv_limit_warning)
+                if (limits.activityType == ActivityType.NIEZAREJESTROWANA && limits.monthly.exceeded) {
+                    warning.text = getString(R.string.limit_exceeded_warning)
+                    warning.visibility = View.VISIBLE
+                } else {
+                    warning.visibility = View.GONE
+                }
             }
         }
     }

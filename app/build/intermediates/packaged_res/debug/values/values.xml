@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="accent_blue_dark">#1230A8</color>
+    <color name="accent_blue_light">#3D5DFB</color>
+    <color name="accent_cyan">#29B6F6</color>
+    <color name="bg_bottom">#0A0D2A</color>
+    <color name="bg_glow">#2A2E8F</color>
+    <color name="bg_top">#050818</color>
+    <color name="card_bg">#12162E</color>
+    <color name="card_bg_light">#171B38</color>
+    <color name="expense_red">#FF5B5B</color>
+    <color name="income_green">#4CD964</color>
+    <color name="text_hint">#6B7094</color>
+    <color name="text_primary">#FFFFFF</color>
+    <color name="text_secondary">#9AA0C0</color>
+    <string name="about_app">About the app</string>
+    <string name="about_description">FinArs is a convenient app for managing the finances of unregistered business activity. Easily track income and expenses, monitor your current balance, automatically calculate taxes and generate reports. The app helps you stay within limits, track financial indicators and always have the full history of operations at hand. A simple interface and quick data entry make daily bookkeeping as convenient as possible.
+
+Key features:
+💰 Income and expense tracking.
+📊 Automatic profit calculation.
+🧾 Tax calculation.
+📈 Monitoring of unregistered activity limits.
+📄 Report generation.
+🔍 Full operation history.
+🌙 Modern dark interface.
+🔒 All data is stored locally on the device.
+
+Contact: p.arsenii@interia.pl</string>
+    <string name="about_email">p.arsenii@interia.pl</string>
+    <string name="add_entry">Add +</string>
+    <string name="add_expense">Add expense</string>
+    <string name="add_income">Add income</string>
+    <string name="app_name">FinArs</string>
+    <string name="app_subtitle">FinArs</string>
+    <string name="attach_receipt">Attach receipt</string>
+    <string name="auto_tax_button">Calculate automatically</string>
+    <string name="auto_tax_result">Suggested rate: %1$.1f%% (based on Polish PIT scale: 12%% up to 120,000 zł/year, 32%% above). You can edit it before saving.</string>
+    <string name="backup_create">Create backup</string>
+    <string name="backup_error">Error: %1$s</string>
+    <string name="backup_hint">Save a backup of your income/expense entries — including amounts, dates, comments and attached receipt photos — as a file. In the save dialog you can choose phone storage or Google Drive (if the Drive app is installed). Keep this file safe: it\'s the only way to restore your data if you lose the phone or reinstall the app.</string>
+    <string name="backup_in_progress">Working…</string>
+    <string name="backup_invalid_file">This does not look like a valid FinArs backup file</string>
+    <string name="backup_last_time">Last backup: %1$s</string>
+    <string name="backup_never">Last backup: never</string>
+    <string name="backup_pro_locked_message">Backup and restore is a Pro feature. Unlock Pro to keep your data safe with a backup file.</string>
+    <string name="backup_restore">Restore from backup</string>
+    <string name="backup_restore_confirm_message">Entries from the backup file will be added to what you already have on this device (existing entries are not deleted or overwritten). If you want a clean restore, use \"Clear all data\" first, then restore.</string>
+    <string name="backup_restore_confirm_title">Restore from backup?</string>
+    <string name="backup_restored">Restored %1$d entries</string>
+    <string name="backup_success">Backup saved (%1$d entries)</string>
+    <string name="balance">Balance</string>
+    <string name="clear_all_button">Clear all data</string>
+    <string name="clear_all_confirm_message">All income and expense entries will be permanently deleted. This cannot be undone.</string>
+    <string name="clear_all_confirm_title">Are you sure?</string>
+    <string name="clear_all_confirm_yes">Delete all</string>
+    <string name="clear_all_done">All data has been deleted</string>
+    <string name="custom_range">Custom range</string>
+    <string name="custom_range_invalid">The end date must be after the start date</string>
+    <string name="delete_confirm_message">This entry will be permanently deleted. This cannot be undone.</string>
+    <string name="delete_confirm_title">Delete entry?</string>
+    <string name="delete_confirm_yes">Delete</string>
+    <string name="delete_entry">Delete</string>
+    <string name="dialog_close">Close</string>
+    <string name="dialog_write">Write</string>
+    <string name="edit_expense_title">Edit expense</string>
+    <string name="edit_income_title">Edit income</string>
+    <string name="enter_amount">Amount</string>
+    <string name="enter_code_apply">Apply</string>
+    <string name="enter_code_button">Have a code?</string>
+    <string name="enter_code_hint">Code</string>
+    <string name="enter_code_success">Pro unlocked</string>
+    <string name="enter_code_title">Enter code</string>
+    <string name="enter_code_wrong">Invalid code</string>
+    <string name="enter_comment">Comment</string>
+    <string name="entry_deleted">Deleted</string>
+    <string name="entry_updated">Updated</string>
+    <string name="export_report">Export report</string>
+    <string name="from">From</string>
+    <string name="generate_report">Generate report</string>
+    <string name="month">Month</string>
+    <string name="no_entries">No entries</string>
+    <string name="other_income_hint">Your total taxable income this year from other sources (job, other business, etc.). Used together with income from this app to check the 30,000 zł annual tax-free limit.</string>
+    <string name="other_income_label">Other income (%1$d)</string>
+    <string name="other_income_title">Other income</string>
+    <string name="pro_feature_locked_go_settings">Go to Settings</string>
+    <string name="pro_feature_locked_message">Yearly and custom reports are a Pro feature. Unlock Pro in Settings to use them.</string>
+    <string name="pro_feature_locked_title">Pro feature</string>
+    <string name="pro_info_continue">Continue to purchase</string>
+    <string name="pro_info_message">Pro unlocks:\n\n• Yearly Excel report\n• Custom-period Excel report\n• Backup \&amp; restore\n• No ads\n\nThis is a one-time purchase — pay once, keep it forever.</string>
+    <string name="pro_info_title">Pro version</string>
+    <string name="pro_loading">Loading price…</string>
+    <string name="pro_purchase_error">Could not start the purchase. Check your connection and try again.</string>
+    <string name="pro_status_active">Pro unlocked. Thank you for your support!</string>
+    <string name="pro_status_locked">Pro is locked. Unlock to get yearly/custom Excel reports, backup \&amp; restore, and remove ads.</string>
+    <string name="pro_unlock_button">Unlock Pro</string>
+    <string name="pro_unlock_button_price">Unlock Pro — %1$s</string>
+    <string name="report_col_comment">Comment</string>
+    <string name="report_col_date">Date</string>
+    <string name="report_col_expense">Expense</string>
+    <string name="report_col_income">Income</string>
+    <string name="report_col_tax_amount">Tax amount</string>
+    <string name="report_col_tax_percent">Tax %%</string>
+    <string name="report_error">Failed to generate report: %1$s</string>
+    <string name="report_generating">Generating report…</string>
+    <string name="report_ready">Report ready</string>
+    <string name="report_share_title">Share report</string>
+    <string name="report_sheet_name">Report</string>
+    <string name="report_title_custom">Report — Custom period</string>
+    <string name="report_title_month">Report — Month</string>
+    <string name="report_title_year">Report — Year</string>
+    <string name="report_total_expense">Total expense</string>
+    <string name="report_total_income">Total income</string>
+    <string name="report_total_net_profit">Net profit (after tax)</string>
+    <string name="report_total_profit">Total profit</string>
+    <string name="report_total_tax">Total tax</string>
+    <string name="save">Save</string>
+    <string name="saved">Saved</string>
+    <string name="select_period">Select period</string>
+    <string name="settings">Settings</string>
+    <string name="settings_menu_backup">Backup (Pro)</string>
+    <string name="settings_menu_language">Language</string>
+    <string name="settings_menu_pro">Pro version</string>
+    <string name="settings_menu_tax">Tax and limits</string>
+    <string name="stat_expense">Expense</string>
+    <string name="stat_income">Income</string>
+    <string name="stat_net_profit">Net profit (after tax)</string>
+    <string name="stat_profit">Profit (gross)</string>
+    <string name="stat_tax_format">Tax (%1$.1f%%)</string>
+    <string name="statistics">Statistics</string>
+    <string name="tax_percent">Tax percent</string>
+    <string formatted="false" name="tax_scale_description">0% up to 30,000 zł/year · 12% on the part between 30,000 and 120,000 zł · 32% on the part above 120,000 zł. The rate applies only to the amount above each threshold, not to the whole sum.</string>
+    <string name="tax_scale_title">Tax is calculated automatically</string>
+    <string name="to">To</string>
+    <string name="transaction_history">Transaction history</string>
+    <string name="type_expense">Expense</string>
+    <string name="type_income">Income</string>
+    <string name="year">Year</string>
+    <style name="Theme.FA" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/accent_blue_light</item>
+        <item name="colorPrimaryVariant">@color/accent_blue_dark</item>
+        <item name="colorOnPrimary">@color/text_primary</item>
+        <item name="colorSecondary">@color/accent_cyan</item>
+        <item name="colorSecondaryVariant">@color/accent_blue_dark</item>
+        <item name="colorOnSecondary">@color/text_primary</item>
+        <item name="android:statusBarColor">@color/bg_top</item>
+        <item name="android:windowBackground">@drawable/bg_gradient</item>
+        <item name="android:textColorPrimary">@color/text_primary</item>
+        <item name="android:textColorHint">@color/text_hint</item>
+    </style>
+</resources>

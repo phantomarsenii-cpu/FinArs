@@ -35,6 +35,24 @@ android {
     }
     compileOptions { sourceCompatibility JavaVersion.VERSION_17; targetCompatibility JavaVersion.VERSION_17 }
     kotlinOptions { jvmTarget = '17' }
+
+    // pdfbox-android (добавлена для заполнения официального PIT-36) и Apache POI оба
+    // тянут META-INF файлы с одинаковыми именами — без этого блока сборка падает
+    // с "More than one file was found with OS independent path 'META-INF/...'".
+    packagingOptions {
+        resources {
+            excludes += [
+                'META-INF/DEPENDENCIES',
+                'META-INF/LICENSE',
+                'META-INF/LICENSE.txt',
+                'META-INF/LICENSE.md',
+                'META-INF/NOTICE',
+                'META-INF/NOTICE.txt',
+                'META-INF/NOTICE.md',
+                'META-INF/*.kotlin_module'
+            ]
+        }
+    }
 }
 
 dependencies {
@@ -54,4 +72,7 @@ dependencies {
     implementation "com.android.billingclient:billing-ktx:7.1.1"
     implementation "com.google.android.gms:play-services-ads:23.6.0"
     implementation "com.google.android.ump:user-messaging-platform:3.1.0"
+    implementation "androidx.biometric:biometric:1.1.0"
+    implementation "androidx.work:work-runtime-ktx:2.9.0"
+    implementation "com.tom-roush:pdfbox-android:2.0.27.0"
 }

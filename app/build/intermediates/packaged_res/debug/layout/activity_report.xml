@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:padding="24dp"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+
+    <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:text="@string/select_period" android:textSize="22sp" android:textStyle="bold"
+        android:textColor="@color/accent_cyan" android:layout_marginBottom="24dp"/>
+
+    <Button android:id="@+id/btn_report_month" android:layout_width="match_parent" android:layout_height="56dp"
+        android:text="@string/month" android:textAllCaps="false" android:textSize="16sp"
+        android:textColor="@color/text_primary" android:background="@drawable/btn_pill_primary"
+        android:layout_marginBottom="14dp"/>
+
+    <Button android:id="@+id/btn_report_year" android:layout_width="match_parent" android:layout_height="56dp"
+        android:text="@string/year" android:textAllCaps="false" android:textSize="16sp"
+        android:textColor="@color/text_primary" android:background="@drawable/btn_pill_primary"
+        android:layout_marginBottom="14dp"/>
+
+    <Button android:id="@+id/btn_report_custom" android:layout_width="match_parent" android:layout_height="56dp"
+        android:text="@string/custom_range" android:textAllCaps="false" android:textSize="16sp"
+        android:textColor="@color/text_primary" android:background="@drawable/btn_pill_outline"/>
+
+</LinearLayout>

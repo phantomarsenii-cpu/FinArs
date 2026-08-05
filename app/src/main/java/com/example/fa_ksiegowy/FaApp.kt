@@ -1,9 +1,11 @@
 package com.example.fa_ksiegowy
 
+import android.app.Activity
 import android.app.Application
 import android.content.ContentValues
 import android.content.Context
 import android.os.Build
+import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
 import java.io.File
@@ -28,6 +30,7 @@ class FaApp : Application() {
 
     override fun onCreate() {
         super.onCreate()
+        LimitsNotificationWorker.createChannel(this)
         val defaultHandler = Thread.getDefaultUncaughtExceptionHandler()
         Thread.setDefaultUncaughtExceptionHandler { thread, throwable ->
             try {
@@ -37,6 +40,21 @@ class FaApp : Application() {
             }
             defaultHandler?.uncaughtException(thread, throwable)
         }
+
+        // Отслеживаем переход приложения на передний план/в фон для блокировки по PIN.
+        registerActivityLifecycleCallbacks(object : ActivityLifecycleCallbacks {
+            override fun onActivityStarted(activity: Activity) {
+                AppLockState.onActivityStarted(activity)
+            }
+            override fun onActivityStopped(activity: Activity) {
+                AppLockState.onActivityStopped()
+            }
+            override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {}
+            override fun onActivityResumed(activity: Activity) {}
+            override fun onActivityPaused(activity: Activity) {}
+            override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) {}
+            override fun onActivityDestroyed(activity: Activity) {}
+        })
     }
 
     private fun saveCrashLog(context: Context, throwable: Throwable) {

@@ -100,4 +100,38 @@ object TaxHelper {
         val effectiveRate = if (app > 0) (tax / app) * 100.0 else 0.0
         return TaxResult(combined, app, tax, effectiveRate)
     }
+
+    const val LINIOWY_RATE = 0.19
+
+    /**
+     * Podatek liniowy (19%) — плоская ставка без kwoty wolnej od podatku и без
+     * прогрессии; применяется ко всему dochód (przychód − koszty), otherIncome
+     * здесь не влияет на ставку прибыли из приложения (в отличие от skali),
+     * так как нет порогов — 19% от appProfit целиком.
+     */
+    fun calcLiniowy(appProfit: Double): TaxResult {
+        val app = if (appProfit < 0) 0.0 else appProfit
+        val tax = app * LINIOWY_RATE
+        return TaxResult(app, app, tax, LINIOWY_RATE * 100.0)
+    }
+
+    /**
+     * Ryczałt od przychodów ewidencjonowanych: налог считается от PRZYCHODU
+     * (не dochodu — koszty не вычитаются) по ставке, которая зависит от вида
+     * деятельности (PKD) и вводится пользователем вручную в настройках
+     * (2–17%, см. ustawa o ryczałcie).
+     */
+    fun calcRyczalt(przychod: Double, ratePercent: Double): TaxResult {
+        val p = if (przychod < 0) 0.0 else przychod
+        val rate = (if (ratePercent < 0) 0.0 else ratePercent) / 100.0
+        val tax = p * rate
+        return TaxResult(p, p, tax, ratePercent)
+    }
+
+    /** Текст динамической подписи налога на главном экране/в отчётах — см. п.2 требований. */
+    fun taxLabelResId(taxableBase: Double): Int = when {
+        taxableBase <= ANNUAL_LIMIT -> R.string.tax_label_zero
+        taxableBase <= SECOND_BRACKET_THRESHOLD -> R.string.tax_label_12
+        else -> R.string.tax_label_progressive
+    }
 }

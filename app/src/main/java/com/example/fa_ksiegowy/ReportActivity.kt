@@ -100,7 +100,7 @@ class ReportActivity : BaseActivity() {
         // Лимит 30 000 zł годовой, к частичному периоду его применять некорректно
         // (профит за один месяц почти всегда меньше лимита, отчёт вводил бы в
         // заблуждение) — поэтому здесь налог считается по старой формуле, без лимита.
-        generateReport(now - monthMs, now, getString(R.string.report_title_month), applyAnnualLimit = false)
+        generateReport(now - monthMs, now, getString(R.string.report_title_month), applyAnnualLimit = false, fileTypeCode = "REPORT_MONTH")
     }
 
     private fun generateForYear() {
@@ -109,13 +109,13 @@ class ReportActivity : BaseActivity() {
         val now = System.currentTimeMillis()
         generateReport(
             yearStart, minOf(now, yearEndExclusive - 1),
-            getString(R.string.report_title_year), applyAnnualLimit = true, year = year
+            getString(R.string.report_title_year), applyAnnualLimit = true, year = year, fileTypeCode = "REPORT_YEAR"
         )
     }
 
     private fun generateReport(
         from: Long, to: Long, title: String,
-        applyAnnualLimit: Boolean, year: Int = TaxHelper.currentYear()
+        applyAnnualLimit: Boolean, year: Int = TaxHelper.currentYear(), fileTypeCode: String = "REPORT_CUSTOM"
     ) {
         setButtonsEnabled(false)
         Toast.makeText(this, getString(R.string.report_generating), Toast.LENGTH_SHORT).show()
@@ -132,7 +132,7 @@ class ReportActivity : BaseActivity() {
 
                 val reportsDir = File(getExternalFilesDir(null), "reports")
                 reportsDir.mkdirs()
-                val xlsx = File(reportsDir, "report_${System.currentTimeMillis()}.xlsx")
+                val xlsx = File(reportsDir, FileNaming.reportFileName(fileTypeCode, "xlsx"))
                 val wb = XSSFWorkbook()
                 val sheet = wb.createSheet(getString(R.string.report_sheet_name))
 
@@ -203,9 +203,9 @@ class ReportActivity : BaseActivity() {
                 // ---- title row ----
                 val titleRow = sheet.createRow(0)
                 titleRow.heightInPoints = 24f
-                for (c in 0..3) titleRow.createCell(c).cellStyle = titleStyle
+                for (c in 0..4) titleRow.createCell(c).cellStyle = titleStyle
                 titleRow.getCell(0).setCellValue(title)
-                sheet.addMergedRegion(org.apache.poi.ss.util.CellRangeAddress(0, 0, 0, 3))
+                sheet.addMergedRegion(org.apache.poi.ss.util.CellRangeAddress(0, 0, 0, 4))
 
                 // ---- header row ----
                 // Столбцов налога на каждую отдельную операцию больше нет: с прогрессивной
@@ -217,7 +217,8 @@ class ReportActivity : BaseActivity() {
                     getString(R.string.report_col_date),
                     getString(R.string.report_col_income),
                     getString(R.string.report_col_expense),
-                    getString(R.string.report_col_comment)
+                    getString(R.string.report_col_comment),
+                    getString(R.string.report_col_receipt)
                 )
                 val headerRow = sheet.createRow(1)
                 for ((i, h) in headers.withIndex()) {
@@ -253,6 +254,10 @@ class ReportActivity : BaseActivity() {
                     commentCell.setCellValue(e.comment ?: "")
                     commentCell.cellStyle = dataStyle
 
+                    val receiptCell = r.createCell(4)
+                    receiptCell.setCellValue(if (e.receiptPath != null) getString(R.string.report_receipt_yes) else "")
+                    receiptCell.cellStyle = dataStyle
+
                     totalIncome += incomeVal
                     totalExpense += expenseVal
                 }
@@ -282,7 +287,14 @@ class ReportActivity : BaseActivity() {
                 // года было бы некорректно.
                 val totalProfitForTax = totalIncome - totalExpense
                 val otherIncomeForTax = if (applyAnnualLimit) TaxHelper.getOtherIncome(prefs, year) else 0.0
-                val correctedTotalTax = TaxHelper.calc(totalProfitForTax, otherIncomeForTax).tax
+                val activityType = ActivityTypeHelper.get(prefs)
+                val ryczaltRate = ActivityTypeHelper.getRyczaltRate(prefs)
+                val correctedTotalTax = when (activityType) {
+                    ActivityType.NIEZAREJESTROWANA, ActivityType.JDG_SKALA ->
+                        TaxHelper.calc(totalProfitForTax, otherIncomeForTax).tax
+                    ActivityType.JDG_LINIOWY -> TaxHelper.calcLiniowy(totalProfitForTax).tax
+                    ActivityType.JDG_RYCZALT -> TaxHelper.calcRyczalt(totalIncome, ryczaltRate).tax
+                }
 
                 val taxRow = sheet.createRow(rowN++)
                 taxRow.createCell(0).also { it.setCellValue(getString(R.string.report_total_tax)); it.cellStyle = totalLabelStyle }
@@ -300,6 +312,7 @@ class ReportActivity : BaseActivity() {
                 sheet.setColumnWidth(1, 14 * 256)
                 sheet.setColumnWidth(2, 14 * 256)
                 sheet.setColumnWidth(3, 36 * 256)
+                sheet.setColumnWidth(4, 10 * 256)
 
                 FileOutputStream(xlsx).use { fos ->
                     wb.write(fos)

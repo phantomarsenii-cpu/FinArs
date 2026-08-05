@@ -118,6 +118,56 @@
 
     </LinearLayout>
 
+    <TextView
+        android:id="@+id/tv_limit_warning"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/card_bg"
+        android:backgroundTint="#3A1414"
+        android:padding="14dp"
+        android:layout_marginBottom="16dp"
+        android:textColor="#FF6B6B"
+        android:textSize="13sp"
+        android:textStyle="bold"
+        android:visibility="gone"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@drawable/card_bg"
+        android:padding="16dp"
+        android:layout_marginBottom="18dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/limits_title"
+            android:textColor="@color/text_secondary"
+            android:textSize="11sp"
+            android:textStyle="bold"
+            android:letterSpacing="0.12"
+            android:layout_marginBottom="12dp"/>
+
+        <TextView android:id="@+id/tv_limit_monthly_label" android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:textColor="@color/text_primary" android:textSize="13sp" android:layout_marginBottom="4dp"/>
+        <ProgressBar android:id="@+id/pb_limit_monthly" style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent" android:layout_height="8dp" android:max="100"
+            android:layout_marginBottom="14dp"/>
+
+        <TextView android:id="@+id/tv_limit_bracket_label" android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:textColor="@color/text_primary" android:textSize="13sp" android:layout_marginBottom="4dp"/>
+        <ProgressBar android:id="@+id/pb_limit_bracket" style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent" android:layout_height="8dp" android:max="100"
+            android:layout_marginBottom="14dp"/>
+
+        <TextView android:id="@+id/tv_limit_vat_label" android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:textColor="@color/text_primary" android:textSize="13sp" android:layout_marginBottom="4dp"/>
+        <ProgressBar android:id="@+id/pb_limit_vat" style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent" android:layout_height="8dp" android:max="100"/>
+
+    </LinearLayout>
+
     <Button
         android:id="@+id/btn_add_entry"
         android:layout_width="match_parent"
@@ -195,6 +245,16 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:visibility="gone"
+        />
+
+    <TextView
+        android:id="@+id/tv_ad_debug"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:text="Ad status: —"
+        android:textColor="@color/text_secondary"
+        android:textSize="11sp"
         />
 
 </LinearLayout>

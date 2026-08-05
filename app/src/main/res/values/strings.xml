@@ -8,6 +8,7 @@
     <string name="balance">Balance</string>
     <string name="enter_amount">Amount</string>
     <string name="enter_comment">Comment</string>
+    <string name="entry_date_label">Transaction date</string>
     <string name="attach_receipt">Attach receipt</string>
     <string name="save">Save</string>
     <string name="settings">Settings</string>
@@ -73,7 +74,7 @@ Contact: p.arsenii@interia.pl</string>
     <string name="about_email">p.arsenii@interia.pl</string>
     <string name="dialog_close">Close</string>
     <string name="dialog_write">Write</string>
-    <string name="pro_status_locked">Pro is locked. Unlock to get yearly/custom Excel reports and remove ads.</string>
+    <string name="pro_status_locked">Pro is locked. Unlock to get yearly/custom Excel reports, backup \&amp; restore, and remove ads.</string>
     <string name="pro_status_active">Pro unlocked. Thank you for your support!</string>
     <string name="pro_unlock_button">Unlock Pro</string>
     <string name="pro_unlock_button_price">Unlock Pro — %1$s</string>
@@ -84,7 +85,7 @@ Contact: p.arsenii@interia.pl</string>
     <string name="backup_pro_locked_message">Backup and restore is a Pro feature. Unlock Pro to keep your data safe with a backup file.</string>
     <string name="pro_purchase_error">Could not start the purchase. Check your connection and try again.</string>
     <string name="pro_info_title">Pro version</string>
-    <string name="pro_info_message">Pro unlocks:\n\n• Yearly Excel report\n• Custom-period Excel report\n• No ads\n\nThis is a one-time purchase — pay once, keep it forever.</string>
+    <string name="pro_info_message">Pro unlocks:\n\n• Yearly Excel report\n• Custom-period Excel report\n• Backup \&amp; restore\n• No ads\n\nThis is a one-time purchase — pay once, keep it forever.</string>
     <string name="pro_info_continue">Continue to purchase</string>
     <string name="enter_code_button">Have a code?</string>
     <string name="enter_code_title">Enter code</string>
@@ -127,4 +128,127 @@ Contact: p.arsenii@interia.pl</string>
     <string name="backup_restored">Restored %1$d entries</string>
     <string name="backup_never">Last backup: never</string>
     <string name="backup_last_time">Last backup: %1$s</string>
+
+    <string name="settings_menu_security">Security (PIN / fingerprint)</string>
+    <string name="settings_menu_pit36">Generate PIT-36 (Pro)</string>
+    <string name="pit36_pro_locked_message">PIT-36 generation is a Pro feature. Unlock Pro in Settings to use it.</string>
+
+    <string name="lock_title">FinArs is locked</string>
+    <string name="lock_subtitle">Enter your PIN to continue</string>
+    <string name="lock_pin_hint">PIN</string>
+    <string name="lock_wrong_pin">Wrong PIN, try again</string>
+    <string name="lock_unlock_button">Unlock</string>
+    <string name="lock_biometric_button">Use fingerprint / face</string>
+    <string name="lock_biometric_prompt_title">Unlock FinArs</string>
+    <string name="lock_biometric_prompt_subtitle">Confirm your fingerprint or face</string>
+    <string name="lock_use_pin">Use PIN</string>
+    <string name="lock_biometric_unavailable">No fingerprint/face is set up on this device. Add one in your phone\'s settings first.</string>
+
+    <string name="security_hint">Protect the app with a PIN code. When enabled, FinArs will ask for the PIN every time you open it after leaving the app. You can also enable fingerprint/face unlock as a quick shortcut for the same PIN.</string>
+    <string name="security_pin_switch">Require PIN to open the app</string>
+    <string name="security_change_pin">Change PIN</string>
+    <string name="security_biometric_switch">Unlock with fingerprint / face</string>
+    <string name="security_set_pin_title">Set a PIN</string>
+    <string name="security_set_pin_message">Choose a 4–6 digit PIN</string>
+    <string name="security_continue">Continue</string>
+    <string name="security_pin_length_error">PIN must be 4–6 digits</string>
+    <string name="security_confirm_pin_title">Confirm your PIN</string>
+    <string name="security_pin_saved">PIN saved</string>
+    <string name="security_pin_mismatch">PINs don\'t match, try again</string>
+    <string name="security_disable_pin_title">Enter current PIN</string>
+    <string name="security_enter_current_pin">Enter your current PIN to continue</string>
+    <string name="security_pin_disabled">PIN protection disabled</string>
+
+    <string name="pit_data_title">Personal data for PIT-36</string>
+    <string name="pit_data_hint">Used only to fill in the PIT-36 helper report. Everything stays on your device.</string>
+    <string name="pit_first_name">First name</string>
+    <string name="pit_last_name">Last name</string>
+    <string name="pit_pesel">PESEL (optional)</string>
+    <string name="pit_street">Street</string>
+    <string name="pit_house_number">House number</string>
+    <string name="pit_apartment_number">Apartment number (optional)</string>
+    <string name="pit_voivodeship">Voivodeship</string>
+    <string name="pit_county">County (powiat)</string>
+    <string name="pit_commune">Commune (gmina)</string>
+    <string name="pit_postal_code">Postal code</string>
+    <string name="pit_city">City</string>
+    <string name="pit_tax_office">Tax office (urząd skarbowy)</string>
+    <string name="pit_reliefs_title">Reliefs and deductions (optional)</string>
+    <string name="pit_children_count">Number of children (ulga na dzieci)</string>
+    <string name="pit_internet_relief">Internet relief — amount spent</string>
+    <string name="pit_ikze">IKZE contributions</string>
+    <string name="pit_donations">Donations (darowizny)</string>
+    <string name="pit_joint_spouse">File jointly with spouse</string>
+    <string name="pit_data_required_error">Please fill in first name, last name and tax office first</string>
+
+    <string name="pit36_hint">Pick a full calendar year, check your personal data, then generate a helper PDF with the numbers and guidance for filling in the official PIT-36 form on podatki.gov.pl (Twój e-PIT) or on paper.</string>
+    <string name="pit_row_przychod">Przychód (income)</string>
+    <string name="pit_row_koszty">Koszty (expenses)</string>
+    <string name="pit_row_dochod">Dochód (profit)</string>
+    <string name="pit_row_tax">Estimated tax</string>
+    <string name="pit_data_status_missing">Personal data not filled in yet — required before generating the report.</string>
+    <string name="pit_data_status_ready">Personal data ready: %1$s</string>
+    <string name="pit_edit_data_button">Edit personal data</string>
+    <string name="pit36_generate_button">Generate PIT-36 helper PDF</string>
+    <string name="pit36_disclaimer">This report is informational only and is not an official PIT-36 form, e-Deklaracja or tax advice. Always double-check the numbers before submitting your declaration.</string>
+    <string name="pit36_calculating">Still calculating, please wait…</string>
+    <string name="pit36_generated">PDF report generated</string>
+    <string name="pit36_generate_official_button">Fill official PIT-36 form (2025 template)</string>
+    <string name="pit36_official_hint">Fills the real PIT-36(32)/2025 government PDF: your ID, address and business income/expenses row. You still need to add other income sources and any deductions yourself before submitting — see the disclaimer below.</string>
+    <string name="pit36_official_unsupported">The official form is only available for PIT-36 (skala). Your current form is %1$s — use "Generate PIT-36 helper PDF" instead.</string>
+    <string name="pit36_official_generated">Official PIT-36 form filled. Please review sections E–K and add other income/deductions before submitting.</string>
+
+    <!-- Activity type / registration rules -->
+    <string name="activity_type_title">Activity type</string>
+    <string name="activity_type_hint">Choose how you operate — this decides which limit applies and which annual form you should file.</string>
+    <string name="activity_type_niezarejestrowana">Unregistered activity (bez rejestracji JDG)</string>
+    <string name="activity_type_niezarejestrowana_desc">Income must stay under 75% of the minimum wage per month. If exceeded, you must register a JDG within 7 days. Filed via PIT-36, tax scale.</string>
+    <string name="activity_type_jdg_skala">Registered JDG — tax scale 12%% / 32%% (PIT-36)</string>
+    <string name="activity_type_jdg_liniowy">Registered JDG — flat tax 19%% (PIT-36L)</string>
+    <string name="activity_type_jdg_ryczalt">Registered JDG — lump-sum tax (PIT-28)</string>
+    <string name="ryczalt_rate_label">Lump-sum tax rate for your activity (%%, depends on PKD)</string>
+    <string name="ryczalt_rate_hint">e.g. 3, 5.5, 8.5, 12, 17</string>
+    <string name="min_wage_label">Minimum monthly wage (zł) — used to calculate the unregistered-activity limit</string>
+    <string name="monthly_limit_preview">Monthly limit (75%%): %1$.2f zł</string>
+
+    <!-- Main screen limit gauges -->
+    <string name="limits_title">Limits</string>
+    <string name="limit_monthly_label">Unregistered activity, this month: %1$s / %2$s zł</string>
+    <string name="limit_bracket_label">First tax bracket (120,000 zł/year): %1$s / %2$s zł</string>
+    <string name="limit_vat_label">VAT exemption (200,000 zł/year): %1$s / %2$s zł</string>
+    <string name="limit_exceeded_warning">You have exceeded the unregistered-activity limit! You must register a JDG within 7 days.</string>
+
+    <!-- Dynamic tax label -->
+    <string name="tax_label_zero">Tax (0% — tax-free amount)</string>
+    <string name="tax_label_12">Tax (12%)</string>
+    <string name="tax_label_progressive">Tax (progressive scale 12% / 32%)</string>
+    <string name="tax_label_liniowy">Tax (flat 19%)</string>
+    <string name="tax_label_ryczalt">Tax (lump-sum, of revenue)</string>
+    <string name="pit_form_applicable">Applicable declaration: %1$s</string>
+
+    <!-- History table -->
+    <string name="history_col_receipt">Receipt</string>
+    <string name="history_col_amount">Amount</string>
+
+    <!-- Report columns -->
+    <string name="report_col_receipt">Receipt</string>
+    <string name="report_receipt_yes">Yes</string>
+
+    <!-- Notifications -->
+    <string name="notif_channel_name">Limits and deadlines</string>
+    <string name="notif_channel_description">Alerts about activity limits and tax deadlines</string>
+    <string name="notif_limit_exceeded_title">Unregistered activity limit exceeded</string>
+    <string name="notif_limit_exceeded_text">Your income this month exceeds 75% of the minimum wage. You must register a JDG within 7 days.</string>
+    <string name="notif_limit_95_title">95% of the monthly limit reached</string>
+    <string name="notif_limit_95_text">You are very close to the unregistered-activity limit for this month.</string>
+    <string name="notif_limit_80_title">80% of the monthly limit reached</string>
+    <string name="notif_limit_80_text">You have used 80% of the unregistered-activity limit for this month.</string>
+    <string name="notif_bracket_title">Approaching the 120,000 zł threshold</string>
+    <string name="notif_bracket_text">Your yearly profit is close to 120,000 zł — income above this is taxed at 32% instead of 12%.</string>
+    <string name="notif_vat_title">Approaching the VAT exemption limit</string>
+    <string name="notif_vat_text">Your yearly revenue is close to 200,000 zł — the VAT exemption threshold.</string>
+    <string name="notif_advance_title">Advance tax payment reminder</string>
+    <string name="notif_advance_text">Advance tax payments are due by the 20th of the month.</string>
+    <string name="notif_pit_deadline_title">Annual tax return reminder</string>
+    <string name="notif_pit_deadline_text">Annual tax returns are due between 15 February and 30 April.</string>
 </resources>

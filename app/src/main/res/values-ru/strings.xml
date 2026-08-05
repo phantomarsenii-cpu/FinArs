@@ -8,6 +8,7 @@
     <string name="balance">Баланс</string>
     <string name="enter_amount">Сумма</string>
     <string name="enter_comment">Комментарий</string>
+    <string name="entry_date_label">Дата операции</string>
     <string name="attach_receipt">Прикрепить чек</string>
     <string name="save">Сохранить</string>
     <string name="settings">Настройки</string>
@@ -61,7 +62,7 @@
     <string name="about_email">p.arsenii@interia.pl</string>
     <string name="dialog_close">Закрыть</string>
     <string name="dialog_write">Написать</string>
-    <string name="pro_status_locked">Pro не активирован. Разблокируйте, чтобы получить годовые и произвольные отчёты в Excel и убрать рекламу.</string>
+    <string name="pro_status_locked">Pro не активирован. Разблокируйте, чтобы получить годовые и произвольные отчёты в Excel, резервное копирование и восстановление, а также убрать рекламу.</string>
     <string name="pro_status_active">Pro активирован. Спасибо за поддержку!</string>
     <string name="pro_unlock_button">Разблокировать Pro</string>
     <string name="pro_unlock_button_price">Разблокировать Pro — %1$s</string>
@@ -72,7 +73,7 @@
     <string name="backup_pro_locked_message">Резервное копирование и восстановление — Pro-функция. Разблокируйте Pro, чтобы сохранить данные в файл на случай потери.</string>
     <string name="pro_purchase_error">Не удалось открыть окно оплаты. Проверьте соединение и попробуйте снова.</string>
     <string name="pro_info_title">Pro-версия</string>
-    <string name="pro_info_message">Pro открывает:\n\n• Годовой отчёт в Excel\n• Отчёт за произвольный период\n• Без рекламы\n\nЭто разовая покупка — платите один раз, доступ остаётся навсегда.</string>
+    <string name="pro_info_message">Pro открывает:\n\n• Годовой отчёт в Excel\n• Отчёт за произвольный период\n• Резервное копирование и восстановление\n• Без рекламы\n\nЭто разовая покупка — платите один раз, доступ остаётся навсегда.</string>
     <string name="pro_info_continue">Перейти к покупке</string>
     <string name="enter_code_button">Есть код?</string>
     <string name="enter_code_title">Введите код</string>
@@ -115,4 +116,127 @@
     <string name="backup_restored">Восстановлено записей: %1$d</string>
     <string name="backup_never">Последняя копия: никогда</string>
     <string name="backup_last_time">Последняя копия: %1$s</string>
+
+    <string name="settings_menu_security">Безопасность (PIN / отпечаток)</string>
+    <string name="settings_menu_pit36">Сформировать PIT-36 (Pro)</string>
+    <string name="pit36_pro_locked_message">Генерация PIT-36 — функция Pro. Разблокируйте Pro в настройках, чтобы ей пользоваться.</string>
+
+    <string name="lock_title">FinArs заблокирован</string>
+    <string name="lock_subtitle">Введите PIN, чтобы продолжить</string>
+    <string name="lock_pin_hint">PIN</string>
+    <string name="lock_wrong_pin">Неверный PIN, попробуйте ещё раз</string>
+    <string name="lock_unlock_button">Разблокировать</string>
+    <string name="lock_biometric_button">Войти по отпечатку / лицу</string>
+    <string name="lock_biometric_prompt_title">Разблокировка FinArs</string>
+    <string name="lock_biometric_prompt_subtitle">Подтвердите отпечатком пальца или лицом</string>
+    <string name="lock_use_pin">Ввести PIN</string>
+    <string name="lock_biometric_unavailable">На этом устройстве не настроен отпечаток/лицо. Сначала добавьте его в настройках телефона.</string>
+
+    <string name="security_hint">Защитите приложение PIN-кодом. Когда функция включена, FinArs будет спрашивать PIN каждый раз, когда вы возвращаетесь в приложение после его сворачивания. Также можно включить вход по отпечатку/лицу — это быстрый способ ввести тот же PIN.</string>
+    <string name="security_pin_switch">Запрашивать PIN при открытии приложения</string>
+    <string name="security_change_pin">Изменить PIN</string>
+    <string name="security_biometric_switch">Вход по отпечатку / лицу</string>
+    <string name="security_set_pin_title">Установите PIN</string>
+    <string name="security_set_pin_message">Выберите PIN из 4–6 цифр</string>
+    <string name="security_continue">Продолжить</string>
+    <string name="security_pin_length_error">PIN должен состоять из 4–6 цифр</string>
+    <string name="security_confirm_pin_title">Подтвердите PIN</string>
+    <string name="security_pin_saved">PIN сохранён</string>
+    <string name="security_pin_mismatch">PIN-коды не совпадают, попробуйте ещё раз</string>
+    <string name="security_disable_pin_title">Введите текущий PIN</string>
+    <string name="security_enter_current_pin">Введите текущий PIN, чтобы продолжить</string>
+    <string name="security_pin_disabled">Защита PIN-ом отключена</string>
+
+    <string name="pit_data_title">Личные данные для PIT-36</string>
+    <string name="pit_data_hint">Используются только для заполнения вспомогательного отчёта PIT-36. Всё остаётся на вашем устройстве.</string>
+    <string name="pit_first_name">Имя</string>
+    <string name="pit_last_name">Фамилия</string>
+    <string name="pit_pesel">PESEL (необязательно)</string>
+    <string name="pit_street">Улица</string>
+    <string name="pit_house_number">Номер дома</string>
+    <string name="pit_apartment_number">Номер квартиры (необязательно)</string>
+    <string name="pit_voivodeship">Воеводство</string>
+    <string name="pit_county">Повят</string>
+    <string name="pit_commune">Гмина</string>
+    <string name="pit_postal_code">Почтовый индекс</string>
+    <string name="pit_city">Город</string>
+    <string name="pit_tax_office">Налоговая инспекция (urząd skarbowy)</string>
+    <string name="pit_reliefs_title">Льготы и вычеты (необязательно)</string>
+    <string name="pit_children_count">Количество детей (ulga na dzieci)</string>
+    <string name="pit_internet_relief">Льгота на интернет — сумма расходов</string>
+    <string name="pit_ikze">Взносы на IKZE</string>
+    <string name="pit_donations">Пожертвования (darowizny)</string>
+    <string name="pit_joint_spouse">Совместная подача с супругом</string>
+    <string name="pit_data_required_error">Сначала укажите имя, фамилию и налоговую инспекцию</string>
+
+    <string name="pit36_hint">Выберите полный календарный год, проверьте личные данные, затем сформируйте вспомогательный PDF с цифрами и подсказками для заполнения официального PIT-36 на podatki.gov.pl (Twój e-PIT) или на бумаге.</string>
+    <string name="pit_row_przychod">Przychód (доход)</string>
+    <string name="pit_row_koszty">Koszty (расходы)</string>
+    <string name="pit_row_dochod">Dochód (прибыль)</string>
+    <string name="pit_row_tax">Расчётный налог</string>
+    <string name="pit_data_status_missing">Личные данные ещё не заполнены — это нужно сделать перед формированием отчёта.</string>
+    <string name="pit_data_status_ready">Личные данные готовы: %1$s</string>
+    <string name="pit_edit_data_button">Изменить личные данные</string>
+    <string name="pit36_generate_button">Сформировать вспомогательный PDF PIT-36</string>
+    <string name="pit36_disclaimer">Этот отчёт носит исключительно информационный характер и не является официальным бланком PIT-36, e-Deklaracją или налоговой консультацией. Всегда перепроверяйте цифры перед подачей декларации.</string>
+    <string name="pit36_calculating">Идёт расчёт, подождите…</string>
+    <string name="pit36_generated">PDF-отчёт сформирован</string>
+    <string name="pit36_generate_official_button">Заполнить официальный бланк PIT-36 (шаблон 2025)</string>
+    <string name="pit36_official_hint">Заполняет настоящий государственный PDF PIT-36(32)/2025: ваши данные, адрес и строку доходов/расходов бизнеса. Остальные источники дохода и вычеты нужно дозаполнить самостоятельно — см. предупреждение ниже.</string>
+    <string name="pit36_official_unsupported">Официальный бланк доступен только для PIT-36 (skala). Ваша текущая форма — %1$s, используйте кнопку «Сформировать PDF-помощник PIT-36».</string>
+    <string name="pit36_official_generated">Официальный бланк PIT-36 заполнен. Проверьте разделы E–K и добавьте другие доходы/вычеты перед подачей.</string>
+
+    <!-- Тип деятельности / правила регистрации -->
+    <string name="activity_type_title">Форма деятельности</string>
+    <string name="activity_type_hint">Выберите, как вы работаете — от этого зависит применяемый лимит и то, какую декларацию подавать.</string>
+    <string name="activity_type_niezarejestrowana">Незарегистрированная деятельность (без JDG)</string>
+    <string name="activity_type_niezarejestrowana_desc">Доход не должен превышать 75%% минимальной зарплаты в месяц. При превышении нужно зарегистрировать JDG в течение 7 дней. Подаётся через PIT-36 по обычной шкале.</string>
+    <string name="activity_type_jdg_skala">Зарегистрированное ИП (JDG) — шкала 12%% / 32%% (PIT-36)</string>
+    <string name="activity_type_jdg_liniowy">Зарегистрированное ИП (JDG) — плоский налог 19%% (PIT-36L)</string>
+    <string name="activity_type_jdg_ryczalt">Зарегистрированное ИП (JDG) — ryczałt (PIT-28)</string>
+    <string name="ryczalt_rate_label">Ставка ryczałtu для вашей деятельности (%%, зависит от PKD)</string>
+    <string name="ryczalt_rate_hint">например 3, 5.5, 8.5, 12, 17</string>
+    <string name="min_wage_label">Минимальная месячная зарплата (zł) — для расчёта лимита незарегистрированной деятельности</string>
+    <string name="monthly_limit_preview">Месячный лимит (75%%): %1$.2f zł</string>
+
+    <!-- Гейджи лимитов на главном экране -->
+    <string name="limits_title">Лимиты</string>
+    <string name="limit_monthly_label">Незарегистрированная деятельность, этот месяц: %1$s / %2$s zł</string>
+    <string name="limit_bracket_label">Первый налоговый порог (120 000 zł/год): %1$s / %2$s zł</string>
+    <string name="limit_vat_label">Освобождение от VAT (200 000 zł/год): %1$s / %2$s zł</string>
+    <string name="limit_exceeded_warning">Превышен лимит незарегистрированной деятельности! Вы обязаны зарегистрировать JDG в течение 7 дней.</string>
+
+    <!-- Динамическая подпись налога -->
+    <string name="tax_label_zero">Налог (0% — необлагаемый минимум)</string>
+    <string name="tax_label_12">Налог (12%)</string>
+    <string name="tax_label_progressive">Налог (прогрессивная шкала 12% / 32%)</string>
+    <string name="tax_label_liniowy">Налог (плоский 19%)</string>
+    <string name="tax_label_ryczalt">Налог (ryczałt, от дохода)</string>
+    <string name="pit_form_applicable">Применимая декларация: %1$s</string>
+
+    <!-- Таблица истории -->
+    <string name="history_col_receipt">Чек</string>
+    <string name="history_col_amount">Сумма</string>
+
+    <!-- Колонки отчёта -->
+    <string name="report_col_receipt">Чек</string>
+    <string name="report_receipt_yes">Есть</string>
+
+    <!-- Уведомления -->
+    <string name="notif_channel_name">Лимиты и сроки</string>
+    <string name="notif_channel_description">Оповещения о лимитах деятельности и налоговых сроках</string>
+    <string name="notif_limit_exceeded_title">Превышен лимит незарегистрированной деятельности</string>
+    <string name="notif_limit_exceeded_text">Доход в этом месяце превышает 75% минимальной зарплаты. Зарегистрируйте JDG в течение 7 дней.</string>
+    <string name="notif_limit_95_title">Достигнуто 95% месячного лимита</string>
+    <string name="notif_limit_95_text">Вы очень близки к лимиту незарегистрированной деятельности за этот месяц.</string>
+    <string name="notif_limit_80_title">Достигнуто 80% месячного лимита</string>
+    <string name="notif_limit_80_text">Использовано 80% лимита незарегистрированной деятельности за этот месяц.</string>
+    <string name="notif_bracket_title">Приближение к порогу 120 000 zł</string>
+    <string name="notif_bracket_text">Годовая прибыль приближается к 120 000 zł — доход сверх этой суммы облагается по 32%% вместо 12%%.</string>
+    <string name="notif_vat_title">Приближение к лимиту освобождения от VAT</string>
+    <string name="notif_vat_text">Годовой доход приближается к 200 000 zł — порогу освобождения от VAT.</string>
+    <string name="notif_advance_title">Напоминание об авансовом платеже</string>
+    <string name="notif_advance_text">Авансовые платежи по налогу нужно вносить до 20 числа каждого месяца.</string>
+    <string name="notif_pit_deadline_title">Напоминание о подаче годовой декларации</string>
+    <string name="notif_pit_deadline_text">Годовые декларации подаются с 15 февраля по 30 апреля.</string>
 </resources>

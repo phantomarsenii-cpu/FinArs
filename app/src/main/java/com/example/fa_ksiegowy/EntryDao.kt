@@ -9,7 +9,7 @@ import androidx.room.Update
 @Dao
 interface EntryDao {
     @Insert
-    suspend fun insert(entry: Entry)
+    suspend fun insert(entry: Entry): Long
 
     @Update
     suspend fun update(entry: Entry)

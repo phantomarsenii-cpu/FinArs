@@ -8,6 +8,7 @@
     <string name="balance">Bilans</string>
     <string name="enter_amount">Kwota</string>
     <string name="enter_comment">Komentarz</string>
+    <string name="entry_date_label">Data transakcji</string>
     <string name="attach_receipt">Dołącz paragon</string>
     <string name="save">Zapisz</string>
     <string name="settings">Ustawienia</string>
@@ -61,7 +62,7 @@
     <string name="about_email">p.arsenii@interia.pl</string>
     <string name="dialog_close">Zamknij</string>
     <string name="dialog_write">Napisz</string>
-    <string name="pro_status_locked">Pro jest zablokowane. Odblokuj, aby uzyskać roczne i niestandardowe raporty Excel oraz usunąć reklamy.</string>
+    <string name="pro_status_locked">Pro jest zablokowane. Odblokuj, aby uzyskać roczne i niestandardowe raporty Excel, kopię zapasową i przywracanie danych oraz usunąć reklamy.</string>
     <string name="pro_status_active">Pro odblokowane. Dziękujemy za wsparcie!</string>
     <string name="pro_unlock_button">Odblokuj Pro</string>
     <string name="pro_unlock_button_price">Odblokuj Pro — %1$s</string>
@@ -72,7 +73,7 @@
     <string name="backup_pro_locked_message">Kopia zapasowa i przywracanie to funkcja Pro. Odblokuj Pro, aby zabezpieczyć swoje dane plikiem kopii zapasowej.</string>
     <string name="pro_purchase_error">Nie udało się otworzyć zakupu. Sprawdź połączenie i spróbuj ponownie.</string>
     <string name="pro_info_title">Wersja Pro</string>
-    <string name="pro_info_message">Pro odblokowuje:\n\n• Raport roczny w Excelu\n• Raport za dowolny okres\n• Brak reklam\n\nTo jednorazowy zakup — płacisz raz, dostęp zostaje na zawsze.</string>
+    <string name="pro_info_message">Pro odblokowuje:\n\n• Raport roczny w Excelu\n• Raport za dowolny okres\n• Kopia zapasowa i przywracanie danych\n• Brak reklam\n\nTo jednorazowy zakup — płacisz raz, dostęp zostaje na zawsze.</string>
     <string name="pro_info_continue">Przejdź do zakupu</string>
     <string name="enter_code_button">Masz kod?</string>
     <string name="enter_code_title">Wprowadź kod</string>
@@ -115,4 +116,127 @@
     <string name="backup_restored">Przywrócono wpisów: %1$d</string>
     <string name="backup_never">Ostatnia kopia: nigdy</string>
     <string name="backup_last_time">Ostatnia kopia: %1$s</string>
+
+    <string name="settings_menu_security">Bezpieczeństwo (PIN / odcisk palca)</string>
+    <string name="settings_menu_pit36">Generuj PIT-36 (Pro)</string>
+    <string name="pit36_pro_locked_message">Generowanie PIT-36 to funkcja Pro. Odblokuj Pro w Ustawieniach, aby z niej skorzystać.</string>
+
+    <string name="lock_title">FinArs jest zablokowany</string>
+    <string name="lock_subtitle">Wpisz PIN, aby kontynuować</string>
+    <string name="lock_pin_hint">PIN</string>
+    <string name="lock_wrong_pin">Błędny PIN, spróbuj ponownie</string>
+    <string name="lock_unlock_button">Odblokuj</string>
+    <string name="lock_biometric_button">Użyj odcisku palca / twarzy</string>
+    <string name="lock_biometric_prompt_title">Odblokuj FinArs</string>
+    <string name="lock_biometric_prompt_subtitle">Potwierdź odciskiem palca lub twarzą</string>
+    <string name="lock_use_pin">Użyj PIN-u</string>
+    <string name="lock_biometric_unavailable">Na tym urządzeniu nie skonfigurowano odcisku palca/twarzy. Dodaj go najpierw w ustawieniach telefonu.</string>
+
+    <string name="security_hint">Zabezpiecz aplikację kodem PIN. Gdy funkcja jest włączona, FinArs poprosi o PIN za każdym razem, gdy wrócisz do aplikacji po jej opuszczeniu. Możesz też włączyć odblokowanie odciskiem palca/twarzą jako szybki skrót zamiast wpisywania tego samego PIN-u.</string>
+    <string name="security_pin_switch">Wymagaj PIN-u przy otwieraniu aplikacji</string>
+    <string name="security_change_pin">Zmień PIN</string>
+    <string name="security_biometric_switch">Odblokowanie odciskiem palca / twarzą</string>
+    <string name="security_set_pin_title">Ustaw PIN</string>
+    <string name="security_set_pin_message">Wybierz PIN z 4–6 cyfr</string>
+    <string name="security_continue">Dalej</string>
+    <string name="security_pin_length_error">PIN musi mieć 4–6 cyfr</string>
+    <string name="security_confirm_pin_title">Potwierdź PIN</string>
+    <string name="security_pin_saved">PIN zapisany</string>
+    <string name="security_pin_mismatch">PIN-y się nie zgadzają, spróbuj ponownie</string>
+    <string name="security_disable_pin_title">Wpisz aktualny PIN</string>
+    <string name="security_enter_current_pin">Wpisz aktualny PIN, aby kontynuować</string>
+    <string name="security_pin_disabled">Ochrona PIN-em wyłączona</string>
+
+    <string name="pit_data_title">Dane osobowe do PIT-36</string>
+    <string name="pit_data_hint">Używane wyłącznie do wypełnienia pomocniczego raportu PIT-36. Wszystko zostaje na Twoim urządzeniu.</string>
+    <string name="pit_first_name">Imię</string>
+    <string name="pit_last_name">Nazwisko</string>
+    <string name="pit_pesel">PESEL (opcjonalnie)</string>
+    <string name="pit_street">Ulica</string>
+    <string name="pit_house_number">Numer domu</string>
+    <string name="pit_apartment_number">Numer mieszkania (opcjonalnie)</string>
+    <string name="pit_voivodeship">Województwo</string>
+    <string name="pit_county">Powiat</string>
+    <string name="pit_commune">Gmina</string>
+    <string name="pit_postal_code">Kod pocztowy</string>
+    <string name="pit_city">Miejscowość</string>
+    <string name="pit_tax_office">Urząd skarbowy</string>
+    <string name="pit_reliefs_title">Ulgi i odliczenia (opcjonalnie)</string>
+    <string name="pit_children_count">Liczba dzieci (ulga na dzieci)</string>
+    <string name="pit_internet_relief">Ulga internetowa — poniesiony wydatek</string>
+    <string name="pit_ikze">Wpłaty na IKZE</string>
+    <string name="pit_donations">Darowizny</string>
+    <string name="pit_joint_spouse">Rozliczenie wspólnie z małżonkiem</string>
+    <string name="pit_data_required_error">Uzupełnij najpierw imię, nazwisko i urząd skarbowy</string>
+
+    <string name="pit36_hint">Wybierz pełny rok kalendarzowy, sprawdź swoje dane osobowe, a następnie wygeneruj pomocniczy plik PDF z liczbami i wskazówkami do wypełnienia oficjalnego PIT-36 na podatki.gov.pl (Twój e-PIT) lub na papierze.</string>
+    <string name="pit_row_przychod">Przychód</string>
+    <string name="pit_row_koszty">Koszty</string>
+    <string name="pit_row_dochod">Dochód</string>
+    <string name="pit_row_tax">Szacowany podatek</string>
+    <string name="pit_data_status_missing">Dane osobowe nie zostały jeszcze uzupełnione — są wymagane przed wygenerowaniem raportu.</string>
+    <string name="pit_data_status_ready">Dane osobowe gotowe: %1$s</string>
+    <string name="pit_edit_data_button">Edytuj dane osobowe</string>
+    <string name="pit36_generate_button">Wygeneruj pomocniczy PDF PIT-36</string>
+    <string name="pit36_disclaimer">Ten raport ma charakter wyłącznie informacyjny i nie jest oficjalnym formularzem PIT-36, e-Deklaracją ani poradą podatkową. Zawsze zweryfikuj liczby przed złożeniem deklaracji.</string>
+    <string name="pit36_calculating">Trwa obliczanie, chwila…</string>
+    <string name="pit36_generated">Raport PDF wygenerowany</string>
+    <string name="pit36_generate_official_button">Wypełnij oficjalny formularz PIT-36 (szablon 2025)</string>
+    <string name="pit36_official_hint">Wypełnia prawdziwy urzędowy PDF PIT-36(32)/2025: Twoje dane, adres i wiersz przychodów/kosztów działalności. Pozostałe źródła dochodu i odliczenia musisz uzupełnić samodzielnie — zobacz zastrzeżenie poniżej.</string>
+    <string name="pit36_official_unsupported">Oficjalny formularz jest dostępny tylko dla PIT-36 (skala). Twoja aktualna forma to %1$s — użyj przycisku „Wygeneruj PDF pomocniczy PIT-36”.</string>
+    <string name="pit36_official_generated">Oficjalny formularz PIT-36 wypełniony. Sprawdź sekcje E–K i dodaj inne dochody/odliczenia przed złożeniem.</string>
+
+    <!-- Rodzaj działalności / zasady rejestracji -->
+    <string name="activity_type_title">Rodzaj działalności</string>
+    <string name="activity_type_hint">Wybierz, jak działasz — od tego zależy stosowany limit i to, którą deklarację złożysz.</string>
+    <string name="activity_type_niezarejestrowana">Działalność nierejestrowana (bez JDG)</string>
+    <string name="activity_type_niezarejestrowana_desc">Przychód nie może przekroczyć 75%% minimalnego wynagrodzenia miesięcznie. W razie przekroczenia musisz zarejestrować JDG w ciągu 7 dni. Rozliczenie przez PIT-36, skala podatkowa.</string>
+    <string name="activity_type_jdg_skala">Zarejestrowana JDG — skala 12%% / 32%% (PIT-36)</string>
+    <string name="activity_type_jdg_liniowy">Zarejestrowana JDG — podatek liniowy 19%% (PIT-36L)</string>
+    <string name="activity_type_jdg_ryczalt">Zarejestrowana JDG — ryczałt (PIT-28)</string>
+    <string name="ryczalt_rate_label">Stawka ryczałtu dla Twojej działalności (%%, zależy od PKD)</string>
+    <string name="ryczalt_rate_hint">np. 3, 5.5, 8.5, 12, 17</string>
+    <string name="min_wage_label">Minimalne wynagrodzenie miesięczne (zł) — do obliczenia limitu działalności nierejestrowanej</string>
+    <string name="monthly_limit_preview">Limit miesięczny (75%%): %1$.2f zł</string>
+
+    <!-- Wskaźniki limitów na ekranie głównym -->
+    <string name="limits_title">Limity</string>
+    <string name="limit_monthly_label">Działalność nierejestrowana, ten miesiąc: %1$s / %2$s zł</string>
+    <string name="limit_bracket_label">Pierwszy próg podatkowy (120 000 zł/rok): %1$s / %2$s zł</string>
+    <string name="limit_vat_label">Zwolnienie z VAT (200 000 zł/rok): %1$s / %2$s zł</string>
+    <string name="limit_exceeded_warning">Przekroczono limit działalności nierejestrowanej! Musisz zarejestrować JDG w ciągu 7 dni.</string>
+
+    <!-- Dynamiczna etykieta podatku -->
+    <string name="tax_label_zero">Podatek (0% — kwota wolna)</string>
+    <string name="tax_label_12">Podatek (12%)</string>
+    <string name="tax_label_progressive">Podatek (skala progresywna 12% / 32%)</string>
+    <string name="tax_label_liniowy">Podatek (liniowy 19%)</string>
+    <string name="tax_label_ryczalt">Podatek (ryczałt, od przychodu)</string>
+    <string name="pit_form_applicable">Właściwa deklaracja: %1$s</string>
+
+    <!-- Tabela historii -->
+    <string name="history_col_receipt">Paragon</string>
+    <string name="history_col_amount">Kwota</string>
+
+    <!-- Kolumny raportu -->
+    <string name="report_col_receipt">Paragon</string>
+    <string name="report_receipt_yes">Tak</string>
+
+    <!-- Powiadomienia -->
+    <string name="notif_channel_name">Limity i terminy</string>
+    <string name="notif_channel_description">Powiadomienia o limitach działalności i terminach podatkowych</string>
+    <string name="notif_limit_exceeded_title">Przekroczono limit działalności nierejestrowanej</string>
+    <string name="notif_limit_exceeded_text">Przychód w tym miesiącu przekracza 75% minimalnego wynagrodzenia. Zarejestruj JDG w ciągu 7 dni.</string>
+    <string name="notif_limit_95_title">Osiągnięto 95% limitu miesięcznego</string>
+    <string name="notif_limit_95_text">Jesteś bardzo blisko limitu działalności nierejestrowanej na ten miesiąc.</string>
+    <string name="notif_limit_80_title">Osiągnięto 80% limitu miesięcznego</string>
+    <string name="notif_limit_80_text">Wykorzystano 80% limitu działalności nierejestrowanej na ten miesiąc.</string>
+    <string name="notif_bracket_title">Zbliżasz się do progu 120 000 zł</string>
+    <string name="notif_bracket_text">Roczny dochód zbliża się do 120 000 zł — nadwyżka będzie opodatkowana stawką 32%% zamiast 12%%.</string>
+    <string name="notif_vat_title">Zbliżasz się do limitu zwolnienia z VAT</string>
+    <string name="notif_vat_text">Roczny przychód zbliża się do 200 000 zł — progu zwolnienia z VAT.</string>
+    <string name="notif_advance_title">Przypomnienie o zaliczce na podatek</string>
+    <string name="notif_advance_text">Zaliczki na podatek należy wpłacać do 20 dnia każdego miesiąca.</string>
+    <string name="notif_pit_deadline_title">Przypomnienie o rocznym zeznaniu podatkowym</string>
+    <string name="notif_pit_deadline_text">Roczne zeznania podatkowe składa się od 15 lutego do 30 kwietnia.</string>
 </resources>

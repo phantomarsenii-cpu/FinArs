@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.pm.ApplicationInfo
 import android.util.Log
 import android.view.View
+import android.widget.TextView
 import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdSize
@@ -16,26 +17,11 @@ import com.google.android.ump.UserMessagingPlatform
 /**
  * Показ баннера только для пользователей без Pro.
  *
- * ВАЖНО (краш "adSize/adUnitId must be set before loadAd"): adSize и
- * adUnitId задаются здесь ОБА программно, одним и тем же способом,
- * как требует документация Google Mobile Ads SDK. XML их не задаёт.
- *
- * ВАЖНО (баннер не появляется даже без крашей): в debug-сборке мы
- * используем официальный ТЕСТОВЫЙ рекламный блок Google, который не
- * требует прохождения формы согласия (UMP/GDPR) — поэтому для debug
- * цепочка согласия полностью пропускается, и тестовый баннер грузится
- * сразу. Раньше (в прошлой версии) тестовый блок тоже ждал
- * canRequestAds() == true, а это условие становится true для
- * пользователя из ЕЭЗ (в т.ч. Польши) только после того, как в консоли
- * AdMob -> Privacy & messaging создано и ОПУБЛИКОВАНО сообщение о
- * согласии. Пока это не настроено — баннер молчал даже в debug. Теперь
- * debug-сборка эту зависимость не имеет вообще.
- *
- * Для PRODUCTION (release) сборки цепочка согласия по-прежнему
- * обязательна (это требование GDPR для пользователей ЕЭЗ/Великобритании),
- * и боевой баннер не покажется, пока в консоли AdMob не опубликовано
- * сообщение о согласии на сбор данных (Privacy & messaging -> Publish).
- * Это делается один раз в консоли, кодом не чинится.
+ * ВРЕМЕННО (для диагностики): каждый шаг пишет свой статус в debugView —
+ * маленькую серую строку под баннером на главном экране. Это позволяет
+ * увидеть причину, по которой реклама не показывается, прямо на экране
+ * телефона, без logcat/adb. Когда реклама заработает стабильно — эту
+ * строку и вызовы setDebugStatus можно убрать.
  */
 object AdsManager {
 
@@ -43,81 +29,87 @@ object AdsManager {
     private const val TEST_BANNER_UNIT_ID = "ca-app-pub-3940256099942544/6300978111"
     private const val PROD_BANNER_UNIT_ID = "ca-app-pub-9218963926031039/4293553475"
 
-    fun setupAndLoadBanner(activity: Activity, adView: AdView) {
+    private fun setDebugStatus(debugView: TextView?, text: String) {
+        Log.i("AdsManager", "STATUS: $text")
+        debugView?.text = "Ad status: $text"
+    }
+
+    fun setupAndLoadBanner(activity: Activity, adView: AdView, debugView: TextView? = null) {
         if (BillingManager.isPro(activity)) {
             adView.visibility = View.GONE
+            setDebugStatus(debugView, "hidden (Pro active)")
             return
         }
 
-        // adSize и adUnitId — оба программно, в одном месте, один раз.
-        adView.setAdSize(AdSize.BANNER)
+        setDebugStatus(debugView, "starting…")
 
-        val isDebuggable = (activity.applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE) != 0
-        adView.adUnitId = if (isDebuggable) TEST_BANNER_UNIT_ID else PROD_BANNER_UNIT_ID
+        try {
+            adView.setAdSize(AdSize.BANNER)
 
-        if (isDebuggable) {
-            // Тестовый блок Google не требует согласия пользователя —
-            // грузим его сразу, без UMP, чтобы баннер точно появился.
-            Log.i("AdsManager", "Debug build — loading Google TEST banner immediately (no consent gate)")
-            initAndLoad(activity, adView)
-            return
-        }
+            val isDebuggable = (activity.applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE) != 0
+            adView.adUnitId = if (isDebuggable) TEST_BANNER_UNIT_ID else PROD_BANNER_UNIT_ID
+            setDebugStatus(debugView, "isDebuggable=$isDebuggable, unit=${adView.adUnitId}")
 
-        val consentInformation = UserMessagingPlatform.getConsentInformation(activity)
-
-        // ВАЖНО для тестирования формы согласия на своём устройстве: раскомментируйте
-        // и подставьте свой тестовый device ID (печатается в logcat при первом запуске).
-        val params = ConsentRequestParameters.Builder()
-            // .setConsentDebugSettings(
-            //     ConsentDebugSettings.Builder(activity)
-            //         .addTestDeviceHashedId("ВАШ_ТЕСТОВЫЙ_ID")
-            //         .build()
-            // )
-            .build()
-
-        consentInformation.requestConsentInfoUpdate(
-            activity,
-            params,
-            {
-                UserMessagingPlatform.loadAndShowConsentFormIfRequired(activity) { formError ->
-                    if (formError != null) {
-                        Log.w("AdsManager", "Consent form error: ${formError.message}")
-                    }
-                    if (consentInformation.canRequestAds()) {
-                        initAndLoad(activity, adView)
-                    } else {
-                        Log.w("AdsManager", "canRequestAds() == false after consent flow — ad will NOT load. Check AdMob console -> Privacy & messaging (must be published).")
-                    }
-                }
-            },
-            { requestError ->
-                Log.w("AdsManager", "Consent info update error: ${requestError.message}")
+            if (isDebuggable) {
+                // Тестовый блок Google не требует согласия пользователя —
+                // грузим его сразу, без UMP.
+                initAndLoad(activity, adView, debugView)
+                return
             }
-        )
 
-        // Если согласие уже было получено раньше, форма повторно не показывается,
-        // но canRequestAds() может быть true сразу.
-        if (consentInformation.canRequestAds() && !sdkInitialized) {
-            initAndLoad(activity, adView)
+            val consentInformation = UserMessagingPlatform.getConsentInformation(activity)
+            val params = ConsentRequestParameters.Builder().build()
+
+            consentInformation.requestConsentInfoUpdate(
+                activity,
+                params,
+                {
+                    UserMessagingPlatform.loadAndShowConsentFormIfRequired(activity) { formError ->
+                        if (formError != null) {
+                            setDebugStatus(debugView, "consent form error: ${formError.message}")
+                        }
+                        if (consentInformation.canRequestAds()) {
+                            initAndLoad(activity, adView, debugView)
+                        } else {
+                            setDebugStatus(debugView, "blocked — canRequestAds()=false (нужно опубликовать Privacy & messaging в AdMob)")
+                        }
+                    }
+                },
+                { requestError ->
+                    setDebugStatus(debugView, "consent info update error: ${requestError.message}")
+                }
+            )
+
+            if (consentInformation.canRequestAds() && !sdkInitialized) {
+                initAndLoad(activity, adView, debugView)
+            }
+        } catch (e: Exception) {
+            // Ловим вообще любое исключение на этом пути, чтобы оно не терялось молча —
+            // выводим текст ошибки прямо на экран.
+            setDebugStatus(debugView, "EXCEPTION: ${e.javaClass.simpleName}: ${e.message}")
         }
     }
 
-    private fun initAndLoad(activity: Activity, adView: AdView) {
+    private fun initAndLoad(activity: Activity, adView: AdView, debugView: TextView?) {
+        setDebugStatus(debugView, "initializing SDK…")
         if (!sdkInitialized) {
             sdkInitialized = true
-            MobileAds.initialize(activity) {}
+            MobileAds.initialize(activity) {
+                setDebugStatus(debugView, "SDK initialized, loading ad…")
+            }
         }
         adView.visibility = View.VISIBLE
         adView.adListener = object : AdListener() {
             override fun onAdLoaded() {
-                Log.i("AdsManager", "Banner ad loaded OK")
+                setDebugStatus(debugView, "loaded OK ✅")
             }
             override fun onAdFailedToLoad(error: LoadAdError) {
                 // errorCode 3 = ERROR_CODE_NO_FILL — самая частая причина для новых
                 // рекламных блоков: у Google пока нет рекламы для показа именно вам.
-                Log.w("AdsManager", "Banner failed to load: code=${error.code} message=${error.message}")
+                setDebugStatus(debugView, "FAILED code=${error.code} domain=${error.domain} msg=${error.message}")
             }
         }
+        setDebugStatus(debugView, "loadAd() called…")
         adView.loadAd(AdRequest.Builder().build())
     }
 

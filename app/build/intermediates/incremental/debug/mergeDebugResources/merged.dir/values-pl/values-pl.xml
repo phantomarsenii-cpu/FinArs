@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:ns1="urn:oasis:names:tc:xliff:document:1.2" xmlns:ns2="http://schemas.android.com/tools">
+    <plurals name="mtrl_badge_content_description">
+    <item quantity="one">%d nowe powiadomienie</item>
+    <item quantity="few">%d nowe powiadomienia</item>
+    <item quantity="many">%d nowych powiadomień</item>
+    <item quantity="other">%d nowego powiadomienia</item>
+  </plurals>
+    <string msgid="5976598919945601918" name="abc_action_bar_home_description">"Przejdź na stronę główną"</string>
+    <string msgid="8388173803310557296" name="abc_action_bar_up_description">"Przejdź wyżej"</string>
+    <string msgid="3937310113216875497" name="abc_action_menu_overflow_description">"Więcej opcji"</string>
+    <string msgid="4692188335987374352" name="abc_action_mode_done">"Gotowe"</string>
+    <string msgid="1189761859438369441" name="abc_activity_chooser_view_see_all">"Pokaż wszystko"</string>
+    <string msgid="2165779757652331008" name="abc_activitychooserview_choose_application">"Wybierz aplikację"</string>
+    <string msgid="4215997306490295099" name="abc_capital_off">"WYŁ."</string>
+    <string msgid="884982626291842264" name="abc_capital_on">"WŁ."</string>
+    <string msgid="8833365367933412986" name="abc_menu_alt_shortcut_label">"Alt+"</string>
+    <string msgid="2223301931652355242" name="abc_menu_ctrl_shortcut_label">"Ctrl+"</string>
+    <string msgid="838001238306846836" name="abc_menu_delete_shortcut_label">"Delete"</string>
+    <string msgid="7986526966204849475" name="abc_menu_enter_shortcut_label">"Enter"</string>
+    <string msgid="375214403600139847" name="abc_menu_function_shortcut_label">"Funkcyjny+"</string>
+    <string msgid="4192209724446364286" name="abc_menu_meta_shortcut_label">"Meta+"</string>
+    <string msgid="4741552369836443843" name="abc_menu_shift_shortcut_label">"Shift+"</string>
+    <string msgid="5473865519181928982" name="abc_menu_space_shortcut_label">"spacja"</string>
+    <string msgid="6180552449598693998" name="abc_menu_sym_shortcut_label">"Sym+"</string>
+    <string msgid="5520303668377388990" name="abc_prepend_shortcut_label">"Menu+"</string>
+    <string msgid="7208076849092622260" name="abc_search_hint">"Szukaj…"</string>
+    <string msgid="3741173234950517107" name="abc_searchview_description_clear">"Wyczyść zapytanie"</string>
+    <string msgid="693312494995508443" name="abc_searchview_description_query">"Zapytanie"</string>
+    <string msgid="3417662926640357176" name="abc_searchview_description_search">"Szukaj"</string>
+    <string msgid="1486535517437947103" name="abc_searchview_description_submit">"Wyślij zapytanie"</string>
+    <string msgid="2293578557972875415" name="abc_searchview_description_voice">"Wyszukiwanie głosowe"</string>
+    <string msgid="8875138169939072951" name="abc_shareactionprovider_share_with">"Udostępnij przez:"</string>
+    <string msgid="9055268688411532828" name="abc_shareactionprovider_share_with_application">"Udostępnij przez: <ns1:g id="APPLICATION_NAME">%s</ns1:g>"</string>
+    <string msgid="1656852541809559762" name="abc_toolbar_collapse_description">"Zwiń"</string>
+    <string name="about_app">O aplikacji</string>
+    <string name="about_description">FinArs to wygodna aplikacja do zarządzania finansami działalności nierejestrowanej. Łatwo śledź przychody i wydatki, kontroluj bieżący bilans, automatycznie obliczaj podatki i generuj raporty. Aplikacja pomaga przestrzegać limitów, śledzić wskaźniki finansowe i mieć zawsze pod ręką pełną historię operacji. Prosty interfejs i szybkie wprowadzanie danych sprawiają, że codzienna księgowość jest maksymalnie wygodna.\n\nGłówne funkcje:\n💰 Ewidencja przychodów i wydatków.\n📊 Automatyczne obliczanie zysku.\n🧾 Obliczanie podatków.\n📈 Kontrola limitów działalności nierejestrowanej.\n📄 Generowanie raportów.\n🔍 Historia wszystkich operacji.\n🌙 Nowoczesny ciemny interfejs.\n🔒 Wszystkie dane są przechowywane lokalnie na urządzeniu.\n\nKontakt: p.arsenii@interia.pl</string>
+    <string name="about_email">p.arsenii@interia.pl</string>
+    <string name="add_entry">Dodaj +</string>
+    <string name="add_expense">Dodaj wydatek</string>
+    <string name="add_income">Dodaj przychód</string>
+    <string name="app_name">FinArs</string>
+    <string name="app_subtitle">FinArs</string>
+    <string name="attach_receipt">Dołącz paragon</string>
+    <string name="auto_tax_button">Oblicz automatycznie</string>
+    <string name="auto_tax_result">Sugerowana stawka: %1$.1f%% (wg skali PIT: 12%% do 120 000 zł/rok, 32%% powyżej). Przed zapisaniem można poprawić ręcznie.</string>
+    <string name="backup_create">Utwórz kopię zapasową</string>
+    <string name="backup_error">Błąd: %1$s</string>
+    <string name="backup_hint">Zapisz kopię zapasową przychodów/wydatków — kwoty, daty, komentarze i załączone zdjęcia paragonów — jako plik. W oknie zapisu możesz wybrać pamięć telefonu lub Dysk Google (jeśli aplikacja Dysku jest zainstalowana). Przechowuj ten plik w bezpiecznym miejscu — to jedyny sposób odzyskania danych w razie utraty telefonu lub reinstalacji aplikacji.</string>
+    <string name="backup_in_progress">Trwa…</string>
+    <string name="backup_invalid_file">To nie wygląda na poprawny plik kopii zapasowej FinArs</string>
+    <string name="backup_last_time">Ostatnia kopia: %1$s</string>
+    <string name="backup_never">Ostatnia kopia: nigdy</string>
+    <string name="backup_pro_locked_message">Kopia zapasowa i przywracanie to funkcja Pro. Odblokuj Pro, aby zabezpieczyć swoje dane plikiem kopii zapasowej.</string>
+    <string name="backup_restore">Przywróć z kopii</string>
+    <string name="backup_restore_confirm_message">Wpisy z pliku kopii zostaną dodane do tych, które już są na tym urządzeniu (istniejące wpisy nie są usuwane ani nadpisywane). Jeśli potrzebujesz "czystego" przywrócenia — najpierw użyj "Wyczyść wszystkie dane", a potem przywróć kopię.</string>
+    <string name="backup_restore_confirm_title">Przywrócić z kopii?</string>
+    <string name="backup_restored">Przywrócono wpisów: %1$d</string>
+    <string name="backup_success">Kopia zapisana (%1$d wpisów)</string>
+    <string name="balance">Bilans</string>
+    <string name="bottomsheet_action_collapse">Zwiń planszę dolną</string>
+    <string name="bottomsheet_action_expand">Rozwiń planszę dolną</string>
+    <string name="bottomsheet_action_expand_halfway">Rozwiń do połowy</string>
+    <string name="bottomsheet_drag_handle_clicked">Dwukrotnie kliknięto uchwyt do przeciągania</string>
+    <string name="bottomsheet_drag_handle_content_description">Uchwyt do przeciągania</string>
+    <string msgid="881409763997275156" name="call_notification_answer_action">"Odbierz"</string>
+    <string msgid="8793775615905189152" name="call_notification_answer_video_action">"Wideo"</string>
+    <string msgid="3229508546291798546" name="call_notification_decline_action">"Odrzuć"</string>
+    <string msgid="2659457946726154263" name="call_notification_hang_up_action">"Rozłącz"</string>
+    <string msgid="6107532579223922871" name="call_notification_incoming_text">"Połączenie przychodzące"</string>
+    <string msgid="8623827134497363134" name="call_notification_ongoing_text">"Trwa połączenie"</string>
+    <string msgid="59049573811482460" name="call_notification_screening_text">"Filtruję połączenie przychodzące"</string>
+    <string name="character_counter_content_description">%1$d z %2$d znaków</string>
+    <string name="character_counter_overflowed_content_description">Przekroczono limit znaków (%1$d z %2$d)</string>
+    <string name="clear_all_button">Wyczyść wszystkie dane</string>
+    <string name="clear_all_confirm_message">Wszystkie przychody i wydatki zostaną trwale usunięte. Tej czynności nie można cofnąć.</string>
+    <string name="clear_all_confirm_title">Na pewno?</string>
+    <string name="clear_all_confirm_yes">Usuń wszystko</string>
+    <string name="clear_all_done">Wszystkie dane zostały usunięte</string>
+    <string name="clear_text_end_icon_content_description">Wyczyść tekst</string>
+    <string msgid="2523291102206661146" name="common_google_play_services_enable_button">Włącz</string>
+    <string msgid="227660514972886228" name="common_google_play_services_enable_text">Aplikacja %1$s nie będzie działać, jeśli nie włączysz Usług Google Play.</string>
+    <string msgid="5122002158466380389" name="common_google_play_services_enable_title">Włącz Usługi Google Play</string>
+    <string msgid="7153882981874058840" name="common_google_play_services_install_button">Zainstaluj</string>
+    <string name="common_google_play_services_install_text">%1$s nie będzie działać, jeśli nie zainstalujesz na urządzeniu Usług Google Play.</string>
+    <string msgid="7215213145546190223" name="common_google_play_services_install_title">Pobierz Usługi Google Play</string>
+    <string name="common_google_play_services_notification_channel_name">Dostępność Usług Google Play</string>
+    <string name="common_google_play_services_notification_ticker">Błąd Usług Google Play</string>
+    <string name="common_google_play_services_unknown_issue">%1$s ma problem z dostępem do Usług Google Play. Spróbuj jeszcze raz.</string>
+    <string name="common_google_play_services_unsupported_text">%1$s nie będzie działać bez Usług Google Play, które nie są obecnie obsługiwane przez urządzenie.</string>
+    <string msgid="6556509956452265614" name="common_google_play_services_update_button">Aktualizuj</string>
+    <string msgid="9053896323427875356" name="common_google_play_services_update_text">Aplikacja %1$s nie będzie działać, jeśli nie zaktualizujesz Usług Google Play.</string>
+    <string msgid="6006316683626838685" name="common_google_play_services_update_title">Zaktualizuj Usługi Google Play</string>
+    <string name="common_google_play_services_updating_text">Aplikacja %1$s nie będzie działać bez Usług Google Play, które są obecnie aktualizowane.</string>
+    <string name="common_google_play_services_wear_update_text">Wymagana jest nowa wersja Usług Google Play. Wkrótce nastąpi automatyczna aktualizacja.</string>
+    <string name="common_open_on_phone">Otwórz na telefonie</string>
+    <string name="common_signin_button_text">Zaloguj się</string>
+    <string name="common_signin_button_text_long">Zaloguj się przez Google</string>
+    <string msgid="3260749812566568062" name="copy_toast_msg">"Link skopiowany do schowka"</string>
+    <string name="custom_range">Zakres niestandardowy</string>
+    <string name="custom_range_invalid">Data końcowa musi być późniejsza niż data początkowa</string>
+    <string name="delete_confirm_message">Wpis zostanie trwale usunięty. Tej czynności nie można cofnąć.</string>
+    <string name="delete_confirm_title">Usunąć wpis?</string>
+    <string name="delete_confirm_yes">Usuń</string>
+    <string name="delete_entry">Usuń</string>
+    <string name="dialog_close">Zamknij</string>
+    <string name="dialog_write">Napisz</string>
+    <string name="edit_expense_title">Edytuj wydatek</string>
+    <string name="edit_income_title">Edytuj przychód</string>
+    <string name="enter_amount">Kwota</string>
+    <string name="enter_code_apply">Zastosuj</string>
+    <string name="enter_code_button">Masz kod?</string>
+    <string name="enter_code_hint">Kod</string>
+    <string name="enter_code_success">Pro odblokowane</string>
+    <string name="enter_code_title">Wprowadź kod</string>
+    <string name="enter_code_wrong">Nieprawidłowy kod</string>
+    <string name="enter_comment">Komentarz</string>
+    <string name="entry_deleted">Usunięto</string>
+    <string name="entry_updated">Zaktualizowano</string>
+    <string name="error_icon_content_description">Błąd</string>
+    <string name="export_report">Eksportuj raport</string>
+    <string name="exposed_dropdown_menu_content_description">Pokaż menu</string>
+    <string msgid="4566929209979330987" name="fallback_menu_item_copy_link">"Kopiuj link"</string>
+    <string msgid="3413186855122069269" name="fallback_menu_item_open_in_browser">"Otwórz w przeglądarce"</string>
+    <string msgid="7145444925855055364" name="fallback_menu_item_share_link">"Udostępnij link"</string>
+    <string name="from">Od</string>
+    <string name="generate_report">Generuj raport</string>
+    <string name="icon_content_description">Ikona okna</string>
+    <string name="item_view_role_description">Karta</string>
+    <string name="material_clock_toggle_content_description">Wybierz: przed południem czy po południu</string>
+    <string name="material_hour_24h_suffix">%1$s godz.</string>
+    <string name="material_hour_selection">Wybierz godzinę</string>
+    <string name="material_hour_suffix">%1$s</string>
+    <string name="material_minute_selection">Wybierz minuty</string>
+    <string name="material_minute_suffix">%1$s minut</string>
+    <string name="material_timepicker_am">AM</string>
+    <string name="material_timepicker_clock_mode_description">Aby wprowadzić czas, włącz tryb zegara.</string>
+    <string name="material_timepicker_hour">Godzina</string>
+    <string name="material_timepicker_minute">Minuta</string>
+    <string name="material_timepicker_pm">PM</string>
+    <string name="material_timepicker_select_time">Określ czas</string>
+    <string name="material_timepicker_text_input_mode_description">Aby wprowadzić czas, włącz tryb wprowadzania tekstu.</string>
+    <string name="month">Miesiąc</string>
+    <string name="mtrl_badge_numberless_content_description">Nowe powiadomienie</string>
+    <string name="mtrl_chip_close_icon_content_description">Usuń: (%1$s)</string>
+    <string name="mtrl_exceed_max_badge_number_content_description" ns2:ignore="PluralsCandidate">Liczba nowych powiadomień przekracza %1$d</string>
+    <string name="mtrl_picker_a11y_next_month">Zmień na następny miesiąc</string>
+    <string name="mtrl_picker_a11y_prev_month">Zmień na poprzedni miesiąc</string>
+    <string name="mtrl_picker_announce_current_selection">Bieżący wybór: %1$s</string>
+    <string name="mtrl_picker_cancel">Anuluj</string>
+    <string name="mtrl_picker_confirm">OK</string>
+    <string name="mtrl_picker_date_header_selected">%1$s</string>
+    <string name="mtrl_picker_date_header_title">Wybierz datę</string>
+    <string name="mtrl_picker_date_header_unselected">Wybrana data</string>
+    <string name="mtrl_picker_day_of_week_column_header">Kolumna z dniami: %1$s</string>
+    <string name="mtrl_picker_invalid_format">Nieprawidłowy format.</string>
+    <string name="mtrl_picker_invalid_format_example">Przykład: %1$s</string>
+    <string name="mtrl_picker_invalid_format_use">Użyj formatu: %1$s</string>
+    <string name="mtrl_picker_invalid_range">Nieprawidłowy zakres.</string>
+    <string name="mtrl_picker_navigate_to_year_description">Przejdź do roku %1$s</string>
+    <string name="mtrl_picker_out_of_range">Poza zakresem: %1$s</string>
+    <string name="mtrl_picker_range_header_only_end_selected">Data rozpoczęcia – %1$s</string>
+    <string name="mtrl_picker_range_header_only_start_selected">%1$s – data zakończenia</string>
+    <string name="mtrl_picker_range_header_selected">%1$s–%2$s</string>
+    <string name="mtrl_picker_range_header_title">Wybierz zakres</string>
+    <string name="mtrl_picker_range_header_unselected">Data rozpoczęcia – data zakończenia</string>
+    <string name="mtrl_picker_save">Zapisz</string>
+    <string name="mtrl_picker_text_input_date_hint">Data</string>
+    <string name="mtrl_picker_text_input_date_range_end_hint">Data zakończenia</string>
+    <string name="mtrl_picker_text_input_date_range_start_hint">Data rozpoczęcia</string>
+    <string name="mtrl_picker_text_input_day_abbr">d</string>
+    <string name="mtrl_picker_text_input_month_abbr">m</string>
+    <string name="mtrl_picker_text_input_year_abbr">r</string>
+    <string name="mtrl_picker_toggle_to_calendar_input_mode">Włącz kalendarzowy tryb wprowadzania</string>
+    <string name="mtrl_picker_toggle_to_day_selection">Kliknij, by wybrać dzień</string>
+    <string name="mtrl_picker_toggle_to_text_input_mode">Włącz tekstowy tryb wprowadzania</string>
+    <string name="mtrl_picker_toggle_to_year_selection">Kliknij, by wybrać rok</string>
+    <string name="mtrl_timepicker_cancel">Anuluj</string>
+    <string name="mtrl_timepicker_confirm">OK</string>
+    <string name="native_body">Treść</string>
+    <string name="native_headline">Nagłówek</string>
+    <string name="native_media_view">Widok multimediów</string>
+    <string name="no_entries">Brak wpisów</string>
+    <string name="notifications_permission_confirm">Zezwól</string>
+    <string name="notifications_permission_decline">Nie zezwalaj</string>
+    <string name="notifications_permission_title">Zezwolić aplikacji na wysyłanie powiadomień?</string>
+    <string name="offline_dialog_image_description">Ikona</string>
+    <string name="offline_dialog_text">Dziękujemy za zainteresowanie.\nWięcej informacji otrzymasz, gdy znów będziesz online.</string>
+    <string name="offline_notification_title">Znów jesteś online. Zacznijmy tam, gdzie ostatnio skończyliśmy</string>
+    <string name="offline_notification_title_with_advertiser">Znów jesteś online. Dowiedz się więcej o reklamodawcy %s</string>
+    <string name="offline_opt_in_confirm">OK</string>
+    <string name="offline_opt_in_decline">Nie</string>
+    <string name="offline_opt_in_message">Wyślemy Ci powiadomienie z linkiem do strony reklamodawcy.</string>
+    <string name="offline_opt_in_title">Otwórz reklamę, gdy znów połączysz się z internetem.</string>
+    <string name="other_income_hint">Twój łączny dochód podlegający opodatkowaniu w tym roku z innych źródeł (etat, inna działalność itd.). Uwzględniany razem z dochodem z tej aplikacji przy sprawdzaniu rocznego limitu wolnego od podatku 30 000 zł.</string>
+    <string name="other_income_label">Inne przychody (%1$d)</string>
+    <string name="other_income_title">Inne przychody</string>
+    <string name="password_toggle_content_description">Pokaż hasło</string>
+    <string name="pro_feature_locked_go_settings">Przejdź do ustawień</string>
+    <string name="pro_feature_locked_message">Raporty roczne i niestandardowe są dostępne tylko w wersji Pro. Odblokuj Pro w ustawieniach.</string>
+    <string name="pro_feature_locked_title">Funkcja Pro</string>
+    <string name="pro_info_continue">Przejdź do zakupu</string>
+    <string name="pro_info_message">Pro odblokowuje:\n\n• Raport roczny w Excelu\n• Raport za dowolny okres\n• Kopia zapasowa i przywracanie danych\n• Brak reklam\n\nTo jednorazowy zakup — płacisz raz, dostęp zostaje na zawsze.</string>
+    <string name="pro_info_title">Wersja Pro</string>
+    <string name="pro_loading">Ładowanie ceny…</string>
+    <string name="pro_purchase_error">Nie udało się otworzyć zakupu. Sprawdź połączenie i spróbuj ponownie.</string>
+    <string name="pro_status_active">Pro odblokowane. Dziękujemy za wsparcie!</string>
+    <string name="pro_status_locked">Pro jest zablokowane. Odblokuj, aby uzyskać roczne i niestandardowe raporty Excel, kopię zapasową i przywracanie danych oraz usunąć reklamy.</string>
+    <string name="pro_unlock_button">Odblokuj Pro</string>
+    <string name="pro_unlock_button_price">Odblokuj Pro — %1$s</string>
+    <string name="report_col_comment">Komentarz</string>
+    <string name="report_col_date">Data</string>
+    <string name="report_col_expense">Wydatek</string>
+    <string name="report_col_income">Przychód</string>
+    <string name="report_col_tax_amount">Kwota podatku</string>
+    <string name="report_col_tax_percent">Podatek %%</string>
+    <string name="report_error">Błąd generowania raportu: %1$s</string>
+    <string name="report_generating">Generuję raport…</string>
+    <string name="report_ready">Raport gotowy</string>
+    <string name="report_share_title">Udostępnij raport</string>
+    <string name="report_sheet_name">Raport</string>
+    <string name="report_title_custom">Raport — Zakres niestandardowy</string>
+    <string name="report_title_month">Raport — Miesiąc</string>
+    <string name="report_title_year">Raport — Rok</string>
+    <string name="report_total_expense">Suma wydatków</string>
+    <string name="report_total_income">Suma przychodów</string>
+    <string name="report_total_net_profit">Zysk netto (po podatku)</string>
+    <string name="report_total_profit">Suma zysku</string>
+    <string name="report_total_tax">Suma podatku</string>
+    <string name="s1">Zapisz obraz</string>
+    <string name="s2">Zezwolić reklamie na zapisanie obrazu w galerii zdjęć?</string>
+    <string name="s3">Zaakceptuj</string>
+    <string name="s4">Odrzuć</string>
+    <string name="s5">Utwórz wydarzenie w kalendarzu</string>
+    <string name="s6">Zezwolić reklamie na utworzenie wydarzenia w kalendarzu?</string>
+    <string name="s7">Reklama testowa</string>
+    <string name="save">Zapisz</string>
+    <string name="saved">Zapisano</string>
+    <string msgid="6264217191555673260" name="search_menu_title">"Szukaj"</string>
+    <string name="select_period">Wybierz okres</string>
+    <string name="settings">Ustawienia</string>
+    <string name="settings_menu_backup">Kopia zapasowa (Pro)</string>
+    <string name="settings_menu_language">Język</string>
+    <string name="settings_menu_pro">Wersja Pro</string>
+    <string name="settings_menu_tax">Podatek i limity</string>
+    <string name="stat_expense">Wydatek</string>
+    <string name="stat_income">Przychód</string>
+    <string name="stat_net_profit">Zysk netto (po podatku)</string>
+    <string name="stat_profit">Zysk (brutto)</string>
+    <string name="stat_tax_format">Podatek (%1$.1f%%)</string>
+    <string name="statistics">Statystyka</string>
+    <string msgid="6277540029070332960" name="status_bar_notification_info_overflow">"999+"</string>
+    <string name="tax_percent">Procent podatku</string>
+    <string formatted="false" name="tax_scale_description">0% do 30 000 zł/rok · 12% od kwoty od 30 000 do 120 000 zł · 32% od kwoty powyżej 120 000 zł. Stawka dotyczy tylko części ponad każdy próg, a nie całej kwoty.</string>
+    <string name="tax_scale_title">Podatek liczony jest automatycznie</string>
+    <string name="to">Do</string>
+    <string name="transaction_history">Historia transakcji</string>
+    <string name="type_expense">Wydatek</string>
+    <string name="type_income">Przychód</string>
+    <string name="watermark_label_prefix">AdMob - </string>
+    <string name="year">Rok</string>
+</resources>

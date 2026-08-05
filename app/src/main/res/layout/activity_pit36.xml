@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:fillViewport="true">
+
+<LinearLayout
+    android:orientation="vertical" android:padding="24dp"
+    android:layout_width="match_parent" android:layout_height="wrap_content">
+
+    <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:text="@string/settings_menu_pit36" android:textSize="22sp" android:textStyle="bold"
+        android:textColor="@color/accent_cyan" android:layout_marginBottom="6dp"/>
+
+    <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:text="@string/pit36_hint" android:textSize="13sp"
+        android:textColor="@color/text_secondary" android:layout_marginBottom="20dp"/>
+
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:orientation="horizontal" android:gravity="center_vertical" android:layout_marginBottom="20dp">
+        <Button android:id="@+id/btn_year_prev" android:layout_width="48dp" android:layout_height="48dp"
+            android:text="−" android:textAllCaps="false" android:textSize="18sp"
+            android:textColor="@color/text_primary" android:background="@drawable/btn_pill_outline"/>
+        <TextView android:id="@+id/tv_pit_year" android:layout_width="0dp" android:layout_weight="1"
+            android:layout_height="wrap_content" android:gravity="center" android:textSize="20sp"
+            android:textStyle="bold" android:textColor="@color/text_primary"/>
+        <Button android:id="@+id/btn_year_next" android:layout_width="48dp" android:layout_height="48dp"
+            android:text="+" android:textAllCaps="false" android:textSize="18sp"
+            android:textColor="@color/text_primary" android:background="@drawable/btn_pill_outline"/>
+    </LinearLayout>
+
+    <TextView android:id="@+id/tv_pit_form_code" android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:textSize="13sp" android:textStyle="bold"
+        android:textColor="@color/accent_cyan" android:layout_marginBottom="12dp"/>
+
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:orientation="vertical" android:background="@drawable/card_bg" android:padding="16dp"
+        android:layout_marginBottom="20dp">
+
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:layout_marginBottom="10dp">
+            <TextView android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content"
+                android:text="@string/pit_row_przychod" android:textColor="@color/text_secondary" android:textSize="14sp"/>
+            <TextView android:id="@+id/tv_pit_przychod" android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:textColor="@color/income_green" android:textSize="14sp" android:textStyle="bold"/>
+        </LinearLayout>
+
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:layout_marginBottom="10dp">
+            <TextView android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content"
+                android:text="@string/pit_row_koszty" android:textColor="@color/text_secondary" android:textSize="14sp"/>
+            <TextView android:id="@+id/tv_pit_koszty" android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:textColor="@color/expense_red" android:textSize="14sp" android:textStyle="bold"/>
+        </LinearLayout>
+
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:layout_marginBottom="10dp">
+            <TextView android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content"
+                android:text="@string/pit_row_dochod" android:textColor="@color/text_primary" android:textSize="14sp"/>
+            <TextView android:id="@+id/tv_pit_dochod" android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:textColor="@color/text_primary" android:textSize="14sp" android:textStyle="bold"/>
+        </LinearLayout>
+
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal">
+            <TextView android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content"
+                android:text="@string/pit_row_tax" android:textColor="@color/accent_cyan" android:textSize="14sp"/>
+            <TextView android:id="@+id/tv_pit_tax" android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:textColor="@color/accent_cyan" android:textSize="14sp" android:textStyle="bold"/>
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <TextView android:id="@+id/tv_pit_data_status" android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:text="@string/pit_data_status_missing" android:textSize="13sp"
+        android:textColor="@color/text_secondary" android:layout_marginBottom="14dp"/>
+
+    <Button android:id="@+id/btn_edit_pit_data" android:layout_width="match_parent" android:layout_height="52dp"
+        android:text="@string/pit_edit_data_button" android:textAllCaps="false" android:textSize="15sp"
+        android:textColor="@color/text_primary" android:background="@drawable/btn_pill_outline"
+        android:layout_marginBottom="14dp"/>
+
+    <Button android:id="@+id/btn_generate_pit36" android:layout_width="match_parent" android:layout_height="56dp"
+        android:text="@string/pit36_generate_button" android:textAllCaps="false" android:textSize="16sp"
+        android:textColor="@color/text_primary" android:background="@drawable/btn_pill_primary"
+        android:layout_marginBottom="10dp"/>
+
+    <Button android:id="@+id/btn_generate_official_pit36" android:layout_width="match_parent" android:layout_height="56dp"
+        android:text="@string/pit36_generate_official_button" android:textAllCaps="false" android:textSize="15sp"
+        android:textColor="@color/accent_cyan" android:background="@drawable/btn_pill_outline"
+        android:layout_marginBottom="8dp"/>
+
+    <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:text="@string/pit36_official_hint" android:textSize="11sp"
+        android:textColor="@color/text_hint" android:layout_marginBottom="14dp"/>
+
+    <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:text="@string/pit36_disclaimer" android:textSize="11sp"
+        android:textColor="@color/text_hint"/>
+
+</LinearLayout>
+</ScrollView>

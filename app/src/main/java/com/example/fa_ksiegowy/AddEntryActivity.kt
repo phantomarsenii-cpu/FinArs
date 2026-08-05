@@ -1,6 +1,7 @@
 package com.example.fa_ksiegowy
 
 import android.app.AlertDialog
+import android.app.DatePickerDialog
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
@@ -15,6 +16,9 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileOutputStream
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
 
 /**
  * Экран добавления ИЛИ редактирования операции.
@@ -26,6 +30,11 @@ class AddEntryActivity : BaseActivity() {
     private var selectedImagePath: String? = null
     private var editingEntry: Entry? = null
     private var currentIsIncome: Boolean = true
+    // Дата транзакции (Data sprzedaży / Data transakcji) — по умолчанию сегодня,
+    // но пользователь может выбрать любую дату через DatePickerDialog. Это важно,
+    // так как лимиты działalność nierejestrowana считаются строго по месяцам/кварталам,
+    // и запись должна попадать в правильный период, а не всегда в "сейчас".
+    private var selectedDateMillis: Long = System.currentTimeMillis()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,7 +48,10 @@ class AddEntryActivity : BaseActivity() {
                     Toast.makeText(this, "Не удалось открыть файл", Toast.LENGTH_SHORT).show()
                     return@registerForActivityResult
                 }
-                val out = File(getExternalFilesDir(null), "receipt_${System.currentTimeMillis()}.jpg")
+                // Временное имя: окончательное стандартизированное имя
+                // (YYYY-MM-DD_TYPE_AMOUNT_ID.jpg) присваивается при сохранении записи,
+                // когда известны дата операции, сумма, тип и id (см. renameReceiptToStandardName).
+                val out = File(getExternalFilesDir(null), "receipt_tmp_${System.currentTimeMillis()}.jpg")
                 FileOutputStream(out).use { fos -> input.copyTo(fos) }
                 input.close()
                 selectedImagePath = out.absolutePath
@@ -56,9 +68,11 @@ class AddEntryActivity : BaseActivity() {
         setupTypeToggle()
         findViewById<Button>(R.id.btn_attach).setOnClickListener { pickImage.launch("image/*") }
         findViewById<Button>(R.id.btn_delete).setOnClickListener { confirmDelete() }
+        findViewById<Button>(R.id.btn_date).setOnClickListener { showDatePicker() }
 
         updateTypeToggleUi()
         updateTitle()
+        updateDateButtonText()
 
         if (entryId != -1L) {
             findViewById<Button>(R.id.btn_delete).visibility = View.VISIBLE
@@ -75,11 +89,13 @@ class AddEntryActivity : BaseActivity() {
                     findViewById<EditText>(R.id.et_amount).setText(formatAmount(entry.amount))
                     findViewById<EditText>(R.id.et_comment).setText(entry.comment ?: "")
                     selectedImagePath = entry.receiptPath
+                    selectedDateMillis = entry.dateMillis
                     if (entry.receiptPath != null) {
                         findViewById<Button>(R.id.btn_attach).text = getString(R.string.attach_receipt) + " ✓"
                     }
                     updateTypeToggleUi()
                     updateTitle()
+                    updateDateButtonText()
                 }
             }
         }
@@ -96,25 +112,42 @@ class AddEntryActivity : BaseActivity() {
             val existing = editingEntry
             CoroutineScope(Dispatchers.IO).launch {
                 val dao = AppDatabase.getInstance(applicationContext).entryDao()
+                val finalReceiptPath = renameReceiptToStandardName(
+                    selectedImagePath, selectedDateMillis, currentIsIncome, amt, existing?.id
+                )
                 if (existing != null) {
                     dao.update(
                         existing.copy(
                             amount = amt,
                             isIncome = currentIsIncome,
                             comment = comment,
-                            receiptPath = selectedImagePath
+                            dateMillis = selectedDateMillis,
+                            receiptPath = finalReceiptPath
                         )
                     )
                 } else {
-                    dao.insert(
+                    val newId = dao.insert(
                         Entry(
                             amount = amt,
                             isIncome = currentIsIncome,
                             comment = comment,
-                            dateMillis = System.currentTimeMillis(),
-                            receiptPath = selectedImagePath
+                            dateMillis = selectedDateMillis,
+                            receiptPath = finalReceiptPath
                         )
                     )
+                    // Имя файла чека включает id записи — при создании id известен только
+                    // после insert, поэтому для новых записей переименовываем повторно.
+                    val renamedAgain = renameReceiptToStandardName(
+                        finalReceiptPath, selectedDateMillis, currentIsIncome, amt, newId
+                    )
+                    if (renamedAgain != finalReceiptPath) {
+                        dao.update(
+                            Entry(
+                                id = newId, amount = amt, isIncome = currentIsIncome,
+                                comment = comment, dateMillis = selectedDateMillis, receiptPath = renamedAgain
+                            )
+                        )
+                    }
                 }
                 withContext(Dispatchers.Main) {
                     Toast.makeText(
@@ -180,4 +213,55 @@ class AddEntryActivity : BaseActivity() {
     /** Без лишних нулей для целых сумм (100, а не 100.0), но с сохранением копеек, если они есть. */
     private fun formatAmount(v: Double): String =
         if (v == v.toLong().toDouble()) v.toLong().toString() else v.toString()
+
+    /** Открывает системный DatePickerDialog, предзаполненный текущей выбранной датой. */
+    private fun showDatePicker() {
+        val cal = Calendar.getInstance().apply { timeInMillis = selectedDateMillis }
+        DatePickerDialog(
+            this,
+            { _, year, month, dayOfMonth ->
+                val picked = Calendar.getInstance().apply {
+                    set(year, month, dayOfMonth, 12, 0, 0)
+                    set(Calendar.MILLISECOND, 0)
+                }
+                selectedDateMillis = picked.timeInMillis
+                updateDateButtonText()
+            },
+            cal.get(Calendar.YEAR),
+            cal.get(Calendar.MONTH),
+            cal.get(Calendar.DAY_OF_MONTH)
+        ).show()
+    }
+
+    /**
+     * Переименовывает файл чека (если он есть) в стандартизированный формат
+     * `YYYY-MM-DD_TYPE_AMOUNT_ID.jpg` (см. FileNaming) для удобной сортировки
+     * и архивации перед подачей в налоговую. Если id ещё не известен
+     * (новая запись до insert), используется 0 — сразу после insert
+     * файл переименовывается ещё раз с настоящим id.
+     */
+    private fun renameReceiptToStandardName(
+        path: String?, dateMillis: Long, isIncome: Boolean, amount: Double, entryId: Long?
+    ): String? {
+        if (path == null) return null
+        val current = File(path)
+        if (!current.exists()) return path
+        val ext = current.extension.ifBlank { "jpg" }
+        val newName = FileNaming.receiptFileName(dateMillis, isIncome, amount, entryId ?: 0L, ext)
+        val newFile = File(current.parentFile, newName)
+        if (newFile.absolutePath == current.absolutePath) return path
+        return try {
+            if (current.renameTo(newFile)) newFile.absolutePath else path
+        } catch (e: Exception) {
+            path
+        }
+    }
+
+    /** Обновляет текст кнопки даты в формате dd.MM.yyyy (польский/общеевропейский формат). */
+    private fun updateDateButtonText() {
+        val sdf = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
+        val formatted = sdf.format(selectedDateMillis)
+        findViewById<Button>(R.id.btn_date).text =
+            getString(R.string.entry_date_label) + ": " + formatted
+    }
 }

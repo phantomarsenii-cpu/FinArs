@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:fillViewport="true">
+
+<LinearLayout
+    android:orientation="vertical" android:padding="24dp"
+    android:layout_width="match_parent" android:layout_height="wrap_content">
+
+    <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:text="@string/pit_data_title" android:textSize="22sp" android:textStyle="bold"
+        android:textColor="@color/accent_cyan" android:layout_marginBottom="6dp"/>
+
+    <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:text="@string/pit_data_hint" android:textSize="13sp"
+        android:textColor="@color/text_secondary" android:layout_marginBottom="18dp"/>
+
+    <EditText android:id="@+id/et_first_name" style="@style/PitInput" android:hint="@string/pit_first_name"/>
+    <EditText android:id="@+id/et_last_name" style="@style/PitInput" android:hint="@string/pit_last_name"/>
+    <EditText android:id="@+id/et_pesel" style="@style/PitInput" android:hint="@string/pit_pesel"
+        android:inputType="number" android:maxLength="11"/>
+    <EditText android:id="@+id/et_street" style="@style/PitInput" android:hint="@string/pit_street"/>
+    <EditText android:id="@+id/et_house_number" style="@style/PitInput" android:hint="@string/pit_house_number"/>
+    <EditText android:id="@+id/et_apartment_number" style="@style/PitInput" android:hint="@string/pit_apartment_number"/>
+    <EditText android:id="@+id/et_voivodeship" style="@style/PitInput" android:hint="@string/pit_voivodeship"/>
+    <EditText android:id="@+id/et_county" style="@style/PitInput" android:hint="@string/pit_county"/>
+    <EditText android:id="@+id/et_commune" style="@style/PitInput" android:hint="@string/pit_commune"/>
+    <EditText android:id="@+id/et_postal_code" style="@style/PitInput" android:hint="@string/pit_postal_code"/>
+    <EditText android:id="@+id/et_city" style="@style/PitInput" android:hint="@string/pit_city"/>
+    <EditText android:id="@+id/et_tax_office" style="@style/PitInput" android:hint="@string/pit_tax_office"/>
+
+    <View android:layout_width="match_parent" android:layout_height="1dp"
+        android:background="#2A2E60" android:layout_marginTop="6dp" android:layout_marginBottom="18dp"/>
+
+    <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:text="@string/pit_reliefs_title" android:textSize="15sp" android:textStyle="bold"
+        android:textColor="@color/text_primary" android:layout_marginBottom="12dp"/>
+
+    <EditText android:id="@+id/et_children_count" style="@style/PitInput" android:hint="@string/pit_children_count"
+        android:inputType="number"/>
+    <EditText android:id="@+id/et_internet_relief" style="@style/PitInput" android:hint="@string/pit_internet_relief"
+        android:inputType="numberDecimal"/>
+    <EditText android:id="@+id/et_ikze" style="@style/PitInput" android:hint="@string/pit_ikze"
+        android:inputType="numberDecimal"/>
+    <EditText android:id="@+id/et_donations" style="@style/PitInput" android:hint="@string/pit_donations"
+        android:inputType="numberDecimal"/>
+
+    <CheckBox android:id="@+id/cb_joint_spouse" android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:text="@string/pit_joint_spouse" android:textColor="@color/text_primary"
+        android:layout_marginBottom="20dp"/>
+
+    <Button android:id="@+id/btn_save_pit_data" android:layout_width="match_parent" android:layout_height="56dp"
+        android:text="@string/save" android:textAllCaps="false" android:textSize="16sp"
+        android:textColor="@color/text_primary" android:background="@drawable/btn_pill_primary"/>
+
+</LinearLayout>
+</ScrollView>
