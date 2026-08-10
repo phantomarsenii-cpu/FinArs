@@ -16,9 +16,6 @@ class SettingsActivity : BaseActivity() {
         setContentView(R.layout.activity_settings)
         BottomNavBar.attach(this, BottomNavBar.Tab.SETTINGS)
 
-        findViewById<View>(R.id.btn_menu_business).setOnClickListener {
-            startActivity(Intent(this, SettingsBusinessActivity::class.java))
-        }
         findViewById<View>(R.id.btn_menu_tax).setOnClickListener {
             startActivity(Intent(this, SettingsTaxActivity::class.java))
         }
