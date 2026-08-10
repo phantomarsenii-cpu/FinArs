@@ -13,21 +13,27 @@ import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.FrameLayout
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.ads.AdView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.util.Calendar
 import java.util.Locale
 
 class MineActivity : BaseActivity() {
     private lateinit var db: AppDatabase
+    private lateinit var recentEntriesAdapter: EntryAdapter
+    private var bannerAdView: AdView? = null
 
     private val notificationPermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { /* результат не критичен для UI */ }
@@ -35,6 +41,7 @@ class MineActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_mine)
+        BottomNavBar.attach(this, BottomNavBar.Tab.START)
         db = AppDatabase.getInstance(this)
 
         // Единая кнопка добавления: выбор дохода/расхода происходит уже внутри
@@ -52,12 +59,61 @@ class MineActivity : BaseActivity() {
         findViewById<Button>(R.id.btn_history).setOnClickListener {
             startActivity(Intent(this, HistoryActivity::class.java))
         }
+        findViewById<Button>(R.id.btn_invoices).setOnClickListener {
+            if (BillingManager.isPro(this)) {
+                startActivity(Intent(this, AddInvoiceActivity::class.java))
+            } else {
+                androidx.appcompat.app.AlertDialog.Builder(this)
+                    .setTitle(getString(R.string.pro_feature_locked_title))
+                    .setMessage(getString(R.string.invoice_pro_locked_message))
+                    .setPositiveButton(getString(R.string.pro_feature_locked_go_settings)) { _, _ ->
+                        startActivity(Intent(this, SettingsActivity::class.java))
+                    }
+                    .setNegativeButton(getString(R.string.dialog_close), null)
+                    .show()
+            }
+        }
+        findViewById<Button>(R.id.btn_magazin).setOnClickListener {
+            startActivity(Intent(this, MagazinActivity::class.java))
+        }
 
+        // Karta "Limity" -> pelnoekranowy podglad (dokladnie wedlug makietu).
+        findViewById<View>(R.id.card_limits).setOnClickListener {
+            startActivity(Intent(this, LimitsActivity::class.java))
+        }
+        // "Edytuj" -> edycja formy dzialalnosci/stawek w ustawieniach podatkowych.
+        findViewById<TextView>(R.id.tv_edit_limits).setOnClickListener {
+            startActivity(Intent(this, SettingsTaxActivity::class.java))
+        }
 
-        AdsManager.setupAndLoadBanner(this, findViewById(R.id.ad_banner), findViewById(R.id.tv_ad_debug))
+        // "Zobacz wszystkie" nad lista ostatnich transakcji -> pelna historia.
+        findViewById<TextView>(R.id.tv_view_all_entries).setOnClickListener {
+            startActivity(Intent(this, HistoryActivity::class.java))
+        }
+
+        recentEntriesAdapter = EntryAdapter { entry ->
+            startActivity(
+                Intent(this, AddEntryActivity::class.java)
+                    .putExtra("entryId", entry.id)
+                    .putExtra("isIncome", entry.isIncome)
+            )
+        }
+        findViewById<RecyclerView>(R.id.rv_recent_entries).apply {
+            layoutManager = LinearLayoutManager(this@MineActivity)
+            adapter = recentEntriesAdapter
+        }
+
+        bannerAdView = AdsManager.setupAndLoadBanner(
+            this,
+            findViewById<FrameLayout>(R.id.ad_container),
+            findViewById(R.id.tv_ad_debug)
+        )
         setupHiddenDevCodeGesture()
         requestNotificationPermissionIfNeeded()
         LimitsNotificationWorker.schedule(this)
+        InvoiceReminderWorker.schedule(this)
+        RecurringEntryWorker.schedule(this)
+        StockNotificationWorker.schedule(this)
     }
 
     /** На Android 13+ уведомления требуют явного разрешения — запрашиваем один раз при первом запуске экрана. */
@@ -118,7 +174,7 @@ class MineActivity : BaseActivity() {
     }
 
     override fun onDestroy() {
-        findViewById<AdView>(R.id.ad_banner).destroy()
+        bannerAdView?.destroy()
         super.onDestroy()
     }
 
@@ -126,9 +182,19 @@ class MineActivity : BaseActivity() {
         super.onResume()
         loadData()
         loadLimits()
+        loadRecentEntries()
+        loadMonthlySummaryChart()
+        applyBusinessKindUi()
         if (BillingManager.isPro(this)) {
-            AdsManager.hideBanner(findViewById(R.id.ad_banner))
+            bannerAdView?.let { AdsManager.hideBanner(findViewById(R.id.ad_container), it) }
         }
+    }
+
+    /** Кнопка "Склад" видна только если в настройках выбран тип деятельности Продажи/Смешанная. */
+    private fun applyBusinessKindUi() {
+        val prefs = getSharedPreferences("settings", MODE_PRIVATE)
+        val showsMagazin = BusinessKindHelper.get(prefs).showsMagazin
+        findViewById<Button>(R.id.btn_magazin).visibility = if (showsMagazin) View.VISIBLE else View.GONE
     }
 
     private fun loadData() {
@@ -150,7 +216,7 @@ class MineActivity : BaseActivity() {
             val taxResult = when (activityType) {
                 ActivityType.NIEZAREJESTROWANA, ActivityType.JDG_SKALA -> TaxHelper.calc(profit, otherIncome)
                 ActivityType.JDG_LINIOWY -> TaxHelper.calcLiniowy(profit)
-                ActivityType.JDG_RYCZALT -> TaxHelper.calcRyczalt(income, ryczaltRate)
+                ActivityType.JDG_RYCZALT -> TaxHelper.calcRyczaltByCategory(yearEntries.filter { it.isIncome }, ryczaltRate)
             }
             val taxLabelRes = when (activityType) {
                 ActivityType.JDG_LINIOWY -> R.string.tax_label_liniowy
@@ -171,6 +237,97 @@ class MineActivity : BaseActivity() {
                 // Чистая прибыль = прибыль минус налог по выбранной форме налогообложения.
                 findViewById<TextView>(R.id.tv_stat_net_profit).text = formatMoney(profit - taxResult.tax)
             }
+
+            // Trend "vs poprzedni miesiac": porownanie zysku (przychod - wydatek) biezacego
+            // miesiaca kalendarzowego z poprzednim. Czysto informacyjny wskaznik na karcie
+            // Bilans - nie wplywa na zadne wyliczenia podatkowe powyzej.
+            val cal = Calendar.getInstance()
+            cal.set(Calendar.DAY_OF_MONTH, 1); cal.set(Calendar.HOUR_OF_DAY, 0)
+            cal.set(Calendar.MINUTE, 0); cal.set(Calendar.SECOND, 0); cal.set(Calendar.MILLISECOND, 0)
+            val curMonthStart = cal.timeInMillis
+            val now = System.currentTimeMillis()
+            cal.add(Calendar.MONTH, -1)
+            val prevMonthStart = cal.timeInMillis
+            val prevMonthEnd = curMonthStart - 1
+
+            val curMonthEntries = db.entryDao().getBetween(curMonthStart, now)
+            val prevMonthEntries = db.entryDao().getBetween(prevMonthStart, prevMonthEnd)
+            val curMonthProfit = curMonthEntries.filter { it.isIncome }.sumOf { it.amount } -
+                curMonthEntries.filter { !it.isIncome }.sumOf { it.amount }
+            val prevMonthProfit = prevMonthEntries.filter { it.isIncome }.sumOf { it.amount } -
+                prevMonthEntries.filter { !it.isIncome }.sumOf { it.amount }
+
+            withContext(Dispatchers.Main) {
+                val trendView = findViewById<TextView>(R.id.tv_balance_trend)
+                if (prevMonthProfit == 0.0) {
+                    trendView.visibility = View.GONE
+                } else {
+                    val changePercent = ((curMonthProfit - prevMonthProfit) / kotlin.math.abs(prevMonthProfit)) * 100
+                    val up = changePercent >= 0
+                    val arrow = if (up) "\u2191" else "\u2193"
+                    trendView.text = String.format(Locale.getDefault(), "%s %.1f%%", arrow, kotlin.math.abs(changePercent))
+                    trendView.setBackgroundResource(if (up) R.drawable.icon_badge_green_bg else R.drawable.icon_badge_red_bg)
+                    trendView.setTextColor(
+                        ContextCompat.getColor(this@MineActivity, if (up) R.color.badge_percent_green else R.color.badge_percent_red)
+                    )
+                    trendView.visibility = View.VISIBLE
+                }
+            }
+        }
+    }
+
+    /** Laduje 5 najnowszych operacji (dochod/wydatek) do karty "Ostatnie transakcje" na glownym ekranie. */
+    private fun loadRecentEntries() {
+        CoroutineScope(Dispatchers.IO).launch {
+            val recent = db.entryDao().getAll().take(5)
+            withContext(Dispatchers.Main) {
+                recentEntriesAdapter.submitList(recent)
+                findViewById<View>(R.id.tv_no_recent_entries).visibility =
+                    if (recent.isEmpty()) View.VISIBLE else View.GONE
+                findViewById<View>(R.id.rv_recent_entries).visibility =
+                    if (recent.isEmpty()) View.GONE else View.VISIBLE
+            }
+        }
+    }
+
+    /**
+     * Karta "Podsumowanie miesiaca": dzieli biezacy miesiac kalendarzowy na 5 przedzialow
+     * (dni 1-7 / 8-14 / 15-21 / 22-28 / 29-31) i sumuje w nich przychod/wydatek - lekka
+     * wizualizacja trendu bez pisania od zera osobnego wykresu liniowego.
+     */
+    private fun loadMonthlySummaryChart() {
+        CoroutineScope(Dispatchers.IO).launch {
+            val cal = Calendar.getInstance()
+            cal.set(Calendar.DAY_OF_MONTH, 1); cal.set(Calendar.HOUR_OF_DAY, 0)
+            cal.set(Calendar.MINUTE, 0); cal.set(Calendar.SECOND, 0); cal.set(Calendar.MILLISECOND, 0)
+            val monthStart = cal.timeInMillis
+            val daysInMonth = cal.getActualMaximum(Calendar.DAY_OF_MONTH)
+            val monthEnd = cal.apply { set(Calendar.DAY_OF_MONTH, daysInMonth) }.timeInMillis + (24L * 60 * 60 * 1000 - 1)
+
+            val entries = db.entryDao().getBetween(monthStart, monthEnd)
+            val bucketStarts = listOf(1, 8, 15, 22, 29)
+            val points = bucketStarts.mapIndexed { i, dayStart ->
+                val dayEnd = if (i + 1 < bucketStarts.size) bucketStarts[i + 1] - 1 else daysInMonth
+                val bucketCal = Calendar.getInstance()
+                bucketCal.timeInMillis = monthStart
+                bucketCal.set(Calendar.DAY_OF_MONTH, dayStart.coerceAtMost(daysInMonth))
+                bucketCal.set(Calendar.HOUR_OF_DAY, 0); bucketCal.set(Calendar.MINUTE, 0)
+                bucketCal.set(Calendar.SECOND, 0); bucketCal.set(Calendar.MILLISECOND, 0)
+                val from = bucketCal.timeInMillis
+                bucketCal.set(Calendar.DAY_OF_MONTH, dayEnd.coerceAtMost(daysInMonth))
+                bucketCal.set(Calendar.HOUR_OF_DAY, 23); bucketCal.set(Calendar.MINUTE, 59)
+                bucketCal.set(Calendar.SECOND, 59)
+                val to = bucketCal.timeInMillis
+                val inBucket = entries.filter { it.dateMillis in from..to }
+                MonthlyBarChartView.MonthPoint(
+                    dayStart.toString(),
+                    inBucket.filter { it.isIncome }.sumOf { it.amount },
+                    inBucket.filter { !it.isIncome }.sumOf { it.amount }
+                )
+            }
+            withContext(Dispatchers.Main) {
+                findViewById<MonthlyBarChartView>(R.id.chart_monthly_summary).submitData(points)
+            }
         }
     }
 
@@ -179,19 +336,47 @@ class MineActivity : BaseActivity() {
         CoroutineScope(Dispatchers.IO).launch {
             val limits = LimitsHelper.compute(this@MineActivity)
             withContext(Dispatchers.Main) {
+                // Лимит "Działalność nierejestrowana, ten miesiąc" актуален ТОЛЬКО для
+                // niezarejestrowanej — для любой Zarejestrowana JDG (skala/liniowy/ryczałt)
+                // его вообще не существует, поэтому он скрыт.
+                findViewById<View>(R.id.layout_limit_monthly).visibility =
+                    if (limits.activityType == ActivityType.NIEZAREJESTROWANA) View.VISIBLE else View.GONE
+                // Порог 120 000 zł/rok (12% -> 32%) актуален только для niezarejestrowanej
+                // и dla skali (JDG_SKALA) — dla liniowy i ryczałt taki próg nie istnieje
+                // (inna konstrukcja podatku), поэтому скрыт для них.
+                findViewById<View>(R.id.layout_limit_bracket).visibility =
+                    if (limits.activityType == ActivityType.NIEZAREJESTROWANA || limits.activityType == ActivityType.JDG_SKALA)
+                        View.VISIBLE else View.GONE
+                // Limit zwolnienia z VAT dotyczy wszystkich form działalności — widoczny zawsze.
+
                 findViewById<TextView>(R.id.tv_limit_monthly_label).text =
                     getString(
                         R.string.limit_monthly_label,
                         formatMoney(limits.monthly.current), formatMoney(limits.monthly.limit)
                     )
                 findViewById<ProgressBar>(R.id.pb_limit_monthly).progress = limits.monthly.percent.coerceAtMost(100)
+                findViewById<TextView>(R.id.tv_limit_monthly_percent).text = "${limits.monthly.percent.coerceAtMost(100)}%"
 
-                findViewById<TextView>(R.id.tv_limit_bracket_label).text =
-                    getString(
-                        R.string.limit_bracket_label,
-                        formatMoney(limits.bracket.current), formatMoney(limits.bracket.limit)
+                // Update: dwuetapowa szkala progu podatkowego zamiast jednej mylącej
+                // "Pierwszy próg (120 000 zł)" — zob. LimitsHelper.BracketStageStatus.
+                val stage = limits.bracketStage
+                val bracketLabel = when (stage.stage) {
+                    LimitsHelper.BracketStage.TAX_FREE -> getString(
+                        R.string.limit_bracket_label_tax_free,
+                        formatMoney(stage.taxableBase), formatMoney(TaxHelper.ANNUAL_LIMIT)
                     )
-                findViewById<ProgressBar>(R.id.pb_limit_bracket).progress = limits.bracket.percent.coerceAtMost(100)
+                    LimitsHelper.BracketStage.RATE_12 -> getString(
+                        R.string.limit_bracket_label_rate12,
+                        formatMoney(stage.taxableBase), formatMoney(TaxHelper.SECOND_BRACKET_THRESHOLD)
+                    )
+                    LimitsHelper.BracketStage.RATE_32 -> getString(
+                        R.string.limit_bracket_label_rate32,
+                        formatMoney(stage.barCurrent)
+                    )
+                }
+                findViewById<TextView>(R.id.tv_limit_bracket_label).text = bracketLabel
+                findViewById<ProgressBar>(R.id.pb_limit_bracket).progress = stage.percent
+                findViewById<TextView>(R.id.tv_limit_bracket_percent).text = "${stage.percent.coerceAtMost(100)}%"
 
                 findViewById<TextView>(R.id.tv_limit_vat_label).text =
                     getString(

@@ -2,6 +2,7 @@ package com.example.fa_ksiegowy
 
 import android.net.Uri
 import android.os.Bundle
+import android.view.View
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
@@ -16,9 +17,16 @@ import java.util.Date
 import java.util.Locale
 
 /**
- * Экран "PIT-36 (PRO)": выбор года, предпросмотр Przychód/Koszty/Dochód/podatek,
+ * Экран генерации PIT (PRO): выбор года, предпросмотр Przychód/Koszty/Dochód/podatek,
  * ссылка на форму личных данных и кнопка генерации PDF-отчёта (см. Pit36PdfGenerator).
  * Доступен только пользователям с Pro (проверка — в SettingsActivity перед стартом).
+ *
+ * Какая декларация нужна (PIT-36 / PIT-36L / PIT-28) определяется автоматически
+ * по выбранному в настройках виду деятельности (см. ActivityTypeHelper.formCode) —
+ * экран и его заголовок не привязаны к одной конкретной декларации.
+ *
+ * Данные супруга(и) для совместного rozliczenia редактируются на экране личных
+ * данных (PitDataActivity), а не здесь — см. cb_joint_spouse и layout_spouse_block.
  */
 class Pit36Activity : BaseActivity() {
 
@@ -85,6 +93,16 @@ class Pit36Activity : BaseActivity() {
         findViewById<TextView>(R.id.tv_pit_tax).text = money(r.tax.tax)
         findViewById<TextView>(R.id.tv_pit_form_code)?.text =
             getString(R.string.pit_form_applicable, r.activityType.formCode)
+
+        // Официальный (готовый к подаче) бланк сейчас доступен только для PIT-36 —
+        // для PIT-36L/PIT-28 показываем только вспомогательный информационный PDF.
+        val officialSupported = Pit36FormFiller.isSupported(r.activityType)
+        findViewById<Button>(R.id.btn_generate_official_pit36).visibility =
+            if (officialSupported) View.VISIBLE else View.GONE
+        findViewById<TextView>(R.id.tv_pit36_official_hint).apply {
+            visibility = if (officialSupported) View.VISIBLE else View.GONE
+            if (officialSupported) text = getString(R.string.pit36_official_hint, r.activityType.formCode)
+        }
 
         val data = PitDataStore.load(this)
         findViewById<TextView>(R.id.tv_pit_data_status).text = if (data.isComplete) {

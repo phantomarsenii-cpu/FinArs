@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:gravity="center_horizontal"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:background="@drawable/bg_gradient"
+    android:padding="32dp">
+
+    <ImageView android:id="@+id/iv_lock_logo"
+        android:layout_width="96dp" android:layout_height="96dp"
+        android:layout_marginTop="64dp" android:layout_marginBottom="20dp"/>
+
+    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+        android:text="@string/lock_title" android:textSize="20sp" android:textStyle="bold"
+        android:textColor="@color/text_primary" android:layout_marginBottom="8dp"/>
+
+    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+        android:text="@string/lock_subtitle" android:textSize="13sp"
+        android:textColor="@color/text_secondary" android:layout_marginBottom="28dp"/>
+
+    <EditText android:id="@+id/et_pin"
+        android:layout_width="match_parent" android:layout_height="56dp"
+        android:background="@drawable/input_field_bg"
+        android:paddingStart="18dp" android:paddingEnd="18dp"
+        android:hint="@string/lock_pin_hint"
+        android:textColor="@color/text_primary" android:textColorHint="@color/text_hint"
+        android:inputType="numberPassword" android:maxLength="6"
+        android:gravity="center" android:textSize="22sp" android:letterSpacing="0.4"
+        android:imeOptions="actionDone"
+        android:layout_marginBottom="10dp"/>
+
+    <TextView android:id="@+id/tv_lock_error"
+        android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:text="@string/lock_wrong_pin" android:textColor="@color/expense_red"
+        android:textSize="13sp" android:gravity="center" android:visibility="gone"
+        android:layout_marginBottom="14dp"/>
+
+    <Button android:id="@+id/btn_unlock"
+        android:layout_width="match_parent" android:layout_height="56dp"
+        android:text="@string/lock_unlock_button" android:textAllCaps="false" android:textSize="16sp"
+        android:textColor="@color/text_primary" android:background="@drawable/btn_pill_primary"
+        android:layout_marginBottom="14dp"/>
+
+    <Button android:id="@+id/btn_use_biometric"
+        android:layout_width="match_parent" android:layout_height="56dp"
+        android:text="@string/lock_biometric_button" android:textAllCaps="false" android:textSize="16sp"
+        android:textColor="@color/text_primary" android:background="@drawable/btn_pill_outline"
+        android:visibility="gone"/>
+
+</LinearLayout>

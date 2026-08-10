@@ -128,10 +128,39 @@ object TaxHelper {
         return TaxResult(p, p, tax, ratePercent)
     }
 
-    /** Текст динамической подписи налога на главном экране/в отчётах — см. п.2 требований. */
+    /**
+     * Ryczałt с разбивкой по категориям (см. RyczaltCategory): каждая операция дохода
+     * облагается по СВОЕЙ ставке — актуально, когда один человек одновременно продаёт
+     * товары (3% / 5,5%) и оказывает разные услуги (8,5% / 12% usługi IT / 14% usługi
+     * medyczne / 17% wolny zawód), а не по единой ставке на весь доход, как было раньше.
+     * Записи, созданные до появления категорий (без привязанной категории — например,
+     * старая история операций), по-прежнему считаются по старой единой ставке
+     * legacyRatePercent (то значение, которое когда-то было введено в настройках), чтобы
+     * не терять точность для уже накопленной истории.
+     */
+    fun calcRyczaltByCategory(incomeEntries: List<Entry>, legacyRatePercent: Double): TaxResult {
+        var total = 0.0
+        var tax = 0.0
+        for (e in incomeEntries) {
+            val amt = if (e.amount < 0) 0.0 else e.amount
+            total += amt
+            val rate = RyczaltCategory.fromStorageKeyOrNull(e.ryczaltCategory)?.ratePercent ?: legacyRatePercent
+            tax += amt * (rate / 100.0)
+        }
+        val effectiveRate = if (total > 0) (tax / total) * 100.0 else 0.0
+        return TaxResult(total, total, tax, effectiveRate)
+    }
+
+    /**
+     * Текст динамической подписи налога на главном экране/в отчётах — см. п.2 требований.
+     * Как только доход попадает во второй порог (>120 000 zł), надпись однозначно
+     * называет действующую предельную ставку — 32% — вместо "12% / 32%", которая
+     * при переносе строки на узком экране визуально сливалась с суммой налога
+     * и вводила пользователя в заблуждение (12 или 32?).
+     */
     fun taxLabelResId(taxableBase: Double): Int = when {
         taxableBase <= ANNUAL_LIMIT -> R.string.tax_label_zero
         taxableBase <= SECOND_BRACKET_THRESHOLD -> R.string.tax_label_12
-        else -> R.string.tax_label_progressive
+        else -> R.string.tax_label_32
     }
 }

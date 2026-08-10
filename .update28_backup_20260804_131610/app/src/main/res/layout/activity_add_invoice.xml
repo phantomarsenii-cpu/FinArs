@@ -1,0 +1,293 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+
+<LinearLayout
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="24dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="20dp"
+        android:text="@string/invoice_form_title"
+        android:textColor="@color/accent_cyan"
+        android:textSize="24sp"
+        android:textStyle="bold"/>
+
+    <Button
+        android:id="@+id/btn_invoice_history"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/btn_pill_outline"
+        android:text="@string/invoice_history_title"
+        android:textAllCaps="false"
+        android:textColor="@color/text_primary"
+        android:textSize="14sp"/>
+
+    <!-- Sprzedawca -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@drawable/card_bg"
+        android:padding="16dp"
+        android:layout_marginBottom="16dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/invoice_seller_section"
+            android:textColor="@color/text_secondary"
+            android:textSize="11sp"
+            android:textStyle="bold"
+            android:letterSpacing="0.08"
+            android:layout_marginBottom="12dp"/>
+
+        <EditText android:id="@+id/et_seller_name" style="@style/InvoiceInput" android:hint="@string/seller_name" android:inputType="textPersonName"/>
+        <EditText android:id="@+id/et_seller_nip" style="@style/InvoiceInput" android:hint="@string/seller_nip" android:inputType="number"/>
+        <EditText android:id="@+id/et_seller_street" style="@style/InvoiceInput" android:hint="@string/seller_address_street" android:inputType="textPostalAddress"/>
+
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:weightSum="2" android:baselineAligned="false">
+            <EditText android:id="@+id/et_seller_postal" style="@style/InvoiceInputHalfStart" android:hint="@string/seller_address_postal" android:inputType="text"/>
+            <EditText android:id="@+id/et_seller_city" style="@style/InvoiceInputHalfEnd" android:hint="@string/seller_address_city" android:inputType="text"/>
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <!-- Nabywca -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@drawable/card_bg"
+        android:padding="16dp"
+        android:layout_marginBottom="16dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/invoice_buyer_section"
+            android:textColor="@color/text_secondary"
+            android:textSize="11sp"
+            android:textStyle="bold"
+            android:letterSpacing="0.08"
+            android:layout_marginBottom="12dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="14dp">
+            <Switch
+                android:id="@+id/sw_physical_person"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"/>
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="10dp"
+                android:text="@string/buyer_physical_person_switch"
+                android:textColor="@color/text_primary"
+                android:textSize="14sp"/>
+        </LinearLayout>
+
+        <EditText android:id="@+id/et_buyer_name" style="@style/InvoiceInput" android:hint="@string/buyer_name" android:inputType="textPersonName"/>
+        <EditText android:id="@+id/et_buyer_nip" style="@style/InvoiceInput" android:hint="@string/buyer_nip" android:inputType="number" android:visibility="gone"/>
+        <EditText android:id="@+id/et_buyer_street" style="@style/InvoiceInput" android:hint="@string/buyer_address_street" android:inputType="textPostalAddress"/>
+
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:weightSum="2" android:baselineAligned="false">
+            <EditText android:id="@+id/et_buyer_postal" style="@style/InvoiceInputHalfStart" android:hint="@string/buyer_address_postal" android:inputType="text"/>
+            <EditText android:id="@+id/et_buyer_city" style="@style/InvoiceInputHalfEnd" android:hint="@string/buyer_address_city" android:inputType="text"/>
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <!-- Usługa / towar -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@drawable/card_bg"
+        android:padding="16dp"
+        android:layout_marginBottom="16dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/invoice_service_section"
+            android:textColor="@color/text_secondary"
+            android:textSize="11sp"
+            android:textStyle="bold"
+            android:letterSpacing="0.08"
+            android:layout_marginBottom="12dp"/>
+
+        <EditText android:id="@+id/et_service_name" style="@style/InvoiceInput" android:hint="@string/service_name" android:inputType="text"/>
+        <EditText android:id="@+id/et_amount" style="@style/InvoiceInput" android:hint="@string/service_amount" android:inputType="numberDecimal"/>
+
+        <Button
+            android:id="@+id/btn_service_date"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_marginBottom="14dp"
+            android:background="@drawable/input_field_bg"
+            android:text="@string/service_date_label"
+            android:textAllCaps="false"
+            android:textColor="@color/text_primary"
+            android:textSize="15sp"
+            android:gravity="start|center_vertical"
+            android:paddingStart="18dp"
+            android:paddingEnd="18dp"/>
+
+        <Button
+            android:id="@+id/btn_payment_date"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_marginBottom="14dp"
+            android:background="@drawable/input_field_bg"
+            android:text="@string/payment_date_label"
+            android:textAllCaps="false"
+            android:textColor="@color/text_primary"
+            android:textSize="15sp"
+            android:gravity="start|center_vertical"
+            android:paddingStart="18dp"
+            android:paddingEnd="18dp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/payment_method_label"
+            android:textColor="@color/text_secondary"
+            android:textSize="12sp"
+            android:layout_marginBottom="8dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="3" android:baselineAligned="false">
+
+            <Button
+                android:id="@+id/btn_payment_cash"
+                android:layout_width="0dp" android:layout_height="46dp" android:layout_weight="1"
+                android:layout_marginEnd="6dp"
+                android:background="@drawable/btn_pill_primary"
+                android:text="@string/payment_method_cash"
+                android:textAllCaps="false" android:textColor="@color/text_primary" android:textSize="13sp"/>
+
+            <Button
+                android:id="@+id/btn_payment_transfer"
+                android:layout_width="0dp" android:layout_height="46dp" android:layout_weight="1"
+                android:layout_marginStart="3dp" android:layout_marginEnd="3dp"
+                android:background="@drawable/btn_pill_outline"
+                android:text="@string/payment_method_transfer"
+                android:textAllCaps="false" android:textColor="@color/text_primary" android:textSize="13sp"/>
+
+            <Button
+                android:id="@+id/btn_payment_blik"
+                android:layout_width="0dp" android:layout_height="46dp" android:layout_weight="1"
+                android:layout_marginStart="6dp"
+                android:background="@drawable/btn_pill_outline"
+                android:text="@string/payment_method_blik"
+                android:textAllCaps="false" android:textColor="@color/text_primary" android:textSize="13sp"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <!-- Limit gotówki -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@drawable/card_bg"
+        android:padding="16dp"
+        android:layout_marginBottom="20dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/cash_limit_title"
+            android:textColor="@color/text_secondary"
+            android:textSize="11sp"
+            android:textStyle="bold"
+            android:letterSpacing="0.08"
+            android:layout_marginBottom="10dp"/>
+
+        <TextView android:id="@+id/tv_cash_limit_label" android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:textColor="@color/text_primary" android:textSize="13sp" android:layout_marginBottom="4dp"/>
+        <ProgressBar android:id="@+id/pb_cash_limit" style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent" android:layout_height="8dp" android:max="100"/>
+
+        <TextView
+            android:id="@+id/tv_cash_limit_warning"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:textColor="#FF6B6B"
+            android:textSize="12sp"
+            android:visibility="gone"/>
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/btn_generate"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:layout_marginBottom="14dp"
+        android:background="@drawable/btn_pill_primary"
+        android:text="@string/generate_invoice_button"
+        android:textAllCaps="false"
+        android:textColor="@color/text_primary"
+        android:textSize="17sp"
+        android:textStyle="bold"/>
+
+    <LinearLayout
+        android:id="@+id/row_after_generate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="2"
+        android:baselineAligned="false"
+        android:layout_marginBottom="14dp"
+        android:visibility="gone">
+
+        <Button
+            android:id="@+id/btn_open_pdf"
+            android:layout_width="0dp" android:layout_height="52dp" android:layout_weight="1"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/btn_pill_outline"
+            android:text="@string/open_pdf_button"
+            android:textAllCaps="false" android:textColor="@color/text_primary" android:textSize="14sp"/>
+
+        <Button
+            android:id="@+id/btn_share"
+            android:layout_width="0dp" android:layout_height="52dp" android:layout_weight="1"
+            android:layout_marginStart="8dp"
+            android:background="@drawable/btn_pill_outline"
+            android:text="@string/share_invoice_button"
+            android:textAllCaps="false" android:textColor="@color/text_primary" android:textSize="14sp"/>
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/btn_open_folder"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:background="@drawable/btn_pill_outline"
+        android:text="@string/open_invoices_folder_button"
+        android:textAllCaps="false"
+        android:textColor="@color/accent_cyan"
+        android:textSize="14sp"/>
+
+</LinearLayout>
+</ScrollView>

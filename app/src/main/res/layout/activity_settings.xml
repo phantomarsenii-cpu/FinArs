@@ -1,42 +1,125 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent"
-    android:fillViewport="true">
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-<LinearLayout
-    android:orientation="vertical" android:padding="24dp"
-    android:layout_width="match_parent" android:layout_height="wrap_content">
+    <com.example.fa_ksiegowy.AnimatedMeshBackgroundView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 
-    <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
-        android:text="@string/settings" android:textSize="22sp" android:textStyle="bold"
-        android:textColor="@color/accent_cyan" android:layout_marginBottom="24dp"/>
+    <ScrollView
+        android:layout_width="match_parent" android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:fillViewport="true">
 
-    <Button android:id="@+id/btn_menu_tax" android:layout_width="match_parent" android:layout_height="56dp"
-        android:text="@string/settings_menu_tax" android:textAllCaps="false" android:textSize="16sp"
-        android:textColor="@color/text_primary" android:background="@drawable/btn_pill_outline"
-        android:layout_marginBottom="14dp"/>
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:paddingTop="28dp"
+        android:paddingBottom="110dp">
 
-    <Button android:id="@+id/btn_menu_language" android:layout_width="match_parent" android:layout_height="56dp"
-        android:text="@string/settings_menu_language" android:textAllCaps="false" android:textSize="16sp"
-        android:textColor="@color/text_primary" android:background="@drawable/btn_pill_outline"
-        android:layout_marginBottom="14dp"/>
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:text="@string/settings" android:textSize="18sp" android:textStyle="bold"
+            android:textColor="@color/text_primary" android:gravity="center" android:layout_marginBottom="20dp"/>
 
-    <Button android:id="@+id/btn_menu_backup" android:layout_width="match_parent" android:layout_height="56dp"
-        android:text="@string/settings_menu_backup" android:textAllCaps="false" android:textSize="16sp"
-        android:textColor="@color/text_primary" android:background="@drawable/btn_pill_outline"
-        android:layout_marginBottom="14dp"/>
+        <!-- Typ sprzedazy -->
+        <LinearLayout android:id="@+id/btn_menu_business" style="@style/SettingsRow">
+            <FrameLayout style="@style/SettingsRowIconBadge" android:background="@drawable/icon_badge_blue_bg">
+                <ImageView style="@style/SettingsRowIcon" android:src="@drawable/ic_settings_business"/>
+            </FrameLayout>
+            <TextView style="@style/SettingsRowLabel" android:text="@string/settings_menu_business"/>
+            <ImageView style="@style/SettingsRowChevron"/>
+        </LinearLayout>
 
-    <Button android:id="@+id/btn_menu_pro" android:layout_width="match_parent" android:layout_height="56dp"
-        android:text="@string/settings_menu_pro" android:textAllCaps="false" android:textSize="16sp"
-        android:textColor="@color/text_primary" android:background="@drawable/btn_pill_primary"
-        android:layout_marginBottom="14dp"/>
+        <!-- Podatek i limity -->
+        <LinearLayout android:id="@+id/btn_menu_tax" style="@style/SettingsRow">
+            <FrameLayout style="@style/SettingsRowIconBadge" android:background="@drawable/icon_badge_blue_bg">
+                <ImageView style="@style/SettingsRowIcon" android:src="@drawable/ic_settings_tax"/>
+            </FrameLayout>
+            <TextView style="@style/SettingsRowLabel" android:text="@string/settings_menu_tax"/>
+            <ImageView style="@style/SettingsRowChevron"/>
+        </LinearLayout>
 
-    <View android:layout_width="match_parent" android:layout_height="1dp"
-        android:background="#2A2E60" android:layout_marginTop="10dp" android:layout_marginBottom="24dp"/>
+        <!-- Bezpieczenstwo -->
+        <LinearLayout android:id="@+id/btn_menu_security" style="@style/SettingsRow">
+            <FrameLayout style="@style/SettingsRowIconBadge" android:background="@drawable/icon_badge_purple_bg">
+                <ImageView style="@style/SettingsRowIcon" android:src="@drawable/ic_settings_security"/>
+            </FrameLayout>
+            <TextView style="@style/SettingsRowLabel" android:text="@string/settings_menu_security"/>
+            <ImageView style="@style/SettingsRowChevron"/>
+        </LinearLayout>
 
-    <Button android:id="@+id/btn_menu_about" android:layout_width="match_parent" android:layout_height="56dp"
-        android:text="@string/about_app" android:textAllCaps="false" android:textSize="16sp"
-        android:textColor="@color/text_primary" android:background="@drawable/btn_pill_outline"/>
+        <!-- Kopia zapasowa (Pro) -->
+        <LinearLayout android:id="@+id/btn_menu_backup" style="@style/SettingsRow">
+            <FrameLayout style="@style/SettingsRowIconBadge" android:background="@drawable/icon_badge_blue_bg">
+                <ImageView style="@style/SettingsRowIcon" android:src="@drawable/ic_settings_backup"/>
+            </FrameLayout>
+            <TextView style="@style/SettingsRowLabel" android:text="@string/settings_menu_backup"/>
+            <ImageView style="@style/SettingsRowChevron"/>
+        </LinearLayout>
 
-</LinearLayout>
-</ScrollView>
+        <!-- Generuj PIT (Pro) -->
+        <LinearLayout android:id="@+id/btn_menu_pit36" style="@style/SettingsRow">
+            <FrameLayout style="@style/SettingsRowIconBadge" android:background="@drawable/icon_badge_green_bg">
+                <ImageView style="@style/SettingsRowIcon" android:src="@drawable/ic_settings_pit"/>
+            </FrameLayout>
+            <TextView style="@style/SettingsRowLabel" android:text="@string/settings_menu_pit36"/>
+            <ImageView style="@style/SettingsRowChevron"/>
+        </LinearLayout>
+
+        <!-- Jezyk -->
+        <LinearLayout android:id="@+id/btn_menu_language" style="@style/SettingsRow">
+            <FrameLayout style="@style/SettingsRowIconBadge" android:background="@drawable/icon_badge_blue_bg">
+                <ImageView style="@style/SettingsRowIcon" android:src="@drawable/ic_settings_language"/>
+            </FrameLayout>
+            <TextView style="@style/SettingsRowLabel" android:text="@string/settings_menu_language"/>
+            <ImageView style="@style/SettingsRowChevron"/>
+        </LinearLayout>
+
+        <!-- Wyglad -->
+        <LinearLayout android:id="@+id/btn_menu_appearance" style="@style/SettingsRow">
+            <FrameLayout style="@style/SettingsRowIconBadge" android:background="@drawable/icon_badge_purple_bg">
+                <ImageView style="@style/SettingsRowIcon" android:src="@drawable/ic_settings_appearance"/>
+            </FrameLayout>
+            <TextView style="@style/SettingsRowLabel" android:text="@string/settings_menu_appearance"/>
+            <ImageView android:layout_width="20dp" android:layout_height="20dp" android:src="@drawable/ic_settings_appearance"/>
+        </LinearLayout>
+
+        <!-- Wersja Pro -->
+        <LinearLayout android:id="@+id/btn_menu_pro" style="@style/SettingsRow">
+            <FrameLayout style="@style/SettingsRowIconBadge" android:background="@drawable/icon_badge_orange_bg">
+                <ImageView style="@style/SettingsRowIcon" android:src="@drawable/ic_settings_pro"/>
+            </FrameLayout>
+            <TextView style="@style/SettingsRowLabel" android:text="@string/settings_menu_pro"/>
+            <ImageView style="@style/SettingsRowChevron"/>
+        </LinearLayout>
+
+        <!-- Warunki korzystania (zachowane z poprzedniej wersji ekranu — wymog prawny, makieta go nie pokazuje) -->
+        <LinearLayout android:id="@+id/btn_menu_terms" style="@style/SettingsRow">
+            <FrameLayout style="@style/SettingsRowIconBadge" android:background="@drawable/icon_badge_blue_bg">
+                <ImageView style="@style/SettingsRowIcon" android:src="@drawable/ic_settings_terms"/>
+            </FrameLayout>
+            <TextView style="@style/SettingsRowLabel" android:text="@string/settings_menu_terms"/>
+            <ImageView style="@style/SettingsRowChevron"/>
+        </LinearLayout>
+
+        <!-- O aplikacji -->
+        <LinearLayout android:id="@+id/btn_menu_about" style="@style/SettingsRow">
+            <FrameLayout style="@style/SettingsRowIconBadge" android:background="@drawable/icon_badge_blue_bg">
+                <ImageView style="@style/SettingsRowIcon" android:src="@drawable/ic_info"/>
+            </FrameLayout>
+            <TextView style="@style/SettingsRowLabel" android:text="@string/about_app"/>
+            <ImageView style="@style/SettingsRowChevron"/>
+        </LinearLayout>
+
+    </LinearLayout>
+    </ScrollView>
+
+    <include layout="@layout/bottom_nav_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"/>
+
+</FrameLayout>

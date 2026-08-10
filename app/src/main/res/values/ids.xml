@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Служебные id для View.setTag(id, value) на динамических строках фактуры
+         (см. AddInvoiceActivity) — позволяют хранить на одном View сразу два
+         независимых "тега" (категория ryczałtu и id товара со склада). -->
+    <item name="tag_ryczalt_category" type="id"/>
+    <item name="tag_product_id" type="id"/>
+</resources>

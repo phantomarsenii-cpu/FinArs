@@ -43,4 +43,22 @@ object FileNaming {
 
     /** Временная метка для файлов, где нужна уникальность, но не строгий стандарт (например ZIP-бэкапы). */
     fun timestamp(): String = stampFmt.format(Date())
+
+    private val invoiceDateFmt = SimpleDateFormat("yyyy_MM_dd", Locale.US)
+
+    /**
+     * Имя файла счёта/фактуры: Faktura_[НомерДокумента]_[Дата].pdf
+     * (например, Faktura_1_2026_08_03.pdf). Дата — дата выставления документа.
+     */
+    fun invoiceFileName(invoiceNumber: Int, issueDateMillis: Long): String {
+        val date = invoiceDateFmt.format(Date(issueDateMillis))
+        return "Faktura_${invoiceNumber}_${date}.pdf"
+    }
+
+    /** Update: имя файла корректировочной фактуры: KorektaFaktury_[НомерКорректировки]_[Дата].pdf. */
+    fun invoiceCorrectionFileName(correctionNumber: Int, issueDateMillis: Long): String {
+        val date = invoiceDateFmt.format(Date(issueDateMillis))
+        return "KorektaFaktury_${correctionNumber}_${date}.pdf"
+    }
 }
+

@@ -3,9 +3,13 @@ package com.example.fa_ksiegowy
 import android.app.DatePickerDialog
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.widget.Button
+import android.widget.ProgressBar
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import java.util.Calendar
 import kotlinx.coroutines.CoroutineScope
@@ -28,10 +32,13 @@ import java.util.zip.ZipOutputStream
 
 class ReportActivity : BaseActivity() {
     lateinit var db: AppDatabase
+    /** true = biezacy miesiac, false = biezacy rok — dla karty "Podsumowanie"/"Trend" (nie ma to wplywu na przyciski eksportu ponizej, ktore maja wlasny zakres). */
+    private var summaryIsMonth: Boolean = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_report)
+        BottomNavBar.attach(this, BottomNavBar.Tab.REPORTS)
         db = AppDatabase.getInstance(this)
         findViewById<Button>(R.id.btn_report_month).setOnClickListener { generateForMonth() }
         findViewById<Button>(R.id.btn_report_year).setOnClickListener {
@@ -39,6 +46,121 @@ class ReportActivity : BaseActivity() {
         }
         findViewById<Button>(R.id.btn_report_custom).setOnClickListener {
             runIfPro { showCustomRangePicker() }
+        }
+        findViewById<View>(R.id.btn_period).setOnClickListener { showPeriodPicker() }
+        loadSummary()
+        loadTrend()
+    }
+
+    private fun showPeriodPicker() {
+        AppDialog.showOptionPicker(
+            context = this,
+            title = getString(R.string.select_period),
+            options = listOf("month" to getString(R.string.period_this_month), "year" to getString(R.string.period_this_year))
+        ) { selected ->
+            summaryIsMonth = selected == "month"
+            findViewById<TextView>(R.id.tv_period).text =
+                if (summaryIsMonth) getString(R.string.period_this_month) else getString(R.string.period_this_year)
+            loadSummary()
+        }
+    }
+
+    /** Wypelnia karte "Podsumowanie" (donut + legenda) oraz karte rozkladu procentowego. */
+    private fun loadSummary() {
+        CoroutineScope(Dispatchers.IO).launch {
+            val cal = Calendar.getInstance()
+            val from: Long
+            val to: Long
+            if (summaryIsMonth) {
+                cal.set(Calendar.DAY_OF_MONTH, 1)
+                cal.set(Calendar.HOUR_OF_DAY, 0); cal.set(Calendar.MINUTE, 0); cal.set(Calendar.SECOND, 0); cal.set(Calendar.MILLISECOND, 0)
+                from = cal.timeInMillis
+                to = System.currentTimeMillis()
+            } else {
+                val year = TaxHelper.currentYear()
+                val (yearStart, _) = TaxHelper.yearRange(year)
+                from = yearStart
+                to = System.currentTimeMillis()
+            }
+
+            val entries = db.entryDao().getBetween(from, to)
+            val income = entries.filter { it.isIncome }.sumOf { it.amount }
+            val expense = entries.filter { !it.isIncome }.sumOf { it.amount }
+            val profit = income - expense
+            val prefs = getSharedPreferences("settings", MODE_PRIVATE)
+            val activityType = ActivityTypeHelper.get(prefs)
+            val ryczaltRate = ActivityTypeHelper.getRyczaltRate(prefs)
+            val year = TaxHelper.currentYear()
+            val otherIncome = if (!summaryIsMonth) TaxHelper.getOtherIncome(prefs, year) else 0.0
+            val tax = when (activityType) {
+                ActivityType.NIEZAREJESTROWANA, ActivityType.JDG_SKALA -> TaxHelper.calc(profit, otherIncome)
+                ActivityType.JDG_LINIOWY -> TaxHelper.calcLiniowy(profit)
+                ActivityType.JDG_RYCZALT -> TaxHelper.calcRyczaltByCategory(entries.filter { it.isIncome }, ryczaltRate)
+            }.tax.coerceAtLeast(0.0)
+
+            val total = (income + expense + tax).coerceAtLeast(0.01)
+            val incomePct = (income / total * 100).toInt()
+            val expensePct = (expense / total * 100).toInt()
+            val taxPct = (tax / total * 100).toInt()
+
+            withContext(Dispatchers.Main) {
+                findViewById<DonutChartView>(R.id.donut_chart).submitData(
+                    listOf(
+                        DonutChartView.Segment(income, ContextCompat.getColor(this@ReportActivity, R.color.income_green)),
+                        DonutChartView.Segment(expense, ContextCompat.getColor(this@ReportActivity, R.color.expense_red)),
+                        DonutChartView.Segment(tax, ContextCompat.getColor(this@ReportActivity, R.color.accent_purple))
+                    ),
+                    getString(R.string.summary_total),
+                    formatMoney(income + expense)
+                )
+                findViewById<TextView>(R.id.tv_legend_income).text = formatMoney(income) + " zł"
+                findViewById<TextView>(R.id.tv_legend_expense).text = formatMoney(expense) + " zł"
+                findViewById<TextView>(R.id.tv_legend_tax).text = formatMoney(tax) + " zł"
+
+                findViewById<TextView>(R.id.tv_breakdown_income).text = formatMoney(income) + " zł"
+                findViewById<TextView>(R.id.tv_breakdown_expense).text = formatMoney(expense) + " zł"
+                findViewById<TextView>(R.id.tv_breakdown_tax_label).text = getString(R.string.legend_tax_pct, taxPct)
+                findViewById<TextView>(R.id.tv_breakdown_tax).text = formatMoney(tax) + " zł"
+
+                findViewById<ProgressBar>(R.id.pb_income).progress = incomePct
+                findViewById<ProgressBar>(R.id.pb_expense).progress = expensePct
+                findViewById<ProgressBar>(R.id.pb_tax).progress = taxPct
+                findViewById<TextView>(R.id.tv_breakdown_income_pct).text = "$incomePct%"
+                findViewById<TextView>(R.id.tv_breakdown_expense_pct).text = "$expensePct%"
+                findViewById<TextView>(R.id.tv_breakdown_tax_pct).text = "$taxPct%"
+            }
+        }
+    }
+
+    private fun formatMoney(v: Double): String = String.format(Locale.getDefault(), "%,.0f", v)
+
+    /** Ładuje zysk netto (przychod - wydatki) za ostatnie 6 miesiecy dla karty "Trend". */
+    private fun loadTrend() {
+        CoroutineScope(Dispatchers.IO).launch {
+            val cal = Calendar.getInstance()
+            val monthFmt = SimpleDateFormat("LLL", Locale.getDefault())
+            val points = mutableListOf<TrendLineChartView.Point>()
+
+            for (i in 5 downTo 0) {
+                val monthCal = cal.clone() as Calendar
+                monthCal.add(Calendar.MONTH, -i)
+                monthCal.set(Calendar.DAY_OF_MONTH, 1)
+                monthCal.set(Calendar.HOUR_OF_DAY, 0); monthCal.set(Calendar.MINUTE, 0)
+                monthCal.set(Calendar.SECOND, 0); monthCal.set(Calendar.MILLISECOND, 0)
+                val from = monthCal.timeInMillis
+                val label = monthFmt.format(monthCal.time).replaceFirstChar { it.uppercase() }
+                monthCal.add(Calendar.MONTH, 1)
+                val to = monthCal.timeInMillis - 1
+
+                val entries = db.entryDao().getBetween(from, to)
+                val income = entries.filter { it.isIncome }.sumOf { it.amount }
+                val expense = entries.filter { !it.isIncome }.sumOf { it.amount }
+                points.add(TrendLineChartView.Point(label, income - expense))
+            }
+
+            withContext(Dispatchers.Main) {
+                findViewById<TrendLineChartView>(R.id.trend_chart).submitData(points)
+            }
         }
     }
 
@@ -293,7 +415,7 @@ class ReportActivity : BaseActivity() {
                     ActivityType.NIEZAREJESTROWANA, ActivityType.JDG_SKALA ->
                         TaxHelper.calc(totalProfitForTax, otherIncomeForTax).tax
                     ActivityType.JDG_LINIOWY -> TaxHelper.calcLiniowy(totalProfitForTax).tax
-                    ActivityType.JDG_RYCZALT -> TaxHelper.calcRyczalt(totalIncome, ryczaltRate).tax
+                    ActivityType.JDG_RYCZALT -> TaxHelper.calcRyczaltByCategory(entries.filter { it.isIncome }, ryczaltRate).tax
                 }
 
                 val taxRow = sheet.createRow(rowN++)

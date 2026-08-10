@@ -2,6 +2,8 @@ package com.example.fa_ksiegowy
 
 import android.Manifest
 import android.app.NotificationChannel
+import android.app.PendingIntent
+import android.content.Intent
 import android.app.NotificationManager
 import android.content.Context
 import android.content.pm.PackageManager
@@ -27,6 +29,11 @@ class LimitsNotificationWorker(context: Context, params: WorkerParameters) : Cor
 
     override suspend fun doWork(): Result {
         try {
+            // Уведомления должны быть на языке, выбранном В ПРИЛОЖЕНИИ (LocaleHelper),
+            // а не на системном языке телефона — раньше ctx.getString(...)
+            // брал системную локаль напрямую, из-за чего уведомления могли отличаться
+            // от языка интерфейса приложения.
+            val ctx = LocaleHelper.applyLocale(applicationContext)
             val limits = LimitsHelper.compute(applicationContext)
             val prefs = applicationContext.getSharedPreferences("settings", Context.MODE_PRIVATE)
             val today = SDF_DAY.format(java.util.Date())
@@ -37,18 +44,18 @@ class LimitsNotificationWorker(context: Context, params: WorkerParameters) : Cor
                 when {
                     m.exceeded -> notifyOnce(
                         prefs, "n_exceeded_$today",
-                        applicationContext.getString(R.string.notif_limit_exceeded_title),
-                        applicationContext.getString(R.string.notif_limit_exceeded_text)
+                        ctx.getString(R.string.notif_limit_exceeded_title),
+                        ctx.getString(R.string.notif_limit_exceeded_text)
                     )
                     m.percent >= 95 -> notifyOnce(
                         prefs, "n_95_$today",
-                        applicationContext.getString(R.string.notif_limit_95_title),
-                        applicationContext.getString(R.string.notif_limit_95_text)
+                        ctx.getString(R.string.notif_limit_95_title),
+                        ctx.getString(R.string.notif_limit_95_text)
                     )
                     m.percent >= 80 -> notifyOnce(
                         prefs, "n_80_$today",
-                        applicationContext.getString(R.string.notif_limit_80_title),
-                        applicationContext.getString(R.string.notif_limit_80_text)
+                        ctx.getString(R.string.notif_limit_80_title),
+                        ctx.getString(R.string.notif_limit_80_text)
                     )
                 }
             }
@@ -57,17 +64,40 @@ class LimitsNotificationWorker(context: Context, params: WorkerParameters) : Cor
             if (limits.bracket.percent in 90..999) {
                 notifyOnce(
                     prefs, "bracket90_${TaxHelper.currentYear()}",
-                    applicationContext.getString(R.string.notif_bracket_title),
-                    applicationContext.getString(R.string.notif_bracket_text)
+                    ctx.getString(R.string.notif_bracket_title),
+                    ctx.getString(R.string.notif_bracket_text)
                 )
             }
 
-            // 3) Приближение к лимиту zwolnienia z VAT (200 000 zł).
+            // 3) Приближение к лимиту zwolnienia z VAT (240 000 zł) — раз в день.
             if (limits.vat.percent in 90..999) {
                 notifyOnce(
                     prefs, "vat90_${TaxHelper.currentYear()}",
-                    applicationContext.getString(R.string.notif_vat_title),
-                    applicationContext.getString(R.string.notif_vat_text)
+                    ctx.getString(R.string.notif_vat_title),
+                    ctx.getString(R.string.notif_vat_text)
+                )
+            }
+
+            // 3b) Лимит zwolnienia z VAT ПРЕВЫШЕН, а регистрация ещё не подтверждена —
+            // это уже юридически срочный вопрос (7 дней на подачу VAT-R), поэтому
+            // повторяем оповещение до N раз в день (см. настройку частоты в Ustawieniach),
+            // а не один раз, как для мягких предупреждений выше.
+            if (limits.vat.exceeded && !VatComplianceHelper.isVatRegisteredConfirmed(prefs)) {
+                notifyRepeatable(
+                    prefs, "vat_exceeded_${TaxHelper.currentYear()}",
+                    ctx.getString(R.string.notif_vat_exceeded_critical_title),
+                    ctx.getString(R.string.notif_vat_exceeded_critical_text)
+                )
+            }
+
+            // 3c) Лимит 20 000 zł gotówki dla osób fizycznych ПРЕВЫШЕН, а kasa fiskalna
+            // ещё не подтверждена — тоже повторяем до N раз в день.
+            val cashStatus = CashLimitHelper.computeCurrentYear(applicationContext)
+            if (cashStatus.exceeded && !VatComplianceHelper.isKasaFiskalnaConfirmed(prefs)) {
+                notifyRepeatable(
+                    prefs, "kasa_exceeded_${TaxHelper.currentYear()}",
+                    ctx.getString(R.string.notif_kasa_exceeded_title),
+                    ctx.getString(R.string.notif_kasa_exceeded_text)
                 )
             }
 
@@ -77,8 +107,8 @@ class LimitsNotificationWorker(context: Context, params: WorkerParameters) : Cor
             if (day in 15..20) {
                 notifyOnce(
                     prefs, "advance_${cal.get(Calendar.YEAR)}_${cal.get(Calendar.MONTH)}",
-                    applicationContext.getString(R.string.notif_advance_title),
-                    applicationContext.getString(R.string.notif_advance_text)
+                    ctx.getString(R.string.notif_advance_title),
+                    ctx.getString(R.string.notif_advance_text)
                 )
             }
 
@@ -89,8 +119,8 @@ class LimitsNotificationWorker(context: Context, params: WorkerParameters) : Cor
             ) {
                 notifyOnce(
                     prefs, "pit_deadline_${cal.get(Calendar.YEAR)}_$month",
-                    applicationContext.getString(R.string.notif_pit_deadline_title),
-                    applicationContext.getString(R.string.notif_pit_deadline_text)
+                    ctx.getString(R.string.notif_pit_deadline_title),
+                    ctx.getString(R.string.notif_pit_deadline_text)
                 )
             }
 
@@ -106,10 +136,34 @@ class LimitsNotificationWorker(context: Context, params: WorkerParameters) : Cor
         showNotification(applicationContext, key.hashCode(), title, text)
     }
 
+    /** Как notifyOnce, но допускает до N повторов В ТЕЧЕНИЕ ОДНОГО ДНЯ — N задаётся
+     *  пользователем в Ustawieniach (zob. VatComplianceHelper.getPushFrequency,
+     *  по умолчанию 3). Используется только для действительно срочных ситуаций
+     *  (превышен лимit VAT/kasy, просроченная фактура) — обычные предупреждения
+     *  "приближаетесь к лимиту" по-прежнему используют notifyOnce (раз в день). */
+    private fun notifyRepeatable(prefs: android.content.SharedPreferences, key: String, title: String, text: String) {
+        notifyRepeatableStatic(applicationContext, prefs, key, title, text)
+    }
+
     companion object {
         private val SDF_DAY = java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.US)
         const val CHANNEL_ID = "fa_limits_channel"
         private const val UNIQUE_WORK_NAME = "fa_limits_daily_check"
+
+        /** Общая реализация повторяемого (до N раз/день) оповещения — используется
+         *  и здесь, и в InvoiceReminderWorker (просроченные фактуры). */
+        fun notifyRepeatableStatic(
+            context: Context, prefs: android.content.SharedPreferences,
+            key: String, title: String, text: String, targetActivity: Class<*>? = null
+        ) {
+            val today = SDF_DAY.format(java.util.Date())
+            val maxPerDay = VatComplianceHelper.getPushFrequency(prefs)
+            val countKey = "notif_count_${key}_$today"
+            val shown = prefs.getInt(countKey, 0)
+            if (shown >= maxPerDay) return
+            prefs.edit().putInt(countKey, shown + 1).apply()
+            showNotification(context, (key + "_" + shown).hashCode(), title, text, targetActivity)
+        }
 
         fun createChannel(context: Context) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -125,19 +179,31 @@ class LimitsNotificationWorker(context: Context, params: WorkerParameters) : Cor
             }
         }
 
-        fun showNotification(context: Context, id: Int, title: String, text: String) {
+        fun showNotification(context: Context, id: Int, title: String, text: String, targetActivity: Class<*>? = null) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                 val granted = ActivityCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) ==
                     PackageManager.PERMISSION_GRANTED
                 if (!granted) return
             }
-            val notification = NotificationCompat.Builder(context, CHANNEL_ID)
+            val builder = NotificationCompat.Builder(context, CHANNEL_ID)
                 .setSmallIcon(android.R.drawable.ic_dialog_alert)
                 .setContentTitle(title)
                 .setContentText(text)
                 .setStyle(NotificationCompat.BigTextStyle().bigText(text))
                 .setAutoCancel(true)
-                .build()
+            // Тап по уведомлению должен открывать соответствующий экран приложения —
+            // раньше при тапе ничего не происходило, так как contentIntent не задавался.
+            if (targetActivity != null) {
+                val openIntent = Intent(context, targetActivity).apply {
+                    flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+                }
+                val pendingIntent = PendingIntent.getActivity(
+                    context, id, openIntent,
+                    PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+                )
+                builder.setContentIntent(pendingIntent)
+            }
+            val notification = builder.build()
             androidx.core.app.NotificationManagerCompat.from(context).apply {
                 try {
                     notify(id, notification)
@@ -147,13 +213,18 @@ class LimitsNotificationWorker(context: Context, params: WorkerParameters) : Cor
             }
         }
 
-        /** Планирует ежедневную проверку лимитов/сроков. Безопасно вызывать при каждом запуске приложения. */
+        /** Планирует проверку лимитов/сроков. Интервал — 1 час (не 24), потому что
+         *  критические оповещения (превышен лимит VAT/kasy) теперь могут повторяться
+         *  до N раз в день (см. notifyRepeatableStatic, частота задаётся пользователем
+         *  в Ustawieniach) — при проверке раз в сутки повторы были бы невозможны.
+         *  Обычные мягкие предупреждения (notifyOnce) по-прежнему показываются не
+         *  чаще одного раза в день независимо от того, как часто отрабатывает воркер. */
         fun schedule(context: Context) {
             createChannel(context)
-            val request = PeriodicWorkRequestBuilder<LimitsNotificationWorker>(24, TimeUnit.HOURS).build()
+            val request = PeriodicWorkRequestBuilder<LimitsNotificationWorker>(1, TimeUnit.HOURS).build()
             WorkManager.getInstance(context).enqueueUniquePeriodicWork(
                 UNIQUE_WORK_NAME,
-                ExistingPeriodicWorkPolicy.KEEP,
+                ExistingPeriodicWorkPolicy.UPDATE,
                 request
             )
         }

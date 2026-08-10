@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/input_field_bg"
+    android:padding="12dp"
+    android:layout_marginBottom="10dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="8dp">
+
+        <TextView
+            android:id="@+id/tv_item_number"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textColor="@color/text_secondary"
+            android:textSize="12sp"
+            android:textStyle="bold"/>
+
+        <Button
+            android:id="@+id/btn_item_remove"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:minWidth="0dp"
+            android:minHeight="0dp"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
+            android:padding="0dp"
+            android:background="@drawable/btn_pill_danger"
+            android:text="×"
+            android:textColor="@color/text_primary"
+            android:textSize="16sp"
+            android:textAllCaps="false"/>
+    </LinearLayout>
+
+    <EditText
+        android:id="@+id/et_item_name"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:background="@drawable/card_bg"
+        android:hint="@string/service_name"
+        android:textColorHint="@color/text_hint"
+        android:textColor="@color/text_primary"
+        android:paddingStart="14dp"
+        android:paddingEnd="14dp"
+        android:inputType="text"
+        android:layout_marginBottom="8dp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="8dp">
+
+        <EditText
+            android:id="@+id/et_item_qty"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:layout_marginEnd="6dp"
+            android:background="@drawable/card_bg"
+            android:hint="@string/item_qty_hint"
+            android:textColorHint="@color/text_hint"
+            android:textColor="@color/text_primary"
+            android:gravity="center"
+            android:inputType="numberDecimal"
+            android:text="1"/>
+
+        <EditText
+            android:id="@+id/et_item_price"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:layout_marginStart="6dp"
+            android:background="@drawable/card_bg"
+            android:hint="@string/service_amount"
+            android:textColorHint="@color/text_hint"
+            android:textColor="@color/text_primary"
+            android:gravity="center"
+            android:inputType="numberDecimal"/>
+    </LinearLayout>
+
+    <!-- Категория ryczałtu для ЭТОЙ позиции — видна только когда в настройках
+         выбран ActivityType.JDG_RYCZALT (см. AddInvoiceActivity.addItemRow), так как
+         одна фактура может содержать и товар, и услугу с разными ставками. Открывает
+         небольшое стилизованное вертикальное меню (см. AppDialog.showOptionPicker). -->
+    <Button
+        android:id="@+id/btn_item_ryczalt_category"
+        android:layout_width="match_parent"
+        android:layout_height="44dp"
+        android:background="@drawable/card_bg"
+        android:text="@string/ryczalt_category_choose"
+        android:textAllCaps="false"
+        android:textColor="@color/accent_cyan"
+        android:textSize="13sp"
+        android:gravity="start|center_vertical"
+        android:paddingStart="14dp"
+        android:paddingEnd="14dp"
+        android:visibility="gone"/>
+
+</LinearLayout>

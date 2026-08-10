@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:fillViewport="true">
+
+<LinearLayout
+    android:orientation="vertical" android:padding="24dp"
+    android:layout_width="match_parent" android:layout_height="wrap_content">
+
+    <TextView
+        android:layout_width="wrap_content" android:layout_height="wrap_content"
+        android:layout_marginTop="12dp" android:layout_marginBottom="20dp"
+        android:text="@string/correction_title" android:textColor="@color/accent_cyan"
+        android:textSize="24sp" android:textStyle="bold"/>
+
+    <LinearLayout
+        android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:orientation="vertical" android:background="@drawable/card_bg"
+        android:padding="16dp" android:layout_marginBottom="18dp">
+        <TextView android:id="@+id/tv_original_invoice_info" android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:textColor="@color/text_primary" android:textSize="14sp" android:layout_marginBottom="8dp"/>
+        <TextView android:id="@+id/tv_original_amount" android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:textColor="@color/text_secondary" android:textSize="13sp"/>
+    </LinearLayout>
+
+    <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:text="@string/correction_corrected_amount_hint" android:textSize="13sp"
+        android:textColor="@color/text_secondary" android:layout_marginBottom="8dp"/>
+    <EditText android:id="@+id/et_corrected_amount" android:layout_width="match_parent" android:layout_height="56dp"
+        android:background="@drawable/input_field_bg" android:paddingStart="18dp" android:paddingEnd="18dp"
+        android:textColor="@color/text_primary" android:inputType="numberDecimal"
+        android:layout_marginBottom="14dp"/>
+
+    <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:text="@string/correction_reason_hint" android:textSize="13sp"
+        android:textColor="@color/text_secondary" android:layout_marginBottom="8dp"/>
+    <EditText android:id="@+id/et_reason" android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:minLines="2" android:gravity="top|start"
+        android:background="@drawable/input_field_bg" android:padding="18dp"
+        android:textColor="@color/text_primary" android:inputType="textMultiLine"
+        android:layout_marginBottom="16dp"/>
+
+    <CheckBox android:id="@+id/cb_apply_to_income" android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:text="@string/correction_apply_to_income_label" android:textColor="@color/text_primary"
+        android:textSize="13sp" android:checked="true" android:layout_marginBottom="24dp"/>
+
+    <Button android:id="@+id/btn_save_correction" android:layout_width="match_parent" android:layout_height="56dp"
+        android:text="@string/correction_save_button" android:textAllCaps="false" android:textSize="16sp"
+        android:textStyle="bold" android:textColor="@color/text_primary" android:background="@drawable/btn_pill_primary"/>
+
+</LinearLayout>
+</ScrollView>
+

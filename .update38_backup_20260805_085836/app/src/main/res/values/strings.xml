@@ -1,0 +1,361 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">FinArs</string>
+    <string name="app_subtitle">FinArs</string>
+    <string name="add_income">Add income</string>
+    <string name="add_expense">Add expense</string>
+    <string name="add_entry">Add +</string>
+    <string name="balance">Balance</string>
+    <string name="enter_amount">Amount</string>
+    <string name="enter_comment">Comment</string>
+    <string name="entry_date_label">Transaction date</string>
+    <string name="attach_receipt">Attach receipt</string>
+    <string name="save">Save</string>
+    <string name="settings">Settings</string>
+    <string name="tax_percent">Tax percent</string>
+    <string name="other_income_label">Other income (%1$d)</string>
+    <string name="tax_scale_title">Tax is calculated automatically</string>
+    <string name="tax_scale_description" formatted="false">0% up to 30,000 zł/year · 12% on the part between 30,000 and 120,000 zł · 32% on the part above 120,000 zł. The rate applies only to the amount above each threshold, not to the whole sum.</string>
+    <string name="other_income_title">Other income</string>
+    <string name="other_income_hint">Your total taxable income this year from other sources (job, other business, etc.). Used together with income from this app to check the 30,000 zł annual tax-free limit.</string>
+    <string name="saved">Saved</string>
+    <string name="auto_tax_button">Calculate automatically</string>
+    <string name="auto_tax_result" formatted="false">Suggested rate: %1$.1f% (based on Polish PIT scale: 12% up to 120,000 zł/year, 32% above). You can edit it before saving.</string>
+    <string name="export_report">Export report</string>
+    <string name="generate_report">Generate report</string>
+    <string name="select_period">Select period</string>
+    <string name="month">Month</string>
+    <string name="year">Year</string>
+    <string name="custom_range">Custom range</string>
+    <string name="from">From</string>
+    <string name="to">To</string>
+    <string name="no_entries">No entries</string>
+    <string name="search_no_results">Nothing found</string>
+    <string name="history_search_hint">Search by comment or amount</string>
+    <string name="invoice_search_hint">Search by number, client or amount</string>
+    <string name="filter_date_range">Date range</string>
+    <string name="filter_clear">Clear filters</string>
+
+    <string name="statistics">Statistics</string>
+    <string name="stat_income">Income</string>
+    <string name="stat_expense">Expense</string>
+    <string name="stat_profit">Profit (gross)</string>
+    <string name="stat_tax_format" formatted="false">Tax (%1$.1f%)</string>
+
+    <string name="report_col_date">Date</string>
+    <string name="report_col_income">Income</string>
+    <string name="report_col_expense">Expense</string>
+    <string name="report_col_tax_percent" formatted="false">Tax %</string>
+    <string name="report_col_tax_amount">Tax amount</string>
+    <string name="report_col_comment">Comment</string>
+    <string name="report_sheet_name">Report</string>
+    <string name="report_title_month">Report — Month</string>
+    <string name="report_title_year">Report — Year</string>
+    <string name="report_title_custom">Report — Custom period</string>
+    <string name="custom_range_invalid">The end date must be after the start date</string>
+    <string name="report_total_income">Total income</string>
+    <string name="report_total_expense">Total expense</string>
+    <string name="report_total_profit">Total profit</string>
+    <string name="report_total_tax">Total tax</string>
+    <string name="report_total_net_profit">Net profit (after tax)</string>
+    <string name="report_generating">Generating report…</string>
+    <string name="report_ready">Report ready</string>
+    <string name="report_share_title">Share report</string>
+    <string name="report_error">Failed to generate report: %1$s</string>
+    <string name="about_app">About the app</string>
+    <string name="about_description">FinArs is a convenient app for managing the finances of unregistered business activity. Easily track income and expenses, monitor your current balance, automatically calculate taxes and generate reports. The app helps you stay within limits, track financial indicators and always have the full history of operations at hand. A simple interface and quick data entry make daily bookkeeping as convenient as possible.
+
+Key features:
+💰 Income and expense tracking.
+📊 Automatic profit calculation.
+🧾 Tax calculation.
+📈 Monitoring of unregistered activity limits.
+📄 Report generation.
+🔍 Full operation history.
+🌙 Modern dark interface.
+🔒 All data is stored locally on the device.
+
+Contact: p.arsenii@interia.pl</string>
+    <string name="about_email">p.arsenii@interia.pl</string>
+    <string name="dialog_close">Close</string>
+    <string name="dialog_write">Write</string>
+    <string name="pro_status_locked">Pro is locked. Unlock to get yearly/custom Excel reports, backup \&amp; restore, and remove ads.</string>
+    <string name="pro_status_active">Pro unlocked. Thank you for your support!</string>
+    <string name="pro_unlock_button">Unlock Pro</string>
+    <string name="pro_unlock_button_price">Unlock Pro — %1$s</string>
+    <string name="pro_loading">Loading price…</string>
+    <string name="pro_feature_locked_title">Pro feature</string>
+    <string name="pro_feature_locked_message">Yearly and custom reports are a Pro feature. Unlock Pro in Settings to use them.</string>
+    <string name="pro_feature_locked_go_settings">Go to Settings</string>
+    <string name="invoice_pro_locked_message">Issuing invoices is a Pro feature. Unlock Pro in Settings to use it.</string>
+    <string name="backup_pro_locked_message">Backup and restore is a Pro feature. Unlock Pro to keep your data safe with a backup file.</string>
+    <string name="pro_purchase_error">Could not start the purchase. Check your connection and try again.</string>
+    <string name="pro_info_title">Pro version</string>
+    <string name="pro_info_message">Pro unlocks:\n\n• Yearly Excel report\n• Custom-period Excel report\n• Backup \&amp; restore\n• No ads\n\nThis is a one-time purchase — pay once, keep it forever.</string>
+    <string name="pro_info_continue">Continue to purchase</string>
+    <string name="enter_code_button">Have a code?</string>
+    <string name="enter_code_title">Enter code</string>
+    <string name="enter_code_hint">Code</string>
+    <string name="enter_code_apply">Apply</string>
+    <string name="enter_code_wrong">Invalid code</string>
+    <string name="enter_code_success">Pro unlocked</string>
+    <string name="transaction_history">Transaction history</string>
+    <string name="stat_net_profit">Net profit (after tax)</string>
+    <string name="type_income">Income</string>
+    <string name="type_expense">Expense</string>
+    <string name="edit_income_title">Edit income</string>
+    <string name="edit_expense_title">Edit expense</string>
+    <string name="delete_entry">Delete</string>
+    <string name="delete_confirm_title">Delete entry?</string>
+    <string name="delete_confirm_message">This entry will be permanently deleted. This cannot be undone.</string>
+    <string name="delete_confirm_yes">Delete</string>
+    <string name="entry_updated">Updated</string>
+    <string name="entry_deleted">Deleted</string>
+    <string name="clear_all_button">Clear all data</string>
+    <string name="clear_all_confirm_title">Are you sure?</string>
+    <string name="clear_all_confirm_message">All income and expense entries will be permanently deleted. This cannot be undone.</string>
+    <string name="clear_all_confirm_yes">Delete all</string>
+    <string name="clear_all_done">All data has been deleted</string>
+
+    <string name="settings_menu_tax">Tax and limits</string>
+    <string name="settings_menu_language">Language</string>
+    <string name="settings_menu_backup">Backup (Pro)</string>
+    <string name="settings_menu_pro">Pro version</string>
+
+    <string name="backup_hint">Save a backup of your income/expense entries — including amounts, dates, comments and attached receipt photos — as a file. In the save dialog you can choose phone storage or Google Drive (if the Drive app is installed). Keep this file safe: it\'s the only way to restore your data if you lose the phone or reinstall the app.</string>
+    <string name="backup_in_progress">Working…</string>
+    <string name="backup_create">Create backup</string>
+    <string name="backup_restore">Restore from backup</string>
+    <string name="backup_success">Backup saved (%1$d entries)</string>
+    <string name="backup_error">Error: %1$s</string>
+    <string name="backup_restore_confirm_title">Restore from backup?</string>
+    <string name="backup_restore_confirm_message">Entries from the backup file will be added to what you already have on this device (existing entries are not deleted or overwritten). If you want a clean restore, use \"Clear all data\" first, then restore.</string>
+    <string name="backup_invalid_file">This does not look like a valid FinArs backup file</string>
+    <string name="backup_restored">Restored %1$d entries</string>
+    <string name="backup_never">Last backup: never</string>
+    <string name="backup_last_time">Last backup: %1$s</string>
+
+    <string name="settings_menu_security">Security (PIN / fingerprint)</string>
+    <string name="settings_menu_pit36">Generate PIT (Pro)</string>
+    <string name="pit36_pro_locked_message">PIT-36 generation is a Pro feature. Unlock Pro in Settings to use it.</string>
+
+    <string name="lock_title">FinArs is locked</string>
+    <string name="lock_subtitle">Enter your PIN to continue</string>
+    <string name="lock_pin_hint">PIN</string>
+    <string name="lock_wrong_pin">Wrong PIN, try again</string>
+    <string name="lock_unlock_button">Unlock</string>
+    <string name="lock_biometric_button">Use fingerprint / face</string>
+    <string name="lock_biometric_prompt_title">Unlock FinArs</string>
+    <string name="lock_biometric_prompt_subtitle">Confirm your fingerprint or face</string>
+    <string name="lock_use_pin">Use PIN</string>
+    <string name="lock_biometric_unavailable">No fingerprint/face is set up on this device. Add one in your phone\'s settings first.</string>
+
+    <string name="security_hint">Protect the app with a PIN code. When enabled, FinArs will ask for the PIN every time you open it after leaving the app. You can also enable fingerprint/face unlock as a quick shortcut for the same PIN.</string>
+    <string name="security_pin_switch">Require PIN to open the app</string>
+    <string name="security_change_pin">Change PIN</string>
+    <string name="security_biometric_switch">Unlock with fingerprint / face</string>
+    <string name="security_set_pin_title">Set a PIN</string>
+    <string name="security_set_pin_message">Choose a 4–6 digit PIN</string>
+    <string name="security_continue">Continue</string>
+    <string name="security_pin_length_error">PIN must be 4–6 digits</string>
+    <string name="security_confirm_pin_title">Confirm your PIN</string>
+    <string name="security_pin_saved">PIN saved</string>
+    <string name="security_pin_mismatch">PINs don\'t match, try again</string>
+    <string name="security_disable_pin_title">Enter current PIN</string>
+    <string name="security_enter_current_pin">Enter your current PIN to continue</string>
+    <string name="security_pin_disabled">PIN protection disabled</string>
+
+    <string name="pit_data_title">Personal data for your tax return</string>
+    <string name="pit_data_hint">Used only to fill in your PIT helper report (PIT-36 / PIT-36L / PIT-28 — depending on your activity type). Everything stays on your device.</string>
+    <string name="pit_first_name">First name</string>
+    <string name="pit_last_name">Last name</string>
+    <string name="pit_pesel">PESEL (optional)</string>
+    <string name="pit_street">Street</string>
+    <string name="pit_house_number">House number</string>
+    <string name="pit_apartment_number">Apartment number (optional)</string>
+    <string name="pit_voivodeship">Voivodeship</string>
+    <string name="pit_county">County (powiat)</string>
+    <string name="pit_commune">Commune (gmina)</string>
+    <string name="pit_postal_code">Postal code</string>
+    <string name="pit_city">City</string>
+    <string name="pit_tax_office">Tax office (urząd skarbowy)</string>
+    <string name="pit_reliefs_title">Reliefs and deductions (optional)</string>
+    <string name="pit_children_count">Number of children (ulga na dzieci)</string>
+    <string name="pit_internet_relief">Internet relief — amount spent</string>
+    <string name="pit_ikze">IKZE contributions</string>
+    <string name="pit_donations">Donations (darowizny)</string>
+    <string name="pit_joint_spouse">File jointly with spouse</string>
+    <string name="pit_spouse_data_title">Spouse personal data</string>
+    <string name="pit_spouse_id_hint">Spouse NIP/PESEL</string>
+    <string name="pit_spouse_first_name_hint">Spouse first name</string>
+    <string name="pit_spouse_last_name_hint">Spouse last name</string>
+    <string name="pit_spouse_birth_date_hint">Date of birth (DD.MM.YYYY)</string>
+    <string name="pit_spouse_income_hint">Spouse income (optional)</string>
+    <string name="pit_data_required_error">Please fill in first name, last name and tax office first</string>
+
+    <string name="pit36_hint">Pick a full calendar year, check your personal data, then generate a helper PDF with the numbers and guidance for filling in your official form on podatki.gov.pl (Twój e-PIT) or on paper.</string>
+    <string name="pit_row_przychod">Przychód (income)</string>
+    <string name="pit_row_koszty">Koszty (expenses)</string>
+    <string name="pit_row_dochod">Dochód (profit)</string>
+    <string name="pit_row_tax">Estimated tax</string>
+    <string name="pit_data_status_missing">Personal data not filled in yet — required before generating the report.</string>
+    <string name="pit_data_status_ready">Personal data ready: %1$s</string>
+    <string name="pit_edit_data_button">Edit personal data</string>
+    <string name="pit36_generate_button">Generate helper PDF</string>
+    <string name="pit36_disclaimer">This report is informational only and is not an official form, e-Deklaracja or tax advice. Always double-check the numbers before submitting your declaration.</string>
+    <string name="pit36_calculating">Still calculating, please wait…</string>
+    <string name="pit36_generated">PDF report generated</string>
+    <string name="pit36_generate_official_button">Fill official form (2025 template)</string>
+    <string name="pit36_official_hint">Fills the real %1$s(32)/2025 government PDF: your ID, address and business income/expenses row. You still need to add other income sources and any deductions yourself before submitting — see the disclaimer below.</string>
+    <string name="pit36_official_unsupported">The official fillable form is only available for PIT-36 (skala). Your current form is %1$s — use "Generate helper PDF" instead.</string>
+    <string name="pit36_official_generated">Official PIT-36 form filled. Please review sections E–K and add other income/deductions before submitting.</string>
+
+    <!-- Activity type / registration rules -->
+    <string name="activity_type_title">Activity type</string>
+    <string name="activity_type_hint">Choose how you operate — this decides which limit applies and which annual form you should file.</string>
+    <string name="activity_type_niezarejestrowana">Unregistered activity (bez rejestracji JDG)</string>
+    <string name="activity_type_niezarejestrowana_desc" formatted="false">Income must stay under 75% of the minimum wage per month. If exceeded, you must register a JDG within 7 days. Filed via PIT-36, tax scale.</string>
+    <string name="activity_type_jdg_skala" formatted="false">Registered JDG — tax scale 12% / 32% (PIT-36)</string>
+    <string name="activity_type_jdg_liniowy" formatted="false">Registered JDG — flat tax 19% (PIT-36L)</string>
+    <string name="activity_type_jdg_ryczalt">Registered JDG — lump-sum tax (PIT-28)</string>
+    <string name="ryczalt_rate_label" formatted="false">Lump-sum tax rate for your activity (%, depends on PKD)</string>
+    <string name="ryczalt_rate_hint">e.g. 3, 5.5, 8.5, 12, 17</string>
+    <string name="min_wage_label">Minimum monthly wage (zł) — used to calculate the unregistered-activity limit</string>
+    <string name="monthly_limit_preview" formatted="false">Monthly limit (75%): %1$,.2f zł</string>
+
+    <!-- Main screen limit gauges -->
+    <string name="limits_title">Limits</string>
+    <string name="limit_monthly_label">Unregistered activity, this month: %1$s / %2$s zł</string>
+    <string name="limit_bracket_label">First tax bracket (120,000 zł/year): %1$s / %2$s zł</string>
+    <string name="limit_vat_label">VAT exemption (200,000 zł/year): %1$s / %2$s zł</string>
+    <string name="limit_exceeded_warning">You have exceeded the unregistered-activity limit! You must register a JDG within 7 days.</string>
+
+    <!-- Dynamic tax label -->
+    <string name="tax_label_zero" formatted="false">Tax (0% — tax-free amount)</string>
+    <string name="tax_label_12" formatted="false">Tax (12%)</string>
+    <string name="tax_label_32" formatted="false">Tax (32% bracket)</string>
+    <string name="tax_label_progressive" formatted="false">Tax (progressive scale 12% / 32%)</string>
+    <string name="tax_label_liniowy" formatted="false">Tax (flat 19%)</string>
+    <string name="tax_label_ryczalt">Tax (lump-sum, of revenue)</string>
+    <string name="pit_form_applicable">Applicable declaration: %1$s</string>
+
+    <!-- History table -->
+    <string name="history_col_receipt">Receipt</string>
+    <string name="history_col_amount">Amount</string>
+
+    <!-- Report columns -->
+    <string name="report_col_receipt">Receipt</string>
+    <string name="report_receipt_yes">Yes</string>
+
+    <!-- Notifications -->
+    <string name="notif_channel_name">Limits and deadlines</string>
+    <string name="notif_channel_description">Alerts about activity limits and tax deadlines</string>
+    <string name="notif_limit_exceeded_title">Unregistered activity limit exceeded</string>
+    <string name="notif_limit_exceeded_text" formatted="false">Your income this month exceeds 75% of the minimum wage. You must register a JDG within 7 days.</string>
+    <string name="notif_limit_95_title" formatted="false">95% of the monthly limit reached</string>
+    <string name="notif_limit_95_text">You are very close to the unregistered-activity limit for this month.</string>
+    <string name="notif_limit_80_title" formatted="false">80% of the monthly limit reached</string>
+    <string name="notif_limit_80_text" formatted="false">You have used 80% of the unregistered-activity limit for this month.</string>
+    <string name="notif_bracket_title">Approaching the 120,000 zł threshold</string>
+    <string name="notif_bracket_text" formatted="false">Your yearly profit is close to 120,000 zł — income above this is taxed at 32% instead of 12%.</string>
+    <string name="notif_vat_title">Approaching the VAT exemption limit</string>
+    <string name="notif_vat_text">Your yearly revenue is close to 200,000 zł — the VAT exemption threshold.</string>
+    <string name="notif_advance_title">Advance tax payment reminder</string>
+    <string name="notif_advance_text">Advance tax payments are due by the 20th of the month.</string>
+    <string name="notif_pit_deadline_title">Annual tax return reminder</string>
+    <string name="notif_pit_deadline_text">Annual tax returns are due between 15 February and 30 April.</string>
+    <string name="terms_title">Terms of Service</string>
+    <string name="terms_full_text">Terms of Service and Legal Disclaimer\n\nBy tapping “Accept”, you confirm that you have read, understood and fully agree to these terms. If you do not agree, you may not use the FinArs app.\n\n1. No accounting or legal services\nFinArs is a tool only (an automated calculator and record organizer). Neither the app nor its developers are an accredited accounting firm, tax advisor, or law office. All calculations and auto-generated declarations (PIT-36, PIT-36L, PIT-28) are for informational purposes only.\n\n2. Your responsibility\nYou are solely responsible for the accuracy of entered data and for verifying calculations and PDF forms before filing them with tax authorities, and for meeting filing deadlines.\n\n3. Limitation of liability\nThe app is provided “as is”, without warranties. The developer is not liable for fines, tax adjustments, algorithm errors, or data loss on your device.\n\n4. Legal changes\nPolish tax law changes regularly; verify results against podatki.gov.pl or a licensed accountant.\n\n5. Data privacy\nAll data and generated PDFs are stored locally on your device only.\n\n6. Governing law\nThe laws of the Republic of Poland apply.\n\n7. Withdrawal\nThese terms are accepted once, on first launch. If you stop agreeing, you must stop using the app and uninstall it.</string>
+    <string name="terms_checkbox_label">I have read and accept the Terms of Service</string>
+    <string name="terms_accept_button">Accept and continue</string>
+    <string name="terms_status_accepted">Status: Terms accepted (%1$s)</string>
+    <string name="terms_status_unknown">Status: Terms accepted</string>
+    <string name="settings_menu_terms">Terms of Service</string>
+
+
+    <!-- Invoices / Rachunki -->
+    <string name="nav_invoices">Invoices</string>
+    <string name="invoice_form_title">New invoice / receipt</string>
+    <string name="invoice_seller_section">Seller (your details)</string>
+    <string name="seller_name">Name / company name</string>
+    <string name="seller_nip">NIP (leave empty if none)</string>
+    <string name="seller_address_street">Street and number</string>
+    <string name="seller_address_postal">Postal code</string>
+    <string name="seller_address_city">City</string>
+    <string name="invoice_buyer_section">Buyer</string>
+    <string name="buyer_physical_person_switch">Private individual (no NIP)</string>
+    <string name="buyer_name">First and last name</string>
+    <string name="buyer_nip">Buyer NIP</string>
+    <string name="buyer_address_street">Street and number</string>
+    <string name="buyer_address_postal">Postal code</string>
+    <string name="buyer_address_city">City</string>
+    <string name="invoice_service_section">Item / service</string>
+    <string name="service_name">Name of the service or item</string>
+    <string name="service_amount">Gross amount (PLN)</string>
+    <string name="payment_date_label">Payment date</string>
+    <string name="service_date_label">Service / sale date</string>
+    <string name="payment_method_label">Payment method</string>
+    <string name="payment_method_cash">Cash</string>
+    <string name="payment_method_transfer">Transfer</string>
+    <string name="payment_method_blik">BLIK</string>
+    <string name="payment_paid_cash">Paid in cash</string>
+    <string name="payment_paid_transfer">Paid by bank transfer</string>
+    <string name="payment_paid_blik">Paid by BLIK</string>
+    <string name="cash_limit_title">Cash sales to individuals this year</string>
+    <string name="cash_limit_label">%1$s / %2$s PLN</string>
+    <string name="cash_limit_warning">You are approaching the annual cash-sales limit for private individuals without a fiscal cash register.</string>
+    <string name="cash_limit_exceeded_warning">You have exceeded the 20,000 PLN annual cash-sales limit for private individuals — a fiscal cash register (kasa fiskalna) may now be required.</string>
+    <string name="generate_invoice_button">Generate PDF</string>
+    <string name="invoice_generated_toast">Invoice saved: %1$s</string>
+    <string name="invoice_error_toast">Could not generate the invoice: %1$s</string>
+    <string name="open_pdf_button">Open PDF</string>
+    <string name="share_invoice_button">Share</string>
+    <string name="open_invoices_folder_button">Open invoices folder</string>
+    <string name="open_folder_error">Could not open the folder. Files are saved in %1$s</string>
+    <string name="invoice_fill_required_fields">Please fill in the buyer, item and amount</string>
+
+    <!-- Invoice history -->
+    <string name="invoice_history_title">Invoice history</string>
+    <string name="no_invoices">No invoices yet</string>
+
+
+    <!-- Invoice PDF labels -->
+    <string name="invoice_pdf_faktura">INVOICE</string>
+    <string name="invoice_pdf_rachunek">RECEIPT</string>
+    <string name="invoice_pdf_issue_date">Issue date</string>
+    <string name="invoice_pdf_sale_date">Sale date</string>
+    <string name="invoice_pdf_seller">Seller</string>
+    <string name="invoice_pdf_buyer">Buyer</string>
+    <string name="invoice_pdf_nip">Tax ID (NIP)</string>
+    <string name="invoice_pdf_bank_account">Bank account</string>
+    <string name="invoice_pdf_buyer_private">Private individual (no Tax ID).</string>
+    <string name="invoice_pdf_table_lp">No.</string>
+    <string name="invoice_pdf_table_name">Item / service</string>
+    <string name="invoice_pdf_table_unit">Unit</string>
+    <string name="invoice_pdf_table_qty">Qty</string>
+    <string name="invoice_pdf_table_price">Price</string>
+    <string name="invoice_pdf_table_total">Total</string>
+    <string name="invoice_pdf_unit_piece">pc</string>
+    <string name="invoice_pdf_sum_label">Total</string>
+    <string name="invoice_pdf_paid_stamp">PAID</string>
+    <string name="invoice_pdf_payment_date">Payment date</string>
+    <string name="invoice_pdf_footer">Document generated in the FinArs app. This is not official accounting or tax advice — if in doubt, consult a tax advisor.</string>
+    <string name="seller_bank_account">Bank account (optional)</string>
+    <string name="delete_invoice_confirm_title">Delete invoice?</string>
+    <string name="delete_invoice_confirm_message">The invoice record and its PDF file will be permanently deleted. This cannot be undone.</string>
+    <string name="invoice_deleted">Invoice deleted</string>
+
+    <string name="invoice_status_paid">Paid</string>
+    <string name="invoice_status_pending">Pending</string>
+    <string name="invoice_status_overdue">Overdue</string>
+    <string name="invoice_paid_switch_label">Paid</string>
+    <string name="invoice_due_date_label">Due date</string>
+    <string name="notif_invoice_overdue_title">Overdue invoice</string>
+    <string name="notif_invoice_overdue_text">Invoice №%2$d for %1$s is overdue.</string>
+    <string name="notif_invoice_due_soon_title">Payment due soon</string>
+    <string name="notif_invoice_due_soon_text">Invoice №%2$d for %1$s is due within 3 days.</string>
+    <string name="recurring_switch_label">Repeat monthly</string>
+    <string name="chart_title">Income and expenses, last 6 months</string>
+    <string name="invoice_status_filter_all">All</string>
+
+</resources>

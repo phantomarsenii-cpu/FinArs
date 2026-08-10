@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="bg_top">#060A1A</color>
+    <color name="bg_glow">#1E3A8A</color>
+    <color name="bg_bottom">#080C20</color>
+
+    <color name="accent_cyan">#38BDF8</color>
+    <color name="accent_blue_light">#3B82F6</color>
+    <color name="accent_blue_dark">#1D4ED8</color>
+    <color name="accent_purple">#8B7CF6</color>
+
+    <color name="card_bg">#141B36</color>
+    <color name="card_bg_light">#141B36</color>
+    <color name="card_border">#232D57</color>
+    <color name="nav_bar_bg">#0E1430</color>
+
+    <color name="text_primary">#FFFFFF</color>
+    <color name="text_secondary">#94A3C4</color>
+    <color name="text_hint">#5B6690</color>
+
+    <color name="income_green">#34D399</color>
+    <color name="expense_red">#F87171</color>
+</resources>

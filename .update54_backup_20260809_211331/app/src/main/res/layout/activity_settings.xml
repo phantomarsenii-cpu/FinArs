@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:fillViewport="true">
+
+<LinearLayout
+    android:orientation="vertical" android:padding="24dp"
+    android:layout_width="match_parent" android:layout_height="wrap_content">
+
+    <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:text="@string/settings" android:textSize="22sp" android:textStyle="bold"
+        android:textColor="@color/accent_cyan" android:layout_marginBottom="24dp"/>
+
+    <Button android:id="@+id/btn_menu_business" android:layout_width="match_parent" android:layout_height="56dp"
+        android:text="@string/settings_menu_business" android:textAllCaps="false" android:textSize="16sp"
+        android:textColor="@color/text_primary" android:background="@drawable/btn_pill_outline"
+        android:layout_marginBottom="14dp"/>
+
+    <Button android:id="@+id/btn_menu_tax" android:layout_width="match_parent" android:layout_height="56dp"
+        android:text="@string/settings_menu_tax" android:textAllCaps="false" android:textSize="16sp"
+        android:textColor="@color/text_primary" android:background="@drawable/btn_pill_outline"
+        android:layout_marginBottom="14dp"/>
+
+    <!-- Update: пункт меню "Безопасность" был потерян в одном из прошлых
+         обновлений (сам экран SettingsSecurityActivity и вся логика PIN/Biometrics
+         остались рабочими, но зайти в них было неоткуда) — возвращаем кнопку. -->
+    <Button android:id="@+id/btn_menu_security" android:layout_width="match_parent" android:layout_height="56dp"
+        android:text="@string/settings_menu_security" android:textAllCaps="false" android:textSize="16sp"
+        android:textColor="@color/text_primary" android:background="@drawable/btn_pill_outline"
+        android:layout_marginBottom="14dp"/>
+
+    <Button android:id="@+id/btn_menu_pit36" android:layout_width="match_parent" android:layout_height="56dp"
+        android:text="@string/settings_menu_pit36" android:textAllCaps="false" android:textSize="16sp"
+        android:textColor="@color/text_primary" android:background="@drawable/btn_pill_outline"
+        android:layout_marginBottom="14dp"/>
+
+    <Button android:id="@+id/btn_menu_language" android:layout_width="match_parent" android:layout_height="56dp"
+        android:text="@string/settings_menu_language" android:textAllCaps="false" android:textSize="16sp"
+        android:textColor="@color/text_primary" android:background="@drawable/btn_pill_outline"
+        android:layout_marginBottom="14dp"/>
+
+    <Button android:id="@+id/btn_menu_backup" android:layout_width="match_parent" android:layout_height="56dp"
+        android:text="@string/settings_menu_backup" android:textAllCaps="false" android:textSize="16sp"
+        android:textColor="@color/text_primary" android:background="@drawable/btn_pill_outline"
+        android:layout_marginBottom="14dp"/>
+
+    <Button android:id="@+id/btn_menu_pro" android:layout_width="match_parent" android:layout_height="56dp"
+        android:text="@string/settings_menu_pro" android:textAllCaps="false" android:textSize="16sp"
+        android:textColor="@color/text_primary" android:background="@drawable/btn_pill_primary"
+        android:layout_marginBottom="14dp"/>
+
+    <Button android:id="@+id/btn_menu_terms" android:layout_width="match_parent" android:layout_height="56dp"
+        android:text="@string/settings_menu_terms" android:textAllCaps="false" android:textSize="16sp"
+        android:textColor="@color/text_primary" android:background="@drawable/btn_pill_outline"
+        android:layout_marginBottom="14dp"/>
+
+    <View android:layout_width="match_parent" android:layout_height="1dp"
+        android:background="#2A2E60" android:layout_marginTop="10dp" android:layout_marginBottom="24dp"/>
+
+    <Button android:id="@+id/btn_menu_about" android:layout_width="match_parent" android:layout_height="56dp"
+        android:text="@string/about_app" android:textAllCaps="false" android:textSize="16sp"
+        android:textColor="@color/text_primary" android:background="@drawable/btn_pill_outline"/>
+
+</LinearLayout>
+</ScrollView>
+

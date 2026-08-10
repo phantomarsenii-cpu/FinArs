@@ -1,12 +1,18 @@
 package com.example.fa_ksiegowy
 
 import android.os.Bundle
+import android.view.View
 import android.widget.Button
 import android.widget.CheckBox
 import android.widget.EditText
+import android.widget.RadioGroup
 import android.widget.Toast
 
-/** Форма личных данных, нужных для отчёта PIT-36 (см. Pit36PdfGenerator, Pit36FormFiller). */
+/**
+ * Форма личных данных, нужных для генерации PIT (PIT-36 / PIT-36L / PIT-28 —
+ * см. Pit36PdfGenerator, Pit36FormFiller). Включает данные супруга(и) для
+ * совместного rozliczenia — показываются только если отмечено cb_joint_spouse.
+ */
 class PitDataActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -30,7 +36,22 @@ class PitDataActivity : BaseActivity() {
         findViewById<EditText>(R.id.et_internet_relief).setText(if (data.internetRelief > 0) data.internetRelief.toString() else "")
         findViewById<EditText>(R.id.et_ikze).setText(if (data.ikzeContribution > 0) data.ikzeContribution.toString() else "")
         findViewById<EditText>(R.id.et_donations).setText(if (data.donations > 0) data.donations.toString() else "")
-        findViewById<CheckBox>(R.id.cb_joint_spouse).isChecked = data.jointWithSpouse
+        findViewById<EditText>(R.id.et_spouse_id).setText(data.spouseId)
+        findViewById<EditText>(R.id.et_spouse_first_name).setText(data.spouseFirstName)
+        findViewById<EditText>(R.id.et_spouse_last_name).setText(data.spouseLastName)
+        findViewById<EditText>(R.id.et_spouse_birth_date).setText(data.spouseBirthDate)
+        findViewById<EditText>(R.id.et_spouse_income).setText(if (data.spouseIncome > 0) data.spouseIncome.toString() else "")
+        findViewById<RadioGroup>(R.id.rg_spouse_id_type).check(
+            if (data.spouseIsNip) R.id.rb_spouse_nip else R.id.rb_spouse_pesel
+        )
+
+        val cbJointSpouse = findViewById<CheckBox>(R.id.cb_joint_spouse)
+        val spouseBlock = findViewById<View>(R.id.layout_spouse_block)
+        cbJointSpouse.isChecked = data.jointWithSpouse
+        spouseBlock.visibility = if (data.jointWithSpouse) View.VISIBLE else View.GONE
+        cbJointSpouse.setOnCheckedChangeListener { _, isChecked ->
+            spouseBlock.visibility = if (isChecked) View.VISIBLE else View.GONE
+        }
 
         findViewById<Button>(R.id.btn_save_pit_data).setOnClickListener { save() }
     }
@@ -66,7 +87,13 @@ class PitDataActivity : BaseActivity() {
             internetRelief = number(R.id.et_internet_relief),
             ikzeContribution = number(R.id.et_ikze),
             donations = number(R.id.et_donations),
-            jointWithSpouse = findViewById<CheckBox>(R.id.cb_joint_spouse).isChecked
+            jointWithSpouse = findViewById<CheckBox>(R.id.cb_joint_spouse).isChecked,
+            spouseIsNip = findViewById<RadioGroup>(R.id.rg_spouse_id_type).checkedRadioButtonId == R.id.rb_spouse_nip,
+            spouseId = text(R.id.et_spouse_id),
+            spouseFirstName = text(R.id.et_spouse_first_name),
+            spouseLastName = text(R.id.et_spouse_last_name),
+            spouseBirthDate = text(R.id.et_spouse_birth_date),
+            spouseIncome = number(R.id.et_spouse_income)
         )
         PitDataStore.save(this, data)
         Toast.makeText(this, getString(R.string.saved), Toast.LENGTH_SHORT).show()

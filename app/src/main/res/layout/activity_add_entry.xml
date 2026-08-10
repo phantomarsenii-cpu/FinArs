@@ -1,120 +1,311 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:padding="24dp">
+    android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/tv_add_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:layout_marginBottom="20dp"
-        android:text="@string/add_expense"
-        android:textColor="@color/accent_cyan"
-        android:textSize="26sp"
-        android:textStyle="bold"/>
+    <com.example.fa_ksiegowy.AnimatedMeshBackgroundView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
 
     <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginBottom="20dp"
-        android:weightSum="2" android:baselineAligned="false">
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:paddingTop="26dp"
+        android:paddingBottom="32dp">
+
+        <!-- ===================== Header: X + tytul ===================== -->
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp">
+
+            <ImageView
+                android:id="@+id/btn_close"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_gravity="center_vertical|start"
+                android:src="@drawable/ic_close"
+                android:clickable="true"
+                android:focusable="true"
+                android:background="?attr/selectableItemBackgroundBorderless"/>
+
+            <TextView
+                android:id="@+id/tv_add_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/add_entry_title"
+                android:textColor="@color/text_primary"
+                android:textSize="18sp"
+                android:textStyle="bold"/>
+
+        </FrameLayout>
+
+        <!-- ===================== Zakladki: Przychod / Wydatek / Faktura ===================== -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:orientation="horizontal"
+            android:background="@drawable/input_field_bg"
+            android:padding="4dp"
+            android:layout_marginBottom="18dp"
+            android:weightSum="3" android:baselineAligned="false">
+
+            <Button
+                android:id="@+id/btn_type_income"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/btn_pill_payment_selected"
+                android:text="@string/type_income"
+                android:textAllCaps="false"
+                android:textColor="@color/text_primary"
+                android:textSize="13sp"
+                android:minWidth="0dp" android:minHeight="0dp"/>
+
+            <Button
+                android:id="@+id/btn_type_expense"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_marginStart="4dp"
+                android:background="@drawable/btn_pill_payment_unselected"
+                android:text="@string/type_expense"
+                android:textAllCaps="false"
+                android:textColor="@color/text_secondary"
+                android:textSize="13sp"
+                android:minWidth="0dp" android:minHeight="0dp"/>
+
+            <Button
+                android:id="@+id/btn_type_invoice"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_marginStart="4dp"
+                android:background="@drawable/btn_pill_payment_unselected"
+                android:text="@string/tab_invoice"
+                android:textAllCaps="false"
+                android:textColor="@color/text_secondary"
+                android:textSize="13sp"
+                android:minWidth="0dp" android:minHeight="0dp"/>
+
+        </LinearLayout>
+
+        <!-- ===================== Kwota — duzy, wysrodkowany odczyt ===================== -->
+        <EditText
+            android:id="@+id/et_amount"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="22dp"
+            android:background="@null"
+            android:gravity="center"
+            android:hint="@string/enter_amount"
+            android:textColorHint="@color/text_hint"
+            android:textColor="@color/text_primary"
+            android:textSize="46sp"
+            android:textStyle="bold"
+            android:inputType="numberDecimal"/>
+
+        <!-- ===================== Karta wierszy: Data / Kategoria / Komentarz / Paragon / Powtarzaj ===================== -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/card_bg"
+            android:layout_marginBottom="16dp">
+
+            <!-- Data transakcji -->
+            <LinearLayout
+                android:id="@+id/btn_date"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:padding="16dp"
+                android:clickable="true" android:focusable="true">
+                <ImageView android:layout_width="20dp" android:layout_height="20dp" android:src="@drawable/ic_calendar"/>
+                <LinearLayout android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content"
+                    android:orientation="vertical" android:layout_marginStart="14dp">
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="@string/entry_date_label" android:textColor="@color/text_secondary" android:textSize="12sp"/>
+                    <TextView android:id="@+id/tv_date_value" android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:textColor="@color/text_primary" android:textSize="14sp" android:layout_marginTop="2dp"/>
+                </LinearLayout>
+                <ImageView android:layout_width="16dp" android:layout_height="16dp" android:src="@drawable/ic_chevron_right"/>
+            </LinearLayout>
+
+            <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/card_border"
+                android:layout_marginStart="16dp" android:layout_marginEnd="16dp"/>
+
+            <!-- Kategoria -->
+            <LinearLayout
+                android:id="@+id/btn_category"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:padding="16dp"
+                android:clickable="true" android:focusable="true">
+                <ImageView android:layout_width="20dp" android:layout_height="20dp" android:src="@drawable/ic_tag"/>
+                <LinearLayout android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content"
+                    android:orientation="vertical" android:layout_marginStart="14dp">
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="@string/category_label" android:textColor="@color/text_secondary" android:textSize="12sp"/>
+                    <TextView android:id="@+id/tv_category_value" android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="@string/category_choose" android:textColor="@color/text_primary" android:textSize="14sp" android:layout_marginTop="2dp"/>
+                </LinearLayout>
+                <ImageView android:layout_width="16dp" android:layout_height="16dp" android:src="@drawable/ic_chevron_right"/>
+            </LinearLayout>
+
+            <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/card_border"
+                android:layout_marginStart="16dp" android:layout_marginEnd="16dp"/>
+
+            <!-- Komentarz -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:padding="16dp">
+                <ImageView android:layout_width="20dp" android:layout_height="20dp" android:src="@drawable/ic_comment"/>
+                <LinearLayout android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content"
+                    android:orientation="vertical" android:layout_marginStart="14dp">
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="@string/enter_comment" android:textColor="@color/text_secondary" android:textSize="12sp"/>
+                    <EditText
+                        android:id="@+id/et_comment"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:background="@null"
+                        android:minHeight="0dp"
+                        android:padding="0dp"
+                        android:hint="@string/add_comment_hint"
+                        android:textColorHint="@color/text_hint"
+                        android:textColor="@color/text_primary"
+                        android:textSize="14sp"
+                        android:inputType="text"/>
+                </LinearLayout>
+            </LinearLayout>
+
+            <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/card_border"
+                android:layout_marginStart="16dp" android:layout_marginEnd="16dp"/>
+
+            <!-- Dodaj paragon / zdjecie -->
+            <LinearLayout
+                android:id="@+id/btn_attach"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:padding="16dp"
+                android:clickable="true" android:focusable="true">
+                <ImageView android:layout_width="20dp" android:layout_height="20dp" android:src="@drawable/ic_camera"/>
+                <TextView android:id="@+id/tv_attach_label" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content"
+                    android:text="@string/attach_receipt_row" android:textColor="@color/text_primary" android:textSize="14sp"
+                    android:layout_marginStart="14dp"/>
+                <ImageView android:layout_width="16dp" android:layout_height="16dp" android:src="@drawable/ic_chevron_right"/>
+            </LinearLayout>
+
+            <View android:id="@+id/divider_recurring" android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/card_border"
+                android:layout_marginStart="16dp" android:layout_marginEnd="16dp"/>
+
+            <!-- Powtarzaj co miesiac -->
+            <LinearLayout
+                android:id="@+id/row_recurring"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:padding="16dp">
+                <ImageView android:layout_width="20dp" android:layout_height="20dp" android:src="@drawable/ic_repeat"/>
+                <TextView android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content"
+                    android:text="@string/recurring_switch_label" android:textColor="@color/text_primary" android:textSize="14sp"
+                    android:layout_marginStart="14dp"/>
+                <Switch
+                    android:id="@+id/sw_recurring"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="false"/>
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <!-- ===================== Dodatkowe akcje: skan paragonu / kategoria ryczaltu ===================== -->
+        <Button
+            android:id="@+id/btn_scan_receipt"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:layout_marginBottom="12dp"
+            android:background="@drawable/input_field_bg"
+            android:text="@string/scan_receipt_button"
+            android:textAllCaps="false"
+            android:textColor="@color/accent_cyan"
+            android:textSize="14sp"
+            android:gravity="start|center_vertical"
+            android:paddingStart="18dp"
+            android:paddingEnd="18dp"/>
 
         <Button
-            android:id="@+id/btn_type_income"
-            android:layout_width="0dp"
-            android:layout_height="48dp"
-            android:layout_weight="1"
-            android:layout_marginEnd="8dp"
+            android:id="@+id/btn_scan_receipt_gallery"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:layout_marginBottom="12dp"
+            android:background="@drawable/input_field_bg"
+            android:text="@string/gallery_scan_receipt_button"
+            android:textAllCaps="false"
+            android:textColor="@color/accent_cyan"
+            android:textSize="14sp"
+            android:gravity="start|center_vertical"
+            android:paddingStart="18dp"
+            android:paddingEnd="18dp"/>
+
+        <Button
+            android:id="@+id/btn_ryczalt_category"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:layout_marginBottom="20dp"
+            android:background="@drawable/input_field_bg"
+            android:text="@string/ryczalt_category_choose"
+            android:textAllCaps="false"
+            android:textColor="@color/accent_cyan"
+            android:textSize="14sp"
+            android:gravity="start|center_vertical"
+            android:paddingStart="18dp"
+            android:paddingEnd="18dp"
+            android:visibility="gone"/>
+
+        <Button
+            android:id="@+id/btn_delete"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:layout_marginBottom="12dp"
+            android:background="@drawable/btn_pill_danger"
+            android:text="@string/delete_entry"
+            android:textAllCaps="false"
+            android:textColor="@color/text_primary"
+            android:textSize="15sp"
+            android:visibility="gone"/>
+
+        <Button
+            android:id="@+id/btn_save"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
             android:background="@drawable/btn_pill_primary"
-            android:text="@string/type_income"
+            android:text="@string/save"
             android:textAllCaps="false"
             android:textColor="@color/text_primary"
-            android:textSize="14sp"/>
-
-        <Button
-            android:id="@+id/btn_type_expense"
-            android:layout_width="0dp"
-            android:layout_height="48dp"
-            android:layout_weight="1"
-            android:layout_marginStart="8dp"
-            android:background="@drawable/btn_pill_outline"
-            android:text="@string/type_expense"
-            android:textAllCaps="false"
-            android:textColor="@color/text_primary"
-            android:textSize="14sp"/>
+            android:textSize="17sp"
+            android:textStyle="bold"/>
 
     </LinearLayout>
-
-    <EditText
-        android:id="@+id/et_amount"
-        android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:layout_marginBottom="14dp"
-        android:background="@drawable/input_field_bg"
-        android:paddingStart="18dp"
-        android:paddingEnd="18dp"
-        android:hint="@string/enter_amount"
-        android:textColorHint="@color/text_hint"
-        android:textColor="@color/text_primary"
-        android:inputType="numberDecimal"/>
-
-    <EditText
-        android:id="@+id/et_comment"
-        android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:layout_marginBottom="14dp"
-        android:background="@drawable/input_field_bg"
-        android:paddingStart="18dp"
-        android:paddingEnd="18dp"
-        android:hint="@string/enter_comment"
-        android:textColorHint="@color/text_hint"
-        android:textColor="@color/text_primary"
-        android:inputType="text"/>
-
-    <Button
-        android:id="@+id/btn_attach"
-        android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:layout_marginBottom="28dp"
-        android:background="@drawable/input_field_bg"
-        android:text="@string/attach_receipt"
-        android:textAllCaps="false"
-        android:textColor="@color/accent_cyan"
-        android:textSize="15sp"
-        android:gravity="start|center_vertical"
-        android:paddingStart="18dp"
-        android:paddingEnd="18dp"/>
-
-    <View
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_weight="1"/>
-
-    <Button
-        android:id="@+id/btn_delete"
-        android:layout_width="match_parent"
-        android:layout_height="52dp"
-        android:layout_marginBottom="12dp"
-        android:background="@drawable/btn_pill_danger"
-        android:text="@string/delete_entry"
-        android:textAllCaps="false"
-        android:textColor="@color/text_primary"
-        android:textSize="15sp"
-        android:visibility="gone"/>
-
-    <Button
-        android:id="@+id/btn_save"
-        android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:background="@drawable/btn_pill_primary"
-        android:text="@string/save"
-        android:textAllCaps="false"
-        android:textColor="@color/text_primary"
-        android:textSize="17sp"
-        android:textStyle="bold"/>
-
-</LinearLayout>
+    </ScrollView>
+</FrameLayout>

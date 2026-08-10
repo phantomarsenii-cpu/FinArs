@@ -15,19 +15,19 @@
         android:text="@string/pit_data_hint" android:textSize="13sp"
         android:textColor="@color/text_secondary" android:layout_marginBottom="18dp"/>
 
-    <EditText android:id="@+id/et_first_name" style="@style/PitInput" android:hint="@string/pit_first_name"/>
-    <EditText android:id="@+id/et_last_name" style="@style/PitInput" android:hint="@string/pit_last_name"/>
-    <EditText android:id="@+id/et_pesel" style="@style/PitInput" android:hint="@string/pit_pesel"
+    <EditText android:id="@+id/et_first_name" android:layout_width="match_parent" android:layout_height="56dp" android:background="@drawable/input_field_bg" android:paddingStart="18dp" android:paddingEnd="18dp" android:textColor="@color/text_primary" android:textColorHint="@color/text_hint" android:layout_marginBottom="12dp" android:hint="@string/pit_first_name"/>
+    <EditText android:id="@+id/et_last_name" android:layout_width="match_parent" android:layout_height="56dp" android:background="@drawable/input_field_bg" android:paddingStart="18dp" android:paddingEnd="18dp" android:textColor="@color/text_primary" android:textColorHint="@color/text_hint" android:layout_marginBottom="12dp" android:hint="@string/pit_last_name"/>
+    <EditText android:id="@+id/et_pesel" android:layout_width="match_parent" android:layout_height="56dp" android:background="@drawable/input_field_bg" android:paddingStart="18dp" android:paddingEnd="18dp" android:textColor="@color/text_primary" android:textColorHint="@color/text_hint" android:layout_marginBottom="12dp" android:hint="@string/pit_pesel"
         android:inputType="number" android:maxLength="11"/>
-    <EditText android:id="@+id/et_street" style="@style/PitInput" android:hint="@string/pit_street"/>
-    <EditText android:id="@+id/et_house_number" style="@style/PitInput" android:hint="@string/pit_house_number"/>
-    <EditText android:id="@+id/et_apartment_number" style="@style/PitInput" android:hint="@string/pit_apartment_number"/>
-    <EditText android:id="@+id/et_voivodeship" style="@style/PitInput" android:hint="@string/pit_voivodeship"/>
-    <EditText android:id="@+id/et_county" style="@style/PitInput" android:hint="@string/pit_county"/>
-    <EditText android:id="@+id/et_commune" style="@style/PitInput" android:hint="@string/pit_commune"/>
-    <EditText android:id="@+id/et_postal_code" style="@style/PitInput" android:hint="@string/pit_postal_code"/>
-    <EditText android:id="@+id/et_city" style="@style/PitInput" android:hint="@string/pit_city"/>
-    <EditText android:id="@+id/et_tax_office" style="@style/PitInput" android:hint="@string/pit_tax_office"/>
+    <EditText android:id="@+id/et_street" android:layout_width="match_parent" android:layout_height="56dp" android:background="@drawable/input_field_bg" android:paddingStart="18dp" android:paddingEnd="18dp" android:textColor="@color/text_primary" android:textColorHint="@color/text_hint" android:layout_marginBottom="12dp" android:hint="@string/pit_street"/>
+    <EditText android:id="@+id/et_house_number" android:layout_width="match_parent" android:layout_height="56dp" android:background="@drawable/input_field_bg" android:paddingStart="18dp" android:paddingEnd="18dp" android:textColor="@color/text_primary" android:textColorHint="@color/text_hint" android:layout_marginBottom="12dp" android:hint="@string/pit_house_number"/>
+    <EditText android:id="@+id/et_apartment_number" android:layout_width="match_parent" android:layout_height="56dp" android:background="@drawable/input_field_bg" android:paddingStart="18dp" android:paddingEnd="18dp" android:textColor="@color/text_primary" android:textColorHint="@color/text_hint" android:layout_marginBottom="12dp" android:hint="@string/pit_apartment_number"/>
+    <EditText android:id="@+id/et_voivodeship" android:layout_width="match_parent" android:layout_height="56dp" android:background="@drawable/input_field_bg" android:paddingStart="18dp" android:paddingEnd="18dp" android:textColor="@color/text_primary" android:textColorHint="@color/text_hint" android:layout_marginBottom="12dp" android:hint="@string/pit_voivodeship"/>
+    <EditText android:id="@+id/et_county" android:layout_width="match_parent" android:layout_height="56dp" android:background="@drawable/input_field_bg" android:paddingStart="18dp" android:paddingEnd="18dp" android:textColor="@color/text_primary" android:textColorHint="@color/text_hint" android:layout_marginBottom="12dp" android:hint="@string/pit_county"/>
+    <EditText android:id="@+id/et_commune" android:layout_width="match_parent" android:layout_height="56dp" android:background="@drawable/input_field_bg" android:paddingStart="18dp" android:paddingEnd="18dp" android:textColor="@color/text_primary" android:textColorHint="@color/text_hint" android:layout_marginBottom="12dp" android:hint="@string/pit_commune"/>
+    <EditText android:id="@+id/et_postal_code" android:layout_width="match_parent" android:layout_height="56dp" android:background="@drawable/input_field_bg" android:paddingStart="18dp" android:paddingEnd="18dp" android:textColor="@color/text_primary" android:textColorHint="@color/text_hint" android:layout_marginBottom="12dp" android:hint="@string/pit_postal_code"/>
+    <EditText android:id="@+id/et_city" android:layout_width="match_parent" android:layout_height="56dp" android:background="@drawable/input_field_bg" android:paddingStart="18dp" android:paddingEnd="18dp" android:textColor="@color/text_primary" android:textColorHint="@color/text_hint" android:layout_marginBottom="12dp" android:hint="@string/pit_city"/>
+    <EditText android:id="@+id/et_tax_office" android:layout_width="match_parent" android:layout_height="56dp" android:background="@drawable/input_field_bg" android:paddingStart="18dp" android:paddingEnd="18dp" android:textColor="@color/text_primary" android:textColorHint="@color/text_hint" android:layout_marginBottom="12dp" android:hint="@string/pit_tax_office"/>
 
     <View android:layout_width="match_parent" android:layout_height="1dp"
         android:background="#2A2E60" android:layout_marginTop="6dp" android:layout_marginBottom="18dp"/>
@@ -36,18 +36,63 @@
         android:text="@string/pit_reliefs_title" android:textSize="15sp" android:textStyle="bold"
         android:textColor="@color/text_primary" android:layout_marginBottom="12dp"/>
 
-    <EditText android:id="@+id/et_children_count" style="@style/PitInput" android:hint="@string/pit_children_count"
+    <EditText android:id="@+id/et_children_count" android:layout_width="match_parent" android:layout_height="56dp" android:background="@drawable/input_field_bg" android:paddingStart="18dp" android:paddingEnd="18dp" android:textColor="@color/text_primary" android:textColorHint="@color/text_hint" android:layout_marginBottom="12dp" android:hint="@string/pit_children_count"
         android:inputType="number"/>
-    <EditText android:id="@+id/et_internet_relief" style="@style/PitInput" android:hint="@string/pit_internet_relief"
+    <EditText android:id="@+id/et_internet_relief" android:layout_width="match_parent" android:layout_height="56dp" android:background="@drawable/input_field_bg" android:paddingStart="18dp" android:paddingEnd="18dp" android:textColor="@color/text_primary" android:textColorHint="@color/text_hint" android:layout_marginBottom="12dp" android:hint="@string/pit_internet_relief"
         android:inputType="numberDecimal"/>
-    <EditText android:id="@+id/et_ikze" style="@style/PitInput" android:hint="@string/pit_ikze"
+    <EditText android:id="@+id/et_ikze" android:layout_width="match_parent" android:layout_height="56dp" android:background="@drawable/input_field_bg" android:paddingStart="18dp" android:paddingEnd="18dp" android:textColor="@color/text_primary" android:textColorHint="@color/text_hint" android:layout_marginBottom="12dp" android:hint="@string/pit_ikze"
         android:inputType="numberDecimal"/>
-    <EditText android:id="@+id/et_donations" style="@style/PitInput" android:hint="@string/pit_donations"
+    <EditText android:id="@+id/et_donations" android:layout_width="match_parent" android:layout_height="56dp" android:background="@drawable/input_field_bg" android:paddingStart="18dp" android:paddingEnd="18dp" android:textColor="@color/text_primary" android:textColorHint="@color/text_hint" android:layout_marginBottom="12dp" android:hint="@string/pit_donations"
         android:inputType="numberDecimal"/>
 
     <CheckBox android:id="@+id/cb_joint_spouse" android:layout_width="match_parent" android:layout_height="wrap_content"
         android:text="@string/pit_joint_spouse" android:textColor="@color/text_primary"
-        android:layout_marginBottom="20dp"/>
+        android:layout_marginBottom="12dp"/>
+
+    <!-- Блок полей супруга(и) — виден только если отмечено "Rozliczenie wspólnie z małżonkiem" -->
+    <LinearLayout android:id="@+id/layout_spouse_block" android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:orientation="vertical" android:visibility="gone" android:background="@drawable/card_bg"
+        android:padding="16dp" android:layout_marginBottom="20dp">
+
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:text="@string/pit_spouse_data_title" android:textSize="14sp" android:textStyle="bold"
+            android:textColor="@color/text_primary" android:layout_marginBottom="12dp"/>
+
+        <!-- Переключатель NIP/PESEL для супруга(и) -->
+        <RadioGroup android:id="@+id/rg_spouse_id_type" android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="horizontal" android:layout_marginBottom="12dp">
+            <RadioButton android:id="@+id/rb_spouse_nip" android:layout_width="0dp" android:layout_weight="1"
+                android:layout_height="wrap_content" android:text="NIP" android:textColor="@color/text_primary" android:textSize="12sp" android:checked="true"/>
+            <RadioButton android:id="@+id/rb_spouse_pesel" android:layout_width="0dp" android:layout_weight="1"
+                android:layout_height="wrap_content" android:text="PESEL" android:textColor="@color/text_primary" android:textSize="12sp"/>
+        </RadioGroup>
+
+        <EditText android:id="@+id/et_spouse_id" android:layout_width="match_parent" android:layout_height="56dp"
+            android:background="@drawable/input_field_bg" android:paddingStart="18dp" android:paddingEnd="18dp"
+            android:textColor="@color/text_primary" android:textColorHint="@color/text_hint" android:hint="@string/pit_spouse_id_hint"
+            android:layout_marginBottom="12dp"/>
+
+        <EditText android:id="@+id/et_spouse_first_name" android:layout_width="match_parent" android:layout_height="56dp"
+            android:background="@drawable/input_field_bg" android:paddingStart="18dp" android:paddingEnd="18dp"
+            android:textColor="@color/text_primary" android:textColorHint="@color/text_hint" android:hint="@string/pit_spouse_first_name_hint"
+            android:layout_marginBottom="12dp"/>
+
+        <EditText android:id="@+id/et_spouse_last_name" android:layout_width="match_parent" android:layout_height="56dp"
+            android:background="@drawable/input_field_bg" android:paddingStart="18dp" android:paddingEnd="18dp"
+            android:textColor="@color/text_primary" android:textColorHint="@color/text_hint" android:hint="@string/pit_spouse_last_name_hint"
+            android:layout_marginBottom="12dp"/>
+
+        <EditText android:id="@+id/et_spouse_birth_date" android:layout_width="match_parent" android:layout_height="56dp"
+            android:background="@drawable/input_field_bg" android:paddingStart="18dp" android:paddingEnd="18dp"
+            android:textColor="@color/text_primary" android:textColorHint="@color/text_hint" android:hint="@string/pit_spouse_birth_date_hint"
+            android:inputType="date" android:layout_marginBottom="12dp"/>
+
+        <EditText android:id="@+id/et_spouse_income" android:layout_width="match_parent" android:layout_height="56dp"
+            android:background="@drawable/input_field_bg" android:paddingStart="18dp" android:paddingEnd="18dp"
+            android:textColor="@color/text_primary" android:textColorHint="@color/text_hint" android:hint="@string/pit_spouse_income_hint"
+            android:inputType="numberDecimal"/>
+
+    </LinearLayout>
 
     <Button android:id="@+id/btn_save_pit_data" android:layout_width="match_parent" android:layout_height="56dp"
         android:text="@string/save" android:textAllCaps="false" android:textSize="16sp"

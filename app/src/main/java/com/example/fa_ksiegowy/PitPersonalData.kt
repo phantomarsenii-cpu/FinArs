@@ -25,7 +25,14 @@ data class PitPersonalData(
     val internetRelief: Double = 0.0,
     val ikzeContribution: Double = 0.0,
     val donations: Double = 0.0,
-    val jointWithSpouse: Boolean = false
+    val jointWithSpouse: Boolean = false,
+    // Данные супруга(и) — заполняются только если jointWithSpouse == true.
+    val spouseIsNip: Boolean = true, // true = NIP, false = PESEL
+    val spouseId: String = "",
+    val spouseFirstName: String = "",
+    val spouseLastName: String = "",
+    val spouseBirthDate: String = "",
+    val spouseIncome: Double = 0.0
 ) {
     val isComplete: Boolean
         get() = firstName.isNotBlank() && lastName.isNotBlank() && taxOffice.isNotBlank()
@@ -53,7 +60,13 @@ object PitDataStore {
             internetRelief = p.getFloat("internetRelief", 0f).toDouble(),
             ikzeContribution = p.getFloat("ikzeContribution", 0f).toDouble(),
             donations = p.getFloat("donations", 0f).toDouble(),
-            jointWithSpouse = p.getBoolean("jointWithSpouse", false)
+            jointWithSpouse = p.getBoolean("jointWithSpouse", false),
+            spouseIsNip = p.getBoolean("spouseIsNip", true),
+            spouseId = p.getString("spouseId", "") ?: "",
+            spouseFirstName = p.getString("spouseFirstName", "") ?: "",
+            spouseLastName = p.getString("spouseLastName", "") ?: "",
+            spouseBirthDate = p.getString("spouseBirthDate", "") ?: "",
+            spouseIncome = p.getFloat("spouseIncome", 0f).toDouble()
         )
     }
 
@@ -76,6 +89,12 @@ object PitDataStore {
             .putFloat("ikzeContribution", data.ikzeContribution.toFloat())
             .putFloat("donations", data.donations.toFloat())
             .putBoolean("jointWithSpouse", data.jointWithSpouse)
+            .putBoolean("spouseIsNip", data.spouseIsNip)
+            .putString("spouseId", data.spouseId)
+            .putString("spouseFirstName", data.spouseFirstName)
+            .putString("spouseLastName", data.spouseLastName)
+            .putString("spouseBirthDate", data.spouseBirthDate)
+            .putFloat("spouseIncome", data.spouseIncome.toFloat())
             .apply()
     }
 }

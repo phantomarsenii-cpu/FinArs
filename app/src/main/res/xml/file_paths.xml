@@ -2,4 +2,13 @@
 <paths xmlns:android="http://schemas.android.com/apk/res/android">
     <external-files-path name="reports" path="reports/" />
     <external-files-path name="root" path="." />
+    <!-- Android 8–9 (API 26–28): rachunki/faktury zapisywane bezpośrednio w publicznym
+         Documents/FinArs/Invoices (na 29+ ten sam katalog obsługuje MediaStore). -->
+    <external-path name="invoices" path="Documents/FinArs/Invoices/" />
+    <!-- Android 8–9 (API 26–28): raporty inwentaryzacji zapisywane bezpośrednio
+         w publicznym Documents/FinArs/Inventory (na 29+ ten sam katalog obsługuje MediaStore). -->
+    <external-path name="inventory" path="Documents/FinArs/Inventory/" />
+    <!-- Awaryjne kopie PDF do podglądu przez FileProvider (patrz resolveViewableUri
+         w InvoiceFileStorage/InventoryFileStorage) — cały katalog cache aplikacji. -->
+    <cache-path name="pdf_view_cache" path="." />
 </paths>

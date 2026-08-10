@@ -1,0 +1,384 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">FinArs</string>
+    <string name="app_subtitle">FinArs</string>
+    <string name="add_income">Добавить доход</string>
+    <string name="add_expense">Добавить расход</string>
+    <string name="add_entry">Добавить +</string>
+    <string name="balance">Баланс</string>
+    <string name="enter_amount">Сумма</string>
+    <string name="enter_comment">Комментарий</string>
+    <string name="entry_date_label">Дата операции</string>
+    <string name="attach_receipt">Прикрепить чек</string>
+    <string name="save">Сохранить</string>
+    <string name="settings">Настройки</string>
+    <string name="tax_percent">Процент налога</string>
+    <string name="other_income_label">Прочие доходы (%1$d)</string>
+    <string name="tax_scale_title">Налог считается автоматически</string>
+    <string name="tax_scale_description" formatted="false">0% до 30 000 zł/год · 12% с суммы от 30 000 до 120 000 zł · 32% с суммы свыше 120 000 zł. Ставка применяется только к части сверх каждого порога, а не ко всей сумме.</string>
+    <string name="other_income_title">Прочие доходы</string>
+    <string name="other_income_hint">Ваш общий налогооблагаемый доход за этот год из других источников (работа, другая деятельность и т.д.). Учитывается вместе с доходом из этого приложения при проверке годового необлагаемого лимита в 30 000 zł.</string>
+    <string name="saved">Сохранено</string>
+    <string name="auto_tax_button">Рассчитать автоматически</string>
+    <string name="auto_tax_result" formatted="false">Предложенная ставка: %1$.1f% (по шкале PIT: 12% до 120 000 zł/год, 32% свыше). Перед сохранением можно поправить вручную.</string>
+    <string name="export_report">Экспорт отчёта</string>
+    <string name="generate_report">Сгенерировать отчёт</string>
+    <string name="select_period">Выберите период</string>
+    <string name="month">Месяц</string>
+    <string name="year">Год</string>
+    <string name="custom_range">Произвольный период</string>
+    <string name="from">От</string>
+    <string name="to">До</string>
+    <string name="no_entries">Нет записей</string>
+    <string name="search_no_results">Ничего не найдено</string>
+    <string name="history_search_hint">Поиск по комментарию или сумме</string>
+    <string name="invoice_search_hint">Поиск по номеру, клиенту или сумме</string>
+    <string name="filter_date_range">Диапазон дат</string>
+    <string name="filter_clear">Сбросить фильтры</string>
+
+    <string name="statistics">Статистика</string>
+    <string name="stat_income">Доход</string>
+    <string name="stat_expense">Расход</string>
+    <string name="stat_profit">Прибыль (до налога)</string>
+    <string name="stat_tax_format" formatted="false">Налог (%1$.1f%)</string>
+
+    <string name="report_col_date">Дата</string>
+    <string name="report_col_income">Доход</string>
+    <string name="report_col_expense">Расход</string>
+    <string name="report_col_tax_percent" formatted="false">Налог %</string>
+    <string name="report_col_tax_amount">Сумма налога</string>
+    <string name="report_col_comment">Комментарий</string>
+    <string name="report_sheet_name">Отчёт</string>
+    <string name="report_title_month">Отчёт — Месяц</string>
+    <string name="report_title_year">Отчёт — Год</string>
+    <string name="report_title_custom">Отчёт — Произвольный период</string>
+    <string name="custom_range_invalid">Дата окончания должна быть позже даты начала</string>
+    <string name="report_total_income">Итого доход</string>
+    <string name="report_total_expense">Итого расход</string>
+    <string name="report_total_profit">Итого прибыль</string>
+    <string name="report_total_tax">Итого налог</string>
+    <string name="report_total_net_profit">Чистая прибыль (после налога)</string>
+    <string name="report_generating">Формирую отчёт…</string>
+    <string name="report_ready">Отчёт готов</string>
+    <string name="report_share_title">Поделиться отчётом</string>
+    <string name="report_error">Ошибка формирования отчёта: %1$s</string>
+    <string name="about_app">О приложении</string>
+    <string name="about_description">FinArs — комплексное приложение для управления финансами нерегистрируемой деятельности и ИП (JDG). Ведите учёт доходов и расходов, контролируйте лимиты, автоматически считайте налоги, выставляйте счета и формируйте готовые отчёты и налоговые декларации — всё в одном месте, с полной историей операций под рукой.\n\n\uD83D\uDCCA Финансы и налоги\n\uD83D\uDCB0 Учёт доходов и расходов с прикреплением чеков\n\uD83D\uDCC8 Автоматический расчёт прибыли и налога (шкала 12%/32%, плоский 19%, ryczałt)\n\uD83D\uDD01 Регулярные транзакции (аренда, подписки) создаются автоматически каждый месяц\n\uD83D\uDEA6 Контроль лимитов: незарегистрированная деятельность, порог 120 000 zł, освобождение от VAT (200 000 zł)\n\uD83D\uDD14 Уведомления о приближении и превышении лимитов\n\n\uD83E\uDDFE Счета и фактуры (Pro)\n\uD83D\uDCDD Выставление счетов/фактур физлицам и компаниям с генерацией PDF\n\u2705 Статусы: Оплачена / Ожидает оплаты / Просрочена, плюс напоминания о сроке оплаты\n\uD83D\uDCB5 Контроль годового лимита наличных (20 000 zł) для продаж физлицам\n\uD83D\uDD0D История счетов с поиском и фильтрами\n\n\uD83D\uDCC4 Отчёты и декларации\n\uD83D\uDCCA График доходов и расходов за последние 6 месяцев\n\uD83D\uDCE5 Экспорт отчёта за месяц (бесплатно), год и произвольный период (Pro) в Excel вместе с чеками\n\uD83E\uDDEE Формирование деклараций PIT-36 / PIT-36L / PIT-28 — вспомогательный PDF и заполнение официального бланка (Pro)\n\n\uD83D\uDD12 Безопасность и удобство\n\uD83D\uDD10 Блокировка приложения PIN-кодом и отпечатком пальца / лицом\n\uD83D\uDCBE Резервное копирование и восстановление данных (Pro)\n\uD83C\uDF19 Современный тёмный интерфейс\n\uD83C\uDF0D Доступно на польском, русском и английском языках\n\uD83D\uDD12 Все данные хранятся локально на устройстве\n\nСвязь: p.arsenii@interia.pl</string>
+    <string name="about_email">p.arsenii@interia.pl</string>
+    <string name="dialog_close">Закрыть</string>
+    <string name="dialog_write">Написать</string>
+    <string name="pro_status_locked">Pro не активирован. Разблокируйте, чтобы получить годовые и произвольные отчёты в Excel, резервное копирование и восстановление, а также убрать рекламу.</string>
+    <string name="pro_status_active">Pro активирован. Спасибо за поддержку!</string>
+    <string name="pro_unlock_button">Разблокировать Pro</string>
+    <string name="pro_unlock_button_price">Разблокировать Pro — %1$s</string>
+    <string name="pro_loading">Загрузка цены…</string>
+    <string name="pro_feature_locked_title">Функция Pro</string>
+    <string name="pro_feature_locked_message">Годовые и произвольные отчёты доступны только в Pro-версии. Разблокируйте Pro в настройках.</string>
+    <string name="pro_feature_locked_go_settings">Перейти в настройки</string>
+    <string name="invoice_pro_locked_message">Выставление фактур доступно только в Pro-версии. Разблокируйте Pro в настройках.</string>
+    <string name="backup_pro_locked_message">Резервное копирование и восстановление — Pro-функция. Разблокируйте Pro, чтобы сохранить данные в файл на случай потери.</string>
+    <string name="pro_purchase_error">Не удалось открыть окно оплаты. Проверьте соединение и попробуйте снова.</string>
+    <string name="pro_info_title">Pro-версия</string>
+    <string name="pro_info_message">Pro открывает:\n\n\u2022 Выставление счетов и фактур (PDF)\n\u2022 Годовой отчёт в Excel\n\u2022 Отчёт за произвольный период\n\u2022 Формирование деклараций PIT-36 / PIT-36L / PIT-28\n\u2022 Резервное копирование и восстановление\n\u2022 Без рекламы\n\nЭто разовая покупка — платите один раз, доступ остаётся навсегда.</string>
+    <string name="pro_info_continue">Перейти к покупке</string>
+    <string name="enter_code_button">Есть код?</string>
+    <string name="enter_code_title">Введите код</string>
+    <string name="enter_code_hint">Код</string>
+    <string name="enter_code_apply">Применить</string>
+    <string name="enter_code_wrong">Неверный код</string>
+    <string name="enter_code_success">Pro активирован</string>
+    <string name="transaction_history">История операций</string>
+    <string name="stat_net_profit">Чистая прибыль (после налога)</string>
+    <string name="type_income">Доход</string>
+    <string name="type_expense">Расход</string>
+    <string name="edit_income_title">Редактировать доход</string>
+    <string name="edit_expense_title">Редактировать расход</string>
+    <string name="delete_entry">Удалить</string>
+    <string name="delete_confirm_title">Удалить запись?</string>
+    <string name="delete_confirm_message">Запись будет удалена без возможности восстановления.</string>
+    <string name="delete_confirm_yes">Удалить</string>
+    <string name="entry_updated">Обновлено</string>
+    <string name="entry_deleted">Удалено</string>
+    <string name="clear_all_button">Очистить все данные</string>
+    <string name="clear_all_confirm_title">Вы уверены?</string>
+    <string name="clear_all_confirm_message">Все доходы и расходы будут безвозвратно удалены. Это действие нельзя отменить.</string>
+    <string name="clear_all_confirm_yes">Удалить всё</string>
+    <string name="clear_all_done">Все данные удалены</string>
+
+    <string name="settings_menu_tax">Налог и лимиты</string>
+    <string name="settings_menu_language">Язык</string>
+    <string name="settings_menu_backup">Резервная копия (Pro)</string>
+    <string name="settings_menu_pro">Pro версия</string>
+
+    <string name="backup_hint">Сохраните резервную копию доходов/расходов — суммы, даты, комментарии и прикреплённые фото чеков — в виде файла. В окне сохранения можно выбрать память телефона или Google Диск (если установлено приложение Диска). Храните этот файл в надёжном месте — только по нему можно восстановить данные при потере телефона или переустановке приложения.</string>
+    <string name="backup_in_progress">Выполняется…</string>
+    <string name="backup_create">Создать резервную копию</string>
+    <string name="backup_restore">Восстановить из копии</string>
+    <string name="backup_success">Копия сохранена (%1$d записей)</string>
+    <string name="backup_error">Ошибка: %1$s</string>
+    <string name="backup_restore_confirm_title">Восстановить из копии?</string>
+    <string name="backup_restore_confirm_message">Записи из файла копии будут добавлены к тем, что уже есть на этом устройстве (существующие записи не удаляются и не перезаписываются). Если нужно "чистое" восстановление — сначала используйте "Очистить все данные", затем восстановление.</string>
+    <string name="backup_invalid_file">Это не похоже на файл резервной копии FinArs</string>
+    <string name="backup_restored">Восстановлено записей: %1$d</string>
+    <string name="backup_never">Последняя копия: никогда</string>
+    <string name="backup_last_time">Последняя копия: %1$s</string>
+
+    <string name="settings_menu_security">Безопасность (PIN / отпечаток)</string>
+    <string name="settings_menu_pit36">Сформировать PIT (Pro)</string>
+    <string name="pit36_pro_locked_message">Генерация PIT-36 — функция Pro. Разблокируйте Pro в настройках, чтобы ей пользоваться.</string>
+
+    <string name="lock_title">FinArs заблокирован</string>
+    <string name="lock_subtitle">Введите PIN, чтобы продолжить</string>
+    <string name="lock_pin_hint">PIN</string>
+    <string name="lock_wrong_pin">Неверный PIN, попробуйте ещё раз</string>
+    <string name="lock_unlock_button">Разблокировать</string>
+    <string name="lock_biometric_button">Войти по отпечатку / лицу</string>
+    <string name="lock_biometric_prompt_title">Разблокировка FinArs</string>
+    <string name="lock_biometric_prompt_subtitle">Подтвердите отпечатком пальца или лицом</string>
+    <string name="lock_use_pin">Ввести PIN</string>
+    <string name="lock_biometric_unavailable">На этом устройстве не настроен отпечаток/лицо. Сначала добавьте его в настройках телефона.</string>
+
+    <string name="security_hint">Защитите приложение PIN-кодом. Когда функция включена, FinArs будет спрашивать PIN каждый раз, когда вы возвращаетесь в приложение после его сворачивания. Также можно включить вход по отпечатку/лицу — это быстрый способ ввести тот же PIN.</string>
+    <string name="security_pin_switch">Запрашивать PIN при открытии приложения</string>
+    <string name="security_change_pin">Изменить PIN</string>
+    <string name="security_biometric_switch">Вход по отпечатку / лицу</string>
+    <string name="security_set_pin_title">Установите PIN</string>
+    <string name="security_set_pin_message">Выберите PIN из 4–6 цифр</string>
+    <string name="security_continue">Продолжить</string>
+    <string name="security_pin_length_error">PIN должен состоять из 4–6 цифр</string>
+    <string name="security_confirm_pin_title">Подтвердите PIN</string>
+    <string name="security_pin_saved">PIN сохранён</string>
+    <string name="security_pin_mismatch">PIN-коды не совпадают, попробуйте ещё раз</string>
+    <string name="security_disable_pin_title">Введите текущий PIN</string>
+    <string name="security_enter_current_pin">Введите текущий PIN, чтобы продолжить</string>
+    <string name="security_pin_disabled">Защита PIN-ом отключена</string>
+
+    <string name="pit_data_title">Личные данные для налоговой декларации</string>
+    <string name="pit_data_hint">Используются только для заполнения вспомогательного отчёта PIT (PIT-36 / PIT-36L / PIT-28 — в зависимости от вида деятельности). Всё остаётся на вашем устройстве.</string>
+    <string name="pit_first_name">Имя</string>
+    <string name="pit_last_name">Фамилия</string>
+    <string name="pit_pesel">PESEL (необязательно)</string>
+    <string name="pit_street">Улица</string>
+    <string name="pit_house_number">Номер дома</string>
+    <string name="pit_apartment_number">Номер квартиры (необязательно)</string>
+    <string name="pit_voivodeship">Воеводство</string>
+    <string name="pit_county">Повят</string>
+    <string name="pit_commune">Гмина</string>
+    <string name="pit_postal_code">Почтовый индекс</string>
+    <string name="pit_city">Город</string>
+    <string name="pit_tax_office">Налоговая инспекция (urząd skarbowy)</string>
+    <string name="pit_reliefs_title">Льготы и вычеты (необязательно)</string>
+    <string name="pit_children_count">Количество детей (ulga na dzieci)</string>
+    <string name="pit_internet_relief">Льгота на интернет — сумма расходов</string>
+    <string name="pit_ikze">Взносы на IKZE</string>
+    <string name="pit_donations">Пожертвования (darowizny)</string>
+    <string name="pit_joint_spouse">Совместная подача с супругом</string>
+    <string name="pit_spouse_data_title">Личные данные супруга(и)</string>
+    <string name="pit_spouse_id_hint">NIP/PESEL супруга(и)</string>
+    <string name="pit_spouse_first_name_hint">Имя супруга(и)</string>
+    <string name="pit_spouse_last_name_hint">Фамилия супруга(и)</string>
+    <string name="pit_spouse_birth_date_hint">Дата рождения (ДД.ММ.ГГГГ)</string>
+    <string name="pit_spouse_income_hint">Доход супруга(и) (опционально)</string>
+    <string name="pit_data_required_error">Сначала укажите имя, фамилию и налоговую инспекцию</string>
+
+    <string name="pit36_hint">Выберите полный календарный год, проверьте личные данные, затем сформируйте вспомогательный PDF с цифрами и подсказками для заполнения вашей декларации на podatki.gov.pl (Twój e-PIT) или на бумаге.</string>
+    <string name="pit_row_przychod">Przychód (доход)</string>
+    <string name="pit_row_koszty">Koszty (расходы)</string>
+    <string name="pit_row_dochod">Dochód (прибыль)</string>
+    <string name="pit_row_tax">Расчётный налог</string>
+    <string name="pit_data_status_missing">Личные данные ещё не заполнены — это нужно сделать перед формированием отчёта.</string>
+    <string name="pit_data_status_ready">Личные данные готовы: %1$s</string>
+    <string name="pit_edit_data_button">Изменить личные данные</string>
+    <string name="pit36_generate_button">Сформировать вспомогательный PDF</string>
+    <string name="pit36_disclaimer">Этот отчёт носит исключительно информационный характер и не является официальным бланком, e-Deklaracją или налоговой консультацией. Всегда перепроверяйте цифры перед подачей декларации.</string>
+    <string name="pit36_calculating">Идёт расчёт, подождите…</string>
+    <string name="pit36_generated">PDF-отчёт сформирован</string>
+    <string name="pit36_generate_official_button">Заполнить официальный бланк (шаблон 2025)</string>
+    <string name="pit36_official_hint">Заполняет настоящий государственный PDF %1$s(32)/2025: ваши данные, адрес и строку доходов/расходов бизнеса. Остальные источники дохода и вычеты нужно дозаполнить самостоятельно — см. предупреждение ниже.</string>
+    <string name="pit36_official_unsupported">Официальный заполненный бланк доступен только для PIT-36 (skala). Ваша текущая форма — %1$s, используйте кнопку «Сформировать вспомогательный PDF».</string>
+    <string name="pit36_official_generated">Официальный бланк PIT-36 заполнен. Проверьте разделы E–K и добавьте другие доходы/вычеты перед подачей.</string>
+
+    <!-- Тип деятельности / правила регистрации -->
+    <string name="activity_type_title">Форма деятельности</string>
+    <string name="activity_type_hint">Выберите, как вы работаете — от этого зависит применяемый лимит и то, какую декларацию подавать.</string>
+    <string name="activity_type_niezarejestrowana">Незарегистрированная деятельность (без JDG)</string>
+    <string name="activity_type_niezarejestrowana_desc" formatted="false">Доход не должен превышать 75% минимальной зарплаты в месяц. При превышении нужно зарегистрировать JDG в течение 7 дней. Подаётся через PIT-36 по обычной шкале.</string>
+    <string name="activity_type_jdg_skala" formatted="false">Зарегистрированное ИП (JDG) — шкала 12% / 32% (PIT-36)</string>
+    <string name="activity_type_jdg_liniowy" formatted="false">Зарегистрированное ИП (JDG) — плоский налог 19% (PIT-36L)</string>
+    <string name="activity_type_jdg_ryczalt">Зарегистрированное ИП (JDG) — ryczałt (PIT-28)</string>
+    <string name="ryczalt_rate_label" formatted="false">Ставка ryczałtu для вашей деятельности (%, зависит от PKD)</string>
+    <string name="ryczalt_rate_hint">например 3, 5.5, 8.5, 12, 17</string>
+    <string name="min_wage_label">Минимальная месячная зарплата (zł) — для расчёта лимита незарегистрированной деятельности</string>
+    <string name="monthly_limit_preview" formatted="false">Месячный лимит (75%): %1$.2f zł</string>
+
+    <!-- Гейджи лимитов на главном экране -->
+    <string name="limits_title">Лимиты</string>
+    <string name="limit_monthly_label">Незарегистрированная деятельность, этот месяц: %1$s / %2$s zł</string>
+    <string name="limit_bracket_label">Первый налоговый порог (120 000 zł/год): %1$s / %2$s zł</string>
+    <string name="limit_vat_label">Освобождение от VAT (200 000 zł/год): %1$s / %2$s zł</string>
+    <string name="limit_exceeded_warning">Превышен лимит незарегистрированной деятельности! Вы обязаны зарегистрировать JDG в течение 7 дней.</string>
+
+    <!-- Динамическая подпись налога -->
+    <string name="tax_label_zero" formatted="false">Налог (0% — необлагаемый минимум)</string>
+    <string name="tax_label_12" formatted="false">Налог (12%)</string>
+    <string name="tax_label_32" formatted="false">Налог (ставка 32%)</string>
+    <string name="tax_label_progressive" formatted="false">Налог (прогрессивная шкала 12% / 32%)</string>
+    <string name="tax_label_liniowy" formatted="false">Налог (плоский 19%)</string>
+    <string name="tax_label_ryczalt">Налог (ryczałt, от дохода)</string>
+    <string name="pit_form_applicable">Применимая декларация: %1$s</string>
+
+    <!-- Таблица истории -->
+    <string name="history_col_receipt">Чек</string>
+    <string name="history_col_amount">Сумма</string>
+
+    <!-- Колонки отчёта -->
+    <string name="report_col_receipt">Чек</string>
+    <string name="report_receipt_yes">Есть</string>
+
+    <!-- Уведомления -->
+    <string name="notif_channel_name">Лимиты и сроки</string>
+    <string name="notif_channel_description">Оповещения о лимитах деятельности и налоговых сроках</string>
+    <string name="notif_limit_exceeded_title">Превышен лимит незарегистрированной деятельности</string>
+    <string name="notif_limit_exceeded_text" formatted="false">Доход в этом месяце превышает 75% минимальной зарплаты. Зарегистрируйте JDG в течение 7 дней.</string>
+    <string name="notif_limit_95_title" formatted="false">Достигнуто 95% месячного лимита</string>
+    <string name="notif_limit_95_text">Вы очень близки к лимиту незарегистрированной деятельности за этот месяц.</string>
+    <string name="notif_limit_80_title" formatted="false">Достигнуто 80% месячного лимита</string>
+    <string name="notif_limit_80_text" formatted="false">Использовано 80% лимита незарегистрированной деятельности за этот месяц.</string>
+    <string name="notif_bracket_title">Приближение к порогу 120 000 zł</string>
+    <string name="notif_bracket_text" formatted="false">Годовая прибыль приближается к 120 000 zł — доход сверх этой суммы облагается по 32% вместо 12%.</string>
+    <string name="notif_vat_title">Приближение к лимиту освобождения от VAT</string>
+    <string name="notif_vat_text">Годовой доход приближается к 200 000 zł — порогу освобождения от VAT.</string>
+    <string name="notif_advance_title">Напоминание об авансовом платеже</string>
+    <string name="notif_advance_text">Авансовые платежи по налогу нужно вносить до 20 числа каждого месяца.</string>
+    <string name="notif_pit_deadline_title">Напоминание о подаче годовой декларации</string>
+    <string name="notif_pit_deadline_text">Годовые декларации подаются с 15 февраля по 30 апреля.</string>
+    <string name="terms_title">Пользовательское соглашение</string>
+    <string name="terms_full_text">Пользовательское соглашение и Отказ от ответственности (Terms of Service &amp; Legal Disclaimer)\n\nНажимая кнопку «Принять», вы подтверждаете, что прочитали, поняли и полностью согласны со всеми условиями данного соглашения. Если вы не согласны с условиями, вы не имеете права использовать приложение FinArs.\n\n1. Отказ от оказания бухгалтерских и юридических услуг\n— Приложение FinArs является исключительно инструментальным сервисом (автоматизированным калькулятором и органайзером учета данных).\n— Приложение, его разработчики и правообладатели НЕ являются аккредитованной бухгалтерской компанией, налоговыми консультантами (Doradca podatkowy) или юридическим бюро.\n— Все расчеты, автоматические генерации деклараций (включая формы PIT-36, PIT-36L, PIT-28), шкалы лимитов и уведомления носят исключительно информационный и справочный характер.\n\n2. Ответственность за точность и подачу данных\nПользователь несет полную и единоличную ответственность за достоверность вводимых данных, проверку итоговых расчетов и PDF-форм перед подачей в налоговые органы, а также за соблюдение сроков подачи деклараций и регистрации деятельности.\n\n3. Ограничение ответственности разработчика\nПриложение предоставляется «как есть», без каких-либо гарантий. Разработчик не несет ответственности за штрафы, доначисления, ошибки алгоритмов и потерю данных на устройстве пользователя.\n\n4. Изменения в законодательстве\nЗаконодательство Республики Польша регулярно меняется. Рекомендуется сверять результаты с podatki.gov.pl или лицензированными бухгалтерами.\n\n5. Конфиденциальность и хранение данных\nВсе данные и PDF-файлы хранятся локально на устройстве пользователя. Разработчик не собирает и не передает финансовые документы на внешние серверы.\n\n6. Применимое право\nК настоящему Соглашению применяется законодательство Республики Польша.\n\n7. Отзыв согласия\nСоглашение принимается однократно при первом запуске. Если пользователь больше не согласен с условиями — он обязан прекратить использование приложения и удалить его.</string>
+    <string name="terms_checkbox_label">Я прочитал(а) и принимаю условия соглашения</string>
+    <string name="terms_accept_button">Принять и продолжить</string>
+    <string name="terms_status_accepted">Статус: Соглашение принято (%1$s)</string>
+    <string name="terms_status_unknown">Статус: Соглашение принято</string>
+    <string name="settings_menu_terms">Пользовательское соглашение</string>
+
+
+    <!-- Счета / Фактуры -->
+    <string name="nav_invoices">Счета</string>
+    <string name="invoice_form_title">Новый счёт / рахунек</string>
+    <string name="invoice_seller_section">Продавец (ваши данные)</string>
+    <string name="seller_name">Имя и фамилия / название фирмы</string>
+    <string name="seller_nip">NIP (оставьте пустым, если нет)</string>
+    <string name="seller_address_street">Улица и номер</string>
+    <string name="seller_address_postal">Почтовый индекс</string>
+    <string name="seller_address_city">Город</string>
+    <string name="invoice_buyer_section">Покупатель</string>
+    <string name="buyer_physical_person_switch">Физическое лицо (без NIP)</string>
+    <string name="buyer_name">Имя и фамилия</string>
+    <string name="buyer_nip">NIP покупателя</string>
+    <string name="buyer_address_street">Улица и номер</string>
+    <string name="buyer_address_postal">Почтовый индекс</string>
+    <string name="buyer_address_city">Город</string>
+    <string name="invoice_service_section">Услуга / товар</string>
+    <string name="service_name">Наименование услуги или товара</string>
+    <string name="service_amount">Сумма брутто (PLN)</string>
+    <string name="payment_date_label">Дата оплаты</string>
+    <string name="service_date_label">Дата оказания услуги / продажи</string>
+    <string name="payment_method_label">Способ оплаты</string>
+    <string name="payment_method_cash">Наличные</string>
+    <string name="payment_method_transfer">Перевод</string>
+    <string name="payment_method_blik">BLIK</string>
+    <string name="payment_paid_cash">Оплачено наличными</string>
+    <string name="payment_paid_transfer">Оплачено переводом</string>
+    <string name="payment_paid_blik">Оплачено через BLIK</string>
+    <string name="cash_limit_title">Наличные продажи физлицам за год</string>
+    <string name="cash_limit_label">%1$s / %2$s PLN</string>
+    <string name="cash_limit_warning">Вы приближаетесь к годовому лимиту наличных расчётов с физлицами без кассового аппарата.</string>
+    <string name="cash_limit_exceeded_warning">Превышен годовой лимит 20 000 PLN наличных расчётов с физлицами — может потребоваться кассовый аппарат.</string>
+    <string name="generate_invoice_button">Сформировать PDF</string>
+    <string name="invoice_generated_toast">Документ сохранён: %1$s</string>
+    <string name="invoice_error_toast">Не удалось создать документ: %1$s</string>
+    <string name="open_pdf_button">Открыть PDF</string>
+    <string name="share_invoice_button">Отправить</string>
+    <string name="open_invoices_folder_button">Открыть папку со счетами</string>
+    <string name="open_folder_error">Не удалось открыть папку. Файлы сохранены в %1$s</string>
+    <string name="invoice_fill_required_fields">Заполните данные покупателя, услугу и сумму</string>
+
+    <!-- История счетов -->
+    <string name="invoice_history_title">История счетов</string>
+    <string name="no_invoices">Вы ещё не выставили ни одного счёта</string>
+
+
+    <!-- Метки PDF счёта -->
+    <string name="invoice_pdf_faktura">СЧЁТ-ФАКТУРА</string>
+    <string name="invoice_pdf_rachunek">СЧЁТ</string>
+    <string name="invoice_pdf_issue_date">Дата выставления</string>
+    <string name="invoice_pdf_sale_date">Дата продажи</string>
+    <string name="invoice_pdf_seller">Продавец</string>
+    <string name="invoice_pdf_buyer">Покупатель</string>
+    <string name="invoice_pdf_nip">NIP</string>
+    <string name="invoice_pdf_bank_account">Счёт</string>
+    <string name="invoice_pdf_buyer_private">Физическое лицо без предпринимательской деятельности (без NIP).</string>
+    <string name="invoice_pdf_table_lp">№</string>
+    <string name="invoice_pdf_table_name">Наименование товара/услуги</string>
+    <string name="invoice_pdf_table_unit">Ед.</string>
+    <string name="invoice_pdf_table_qty">Кол-во</string>
+    <string name="invoice_pdf_table_price">Цена</string>
+    <string name="invoice_pdf_table_total">Сумма</string>
+    <string name="invoice_pdf_unit_piece">шт</string>
+    <string name="invoice_pdf_sum_label">Итого</string>
+    <string name="invoice_pdf_paid_stamp">ОПЛАЧЕНО</string>
+    <string name="invoice_pdf_payment_date">Дата оплаты</string>
+    <string name="invoice_pdf_footer">Документ создан в приложении FinArs. Не является официальной бухгалтерской или налоговой консультацией — в случае сомнений обратитесь к налоговому консультанту.</string>
+    <string name="seller_bank_account">Номер счёта (необязательно)</string>
+    <string name="delete_invoice_confirm_title">Удалить счёт?</string>
+    <string name="delete_invoice_confirm_message">Запись и PDF-файл счёта будут безвозвратно удалены. Это действие нельзя отменить.</string>
+    <string name="invoice_deleted">Счёт удалён</string>
+
+    <string name="invoice_status_paid">Оплачена</string>
+    <string name="invoice_status_pending">Ожидает оплаты</string>
+    <string name="invoice_status_overdue">Просрочена</string>
+    <string name="invoice_paid_switch_label">Оплачена</string>
+    <string name="invoice_due_date_label">Срок оплаты</string>
+    <string name="notif_invoice_overdue_title">Просроченная фактура</string>
+    <string name="notif_invoice_overdue_text">Фактура №%2$d для %1$s просрочена.</string>
+    <string name="notif_invoice_due_soon_title">Скоро срок оплаты</string>
+    <string name="notif_invoice_due_soon_text">Срок оплаты фактуры №%2$d для %1$s истекает в течение 3 дней.</string>
+    <string name="recurring_switch_label">Повторять ежемесячно</string>
+    <string name="chart_title">Доходы и расходы за последние 6 месяцев</string>
+    <string name="invoice_status_filter_all">Все</string>
+
+    <string name="invoice_pdf_pending_stamp">ОЖИДАЕТ ОПЛАТЫ</string>
+
+    <!-- Update 41: тип деятельности, склад, штрихкоды, OCR чеков -->
+    <string name="settings_menu_business">Тип деятельности</string>
+    <string name="business_kind_title">Тип деятельности</string>
+    <string name="business_kind_description">Выберите, что больше подходит вашему бизнесу. При выборе \"Продажи\" или \"Смешанная\" на главном экране появится кнопка \"Склад\" для учёта товаров.</string>
+    <string name="business_kind_sales">Продажи</string>
+    <string name="business_kind_services">Услуги</string>
+    <string name="business_kind_mixed">Смешанная (продажи и услуги)</string>
+    <string name="nav_magazin">Склад</string>
+    <string name="magazin_title">Склад</string>
+    <string name="magazin_empty">Пока нет товаров. Добавьте вручную или отсканируйте штрихкод.</string>
+    <string name="add_product_manually">Добавить вручную</string>
+    <string name="scan_barcode">Сканировать штрихкод</string>
+    <string name="scan_short">Скан</string>
+    <string name="scan_barcode_prompt">Наведите камеру на штрихкод</string>
+    <string name="looking_up_product">Ищу товар в базе…</string>
+    <string name="product_name">Название товара</string>
+    <string name="product_barcode">Штрихкод (необязательно)</string>
+    <string name="product_quantity">Количество на складе</string>
+    <string name="product_unit">Единица (шт., кг и т.п.)</string>
+    <string name="product_low_stock">Порог \"заканчивается\"</string>
+    <string name="product_price">Цена за единицу</string>
+    <string name="product_saved">Товар сохранён</string>
+    <string name="low_stock_banner">Заканчивается: %1$d товар(ов)</string>
+    <string name="notif_low_stock_title">Товар заканчивается</string>
+    <string name="notif_low_stock_text">%1$s: осталось %2$s %3$s</string>
+    <string name="add_from_warehouse">Добавить товары со склада</string>
+    <string name="select_products_title">Выбор товаров</string>
+    <string name="in_stock_suffix">в наличии</string>
+    <string name="select_at_least_one_product">Выберите хотя бы один товар</string>
+    <string name="scan_receipt_button">Сканировать чек (автозаполнение)</string>
+    <string name="receipt_scan_processing">Распознаю чек…</string>
+    <string name="receipt_scan_done">Чек распознан, проверьте поля</string>
+    <string name="receipt_scan_no_text">Не удалось распознать чек, заполните вручную</string>
+</resources>

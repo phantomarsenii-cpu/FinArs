@@ -30,40 +30,57 @@
             android:text="@string/activity_type_niezarejestrowana_desc" android:textSize="12sp"
             android:textColor="#9AA0C0" android:paddingStart="32dp" android:paddingBottom="14dp"/>
 
+        <!-- Update: приложение сфокусировано ИСКЛЮЧИТЕЛЬНО на Działalność
+             Nierejestrowana — варианты Zarejestrowana JDG (skala/liniowy/ryczałt)
+             скрыты из UI (visibility="gone"), поэтому пользователь физически не
+             может их выбрать и rb_niezarejestrowana остаётся отмеченным всегда
+             (это значение и так уже используется по умолчанию — см.
+             ActivityTypeHelper.get()). Сами классы/RadioButton'ы намеренно
+             оставлены в коде/разметке (не удалены), чтобы ничего не сломать в
+             SettingsTaxActivity.kt (idFor map/rg.check и т.д.), если в будущем
+             понадобится вернуть выбор формы деятельности. -->
         <RadioButton android:id="@+id/rb_jdg_skala" android:layout_width="match_parent" android:layout_height="wrap_content"
             android:text="@string/activity_type_jdg_skala" android:textColor="@color/text_primary" android:textSize="14sp"
-            android:paddingBottom="10dp"/>
+            android:paddingBottom="10dp" android:visibility="gone"/>
 
         <RadioButton android:id="@+id/rb_jdg_liniowy" android:layout_width="match_parent" android:layout_height="wrap_content"
             android:text="@string/activity_type_jdg_liniowy" android:textColor="@color/text_primary" android:textSize="14sp"
-            android:paddingBottom="10dp"/>
+            android:paddingBottom="10dp" android:visibility="gone"/>
 
         <RadioButton android:id="@+id/rb_jdg_ryczalt" android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:text="@string/activity_type_jdg_ryczalt" android:textColor="@color/text_primary" android:textSize="14sp"/>
+            android:text="@string/activity_type_jdg_ryczalt" android:textColor="@color/text_primary" android:textSize="14sp"
+            android:visibility="gone"/>
 
     </RadioGroup>
 
-    <!-- Ставка ryczałtu — видна только если выбран ryczałt -->
-    <LinearLayout android:id="@+id/layout_ryczalt_rate" android:layout_width="match_parent" android:layout_height="wrap_content"
-        android:orientation="vertical" android:visibility="gone" android:layout_marginBottom="16dp">
+    <!-- Ставка ryczałtu больше не задаётся здесь одной общей цифрой — теперь она
+         выбирается для каждой операции отдельно (доход / позиция фактуры), так как
+         один человек может продавать товары и оказывать услуги с разными ставками. -->
+    <LinearLayout android:id="@+id/layout_ryczalt_rate_hint" android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:orientation="vertical" android:background="@drawable/card_bg" android:padding="14dp"
+        android:visibility="gone" android:layout_marginBottom="16dp">
         <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:text="@string/ryczalt_rate_label" android:textSize="13sp"
-            android:textColor="@color/text_secondary" android:layout_marginBottom="8dp"/>
-        <EditText android:id="@+id/et_ryczalt_rate" android:layout_width="match_parent" android:layout_height="56dp"
-            android:background="@drawable/input_field_bg" android:paddingStart="18dp" android:paddingEnd="18dp"
-            android:textColor="@color/text_primary" android:inputType="numberDecimal" android:hint="@string/ryczalt_rate_hint"/>
+            android:text="@string/ryczalt_rate_moved_title" android:textSize="13sp" android:textStyle="bold"
+            android:textColor="@color/accent_cyan" android:layout_marginBottom="4dp"/>
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:text="@string/ryczalt_rate_moved_hint" android:textSize="12sp"
+            android:textColor="@color/text_secondary"/>
     </LinearLayout>
 
-    <!-- Минимальное вознаграждение (для лимита 75%) -->
-    <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
-        android:text="@string/min_wage_label" android:textSize="13sp"
-        android:textColor="@color/text_secondary" android:layout_marginBottom="8dp"/>
-    <EditText android:id="@+id/et_min_wage" android:layout_width="match_parent" android:layout_height="56dp"
-        android:background="@drawable/input_field_bg" android:paddingStart="18dp" android:paddingEnd="18dp"
-        android:textColor="@color/text_primary" android:inputType="numberDecimal"
-        android:layout_marginBottom="8dp"/>
-    <TextView android:id="@+id/tv_monthly_limit_preview" android:layout_width="match_parent" android:layout_height="wrap_content"
-        android:textSize="12sp" android:textColor="#9AA0C0" android:layout_marginBottom="20dp"/>
+    <!-- Минимальное вознаграждение (для лимита 75%) — актуально ТОЛЬКО для
+         niezarejestrowana, для любого Zarejestrowana JDG блок скрыт целиком. -->
+    <LinearLayout android:id="@+id/layout_min_wage" android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:text="@string/min_wage_label" android:textSize="13sp"
+            android:textColor="@color/text_secondary" android:layout_marginBottom="8dp"/>
+        <EditText android:id="@+id/et_min_wage" android:layout_width="match_parent" android:layout_height="56dp"
+            android:background="@drawable/input_field_bg" android:paddingStart="18dp" android:paddingEnd="18dp"
+            android:textColor="@color/text_primary" android:inputType="numberDecimal"
+            android:layout_marginBottom="8dp"/>
+        <TextView android:id="@+id/tv_monthly_limit_preview" android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:textSize="12sp" android:textColor="#9AA0C0" android:layout_marginBottom="20dp"/>
+    </LinearLayout>
 
     <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
         android:orientation="vertical" android:background="@drawable/card_bg" android:padding="16dp"
@@ -74,6 +91,55 @@
         <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
             android:text="@string/tax_scale_description" android:textSize="13sp"
             android:textColor="@color/text_secondary"/>
+    </LinearLayout>
+
+    <!-- VAT: pole z galką pojawia się dopiero po przekroczeniu limitu 240 000 zł
+         (widoczne też po już złożonym potwierdzeniu — jako informacja bez możliwości edycji). -->
+    <LinearLayout android:id="@+id/layout_vat_compliance" android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:orientation="vertical" android:background="@drawable/card_bg" android:padding="14dp"
+        android:visibility="gone" android:layout_marginBottom="16dp">
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:text="@string/vat_compliance_title" android:textSize="15sp" android:textStyle="bold"
+            android:textColor="#FF3B30" android:layout_marginBottom="6dp"/>
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:text="@string/vat_compliance_hint" android:textSize="12sp"
+            android:textColor="@color/text_secondary" android:layout_marginBottom="10dp"/>
+        <CheckBox android:id="@+id/cb_vat_registered" android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:text="@string/cb_vat_registered_label" android:textColor="@color/text_primary" android:textSize="13sp"/>
+    </LinearLayout>
+
+    <!-- Kasa fiskalna: analogiczne pole z galką po przekroczeniu limitu 20 000 zł gotówki. -->
+    <LinearLayout android:id="@+id/layout_kasa_compliance" android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:orientation="vertical" android:background="@drawable/card_bg" android:padding="14dp"
+        android:visibility="gone" android:layout_marginBottom="16dp">
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:text="@string/kasa_compliance_title" android:textSize="15sp" android:textStyle="bold"
+            android:textColor="#FF3B30" android:layout_marginBottom="6dp"/>
+        <TextView android:id="@+id/tv_kasa_compliance_hint" android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:text="@string/kasa_compliance_hint" android:textSize="12sp"
+            android:textColor="@color/text_secondary" android:layout_marginBottom="10dp"/>
+        <CheckBox android:id="@+id/cb_kasa_fiskalna" android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:text="@string/cb_kasa_label" android:textColor="@color/text_primary" android:textSize="13sp"/>
+    </LinearLayout>
+
+    <!-- Częstotliwość powiadomień push — ile razy dziennie mogą przychodzić alerty
+         o przekroczonych limitach i zaległych fakturach. -->
+    <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:text="@string/push_frequency_title" android:textSize="16sp" android:textStyle="bold"
+        android:textColor="@color/text_primary" android:layout_marginBottom="4dp"/>
+    <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:text="@string/push_frequency_hint" android:textSize="12sp"
+        android:textColor="#9AA0C0" android:layout_marginBottom="10dp"/>
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:orientation="horizontal" android:layout_marginBottom="24dp">
+        <EditText android:id="@+id/et_push_frequency" android:layout_width="0dp" android:layout_height="56dp"
+            android:layout_weight="1" android:layout_marginEnd="10dp"
+            android:background="@drawable/input_field_bg" android:paddingStart="18dp" android:paddingEnd="18dp"
+            android:textColor="@color/text_primary" android:inputType="number" android:maxLength="2"/>
+        <Button android:id="@+id/btn_save_push_frequency" android:layout_width="wrap_content" android:layout_height="56dp"
+            android:text="@string/save" android:textAllCaps="false" android:textSize="14sp"
+            android:paddingStart="20dp" android:paddingEnd="20dp"
+            android:textColor="@color/text_primary" android:background="@drawable/btn_pill_primary"/>
     </LinearLayout>
 
     <TextView android:id="@+id/tv_other_income_label" android:layout_width="match_parent" android:layout_height="wrap_content"
@@ -95,3 +161,4 @@
 
 </LinearLayout>
 </ScrollView>
+

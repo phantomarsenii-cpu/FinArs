@@ -1,101 +1,176 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:paddingStart="24dp"
-    android:paddingEnd="24dp"
-    android:paddingTop="36dp"
-    android:paddingBottom="16dp">
+    android:layout_height="match_parent">
 
-    <TextView
+    <com.example.fa_ksiegowy.AnimatedMeshBackgroundView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/transaction_history"
-        android:textSize="22sp"
-        android:textStyle="bold"
-        android:textColor="@color/accent_cyan"
-        android:layout_marginBottom="14dp"/>
+        android:layout_height="match_parent"/>
 
-    <!-- Заголовок таблицы: Дата | Категория/Описание | Чек | Сумма -->
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:paddingStart="12dp"
-        android:paddingEnd="12dp"
-        android:paddingBottom="6dp">
-        <TextView android:layout_width="72dp" android:layout_height="wrap_content"
-            android:text="@string/report_col_date" android:textColor="@color/text_secondary"
-            android:textSize="11sp" android:textStyle="bold" android:letterSpacing="0.06"/>
-        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1"
-            android:layout_marginStart="8dp"
-            android:text="@string/report_col_comment" android:textColor="@color/text_secondary"
-            android:textSize="11sp" android:textStyle="bold" android:letterSpacing="0.06"/>
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:layout_marginEnd="6dp"
-            android:text="@string/history_col_receipt" android:textColor="@color/text_secondary"
-            android:textSize="11sp" android:textStyle="bold"/>
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:minWidth="72dp" android:gravity="end"
-            android:text="@string/history_col_amount" android:textColor="@color/text_secondary"
-            android:textSize="11sp" android:textStyle="bold" android:letterSpacing="0.06"/>
-    </LinearLayout>
-
-    <TextView
-        android:id="@+id/tv_no_entries"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/no_entries"
-        android:textColor="@color/text_secondary"
-        android:textSize="15sp"
-        android:visibility="gone"
-        android:layout_marginTop="40dp"
-        android:gravity="center"/>
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_history"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:clipToPadding="false"/>
-
-    <!-- Итоговая строка (SUMA / ИТОГО) -->
-    <LinearLayout
-        android:id="@+id/layout_totals"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:background="@drawable/card_bg"
-        android:padding="14dp"
-        android:layout_marginTop="10dp">
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:paddingTop="28dp"
+        android:paddingBottom="96dp">
 
-        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:layout_marginBottom="4dp">
-            <TextView android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content"
-                android:text="@string/report_total_income" android:textColor="@color/text_secondary" android:textSize="13sp"/>
-            <TextView android:id="@+id/tv_totals_income" android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:textColor="@color/income_green" android:textSize="13sp" android:textStyle="bold"/>
+        <!-- ===================== Header: tytul ===================== -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/transaction_history"
+            android:textColor="@color/text_primary"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="20dp"/>
+
+        <!-- ===================== Wyszukiwarka + filtr ===================== -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="16dp">
+
+            <FrameLayout
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="46dp"
+                android:background="@drawable/input_field_bg">
+
+                <ImageView
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:layout_gravity="center_vertical|start"
+                    android:layout_marginStart="14dp"
+                    android:src="@drawable/ic_search"/>
+
+                <EditText
+                    android:id="@+id/et_search"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@null"
+                    android:paddingStart="40dp"
+                    android:paddingEnd="14dp"
+                    android:hint="@string/history_search_hint"
+                    android:textColorHint="@color/text_hint"
+                    android:textColor="@color/text_primary"
+                    android:textSize="13sp"
+                    android:singleLine="true"
+                    android:imeOptions="actionSearch"
+                    android:inputType="text"/>
+            </FrameLayout>
+
+            <FrameLayout
+                android:id="@+id/btn_filter_date"
+                android:layout_width="46dp"
+                android:layout_height="46dp"
+                android:layout_marginStart="10dp"
+                android:background="@drawable/input_field_bg"
+                android:clickable="true"
+                android:focusable="true">
+                <ImageView
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_filter"/>
+            </FrameLayout>
+
         </LinearLayout>
-        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:layout_marginBottom="4dp">
-            <TextView android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content"
-                android:text="@string/report_total_expense" android:textColor="@color/text_secondary" android:textSize="13sp"/>
-            <TextView android:id="@+id/tv_totals_expense" android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:textColor="@color/expense_red" android:textSize="13sp" android:textStyle="bold"/>
+
+        <TextView
+            android:id="@+id/btn_clear_search"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:padding="4dp"
+            android:layout_marginBottom="4dp"
+            android:text="✕"
+            android:textColor="@color/text_secondary"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:clickable="true"
+            android:focusable="true"
+            android:visibility="gone"/>
+
+        <TextView
+            android:id="@+id/btn_filter_clear"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:padding="4dp"
+            android:text="@string/filter_clear"
+            android:textColor="@color/accent_cyan"
+            android:textSize="12sp"
+            android:clickable="true"
+            android:focusable="true"
+            android:visibility="gone"/>
+
+        <!-- ===================== Zakladki: Wszystkie / Przychody / Wydatki ===================== -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="14dp">
+
+            <LinearLayout android:id="@+id/tab_all" android:layout_width="0dp" android:layout_weight="1"
+                android:layout_height="wrap_content" android:orientation="vertical" android:gravity="center"
+                android:clickable="true" android:focusable="true">
+                <TextView android:id="@+id/tv_tab_all" android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="@string/tx_all" android:textColor="@color/text_primary" android:textSize="14sp"
+                    android:textStyle="bold" android:paddingBottom="8dp"/>
+                <View android:id="@+id/indicator_all" android:layout_width="match_parent" android:layout_height="2dp"
+                    android:background="@color/accent_blue_light"/>
+            </LinearLayout>
+
+            <LinearLayout android:id="@+id/tab_income" android:layout_width="0dp" android:layout_weight="1"
+                android:layout_height="wrap_content" android:orientation="vertical" android:gravity="center"
+                android:clickable="true" android:focusable="true">
+                <TextView android:id="@+id/tv_tab_income" android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="@string/tx_income" android:textColor="@color/text_secondary" android:textSize="14sp"
+                    android:paddingBottom="8dp"/>
+                <View android:id="@+id/indicator_income" android:layout_width="match_parent" android:layout_height="2dp"
+                    android:background="@android:color/transparent"/>
+            </LinearLayout>
+
+            <LinearLayout android:id="@+id/tab_expense" android:layout_width="0dp" android:layout_weight="1"
+                android:layout_height="wrap_content" android:orientation="vertical" android:gravity="center"
+                android:clickable="true" android:focusable="true">
+                <TextView android:id="@+id/tv_tab_expense" android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="@string/tx_expense" android:textColor="@color/text_secondary" android:textSize="14sp"
+                    android:paddingBottom="8dp"/>
+                <View android:id="@+id/indicator_expense" android:layout_width="match_parent" android:layout_height="2dp"
+                    android:background="@android:color/transparent"/>
+            </LinearLayout>
+
         </LinearLayout>
-        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:layout_marginBottom="4dp">
-            <TextView android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content"
-                android:text="@string/report_total_tax" android:textColor="@color/text_secondary" android:textSize="13sp"/>
-            <TextView android:id="@+id/tv_totals_tax" android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:textColor="@color/text_secondary" android:textSize="13sp" android:textStyle="bold"/>
-        </LinearLayout>
-        <View android:layout_width="match_parent" android:layout_height="1dp"
-            android:background="#2A2E60" android:layout_marginTop="4dp" android:layout_marginBottom="6dp"/>
-        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal">
-            <TextView android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content"
-                android:text="@string/report_total_net_profit" android:textColor="@color/text_primary" android:textSize="14sp" android:textStyle="bold"/>
-            <TextView android:id="@+id/tv_totals_net_profit" android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:textColor="@color/accent_cyan" android:textSize="14sp" android:textStyle="bold"/>
-        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tv_no_entries"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/no_entries"
+            android:textColor="@color/text_secondary"
+            android:textSize="15sp"
+            android:visibility="gone"
+            android:layout_marginTop="40dp"
+            android:gravity="center"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_history"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:clipToPadding="false"/>
+
     </LinearLayout>
 
-</LinearLayout>
+    <include layout="@layout/bottom_nav_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"/>
+
+</FrameLayout>
