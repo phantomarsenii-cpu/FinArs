@@ -259,6 +259,9 @@
     <string name="summary_total">Total</string>
     <string name="settings_menu_appearance">Appearance</string>
     <string name="appearance_dark_only_message">Dark theme is currently the only available look.</string>
+    <string name="notifications_title">Notifications</string>
+    <string name="notifications_clear_all">Clear all</string>
+    <string name="notifications_empty">No notifications yet</string>
     <string name="edit_limits">Edit</string>
     <string name="recent_transactions_title">Recent transactions</string>
     <string name="view_all">View all</string>

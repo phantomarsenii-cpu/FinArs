@@ -180,6 +180,11 @@ class LimitsNotificationWorker(context: Context, params: WorkerParameters) : Cor
         }
 
         fun showNotification(context: Context, id: Int, title: String, text: String, targetActivity: Class<*>? = null) {
+            // Логируем в историю уведомлений (экран открывается через колокольчик на
+            // Start) независимо от того, было ли реально показано системное
+            // уведомление — так пользователь не теряет запись, даже если разрешение
+            // POST_NOTIFICATIONS не выдано.
+            NotificationLog.add(context, title, text)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                 val granted = ActivityCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) ==
                     PackageManager.PERMISSION_GRANTED

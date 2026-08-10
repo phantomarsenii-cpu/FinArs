@@ -259,6 +259,9 @@
     <string name="summary_total">Suma</string>
     <string name="settings_menu_appearance">Wygląd</string>
     <string name="appearance_dark_only_message">Ciemny motyw jest obecnie jedynym dostępnym wyglądem aplikacji.</string>
+    <string name="notifications_title">Powiadomienia</string>
+    <string name="notifications_clear_all">Wyczyść wszystkie</string>
+    <string name="notifications_empty">Brak powiadomień</string>
     <string name="edit_limits">Edytuj</string>
     <string name="recent_transactions_title">Ostatnie transakcje</string>
     <string name="view_all">Zobacz wszystkie</string>

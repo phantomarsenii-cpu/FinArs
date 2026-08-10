@@ -259,6 +259,9 @@
     <string name="summary_total">Итого</string>
     <string name="settings_menu_appearance">Внешний вид</string>
     <string name="appearance_dark_only_message">Тёмная тема — пока единственный доступный вид приложения.</string>
+    <string name="notifications_title">Уведомления</string>
+    <string name="notifications_clear_all">Очистить все</string>
+    <string name="notifications_empty">Пока нет уведомлений</string>
     <string name="edit_limits">Изменить</string>
     <string name="recent_transactions_title">Последние транзакции</string>
     <string name="view_all">Смотреть все</string>

@@ -53,6 +53,9 @@ class MineActivity : BaseActivity() {
         findViewById<Button>(R.id.btn_settings).setOnClickListener {
             startActivity(Intent(this, SettingsActivity::class.java))
         }
+        findViewById<View>(R.id.iv_notifications).setOnClickListener {
+            startActivity(Intent(this, NotificationsActivity::class.java))
+        }
         findViewById<Button>(R.id.btn_reports).setOnClickListener {
             startActivity(Intent(this, ReportActivity::class.java))
         }
@@ -225,7 +228,7 @@ class MineActivity : BaseActivity() {
             }
 
             withContext(Dispatchers.Main) {
-                findViewById<TextView>(R.id.tv_balance).text = formatMoney(profit)
+                findViewById<TextView>(R.id.tv_balance).text = formatMoney(profit) + " zł"
                 findViewById<TextView>(R.id.tv_stat_income).text = formatMoney(income)
                 findViewById<TextView>(R.id.tv_stat_expense).text = formatMoney(expense)
                 findViewById<TextView>(R.id.tv_stat_profit).text = formatMoney(profit)
@@ -320,13 +323,15 @@ class MineActivity : BaseActivity() {
                 val to = bucketCal.timeInMillis
                 val inBucket = entries.filter { it.dateMillis in from..to }
                 MonthlyBarChartView.MonthPoint(
-                    dayStart.toString(),
+                    if (i == bucketStarts.lastIndex) daysInMonth.toString() else dayStart.toString(),
                     inBucket.filter { it.isIncome }.sumOf { it.amount },
                     inBucket.filter { !it.isIncome }.sumOf { it.amount }
                 )
             }
             withContext(Dispatchers.Main) {
-                findViewById<MonthlyBarChartView>(R.id.chart_monthly_summary).submitData(points)
+                findViewById<DualLineChartView>(R.id.chart_monthly_summary).submitData(
+                    points.map { DualLineChartView.Point(it.label, it.income, it.expense) }
+                )
             }
         }
     }
@@ -350,31 +355,20 @@ class MineActivity : BaseActivity() {
                 // Limit zwolnienia z VAT dotyczy wszystkich form działalności — widoczny zawsze.
 
                 findViewById<TextView>(R.id.tv_limit_monthly_label).text =
-                    getString(
-                        R.string.limit_monthly_label,
-                        formatMoney(limits.monthly.current), formatMoney(limits.monthly.limit)
-                    )
+                    "${formatMoney(limits.monthly.current)} zł / ${formatMoney(limits.monthly.limit)} zł"
                 findViewById<ProgressBar>(R.id.pb_limit_monthly).progress = limits.monthly.percent.coerceAtMost(100)
                 findViewById<TextView>(R.id.tv_limit_monthly_percent).text = "${limits.monthly.percent.coerceAtMost(100)}%"
 
                 // Update: dwuetapowa szkala progu podatkowego zamiast jednej mylącej
                 // "Pierwszy próg (120 000 zł)" — zob. LimitsHelper.BracketStageStatus.
                 val stage = limits.bracketStage
-                val bracketLabel = when (stage.stage) {
-                    LimitsHelper.BracketStage.TAX_FREE -> getString(
-                        R.string.limit_bracket_label_tax_free,
-                        formatMoney(stage.taxableBase), formatMoney(TaxHelper.ANNUAL_LIMIT)
-                    )
-                    LimitsHelper.BracketStage.RATE_12 -> getString(
-                        R.string.limit_bracket_label_rate12,
-                        formatMoney(stage.taxableBase), formatMoney(TaxHelper.SECOND_BRACKET_THRESHOLD)
-                    )
-                    LimitsHelper.BracketStage.RATE_32 -> getString(
-                        R.string.limit_bracket_label_rate32,
-                        formatMoney(stage.barCurrent)
-                    )
+                findViewById<TextView>(R.id.tv_limit_bracket_title).text = when (stage.stage) {
+                    LimitsHelper.BracketStage.TAX_FREE -> getString(R.string.limit_bracket_title_tax_free)
+                    LimitsHelper.BracketStage.RATE_12 -> getString(R.string.limit_bracket_title_rate12)
+                    LimitsHelper.BracketStage.RATE_32 -> getString(R.string.limit_bracket_title_rate32)
                 }
-                findViewById<TextView>(R.id.tv_limit_bracket_label).text = bracketLabel
+                findViewById<TextView>(R.id.tv_limit_bracket_label).text =
+                    "${formatMoney(stage.barCurrent)} zł / ${formatMoney(stage.barLimit)} zł"
                 findViewById<ProgressBar>(R.id.pb_limit_bracket).progress = stage.percent
                 findViewById<TextView>(R.id.tv_limit_bracket_percent).text = "${stage.percent.coerceAtMost(100)}%"
 
