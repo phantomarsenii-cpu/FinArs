@@ -17,13 +17,19 @@ android {
     namespace "com.example.fa_ksiegowy"
     compileSdk 34
 
+    def ciBuildNumber = (System.getenv("GITHUB_RUN_NUMBER") ?: "1").toInteger()
+
     defaultConfig {
         applicationId "com.example.fa_ksiegowy"
         minSdk 26
         targetSdk 34
-        versionCode 1
-        versionName "1.0"
+        versionCode ciBuildNumber
+        versionName "1.0.${ciBuildNumber}"
         multiDexEnabled true
+    }
+
+    buildFeatures {
+        buildConfig true
     }
 
     buildTypes {
@@ -36,9 +42,6 @@ android {
     compileOptions { sourceCompatibility JavaVersion.VERSION_17; targetCompatibility JavaVersion.VERSION_17 }
     kotlinOptions { jvmTarget = '17' }
 
-    // pdfbox-android (добавлена для заполнения официального PIT-36) и Apache POI оба
-    // тянут META-INF файлы с одинаковыми именами — без этого блока сборка падает
-    // с "More than one file was found with OS independent path 'META-INF/...'".
     packagingOptions {
         resources {
             excludes += [
@@ -76,11 +79,6 @@ dependencies {
     implementation "androidx.work:work-runtime-ktx:2.9.0"
     implementation "com.tom-roush:pdfbox-android:2.0.27.0"
 
-    // Update 41: OCR чеков (ML Kit, работает на устройстве, без интернета).
-    // Примечание: у Google ML Kit нет on-device модели для кириллицы, поэтому
-    // используется только латинский распознаватель (он же нормально читает цифры).
     implementation "com.google.mlkit:text-recognition:16.0.0"
-
-    // Update 41: сканирование штрихкодов для склада (ZXing, без OpenCV)
     implementation "com.journeyapps:zxing-android-embedded:4.3.0"
 }
