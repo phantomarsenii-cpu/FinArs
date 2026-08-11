@@ -5,7 +5,7 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.TextView
 
-/** Разблокировка Pro-версии (разовая покупка через Google Play Billing). */
+/** Разблокировка Pro-версии — подписка (месяц/год) через Google Play Billing, с 7-дневным пробным периодом. */
 class SettingsProActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -15,20 +15,29 @@ class SettingsProActivity : BaseActivity() {
         setupProSection()
     }
 
-    private fun setupProSection() {
+    private fun refreshUi() {
         val tvStatus = findViewById<TextView>(R.id.tv_pro_status)
-        val btnUnlock = findViewById<Button>(R.id.btn_unlock_pro)
+        val tvTrialHint = findViewById<TextView>(R.id.tv_pro_trial_hint)
+        val btnMonthly = findViewById<Button>(R.id.btn_plan_monthly)
+        val btnYearly = findViewById<Button>(R.id.btn_plan_yearly)
 
-        fun refreshUi() {
-            if (BillingManager.isPro(this)) {
-                tvStatus.text = getString(R.string.pro_status_active)
-                btnUnlock.isEnabled = false
-                btnUnlock.text = getString(R.string.pro_status_active)
-            } else {
-                tvStatus.text = getString(R.string.pro_status_locked)
-                btnUnlock.isEnabled = true
-            }
+        if (BillingManager.isPro(this)) {
+            tvStatus.text = getString(R.string.pro_status_active)
+            tvTrialHint.visibility = android.view.View.GONE
+            btnMonthly.isEnabled = false
+            btnYearly.isEnabled = false
+            btnMonthly.text = getString(R.string.pro_status_active)
+            btnYearly.visibility = android.view.View.GONE
+        } else {
+            tvStatus.text = getString(R.string.pro_status_locked)
+            tvTrialHint.visibility = android.view.View.VISIBLE
+            btnMonthly.isEnabled = true
+            btnYearly.isEnabled = true
+            btnYearly.visibility = android.view.View.VISIBLE
         }
+    }
+
+    private fun setupProSection() {
         refreshUi()
 
         BillingManager.connect(this) { connected ->
@@ -36,42 +45,44 @@ class SettingsProActivity : BaseActivity() {
                 if (!connected) return@runOnUiThread
                 BillingManager.restorePurchases(this) { refreshUi() }
                 if (!BillingManager.isPro(this)) {
-                    BillingManager.queryProProductDetails { price ->
+                    BillingManager.querySubscriptionPlans { monthly, yearly ->
                         runOnUiThread {
-                            btnUnlock.text = if (price != null) {
-                                getString(R.string.pro_unlock_button_price, price)
-                            } else {
-                                getString(R.string.pro_unlock_button)
-                            }
+                            val btnMonthly = findViewById<Button>(R.id.btn_plan_monthly)
+                            val btnYearly = findViewById<Button>(R.id.btn_plan_yearly)
+                            btnMonthly.text = if (monthly != null) {
+                                getString(R.string.pro_plan_monthly_price, monthly.price)
+                            } else getString(R.string.pro_plan_monthly)
+                            btnYearly.text = if (yearly != null) {
+                                getString(R.string.pro_plan_yearly_price, yearly.price)
+                            } else getString(R.string.pro_plan_yearly)
                         }
                     }
                 }
             }
         }
 
-        btnUnlock.setOnClickListener {
-            AlertDialog.Builder(this)
-                .setTitle(getString(R.string.pro_info_title))
-                .setMessage(getString(R.string.pro_info_message))
-                .setPositiveButton(getString(R.string.pro_info_continue)) { _, _ ->
-                    BillingManager.launchPurchase(this)
-                }
-                .setNegativeButton(getString(R.string.dialog_close), null)
-                .show()
+        findViewById<Button>(R.id.btn_plan_monthly).setOnClickListener {
+            confirmAndLaunch(BillingManager.PRO_MONTHLY_PRODUCT_ID)
         }
+        findViewById<Button>(R.id.btn_plan_yearly).setOnClickListener {
+            confirmAndLaunch(BillingManager.PRO_YEARLY_PRODUCT_ID)
+        }
+    }
+
+    private fun confirmAndLaunch(productId: String) {
+        AlertDialog.Builder(this)
+            .setTitle(getString(R.string.pro_info_title))
+            .setMessage(getString(R.string.pro_info_message))
+            .setPositiveButton(getString(R.string.pro_info_continue)) { _, _ ->
+                BillingManager.launchPurchase(this, productId)
+            }
+            .setNegativeButton(getString(R.string.dialog_close), null)
+            .show()
     }
 
     override fun onResume() {
         super.onResume()
-        // На случай возврата из окна оплаты Google Play — обновить статус и кнопку.
-        BillingManager.restorePurchases(this) {
-            val tvStatus = findViewById<TextView>(R.id.tv_pro_status)
-            val btnUnlock = findViewById<Button>(R.id.btn_unlock_pro)
-            if (BillingManager.isPro(this)) {
-                tvStatus.text = getString(R.string.pro_status_active)
-                btnUnlock.isEnabled = false
-                btnUnlock.text = getString(R.string.pro_status_active)
-            }
-        }
+        // На случай возврата из окна оплаты Google Play — обновить статус и кнопки.
+        BillingManager.restorePurchases(this) { refreshUi() }
     }
 }

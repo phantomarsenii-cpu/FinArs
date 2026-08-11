@@ -4,6 +4,16 @@ plugins {
     id 'com.google.devtools.ksp'
 }
 
+// Update: wersja aplikacji byla zahardkodowana (versionCode 1 / "1.0") i nigdy
+// sie nie zmieniala, wiec Android nie widzial nowej wersji przy kazdej
+// instalacji. Liczymy versionCode automatycznie z aktualnego czasu (minuty od
+// wlasnego "zerowego" punktu w czasie, zeby liczba zmiescila sie w Int i byla
+// mala) — kazdy build ma wiec zawsze wiekszy, unikalny kod. versionName
+// pokazuje czytelna date builda.
+def CUSTOM_EPOCH_MILLIS = 1735689600000L // 2025-01-01 00:00:00 UTC
+def autoVersionCode = (int) ((System.currentTimeMillis() - CUSTOM_EPOCH_MILLIS) / 60000L)
+def buildDateStamp = new Date().format('yyyy.MM.dd')
+
 android {
     signingConfigs {
         debug {
@@ -21,8 +31,8 @@ android {
         applicationId "com.example.fa_ksiegowy"
         minSdk 26
         targetSdk 34
-        versionCode 1
-        versionName "1.0"
+        versionCode autoVersionCode
+        versionName "1.${buildDateStamp}"
         multiDexEnabled true
     }
 

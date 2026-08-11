@@ -68,6 +68,9 @@ class SettingsSecurityActivity : BaseActivity() {
     private fun pinInput(): EditText = EditText(this).apply {
         inputType = InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_VARIATION_PASSWORD
         hint = getString(R.string.lock_pin_hint)
+        setTextColor(androidx.core.content.ContextCompat.getColor(context, R.color.text_primary))
+        setHintTextColor(androidx.core.content.ContextCompat.getColor(context, R.color.text_hint))
+        textSize = 16f
     }
 
     private fun wrap(view: EditText): LinearLayout = LinearLayout(this).apply {

@@ -34,12 +34,20 @@
         android:layout_marginBottom="20dp">
         <TextView android:id="@+id/tv_pro_status" android:layout_width="match_parent" android:layout_height="wrap_content"
             android:text="@string/pro_status_locked" android:textSize="15sp"
-            android:textColor="@color/text_primary"/>
+            android:textColor="@color/text_primary" android:layout_marginBottom="4dp"/>
+        <TextView android:id="@+id/tv_pro_trial_hint" android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:text="@string/pro_trial_hint" android:textSize="13sp"
+            android:textColor="@color/text_secondary"/>
     </LinearLayout>
 
-    <Button android:id="@+id/btn_unlock_pro" android:layout_width="match_parent" android:layout_height="56dp"
-        android:text="@string/pro_unlock_button" android:textAllCaps="false" android:textSize="16sp"
-        android:textColor="@color/text_primary" android:background="@drawable/btn_pill_primary"/>
+    <Button android:id="@+id/btn_plan_monthly" android:layout_width="match_parent" android:layout_height="64dp"
+        android:text="@string/pro_plan_monthly" android:textAllCaps="false" android:textSize="15sp"
+        android:textColor="@color/text_primary" android:background="@drawable/btn_pill_primary"
+        android:layout_marginBottom="12dp"/>
+
+    <Button android:id="@+id/btn_plan_yearly" android:layout_width="match_parent" android:layout_height="64dp"
+        android:text="@string/pro_plan_yearly" android:textAllCaps="false" android:textSize="15sp"
+        android:textColor="@color/text_primary" android:background="@drawable/btn_pill_outline"/>
 
 </LinearLayout>
     </ScrollView>

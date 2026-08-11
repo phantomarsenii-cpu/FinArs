@@ -71,6 +71,11 @@
     <string name="pro_status_active">Pro активирован. Спасибо за поддержку!</string>
     <string name="pro_unlock_button">Разблокировать Pro</string>
     <string name="pro_unlock_button_price">Разблокировать Pro — %1$s</string>
+    <string name="pro_trial_hint">7 дней бесплатно, затем списывается автоматически. Отмена в любой момент.</string>
+    <string name="pro_plan_monthly">Месячный план</string>
+    <string name="pro_plan_yearly">Годовой план (выгоднее)</string>
+    <string name="pro_plan_monthly_price">Помесячно — %1$s / мес.</string>
+    <string name="pro_plan_yearly_price">Ежегодно — %1$s / год</string>
     <string name="pro_loading">Загрузка цены…</string>
     <string name="pro_feature_locked_title">Функция Pro</string>
     <string name="pro_feature_locked_message">Годовые и произвольные отчёты доступны только в Pro-версии. Разблокируйте Pro в настройках.</string>

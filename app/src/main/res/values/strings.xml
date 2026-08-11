@@ -71,6 +71,11 @@
     <string name="pro_status_active">Pro unlocked. Thank you for your support!</string>
     <string name="pro_unlock_button">Unlock Pro</string>
     <string name="pro_unlock_button_price">Unlock Pro — %1$s</string>
+    <string name="pro_trial_hint">7 days free, then billed automatically. Cancel anytime.</string>
+    <string name="pro_plan_monthly">Monthly plan</string>
+    <string name="pro_plan_yearly">Yearly plan (best value)</string>
+    <string name="pro_plan_monthly_price">Monthly — %1$s / month</string>
+    <string name="pro_plan_yearly_price">Yearly — %1$s / year</string>
     <string name="pro_loading">Loading price…</string>
     <string name="pro_feature_locked_title">Pro feature</string>
     <string name="pro_feature_locked_message">Yearly and custom reports are a Pro feature. Unlock Pro in Settings to use them.</string>

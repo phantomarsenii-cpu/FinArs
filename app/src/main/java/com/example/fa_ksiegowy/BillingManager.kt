@@ -17,13 +17,18 @@ import com.android.billingclient.api.queryProductDetails
 import com.android.billingclient.api.queryPurchasesAsync
 
 /**
- * Обёртка над Google Play Billing для разовой покупки "Pro" (не подписка).
- * Product ID "pro_unlock" должен быть создан в Play Console:
- * Monetize -> Products -> In-app products -> Create product (One-time product).
+ * Obsluga Google Play Billing dla subskrypcji "Pro" — miesiecznej i rocznej,
+ * obie z 7-dniowym darmowym okresem probnym. Wymaga utworzenia w Play Console:
+ * Monetize -> Products -> Subscriptions -> Create subscription, z dwoma
+ * planami bazowymi (base plans) o podanych ponizej ID produktow, kazdy z
+ * doczepiona oferta "Free trial" (7 dni) — sama nazwa produktu w kodzie nie
+ * wystarczy, okres probny trzeba skonfigurowac w konsoli.
  */
 object BillingManager {
 
-    const val PRO_PRODUCT_ID = "pro_unlock"
+    const val PRO_MONTHLY_PRODUCT_ID = "pro_monthly"
+    const val PRO_YEARLY_PRODUCT_ID = "pro_yearly"
+    private val SUB_PRODUCT_IDS = listOf(PRO_MONTHLY_PRODUCT_ID, PRO_YEARLY_PRODUCT_ID)
     private const val PREFS_NAME = "settings"
 
     // Два независимых флага: реальная покупка через Google Play, и "выданный вручную"
@@ -38,7 +43,9 @@ object BillingManager {
     private const val DEV_CODE_SHA256 = "1edc850201cfdf17a41d59873127825355e7a03a3f8c0ab3e550099291844a55"
 
     private var billingClient: BillingClient? = null
-    private var proProductDetails: com.android.billingclient.api.ProductDetails? = null
+    private val subProductDetails = mutableMapOf<String, com.android.billingclient.api.ProductDetails>()
+
+    data class PlanInfo(val price: String, val trialDays: Int?)
 
     private val purchasesUpdatedListener = PurchasesUpdatedListener { result, purchases ->
         if (result.responseCode == BillingClient.BillingResponseCode.OK && purchases != null) {
@@ -66,7 +73,7 @@ object BillingManager {
      *
      * ПРИМЕЧАНИЕ: для полноценного тестирования покупок (а не просто разблокировки фич)
      * гораздо правильнее добавить свой email в Play Console -> Monetization setup ->
-     * License testing — тогда можно пройти НАСТОЯЩЕЕ окно оплаты бесплатно ("тестовая карта").
+     * License testing — тогда можно пройти НАСТОЯЩЕЕ окно оплаты бесплатно (\"тестовая карта\").
      * Код ниже — это просто быстрый бэкдор для себя, а не замена нормальному тестированию биллинга.
      */
     fun tryUnlockWithDevCode(context: Context, code: String): Boolean {
@@ -84,7 +91,7 @@ object BillingManager {
         return bytes.joinToString("") { "%02x".format(it) }
     }
 
-    /** Вызывайте один раз при старте активности, где нужен биллинг (например SettingsActivity). */
+    /** Вызывайте один раз при старте активности, где нужен биллинг (например SettingsProActivity). */
     fun connect(context: Context, onReady: (connected: Boolean) -> Unit) {
         if (billingClient?.isReady == true) {
             onReady(true)
@@ -100,7 +107,7 @@ object BillingManager {
             override fun onBillingSetupFinished(result: BillingResult) {
                 val ok = result.responseCode == BillingClient.BillingResponseCode.OK
                 if (ok) {
-                    // При каждом подключении сверяем реальное состояние покупки с Google Play,
+                    // При каждом подключении сверяем реальное состояние подписки с Google Play,
                     // а не только с локальным кэшем (на случай новой установки/смены устройства).
                     restorePurchases(context) {}
                 }
@@ -114,37 +121,61 @@ object BillingManager {
         })
     }
 
-    /** Подтягивает цену и название товара из консоли Google Play, чтобы показать в UI. */
-    fun queryProProductDetails(callback: (price: String?) -> Unit) {
-        val client = billingClient ?: return callback(null)
-        val product = QueryProductDetailsParams.Product.newBuilder()
-            .setProductId(PRO_PRODUCT_ID)
-            .setProductType(BillingClient.ProductType.INAPP)
-            .build()
-        val params = QueryProductDetailsParams.newBuilder()
-            .setProductList(listOf(product))
-            .build()
+    /** Подтягивает цену и длину пробного периода обоих планов подписки из Google Play. */
+    fun querySubscriptionPlans(callback: (monthly: PlanInfo?, yearly: PlanInfo?) -> Unit) {
+        val client = billingClient ?: return callback(null, null)
+        val products = SUB_PRODUCT_IDS.map {
+            QueryProductDetailsParams.Product.newBuilder()
+                .setProductId(it)
+                .setProductType(BillingClient.ProductType.SUBS)
+                .build()
+        }
+        val params = QueryProductDetailsParams.newBuilder().setProductList(products).build()
 
         client.queryProductDetailsAsync(params) { result, productDetailsList ->
-            if (result.responseCode == BillingClient.BillingResponseCode.OK &&
-                productDetailsList.isNotEmpty()
-            ) {
-                proProductDetails = productDetailsList[0]
-                val price = productDetailsList[0].oneTimePurchaseOfferDetails?.formattedPrice
-                callback(price)
+            if (result.responseCode == BillingClient.BillingResponseCode.OK) {
+                subProductDetails.clear()
+                productDetailsList.forEach { subProductDetails[it.productId] = it }
+                callback(planInfo(PRO_MONTHLY_PRODUCT_ID), planInfo(PRO_YEARLY_PRODUCT_ID))
             } else {
-                callback(null)
+                callback(null, null)
             }
         }
     }
 
-    /** Запускает окно оплаты Google Play. Требует, чтобы queryProProductDetails уже отработал. */
-    fun launchPurchase(activity: Activity) {
+    private fun planInfo(productId: String): PlanInfo? {
+        val details = subProductDetails[productId] ?: return null
+        val offer = details.subscriptionOfferDetails?.firstOrNull() ?: return null
+        // Faza z cena > 0 to wlasciwa cena po okresie probnym; faza z cena 0 to sam trial.
+        val paidPhase = offer.pricingPhases.pricingPhaseList.firstOrNull { it.priceAmountMicros > 0 }
+            ?: offer.pricingPhases.pricingPhaseList.lastOrNull()
+        val trialPhase = offer.pricingPhases.pricingPhaseList.firstOrNull { it.priceAmountMicros == 0L }
+        val trialDays = trialPhase?.billingPeriod?.let { parseIsoPeriodDays(it) }
+        return PlanInfo(paidPhase?.formattedPrice ?: "—", trialDays)
+    }
+
+    /** Bardzo uproszczony parser okresow ISO-8601 uzywanych przez Play Billing (np. "P7D", "P1M", "P1Y"). */
+    private fun parseIsoPeriodDays(period: String): Int? {
+        val match = Regex("P(\\d+)([DWMY])").find(period) ?: return null
+        val n = match.groupValues[1].toIntOrNull() ?: return null
+        return when (match.groupValues[2]) {
+            "D" -> n
+            "W" -> n * 7
+            "M" -> n * 30
+            "Y" -> n * 365
+            else -> null
+        }
+    }
+
+    /** Запускает окно оплаты Google Play для выбранного плана (месяц/год). */
+    fun launchPurchase(activity: Activity, productId: String) {
         val client = billingClient ?: return
-        val details = proProductDetails ?: return
+        val details = subProductDetails[productId] ?: return
+        val offerToken = details.subscriptionOfferDetails?.firstOrNull()?.offerToken ?: return
 
         val productDetailsParams = BillingFlowParams.ProductDetailsParams.newBuilder()
             .setProductDetails(details)
+            .setOfferToken(offerToken)
             .build()
         val flowParams = BillingFlowParams.newBuilder()
             .setProductDetailsParamsList(listOf(productDetailsParams))
@@ -154,7 +185,7 @@ object BillingManager {
 
     private fun handlePurchase(purchase: Purchase) {
         if (purchase.purchaseState != Purchase.PurchaseState.PURCHASED) return
-        if (!purchase.products.contains(PRO_PRODUCT_ID)) return
+        if (SUB_PRODUCT_IDS.none { purchase.products.contains(it) }) return
 
         // Защита от поддельных/подменённых ответов биллинга (см. PurchaseVerifier.kt):
         // не подтверждаем и не засчитываем покупку с невалидной подписью.
@@ -173,9 +204,15 @@ object BillingManager {
     }
 
     /**
-     * Сверяет с серверами Google, куплен ли pro_unlock, и обновляет локальный кэш.
-     * Учитываются только покупки с валидной подписью.
+     * Сверяет с серверами Google, активна ли подписка (месячная или годовая), и обновляет
+     * локальный кэш. Учитываются только покупки с валидной подписью.
      * Вызывать: при старте (после connect) и сразу после возврата из окна оплаты.
+     *
+     * ВАЖНО: это только клиентская проверка при открытии приложения — если подписка
+     * истечёт, пока пользователь не открывает приложение, локальный флаг isPro
+     * останется true до следующего вызова restorePurchases(). Для мгновенной реакции
+     * на отмену/истечение подписки нужна серверная валидация (Real-time Developer
+     * Notifications), что выходит за рамки чисто клиентской реализации.
      */
     fun restorePurchases(context: Context, onResult: (isPro: Boolean) -> Unit) {
         val client = billingClient
@@ -184,15 +221,15 @@ object BillingManager {
             return
         }
         val params = QueryPurchasesParams.newBuilder()
-            .setProductType(BillingClient.ProductType.INAPP)
+            .setProductType(BillingClient.ProductType.SUBS)
             .build()
 
         client.queryPurchasesAsync(params) { result, purchases ->
             if (result.responseCode == BillingClient.BillingResponseCode.OK) {
-                val validOwned = purchases.filter {
-                    it.products.contains(PRO_PRODUCT_ID) &&
-                        it.purchaseState == Purchase.PurchaseState.PURCHASED &&
-                        PurchaseVerifier.verify(it.originalJson, it.signature)
+                val validOwned = purchases.filter { purchase ->
+                    SUB_PRODUCT_IDS.any { purchase.products.contains(it) } &&
+                        purchase.purchaseState == Purchase.PurchaseState.PURCHASED &&
+                        PurchaseVerifier.verify(purchase.originalJson, purchase.signature)
                 }
                 setPurchasedLocally(context, validOwned.isNotEmpty())
                 validOwned.forEach { handlePurchase(it) }

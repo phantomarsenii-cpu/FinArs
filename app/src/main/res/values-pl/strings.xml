@@ -71,6 +71,11 @@
     <string name="pro_status_active">Pro odblokowane. Dziękujemy za wsparcie!</string>
     <string name="pro_unlock_button">Odblokuj Pro</string>
     <string name="pro_unlock_button_price">Odblokuj Pro — %1$s</string>
+    <string name="pro_trial_hint">7 dni za darmo, potem naliczana automatycznie. Anuluj w każdej chwili.</string>
+    <string name="pro_plan_monthly">Plan miesięczny</string>
+    <string name="pro_plan_yearly">Plan roczny (najlepsza oferta)</string>
+    <string name="pro_plan_monthly_price">Miesięcznie — %1$s / mies.</string>
+    <string name="pro_plan_yearly_price">Rocznie — %1$s / rok</string>
     <string name="pro_loading">Ładowanie ceny…</string>
     <string name="pro_feature_locked_title">Funkcja Pro</string>
     <string name="pro_feature_locked_message">Raporty roczne i niestandardowe są dostępne tylko w wersji Pro. Odblokuj Pro w ustawieniach.</string>
