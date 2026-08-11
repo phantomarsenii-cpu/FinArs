@@ -1,25 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent"
-    android:fillViewport="true">
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-<LinearLayout
-    android:orientation="vertical" android:padding="24dp"
-    android:layout_width="match_parent" android:layout_height="wrap_content">
+    <com.example.fa_ksiegowy.AnimatedMeshBackgroundView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 
-    <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
-        android:text="@string/settings_menu_language" android:textSize="22sp" android:textStyle="bold"
-        android:textColor="@color/accent_cyan" android:layout_marginBottom="24dp"/>
+    <ScrollView
+        android:layout_width="match_parent" android:layout_height="match_parent"
+        android:fillViewport="true">
 
-    <Button android:id="@+id/btn_lang_en" android:layout_width="match_parent" android:layout_height="52dp"
-        android:text="English" android:textAllCaps="false" android:textColor="@color/text_primary"
-        android:background="@drawable/btn_pill_outline" android:layout_marginBottom="12dp"/>
-    <Button android:id="@+id/btn_lang_ru" android:layout_width="match_parent" android:layout_height="52dp"
-        android:text="Русский" android:textAllCaps="false" android:textColor="@color/text_primary"
-        android:background="@drawable/btn_pill_outline" android:layout_marginBottom="12dp"/>
-    <Button android:id="@+id/btn_lang_pl" android:layout_width="match_parent" android:layout_height="52dp"
-        android:text="Polski" android:textAllCaps="false" android:textColor="@color/text_primary"
-        android:background="@drawable/btn_pill_outline"/>
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:paddingStart="20dp" android:paddingEnd="20dp"
+        android:paddingTop="28dp" android:paddingBottom="24dp">
 
-</LinearLayout>
-</ScrollView>
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp">
+            <ImageView android:id="@+id/iv_back" android:layout_width="24dp" android:layout_height="24dp"
+                android:layout_gravity="center_vertical|start" android:src="@drawable/ic_back"
+                android:clickable="true" android:focusable="true"
+                android:background="?attr/selectableItemBackgroundBorderless"/>
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:layout_gravity="center" android:text="@string/settings_menu_language"
+                android:textColor="@color/text_primary" android:textSize="18sp" android:textStyle="bold"/>
+        </FrameLayout>
+
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="vertical" android:background="@drawable/card_bg" android:padding="8dp">
+
+            <Button android:id="@+id/btn_lang_en" android:layout_width="match_parent" android:layout_height="52dp"
+                android:text="English" android:textAllCaps="false" android:textColor="@color/text_primary"
+                android:background="@drawable/btn_pill_primary" android:layout_margin="6dp"/>
+            <Button android:id="@+id/btn_lang_ru" android:layout_width="match_parent" android:layout_height="52dp"
+                android:text="Русский" android:textAllCaps="false" android:textColor="@color/text_primary"
+                android:background="@drawable/btn_pill_outline" android:layout_margin="6dp"/>
+            <Button android:id="@+id/btn_lang_pl" android:layout_width="match_parent" android:layout_height="52dp"
+                android:text="Polski" android:textAllCaps="false" android:textColor="@color/text_primary"
+                android:background="@drawable/btn_pill_outline" android:layout_margin="6dp"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+    </ScrollView>
+</FrameLayout>

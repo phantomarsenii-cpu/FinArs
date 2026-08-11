@@ -6,12 +6,12 @@
         </shape>
     </item>
     <item>
-        <shape android:shape="oval">
+        <shape android:shape="rectangle">
             <gradient
                 android:type="radial"
-                android:gradientRadius="380dp"
+                android:gradientRadius="520dp"
                 android:centerX="0.5"
-                android:centerY="0.62"
+                android:centerY="0.42"
                 android:startColor="@color/bg_glow"
                 android:centerColor="#1A1D5C"
                 android:endColor="@color/bg_top" />

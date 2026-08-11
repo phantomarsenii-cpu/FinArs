@@ -30,6 +30,7 @@ class AddEditProductActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_edit_product)
+        findViewById<android.view.View>(R.id.iv_back).setOnClickListener { finish() }
 
         val productId = intent.getLongExtra("productId", -1L)
         intent.getStringExtra("barcode")?.let { findViewById<EditText>(R.id.et_barcode).setText(it) }

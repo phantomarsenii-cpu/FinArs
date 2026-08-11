@@ -16,18 +16,12 @@ enum class BusinessKind {
 }
 
 object BusinessKindHelper {
-    private const val KEY = "business_kind"
-
-    fun get(prefs: SharedPreferences): BusinessKind {
-        val raw = prefs.getString(KEY, BusinessKind.SERVICES.name) ?: BusinessKind.SERVICES.name
-        return try {
-            BusinessKind.valueOf(raw)
-        } catch (e: IllegalArgumentException) {
-            BusinessKind.SERVICES
-        }
-    }
-
-    fun set(prefs: SharedPreferences, kind: BusinessKind) {
-        prefs.edit().putString(KEY, kind.name).apply()
-    }
+    /**
+     * Update: ekran "Typ sprzedaży" zostal usuniety z Ustawien — Magazyn jest
+     * teraz stalym elementem dolnej nawigacji (zamiast warunkowego przycisku
+     * na Start), wiec typ dzialalnosci jest zawsze traktowany jako MIXED
+     * (sprzedaz + uslugi), co odblokowuje pelna funkcjonalnosc magazynu i
+     * faktur dla kazdego uzytkownika bez potrzeby wyboru.
+     */
+    fun get(prefs: SharedPreferences): BusinessKind = BusinessKind.MIXED
 }

@@ -1,17 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.example.fa_ksiegowy.AnimatedMeshBackgroundView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+<LinearLayout
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="24dp">
+    android:paddingStart="20dp"
+    android:paddingEnd="20dp"
+    android:paddingTop="28dp"
+    android:paddingBottom="24dp">
 
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
+        android:layout_marginBottom="18dp"
+        android:gravity="center"
         android:text="@string/terms_title"
-        android:textColor="@color/accent_cyan"
-        android:textSize="22sp"
+        android:textColor="@color/text_primary"
+        android:textSize="18sp"
         android:textStyle="bold"/>
 
     <ScrollView
@@ -24,6 +36,8 @@
             android:id="@+id/tv_terms_body"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@drawable/card_bg"
+            android:padding="16dp"
             android:textColor="@color/text_primary"
             android:textSize="14sp"
             android:lineSpacingExtra="4dp"/>
@@ -72,3 +86,4 @@
         android:visibility="gone"/>
 
 </LinearLayout>
+</FrameLayout>

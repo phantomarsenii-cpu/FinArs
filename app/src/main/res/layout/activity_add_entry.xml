@@ -239,35 +239,12 @@
 
         </LinearLayout>
 
-        <!-- ===================== Dodatkowe akcje: skan paragonu / kategoria ryczaltu ===================== -->
-        <Button
-            android:id="@+id/btn_scan_receipt"
-            android:layout_width="match_parent"
-            android:layout_height="52dp"
-            android:layout_marginBottom="12dp"
-            android:background="@drawable/input_field_bg"
-            android:text="@string/scan_receipt_button"
-            android:textAllCaps="false"
-            android:textColor="@color/accent_cyan"
-            android:textSize="14sp"
-            android:gravity="start|center_vertical"
-            android:paddingStart="18dp"
-            android:paddingEnd="18dp"/>
-
-        <Button
-            android:id="@+id/btn_scan_receipt_gallery"
-            android:layout_width="match_parent"
-            android:layout_height="52dp"
-            android:layout_marginBottom="12dp"
-            android:background="@drawable/input_field_bg"
-            android:text="@string/gallery_scan_receipt_button"
-            android:textAllCaps="false"
-            android:textColor="@color/accent_cyan"
-            android:textSize="14sp"
-            android:gravity="start|center_vertical"
-            android:paddingStart="18dp"
-            android:paddingEnd="18dp"/>
-
+        <!-- ===================== Dodatkowe akcje: kategoria ryczaltu ===================== -->
+        <!-- Update: przyciski "Skanuj paragon (autouzupelnianie)" i "Skanuj
+             paragon z galerii" usuniete z interfejsu na wyrazna prosbe
+             uzytkownika — pozostaje tylko recznie zalaczony paragon (wiersz
+             "Dodaj paragon / zdjecie" powyzej). Metody OCR w Kotlinie
+             (launchReceiptScan, pickOcrImage) zostaly bez wywolan z UI. -->
         <Button
             android:id="@+id/btn_ryczalt_category"
             android:layout_width="match_parent"

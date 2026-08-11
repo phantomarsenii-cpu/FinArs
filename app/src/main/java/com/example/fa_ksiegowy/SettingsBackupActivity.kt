@@ -46,6 +46,7 @@ class SettingsBackupActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings_backup)
 
+        findViewById<android.view.View>(R.id.iv_back).setOnClickListener { finish() }
         findViewById<Button>(R.id.btn_backup_now).setOnClickListener {
             val name = "fa_ksiegowy_backup_${dateForName.format(Date())}.zip"
             createDocLauncher.launch(name)

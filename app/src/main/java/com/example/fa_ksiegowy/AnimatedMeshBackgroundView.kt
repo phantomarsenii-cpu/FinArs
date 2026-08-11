@@ -35,23 +35,23 @@ class AnimatedMeshBackgroundView @JvmOverloads constructor(
         color = Color.parseColor("#3B82F6")
         strokeWidth = 1.2f
     }
-    private val maxLinkDist = 260f
+    private val maxLinkDist = 300f
     private var animator: ValueAnimator? = null
     private var seeded = false
 
     private fun seed(w: Int, h: Int) {
         if (seeded || w <= 0 || h <= 0) return
         seeded = true
-        val count = ((w * h) / 42000f).toInt().coerceIn(14, 34)
+        val count = ((w * h) / 26000f).toInt().coerceIn(24, 60)
         val rnd = Random(System.currentTimeMillis())
         repeat(count) {
             nodes.add(
                 Node(
                     x = rnd.nextFloat() * w,
                     y = rnd.nextFloat() * h,
-                    vx = (rnd.nextFloat() - 0.5f) * 0.35f,
-                    vy = (rnd.nextFloat() - 0.5f) * 0.35f,
-                    r = rnd.nextFloat() * 2.2f + 1.4f
+                    vx = (rnd.nextFloat() - 0.5f) * 0.55f,
+                    vy = (rnd.nextFloat() - 0.5f) * 0.55f,
+                    r = rnd.nextFloat() * 2.6f + 1.4f
                 )
             )
         }
@@ -105,13 +105,13 @@ class AnimatedMeshBackgroundView @JvmOverloads constructor(
                 val dx = a.x - b.x; val dy = a.y - b.y
                 val dist = kotlin.math.sqrt(dx * dx + dy * dy)
                 if (dist < maxLinkDist) {
-                    linePaint.alpha = (60 * (1f - dist / maxLinkDist)).toInt().coerceIn(0, 60)
+                    linePaint.alpha = (85 * (1f - dist / maxLinkDist)).toInt().coerceIn(0, 85)
                     canvas.drawLine(a.x, a.y, b.x, b.y, linePaint)
                 }
             }
         }
         for (node in n) {
-            dotPaint.alpha = 130
+            dotPaint.alpha = 170
             canvas.drawCircle(node.x, node.y, node.r, dotPaint)
         }
     }

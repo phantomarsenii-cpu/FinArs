@@ -11,6 +11,7 @@ class SettingsProActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings_pro)
+        findViewById<android.view.View>(R.id.iv_back).setOnClickListener { finish() }
         setupProSection()
     }
 

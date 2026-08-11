@@ -41,6 +41,7 @@ class SettingsTaxActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings_tax)
+        findViewById<android.view.View>(R.id.iv_back).setOnClickListener { finish() }
         prefs = getSharedPreferences("settings", MODE_PRIVATE)
 
         val year = TaxHelper.currentYear()

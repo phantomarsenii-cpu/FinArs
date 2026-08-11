@@ -54,6 +54,7 @@ class InventoryActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_inventory)
+        findViewById<android.view.View>(R.id.iv_back).setOnClickListener { finish() }
         findViewById<Button>(R.id.btn_save_inventory).setOnClickListener { saveInventory() }
         findViewById<Button>(R.id.btn_inventory_history).setOnClickListener {
             startActivity(android.content.Intent(this, InventoryHistoryActivity::class.java))

@@ -39,7 +39,6 @@
         <activity android:name=".InvoiceHistoryActivity" android:exported="false" />
         <activity android:name=".ReportActivity" android:exported="false" />
         <activity android:name=".HistoryActivity" android:exported="false" />
-        <activity android:name=".SettingsBusinessActivity" android:exported="false" />
         <activity android:name=".MagazinActivity" android:exported="false" />
         <activity android:name=".InventoryActivity" android:exported="false" />
         <activity android:name=".InventoryHistoryActivity" android:exported="false" />

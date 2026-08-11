@@ -24,15 +24,6 @@
             android:text="@string/settings" android:textSize="18sp" android:textStyle="bold"
             android:textColor="@color/text_primary" android:gravity="center" android:layout_marginBottom="20dp"/>
 
-        <!-- Typ sprzedazy -->
-        <LinearLayout android:id="@+id/btn_menu_business" style="@style/SettingsRow">
-            <FrameLayout style="@style/SettingsRowIconBadge" android:background="@drawable/icon_badge_blue_bg">
-                <ImageView style="@style/SettingsRowIcon" android:src="@drawable/ic_settings_business"/>
-            </FrameLayout>
-            <TextView style="@style/SettingsRowLabel" android:text="@string/settings_menu_business"/>
-            <ImageView style="@style/SettingsRowChevron"/>
-        </LinearLayout>
-
         <!-- Podatek i limity -->
         <LinearLayout android:id="@+id/btn_menu_tax" style="@style/SettingsRow">
             <FrameLayout style="@style/SettingsRowIconBadge" android:background="@drawable/icon_badge_blue_bg">
@@ -76,15 +67,6 @@
             </FrameLayout>
             <TextView style="@style/SettingsRowLabel" android:text="@string/settings_menu_language"/>
             <ImageView style="@style/SettingsRowChevron"/>
-        </LinearLayout>
-
-        <!-- Wyglad -->
-        <LinearLayout android:id="@+id/btn_menu_appearance" style="@style/SettingsRow">
-            <FrameLayout style="@style/SettingsRowIconBadge" android:background="@drawable/icon_badge_purple_bg">
-                <ImageView style="@style/SettingsRowIcon" android:src="@drawable/ic_settings_appearance"/>
-            </FrameLayout>
-            <TextView style="@style/SettingsRowLabel" android:text="@string/settings_menu_appearance"/>
-            <ImageView android:layout_width="20dp" android:layout_height="20dp" android:src="@drawable/ic_settings_appearance"/>
         </LinearLayout>
 
         <!-- Wersja Pro -->

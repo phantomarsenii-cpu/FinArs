@@ -44,6 +44,7 @@ class Pit36Activity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_pit36)
 
+        findViewById<android.view.View>(R.id.iv_back).setOnClickListener { finish() }
         findViewById<Button>(R.id.btn_year_prev).setOnClickListener {
             selectedYear--; refreshYearLabel(); recalculate()
         }

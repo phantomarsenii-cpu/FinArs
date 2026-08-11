@@ -27,6 +27,7 @@ class SelectProductsActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_select_products)
+        findViewById<android.view.View>(R.id.iv_back).setOnClickListener { finish() }
         findViewById<Button>(R.id.btn_confirm_selection).setOnClickListener { confirmSelection() }
         loadProducts()
     }

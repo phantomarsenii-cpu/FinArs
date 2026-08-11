@@ -12,6 +12,7 @@ class SettingsLanguageActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings_language)
 
+        findViewById<android.view.View>(R.id.iv_back).setOnClickListener { finish() }
         findViewById<Button>(R.id.btn_lang_en).setOnClickListener { setLocale("en") }
         findViewById<Button>(R.id.btn_lang_ru).setOnClickListener { setLocale("ru") }
         findViewById<Button>(R.id.btn_lang_pl).setOnClickListener { setLocale("pl") }

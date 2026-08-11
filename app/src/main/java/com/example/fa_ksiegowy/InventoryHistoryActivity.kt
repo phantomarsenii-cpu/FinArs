@@ -24,6 +24,7 @@ class InventoryHistoryActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_inventory_history)
+        findViewById<android.view.View>(R.id.iv_back).setOnClickListener { finish() }
 
         adapter = InventorySessionAdapter(
             onItemClick = { session -> openSessionPdf(session) },

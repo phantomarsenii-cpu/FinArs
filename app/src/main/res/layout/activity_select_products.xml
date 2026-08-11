@@ -1,23 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:fillViewport="true">
+    android:layout_height="match_parent">
+
+    <com.example.fa_ksiegowy.AnimatedMeshBackgroundView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
 
 <LinearLayout
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="24dp">
+    android:paddingStart="20dp"
+    android:paddingEnd="20dp"
+    android:paddingTop="28dp"
+    android:paddingBottom="24dp">
 
-    <TextView
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/select_products_title"
-        android:textColor="@color/accent_cyan"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        android:layout_marginBottom="16dp"/>
+        android:layout_marginBottom="18dp">
+        <ImageView android:id="@+id/iv_back" android:layout_width="24dp" android:layout_height="24dp"
+            android:layout_gravity="center_vertical|start" android:src="@drawable/ic_back"
+            android:clickable="true" android:focusable="true"
+            android:background="?attr/selectableItemBackgroundBorderless"/>
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:layout_gravity="center" android:text="@string/select_products_title"
+            android:textColor="@color/text_primary" android:textSize="18sp" android:textStyle="bold"/>
+    </FrameLayout>
 
     <LinearLayout
         android:id="@+id/ll_products_container"
@@ -38,4 +53,5 @@
         android:textStyle="bold"/>
 
 </LinearLayout>
-</ScrollView>
+    </ScrollView>
+</FrameLayout>

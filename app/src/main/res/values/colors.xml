@@ -11,7 +11,7 @@
 
     <color name="card_bg">#141B36</color>
     <color name="card_bg_light">#141B36</color>
-    <color name="card_border">#232D57</color>
+    <color name="card_border">#2A3868</color>
     <color name="nav_bar_bg">#0E1430</color>
 
     <color name="text_primary">#FFFFFF</color>
@@ -32,4 +32,12 @@
 
     <color name="badge_bg_orange">#3A2A0F</color>
     <color name="badge_percent_orange">#FBBF24</color>
+
+    <!-- Odznaki ikon dla listy transakcji (Start/Transakcje) — celowo bardziej
+         nasycone/kolorowe niz przygaszone badge_bg_* uzywane na karcie Limitow,
+         zeby dopasowac zywy wyglad makietu. -->
+    <color name="vivid_blue">#2563EB</color>
+    <color name="vivid_red">#DC2626</color>
+    <color name="vivid_orange">#D97706</color>
+    <color name="vivid_green">#16A34A</color>
 </resources>

@@ -58,6 +58,16 @@ class SettingsActivity : BaseActivity() {
                     .show()
             }
         }
+        // Update: wiersz "Wyglad" z makiety — aplikacja ma dzis wylacznie ciemny
+        // motyw (brak infrastruktury do przelaczania), wiec zamiast udawac dzialajacy
+        // przelacznik pokazujemy uczciwy komunikat zamiast cichego braku reakcji.
+        findViewById<View>(R.id.btn_menu_appearance).setOnClickListener {
+            AlertDialog.Builder(this)
+                .setTitle(getString(R.string.settings_menu_appearance))
+                .setMessage(getString(R.string.appearance_dark_only_message))
+                .setPositiveButton(getString(R.string.dialog_close), null)
+                .show()
+        }
         findViewById<View>(R.id.btn_menu_pro).setOnClickListener {
             startActivity(Intent(this, SettingsProActivity::class.java))
         }
@@ -68,7 +78,7 @@ class SettingsActivity : BaseActivity() {
         }
         findViewById<View>(R.id.btn_menu_about).setOnClickListener {
             AlertDialog.Builder(this)
-                .setTitle(getString(R.string.about_app))
+                .setTitle(getString(R.string.about_app) + " (v" + BuildConfig.VERSION_NAME + ")")
                 .setMessage(getString(R.string.about_description))
                 .setPositiveButton(getString(R.string.dialog_write)) { _, _ ->
                     val intent = Intent(Intent.ACTION_SENDTO).apply {

@@ -16,11 +16,16 @@ import androidx.appcompat.app.AppCompatActivity
  */
 object BottomNavBar {
 
-    enum class Tab { START, TRANSACTIONS, REPORTS, SETTINGS }
+    // Update: "Transakcje" zostalo zastapione przez "Magazyn" w dolnej nawigacji
+    // (pelna lista transakcji jest nadal dostepna przez "Zobacz wszystkie" na
+    // Start — bylo to postrzegane jako duplikat, Magazyn jest teraz bardziej
+    // przydatny w stalym miejscu). TRANSACTIONS zostaje w enumie (uzywane przez
+    // HistoryActivity), po prostu nie odpowiada juz zadnej ikonie w tym pasku.
+    enum class Tab { START, TRANSACTIONS, MAGAZIN, REPORTS, SETTINGS }
 
     fun attach(activity: AppCompatActivity, current: Tab) {
         bind(activity, R.id.nav_start, Tab.START, current, MineActivity::class.java)
-        bind(activity, R.id.nav_transactions, Tab.TRANSACTIONS, current, HistoryActivity::class.java)
+        bind(activity, R.id.nav_magazin, Tab.MAGAZIN, current, MagazinActivity::class.java)
         bind(activity, R.id.nav_reports, Tab.REPORTS, current, ReportActivity::class.java)
         bind(activity, R.id.nav_settings, Tab.SETTINGS, current, SettingsActivity::class.java)
 
@@ -37,7 +42,8 @@ object BottomNavBar {
         target: Class<*>
     ) {
         val group = activity.findViewById<View>(viewId) ?: return
-        val icon = (group as? android.view.ViewGroup)?.getChildAt(0) as? ImageView
+        val pill = (group as? android.view.ViewGroup)?.getChildAt(0) as? android.view.ViewGroup
+        val icon = pill?.getChildAt(0) as? ImageView
         val label = (group as? android.view.ViewGroup)?.getChildAt(1) as? TextView
 
         val active = tab == current
@@ -48,6 +54,9 @@ object BottomNavBar {
         }
         icon?.setColorFilter(color)
         label?.setTextColor(color)
+        // Podswietlona "piguleczka" pod ikona aktywnej zakladki — zywszy,
+        // bardziej zgodny z makietem akcent zamiast samej zmiany koloru.
+        pill?.setBackgroundResource(if (active) R.drawable.nav_active_pill_bg else 0)
 
         group.setOnClickListener {
             if (!active) {

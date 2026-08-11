@@ -76,9 +76,8 @@ class MineActivity : BaseActivity() {
                     .show()
             }
         }
-        findViewById<Button>(R.id.btn_magazin).setOnClickListener {
-            startActivity(Intent(this, MagazinActivity::class.java))
-        }
+        // Update: przycisk "Magazyn" przeniesiony do dolnej nawigacji (patrz
+        // bottom_nav_bar.xml) — nie jest juz na karcie Start.
 
         // Karta "Limity" -> pelnoekranowy podglad (dokladnie wedlug makietu).
         findViewById<View>(R.id.card_limits).setOnClickListener {
@@ -193,12 +192,11 @@ class MineActivity : BaseActivity() {
         }
     }
 
-    /** Кнопка "Склад" видна только если в настройках выбран тип деятельности Продажи/Смешанная. */
-    private fun applyBusinessKindUi() {
-        val prefs = getSharedPreferences("settings", MODE_PRIVATE)
-        val showsMagazin = BusinessKindHelper.get(prefs).showsMagazin
-        findViewById<Button>(R.id.btn_magazin).visibility = if (showsMagazin) View.VISIBLE else View.GONE
-    }
+    // Update: Magazyn jest teraz stalym elementem dolnej nawigacji, wiec ta
+    // funkcja (dawniej pokazujaca/ukrywajaca przycisk "Magazyn" na Start wedlug
+    // BusinessKind) nie jest juz potrzebna — zostawiona pusta na wypadek,
+    // gdyby cos jeszcze jej uzywalo w applyBusinessKindUi() z innego miejsca.
+    private fun applyBusinessKindUi() {}
 
     private fun loadData() {
         CoroutineScope(Dispatchers.IO).launch {

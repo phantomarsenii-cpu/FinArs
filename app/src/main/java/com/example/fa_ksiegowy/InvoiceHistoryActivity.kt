@@ -61,6 +61,7 @@ class InvoiceHistoryActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_invoice_history)
+        findViewById<android.view.View>(R.id.iv_back).setOnClickListener { finish() }
 
         adapter = InvoiceAdapter(
             onItemClick = { invoice -> openInvoicePdf(invoice) },

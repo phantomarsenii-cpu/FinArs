@@ -20,16 +20,16 @@ object TransactionCategory {
     )
 
     fun incomeCategories(context: Context): List<Def> = listOf(
-        Def("sale", R.string.category_sale, R.drawable.ic_cat_income, R.drawable.icon_badge_green_bg),
-        Def("invoice", R.string.category_invoice, R.drawable.ic_cat_invoice, R.drawable.icon_badge_blue_bg),
-        Def("other", R.string.category_other, R.drawable.ic_cat_income, R.drawable.icon_badge_green_bg)
+        Def("sale", R.string.category_sale, R.drawable.ic_cat_income, R.drawable.icon_badge_vivid_green),
+        Def("invoice", R.string.category_invoice, R.drawable.ic_cat_invoice, R.drawable.icon_badge_vivid_blue),
+        Def("other", R.string.category_other, R.drawable.ic_cat_income, R.drawable.icon_badge_vivid_green)
     )
 
     fun expenseCategories(context: Context): List<Def> = listOf(
-        Def("materials", R.string.category_materials, R.drawable.ic_cat_cart, R.drawable.icon_badge_red_bg),
-        Def("fuel", R.string.category_fuel, R.drawable.ic_cat_fuel, R.drawable.icon_badge_orange_bg),
-        Def("transport", R.string.category_transport, R.drawable.ic_cat_truck, R.drawable.icon_badge_red_bg),
-        Def("other", R.string.category_other, R.drawable.ic_cat_expense, R.drawable.icon_badge_red_bg)
+        Def("materials", R.string.category_materials, R.drawable.ic_cat_cart, R.drawable.icon_badge_vivid_red),
+        Def("fuel", R.string.category_fuel, R.drawable.ic_cat_fuel, R.drawable.icon_badge_vivid_orange),
+        Def("transport", R.string.category_transport, R.drawable.ic_cat_truck, R.drawable.icon_badge_vivid_red),
+        Def("other", R.string.category_other, R.drawable.ic_cat_expense, R.drawable.icon_badge_vivid_red)
     )
 
     /** Rozdziela zapisany komentarz na (kategoria|null, reszta_komentarza) — patrz format zapisu w AddEntryActivity. */

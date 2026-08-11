@@ -72,6 +72,7 @@ class AddInvoiceActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_invoice)
+        findViewById<android.view.View>(R.id.iv_back).setOnClickListener { finish() }
 
         setupPaymentMethodToggle()
         findViewById<Button>(R.id.btn_service_date).setOnClickListener { showDatePicker(isServiceDate = true) }

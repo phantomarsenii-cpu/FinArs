@@ -128,8 +128,6 @@ class AddEntryActivity : BaseActivity() {
         findViewById<View>(R.id.btn_close).setOnClickListener { finish() }
         findViewById<View>(R.id.btn_attach).setOnClickListener { pickImage.launch("image/*") }
         findViewById<View>(R.id.btn_category).setOnClickListener { showCategoryPicker() }
-        findViewById<Button>(R.id.btn_scan_receipt).setOnClickListener { launchReceiptScan() }
-        findViewById<Button>(R.id.btn_scan_receipt_gallery).setOnClickListener { pickOcrImage.launch("image/*") }
         findViewById<Button>(R.id.btn_delete).setOnClickListener { confirmDelete() }
         findViewById<View>(R.id.btn_date).setOnClickListener { showDatePicker() }
         findViewById<Button>(R.id.btn_ryczalt_category).setOnClickListener { showRyczaltCategoryPicker() }
@@ -301,8 +299,8 @@ class AddEntryActivity : BaseActivity() {
         // Прикладывать/сканировать чек имеет смысл только для расходов (чек подтверждает
         // трату) — для приходов эти кнопки только путают.
         findViewById<View>(R.id.btn_attach).visibility = if (currentIsIncome) View.GONE else View.VISIBLE
-        findViewById<Button>(R.id.btn_scan_receipt).visibility = if (currentIsIncome) View.GONE else View.VISIBLE
-        findViewById<Button>(R.id.btn_scan_receipt_gallery).visibility = if (currentIsIncome) View.GONE else View.VISIBLE
+        // Update: przyciski skanowania paragonu usuniete z UI — nie ma juz
+        // czego pokazywac/ukrywac tutaj wg typu operacji.
         // Категория ryczałtu, наоборот, актуальна только для ПРИХОДОВ и только при
         // форме налогообложения ryczałt — во всех остальных случаях скрыта.
         findViewById<Button>(R.id.btn_ryczalt_category).visibility =

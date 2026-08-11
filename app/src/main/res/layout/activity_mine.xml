@@ -379,18 +379,6 @@
             android:textSize="16sp"
             android:visibility="gone"/>
 
-        <Button
-            android:id="@+id/btn_magazin"
-            android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:layout_marginBottom="6dp"
-            android:background="@drawable/btn_pill_outline"
-            android:text="@string/nav_magazin"
-            android:textAllCaps="false"
-            android:textColor="@color/text_primary"
-            android:textSize="16sp"
-            android:visibility="gone"/>
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

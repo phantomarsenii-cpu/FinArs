@@ -28,6 +28,7 @@ class MagazinActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_magazin)
+        BottomNavBar.attach(this, BottomNavBar.Tab.MAGAZIN)
 
         adapter = ProductAdapter(
             onClick = { p ->

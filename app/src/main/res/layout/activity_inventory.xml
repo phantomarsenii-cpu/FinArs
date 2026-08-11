@@ -1,23 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:fillViewport="true">
+    android:layout_height="match_parent">
+
+    <com.example.fa_ksiegowy.AnimatedMeshBackgroundView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
 
 <LinearLayout
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="24dp">
+    android:paddingStart="20dp"
+    android:paddingEnd="20dp"
+    android:paddingTop="28dp"
+    android:paddingBottom="24dp">
 
-    <TextView
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/inventory_title"
-        android:textColor="@color/accent_cyan"
-        android:textSize="22sp"
-        android:textStyle="bold"
-        android:layout_marginBottom="6dp"/>
+        android:layout_marginBottom="18dp">
+        <ImageView android:id="@+id/iv_back" android:layout_width="24dp" android:layout_height="24dp"
+            android:layout_gravity="center_vertical|start" android:src="@drawable/ic_back"
+            android:clickable="true" android:focusable="true"
+            android:background="?attr/selectableItemBackgroundBorderless"/>
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:layout_gravity="center" android:text="@string/inventory_title"
+            android:textColor="@color/text_primary" android:textSize="18sp" android:textStyle="bold"/>
+    </FrameLayout>
 
     <TextView
         android:layout_width="match_parent"
@@ -25,6 +40,7 @@
         android:text="@string/inventory_hint"
         android:textColor="@color/text_secondary"
         android:textSize="13sp"
+        android:lineSpacingExtra="2dp"
         android:layout_marginBottom="16dp"/>
 
     <LinearLayout
@@ -78,4 +94,5 @@
         android:textStyle="bold"/>
 
 </LinearLayout>
-</ScrollView>
+    </ScrollView>
+</FrameLayout>

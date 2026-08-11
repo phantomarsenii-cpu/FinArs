@@ -82,11 +82,14 @@ class HistoryAdapter(
 
     private fun bindItem(holder: ItemVH, e: Entry) {
         val context = holder.itemView.context
-        val sign = if (e.isIncome) "+" else "-"
+        // Patrz EntryAdapter.onBindViewHolder — ten sam fix podwojnego znaku
+        // (korekty faktur to przychod z ujemna kwota).
+        val effective = if (e.isIncome) e.amount else -e.amount
+        val sign = if (effective >= 0) "+" else "-"
         holder.tvDate.text = dateFmt.format(Date(e.dateMillis))
-        holder.tvAmount.text = "$sign ${String.format(Locale.getDefault(), "%.2f", e.amount)} zł"
+        holder.tvAmount.text = "$sign ${String.format(Locale.getDefault(), "%.2f", kotlin.math.abs(effective))} zł"
         holder.tvAmount.setTextColor(
-            ContextCompat.getColor(context, if (e.isIncome) R.color.income_green else R.color.expense_red)
+            ContextCompat.getColor(context, if (effective >= 0) R.color.income_green else R.color.expense_red)
         )
 
         val (category, _) = TransactionCategory.splitComment(context, e.comment, e.isIncome)

@@ -23,6 +23,7 @@ class SettingsSecurityActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings_security)
+        findViewById<android.view.View>(R.id.iv_back).setOnClickListener { finish() }
 
         switchPin = findViewById(R.id.switch_pin)
         switchBiometric = findViewById(R.id.switch_biometric)

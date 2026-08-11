@@ -1,21 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.example.fa_ksiegowy.AnimatedMeshBackgroundView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+<LinearLayout
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingStart="24dp"
-    android:paddingEnd="24dp"
-    android:paddingTop="36dp"
+    android:paddingStart="20dp"
+    android:paddingEnd="20dp"
+    android:paddingTop="28dp"
     android:paddingBottom="16dp">
 
-    <TextView
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/invoice_history_title"
-        android:textSize="22sp"
-        android:textStyle="bold"
-        android:textColor="@color/accent_cyan"
-        android:layout_marginBottom="14dp"/>
+        android:layout_marginBottom="18dp">
+        <ImageView android:id="@+id/iv_back" android:layout_width="24dp" android:layout_height="24dp"
+            android:layout_gravity="center_vertical|start" android:src="@drawable/ic_back"
+            android:clickable="true" android:focusable="true"
+            android:background="?attr/selectableItemBackgroundBorderless"/>
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:layout_gravity="center" android:text="@string/invoice_history_title"
+            android:textColor="@color/text_primary" android:textSize="18sp" android:textStyle="bold"/>
+    </FrameLayout>
 
     <!-- Поисковая строка: номер / клиент / сумма -->
     <LinearLayout
@@ -163,3 +175,4 @@
         android:clipToPadding="false"/>
 
 </LinearLayout>
+</FrameLayout>

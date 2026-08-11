@@ -18,6 +18,7 @@ class PitDataActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_pit_data)
+        findViewById<android.view.View>(R.id.iv_back).setOnClickListener { finish() }
 
         val data = PitDataStore.load(this)
         findViewById<EditText>(R.id.et_first_name).setText(data.firstName)

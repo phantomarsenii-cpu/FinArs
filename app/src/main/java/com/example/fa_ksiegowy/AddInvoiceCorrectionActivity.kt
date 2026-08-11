@@ -39,6 +39,7 @@ class AddInvoiceCorrectionActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_invoice_correction)
+        findViewById<android.view.View>(R.id.iv_back).setOnClickListener { finish() }
 
         val invoiceId = intent.getLongExtra(EXTRA_INVOICE_ID, -1L)
         if (invoiceId < 0) {

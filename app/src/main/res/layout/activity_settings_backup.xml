@@ -1,39 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent"
-    android:fillViewport="true">
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-<LinearLayout
-    android:orientation="vertical" android:padding="24dp"
-    android:layout_width="match_parent" android:layout_height="wrap_content">
+    <com.example.fa_ksiegowy.AnimatedMeshBackgroundView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 
-    <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
-        android:text="@string/settings_menu_backup" android:textSize="22sp" android:textStyle="bold"
-        android:textColor="@color/accent_cyan" android:layout_marginBottom="16dp"/>
+    <ScrollView
+        android:layout_width="match_parent" android:layout_height="match_parent"
+        android:fillViewport="true">
 
-    <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
-        android:text="@string/backup_hint" android:textSize="13sp"
-        android:textColor="@color/text_secondary" android:layout_marginBottom="20dp"/>
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:paddingStart="20dp" android:paddingEnd="20dp"
+        android:paddingTop="28dp" android:paddingBottom="24dp">
 
-    <TextView android:id="@+id/tv_last_backup" android:layout_width="match_parent" android:layout_height="wrap_content"
-        android:text="@string/backup_never" android:textSize="13sp"
-        android:textColor="@color/text_secondary" android:layout_marginBottom="16dp"/>
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp">
+            <ImageView android:id="@+id/iv_back" android:layout_width="24dp" android:layout_height="24dp"
+                android:layout_gravity="center_vertical|start" android:src="@drawable/ic_back"
+                android:clickable="true" android:focusable="true"
+                android:background="?attr/selectableItemBackgroundBorderless"/>
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:layout_gravity="center" android:text="@string/settings_menu_backup"
+                android:textColor="@color/text_primary" android:textSize="18sp" android:textStyle="bold"/>
+        </FrameLayout>
 
-    <Button android:id="@+id/btn_backup_now" android:layout_width="match_parent" android:layout_height="56dp"
-        android:text="@string/backup_create" android:textAllCaps="false" android:textSize="16sp"
-        android:textColor="@color/text_primary" android:background="@drawable/btn_pill_primary"
-        android:layout_marginBottom="12dp"/>
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="vertical" android:background="@drawable/card_bg" android:padding="18dp"
+            android:layout_marginBottom="16dp">
 
-    <Button android:id="@+id/btn_restore_now" android:layout_width="match_parent" android:layout_height="56dp"
-        android:text="@string/backup_restore" android:textAllCaps="false" android:textSize="16sp"
-        android:textColor="@color/text_primary" android:background="@drawable/btn_pill_outline"
-        android:layout_marginBottom="24dp"/>
+            <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:text="@string/backup_hint" android:textSize="13sp"
+                android:textColor="@color/text_secondary" android:lineSpacingExtra="2dp"
+                android:layout_marginBottom="14dp"/>
 
-    <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#2A2E60" android:layout_marginBottom="20dp"/>
+            <TextView android:id="@+id/tv_last_backup" android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:text="@string/backup_never" android:textSize="12sp"
+                android:textColor="@color/text_hint"/>
 
-    <Button android:id="@+id/btn_clear_all" android:layout_width="match_parent" android:layout_height="52dp"
-        android:text="@string/clear_all_button" android:textAllCaps="false" android:textColor="@color/text_primary"
-        android:background="@drawable/btn_pill_danger"/>
+        </LinearLayout>
 
-</LinearLayout>
-</ScrollView>
+        <Button android:id="@+id/btn_backup_now" android:layout_width="match_parent" android:layout_height="56dp"
+            android:text="@string/backup_create" android:textAllCaps="false" android:textSize="15sp"
+            android:textColor="@color/text_primary" android:background="@drawable/btn_pill_primary"
+            android:layout_marginBottom="12dp"/>
+
+        <Button android:id="@+id/btn_restore_now" android:layout_width="match_parent" android:layout_height="56dp"
+            android:text="@string/backup_restore" android:textAllCaps="false" android:textSize="15sp"
+            android:textColor="@color/text_primary" android:background="@drawable/btn_pill_outline"
+            android:layout_marginBottom="24dp"/>
+
+        <Button android:id="@+id/btn_clear_all" android:layout_width="match_parent" android:layout_height="52dp"
+            android:text="@string/clear_all_button" android:textAllCaps="false" android:textColor="@color/text_primary"
+            android:background="@drawable/btn_pill_danger"/>
+
+    </LinearLayout>
+    </ScrollView>
+</FrameLayout>

@@ -9,6 +9,24 @@ open class BaseActivity : AppCompatActivity() {
         super.attachBaseContext(LocaleHelper.applyLocale(newBase))
     }
 
+    // Ladny fade+scale zamiast domyslnego "slajdu" systemowego przy przejsciu
+    // miedzy ekranami — dotyczy KAZDEGO startActivity() w calej aplikacji,
+    // bo wszystkie ekrany dziedzicza z BaseActivity.
+    override fun startActivity(intent: Intent) {
+        super.startActivity(intent)
+        overridePendingTransition(R.anim.screen_enter, R.anim.screen_exit)
+    }
+
+    override fun startActivity(intent: Intent, options: android.os.Bundle?) {
+        super.startActivity(intent, options)
+        overridePendingTransition(R.anim.screen_enter, R.anim.screen_exit)
+    }
+
+    override fun finish() {
+        super.finish()
+        overridePendingTransition(R.anim.screen_enter, R.anim.screen_exit)
+    }
+
     /** Показываем экран блокировки поверх любого экрана приложения, если
      *  AppLockState считает, что приложение только что вернулось из фона
      *  и PIN установлен. Сам LockActivity этот код у себя не выполняет
