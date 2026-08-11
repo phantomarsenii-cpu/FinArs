@@ -2,7 +2,6 @@ package com.example.fa_ksiegowy
 
 import android.app.AlertDialog
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.view.View
 
@@ -66,18 +65,11 @@ class SettingsActivity : BaseActivity() {
             i.putExtra(TermsActivity.EXTRA_READ_ONLY, true)
             startActivity(i)
         }
+        findViewById<View>(R.id.btn_menu_privacy).setOnClickListener {
+            startActivity(Intent(this, PrivacyPolicyActivity::class.java))
+        }
         findViewById<View>(R.id.btn_menu_about).setOnClickListener {
-            AlertDialog.Builder(this)
-                .setTitle(getString(R.string.about_app))
-                .setMessage(getString(R.string.about_description))
-                .setPositiveButton(getString(R.string.dialog_write)) { _, _ ->
-                    val intent = Intent(Intent.ACTION_SENDTO).apply {
-                        data = Uri.parse("mailto:" + getString(R.string.about_email))
-                    }
-                    startActivity(intent)
-                }
-                .setNegativeButton(getString(R.string.dialog_close), null)
-                .show()
+            startActivity(Intent(this, AboutActivity::class.java))
         }
     }
 }

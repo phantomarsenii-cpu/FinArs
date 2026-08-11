@@ -63,8 +63,76 @@
     <string name="report_share_title">Udostępnij raport</string>
     <string name="report_error">Błąd generowania raportu: %1$s</string>
     <string name="about_app">O aplikacji</string>
-    <string name="about_description" formatted="false">FinArs to kompleksowa aplikacja do zarządzania finansami działalności nierejestrowanej i jednoosobowej działalności gospodarczej (JDG). Śledź przychody i wydatki, kontroluj limity, automatycznie licz podatki, wystawiaj faktury i generuj gotowe raporty oraz deklaracje PIT — wszystko w jednym miejscu, z pełną historią operacji zawsze pod ręką.\n\n\uD83D\uDCCA Finanse i podatki\n\uD83D\uDCB0 Ewidencja przychodów i wydatków z załącznikami paragonów\n\uD83D\uDCC8 Automatyczne obliczanie zysku i podatku (skala 12%/32%, liniowy 19%, ryczałt)\n\uD83D\uDD01 Transakcje cykliczne (czynsz, abonamenty) tworzone automatycznie co miesiąc\n\uD83D\uDEA6 Kontrola limitów: działalność nierejestrowana, próg 120 000 zł, zwolnienie z VAT (240 000 zł)\n\uD83D\uDD14 Powiadomienia o zbliżających się i przekroczonych limitach\n\n\uD83E\uDDFE Faktury i rachunki (Pro)\n\uD83D\uDCDD Wystawianie faktur/rachunków dla osób fizycznych i firm z generowaniem PDF\n\u2705 Statusy: Zapłacona / Oczekuje na zapłatę / Zaległa, plus przypomnienia o terminie płatności\n\uD83D\uDCB5 Kontrola rocznego limitu gotówki (20 000 zł) dla sprzedaży osobom fizycznym\n\uD83D\uDD0D Historia faktur z wyszukiwaniem i filtrami\n\n\uD83D\uDCC4 Raporty i deklaracje\n\uD83D\uDCCA Wykres przychodów i wydatków za ostatnie 6 miesięcy\n\uD83D\uDCE5 Eksport raportu miesięcznego (bezpłatnie), rocznego i za dowolny okres (Pro) do Excela wraz z paragonami\n\uD83E\uDDEE Generowanie deklaracji PIT-36 / PIT-36L / PIT-28 — pomocniczy PDF oraz wypełnienie oficjalnego formularza (Pro)\n\n\uD83D\uDD12 Bezpieczeństwo i wygoda\n\uD83D\uDD10 Blokada aplikacji kodem PIN oraz odciskiem palca / twarzą\n\uD83D\uDCBE Kopia zapasowa i przywracanie danych (Pro)\n\uD83C\uDF19 Nowoczesny ciemny interfejs\n\uD83C\uDF0D Dostępne w języku polskim, rosyjskim i angielskim\n\uD83D\uDD12 Wszystkie dane są przechowywane lokalnie na urządzeniu\n\nKontakt: p.arsenii@interia.pl</string>
-    <string name="about_email">p.arsenii@interia.pl</string>
+    <string name="about_version_label">Wersja %1$s</string>
+    <string name="settings_menu_privacy">Polityka prywatności</string>
+    <string name="about_description" formatted="false">FinArs to kompleksowa aplikacja do zarządzania finansami działalności nierejestrowanej i jednoosobowej działalności gospodarczej (JDG). Śledź przychody i wydatki, kontroluj limity, automatycznie licz podatki, wystawiaj faktury, zarządzaj magazynem i generuj gotowe raporty oraz deklaracje PIT — wszystko w jednym miejscu, z pełną historią operacji i powiadomień zawsze pod ręką.
+
+📊 Finanse i podatki
+💰 Ewidencja przychodów i wydatków z załącznikami paragonów i kolorowymi kategoriami
+📈 Automatyczne obliczanie zysku i podatku (skala 12%/32%, liniowy 19%, ryczałt)
+🔁 Transakcje cykliczne (czynsz, abonamenty) tworzone automatycznie co miesiąc
+🚦 Kontrola limitów: działalność nierejestrowana, próg 120 000 zł, zwolnienie z VAT (240 000 zł)
+🔔 Historia powiadomień o zbliżających się i przekroczonych limitach, terminach faktur i innych
+
+📦 Magazyn
+🏬 Katalog produktów ze skanowaniem kodów kreskowych, stanami magazynowymi i alertami o niskim stanie
+📋 Sesje inwentaryzacji z historią
+🧾 Produkty można dodawać bezpośrednio do faktur
+
+🧾 Faktury i rachunki (Pro)
+📝 Wystawianie faktur/rachunków dla osób fizycznych i firm z generowaniem PDF
+✅ Statusy: Zapłacona / Oczekuje na zapłatę / Zaległa, plus przypomnienia o terminie płatności
+💵 Kontrola rocznego limitu gotówki (20 000 zł) dla sprzedaży osobom fizycznym
+🔍 Historia faktur z wyszukiwaniem i filtrami
+
+📄 Raporty i deklaracje
+📊 Podsumowanie przychodów/wydatków i wykres trendu za 6 miesięcy
+📥 Eksport raportu miesięcznego (bezpłatnie), rocznego i za dowolny okres (Pro) do Excela wraz z paragonami
+🧮 Generowanie deklaracji PIT-36 / PIT-36L / PIT-28 — pomocniczy PDF oraz wypełnienie oficjalnego formularza (Pro)
+
+🔒 Bezpieczeństwo i wygoda
+🔐 Blokada aplikacji kodem PIN oraz odciskiem palca / twarzą
+💾 Kopia zapasowa i przywracanie danych (Pro)
+🌙 Nowoczesny ciemny interfejs
+🌍 Dostępne w języku polskim, rosyjskim i angielskim
+🔒 Wszystkie dane finansowe są przechowywane lokalnie na urządzeniu
+
+⭐ Subskrypcja Pro: plan miesięczny lub roczny, 7 dni za darmo, anulowanie w każdej chwili.
+
+Kontakt: finars2026@gmail.com</string>
+    <string name="about_email">finars2026@gmail.com</string>
+    <string name="privacy_policy_body" formatted="false">Ostatnia aktualizacja: 2026
+
+1. Administrator danych
+Kontakt w sprawach prywatności: finars2026@gmail.com
+
+2. Jakie dane przetwarzamy
+Twoje dane finansowe (kwoty, daty, komentarze, kategorie operacji), dane produktów w magazynie, zdjęcia paragonów oraz dane faktur (nazwa kontrahenta, NIP jeśli podano) są przechowywane WYŁĄCZNIE lokalnie na Twoim urządzeniu. Nie wysyłamy tych danych na żaden serwer.
+PIN blokady aplikacji jest przechowywany lokalnie w formie zahaszowanej i nigdy nie opuszcza urządzenia.
+Zdjęcia paragonów skanowane funkcją OCR są przetwarzane w całości na urządzeniu (Google ML Kit, tryb on-device) — zdjęcia nie są przesyłane do Google ani do kogokolwiek innego.
+
+3. Uprawnienia aplikacji
+Aparat — do skanowania paragonów i kodów kreskowych produktów.
+Powiadomienia — do przypominania o zbliżających się/przekroczonych limitach oraz terminach faktur.
+Pamięć (starsze wersje Androida) — do zapisu kopii zapasowej i eksportu raportów.
+Internet — wymagany przez usługi zewnętrzne opisane poniżej (reklamy, płatności), a nie do wysyłania Twoich danych finansowych.
+
+4. Usługi zewnętrzne (podmioty trzecie)
+Google AdMob — wyświetla reklamy użytkownikom bez subskrypcji Pro. AdMob może zbierać identyfikator reklamowy urządzenia i inne dane w celu wyświetlania reklam (w tym spersonalizowanych, za zgodą użytkownika z UE zbieraną przez formularz zgody Google). Więcej: policies.google.com/privacy
+Google Play Billing — obsługuje subskrypcję Pro. Płatności przetwarza Google Play; nie mamy dostępu do danych Twojej karty płatniczej.
+Google ML Kit — rozpoznawanie tekstu na paragonach, działa w całości na urządzeniu.
+
+5. Twoje prawa
+Ponieważ Twoje dane finansowe nigdy nie opuszczają urządzenia, masz nad nimi pełną kontrolę: możesz je usunąć w dowolnym momencie w Ustawienia -> Kopia zapasowa -> Wyczyść wszystkie dane, lub odinstalowując aplikację. Kopię zapasową możesz eksportować i przechowywać samodzielnie.
+
+6. Dzieci
+Aplikacja nie jest kierowana do dzieci poniżej 16 roku życia i nie zbieramy świadomie danych takich osób.
+
+7. Zmiany polityki
+Jeśli ta polityka ulegnie zmianie, zaktualizowana wersja pojawi się w tym miejscu wraz z nową datą.
+
+8. Kontakt
+Pytania dotyczące prywatności: finars2026@gmail.com</string>
     <string name="dialog_close">Zamknij</string>
     <string name="dialog_write">Napisz</string>
     <string name="pro_status_locked">Pro jest zablokowane. Odblokuj, aby uzyskać roczne i niestandardowe raporty Excel, kopię zapasową i przywracanie danych oraz usunąć reklamy.</string>

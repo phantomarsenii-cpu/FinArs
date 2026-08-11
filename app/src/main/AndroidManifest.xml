@@ -28,6 +28,8 @@
         <activity android:name=".SettingsTaxActivity" android:exported="false" />
         <activity android:name=".LimitsActivity" android:exported="false" />
         <activity android:name=".NotificationsActivity" android:exported="false" />
+        <activity android:name=".AboutActivity" android:exported="false" />
+        <activity android:name=".PrivacyPolicyActivity" android:exported="false" />
         <activity android:name=".SettingsSecurityActivity" android:exported="false" />
         <activity android:name=".LockActivity" android:exported="false"
             android:launchMode="singleTask" android:excludeFromRecents="true" />
