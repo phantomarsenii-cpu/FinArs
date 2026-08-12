@@ -65,74 +65,94 @@
     <string name="about_app">O aplikacji</string>
     <string name="about_version_label">Wersja %1$s</string>
     <string name="settings_menu_privacy">Polityka prywatności</string>
-    <string name="about_description" formatted="false">FinArs to kompleksowa aplikacja do zarządzania finansami działalności nierejestrowanej i jednoosobowej działalności gospodarczej (JDG). Śledź przychody i wydatki, kontroluj limity, automatycznie licz podatki, wystawiaj faktury, zarządzaj magazynem i generuj gotowe raporty oraz deklaracje PIT — wszystko w jednym miejscu, z pełną historią operacji i powiadomień zawsze pod ręką.
-
-📊 Finanse i podatki
-💰 Ewidencja przychodów i wydatków z załącznikami paragonów i kolorowymi kategoriami
-📈 Automatyczne obliczanie zysku i podatku (skala 12%/32%, liniowy 19%, ryczałt)
-🔁 Transakcje cykliczne (czynsz, abonamenty) tworzone automatycznie co miesiąc
-🚦 Kontrola limitów: działalność nierejestrowana, próg 120 000 zł, zwolnienie z VAT (240 000 zł)
-🔔 Historia powiadomień o zbliżających się i przekroczonych limitach, terminach faktur i innych
-
-📦 Magazyn
-🏬 Katalog produktów ze skanowaniem kodów kreskowych, stanami magazynowymi i alertami o niskim stanie
-📋 Sesje inwentaryzacji z historią
-🧾 Produkty można dodawać bezpośrednio do faktur
-
-🧾 Faktury i rachunki (Pro)
-📝 Wystawianie faktur/rachunków dla osób fizycznych i firm z generowaniem PDF
-✅ Statusy: Zapłacona / Oczekuje na zapłatę / Zaległa, plus przypomnienia o terminie płatności
-💵 Kontrola rocznego limitu gotówki (20 000 zł) dla sprzedaży osobom fizycznym
-🔍 Historia faktur z wyszukiwaniem i filtrami
-
-📄 Raporty i deklaracje
-📊 Podsumowanie przychodów/wydatków i wykres trendu za 6 miesięcy
-📥 Eksport raportu miesięcznego (bezpłatnie), rocznego i za dowolny okres (Pro) do Excela wraz z paragonami
-🧮 Generowanie deklaracji PIT-36 / PIT-36L / PIT-28 — pomocniczy PDF oraz wypełnienie oficjalnego formularza (Pro)
-
-🔒 Bezpieczeństwo i wygoda
-🔐 Blokada aplikacji kodem PIN oraz odciskiem palca / twarzą
-💾 Kopia zapasowa i przywracanie danych (Pro)
-🌙 Nowoczesny ciemny interfejs
-🌍 Dostępne w języku polskim, rosyjskim i angielskim
-🔒 Wszystkie dane finansowe są przechowywane lokalnie na urządzeniu
-
-⭐ Subskrypcja Pro: plan miesięczny lub roczny, 7 dni za darmo, anulowanie w każdej chwili.
-
-Kontakt: finars2026@gmail.com</string>
     <string name="about_email">finars2026@gmail.com</string>
-    <string name="privacy_policy_body" formatted="false">Ostatnia aktualizacja: 2026
 
-1. Administrator danych
-Kontakt w sprawach prywatności: finars2026@gmail.com
+    <string name="privacy_updated_label">Ostatnia aktualizacja: 11 sierpnia 2026 r.</string>
+    <string name="privacy_intro">Szanujemy Twoją prywatność. Aplikacja FinArs została zaprojektowana z myślą o maksymalnym bezpieczeństwie Twoich danych — większość informacji przechowywana jest wyłącznie na Twoim urządzeniu.</string>
 
-2. Jakie dane przetwarzamy
-Twoje dane finansowe (kwoty, daty, komentarze, kategorie operacji), dane produktów w magazynie, zdjęcia paragonów oraz dane faktur (nazwa kontrahenta, NIP jeśli podano) są przechowywane WYŁĄCZNIE lokalnie na Twoim urządzeniu. Nie wysyłamy tych danych na żaden serwer.
-PIN blokady aplikacji jest przechowywany lokalnie w formie zahaszowanej i nigdy nie opuszcza urządzenia.
-Zdjęcia paragonów skanowane funkcją OCR są przetwarzane w całości na urządzeniu (Google ML Kit, tryb on-device) — zdjęcia nie są przesyłane do Google ani do kogokolwiek innego.
+    <string name="privacy_section1_title">1. Administrator danych osobowych</string>
+    <string name="privacy_section1_body">Administratorem aplikacji jest twórca FinArs. W sprawach związanych z ochroną prywatności i przetwarzaniem danych możesz skontaktować się pod adresem e-mail: finars2026@gmail.com.</string>
 
-3. Uprawnienia aplikacji
-Aparat — do skanowania paragonów i kodów kreskowych produktów.
-Powiadomienia — do przypominania o zbliżających się/przekroczonych limitach oraz terminach faktur.
-Pamięć (starsze wersje Androida) — do zapisu kopii zapasowej i eksportu raportów.
-Internet — wymagany przez usługi zewnętrzne opisane poniżej (reklamy, płatności), a nie do wysyłania Twoich danych finansowych.
+    <string name="privacy_section2_title">2. Jakie dane przetwarzamy i gdzie je przechowujemy?</string>
+    <string name="privacy_section2_intro">Wszystkie Twoje kluczowe dane finansowe i biznesowe są przechowywane WYŁĄCZNIE LOKALNIE w pamięci Twojego urządzenia. Nie posiadamy własnych serwerów i nie zbieramy tych informacji.</string>
+    <string-array name="privacy_section2_bullets">
+        <item>Dane finansowe i transakcje: kwoty, daty, kategorie, komentarze oraz numery i dane faktur (w tym dane kontrahentów i NIP) nie opuszczają Twojego telefonu.</item>
+        <item>Stan magazynowy: dane o produktach i inwentaryzacji są zapisywane wyłącznie w lokalnej bazie danych aplikacji.</item>
+        <item>Zdjęcia i skany paragonów (OCR): funkcja skanowania działa w trybie on-device (Google ML Kit). Zdjęcia i odczytany tekst są przetwarzane lokalnie i nie są wysyłane do chmury.</item>
+        <item>Zabezpieczenia (PIN / biometria): kod PIN jest przechowywany w postaci zaszyfrowanej w bezpiecznym magazynie danych urządzenia i nigdy nie jest nigdzie przesyłany.</item>
+    </string-array>
 
-4. Usługi zewnętrzne (podmioty trzecie)
-Google AdMob — wyświetla reklamy użytkownikom bez subskrypcji Pro. AdMob może zbierać identyfikator reklamowy urządzenia i inne dane w celu wyświetlania reklam (w tym spersonalizowanych, za zgodą użytkownika z UE zbieraną przez formularz zgody Google). Więcej: policies.google.com/privacy
-Google Play Billing — obsługuje subskrypcję Pro. Płatności przetwarza Google Play; nie mamy dostępu do danych Twojej karty płatniczej.
-Google ML Kit — rozpoznawanie tekstu na paragonach, działa w całości na urządzeniu.
+    <string name="privacy_section3_title">3. Usługi zewnętrzne (podmioty trzecie)</string>
+    <string name="privacy_section3_intro">Aplikacja korzysta z zaufanych usług zewnętrznych do obsługi płatności i reklam:</string>
+    <string-array name="privacy_section3_bullets">
+        <item>Google Play Billing — obsługuje proces zakupu i weryfikacji subskrypcji FinArs Pro. Nie mamy dostępu do danych Twojej karty płatniczej (płatność obsługuje Google).</item>
+        <item>Google AdMob — wyświetla reklamy użytkownikom bez aktywnej subskrypcji Pro. AdMob może zbierać anonimowy identyfikator reklamowy oraz dane diagnostyczne w celu serwowania reklam (zgodnie z wyrażoną zgodą RODO/GDPR za pośrednictwem formularza zgody Google UMP). Polityka prywatności Google: policies.google.com/privacy</item>
+        <item>Google ML Kit — rozpoznawanie tekstu ze zdjęć paragonów, działające w 100% w trybie offline na Twoim urządzeniu.</item>
+    </string-array>
 
-5. Twoje prawa
-Ponieważ Twoje dane finansowe nigdy nie opuszczają urządzenia, masz nad nimi pełną kontrolę: możesz je usunąć w dowolnym momencie w Ustawienia -> Kopia zapasowa -> Wyczyść wszystkie dane, lub odinstalowując aplikację. Kopię zapasową możesz eksportować i przechowywać samodzielnie.
+    <string name="privacy_section4_title">4. Wymagane uprawnienia aplikacji</string>
+    <string name="privacy_section4_intro">Aplikacja prosi tylko o uprawnienia niezbędne do jej prawidłowego działania:</string>
+    <string-array name="privacy_section4_bullets">
+        <item>Aparat — wymagany wyłącznie do skanowania kodów kreskowych w magazynie oraz robienia zdjęć paragonów.</item>
+        <item>Powiadomienia — wymagane do przypominania o terminach płatności faktur oraz przekroczeniu limitów (np. działalności nierejestrowanej).</item>
+        <item>Pamięć — wymagana na starszych wersjach systemu Android do zapisywania kopii zapasowych oraz eksportu raportów (np. PDF / CSV).</item>
+        <item>Dostęp do internetu — wymagany wyłącznie przez opisane wyżej moduły reklam i płatności; nie jest wykorzystywany do przesyłania Twoich danych finansowych.</item>
+    </string-array>
 
-6. Dzieci
-Aplikacja nie jest kierowana do dzieci poniżej 16 roku życia i nie zbieramy świadomie danych takich osób.
+    <string name="privacy_section5_title">5. Zarządzanie danymi i Twoje prawa</string>
+    <string name="privacy_section5_body">Ponieważ Twoje dane znajdują się na Twoim telefonie, masz nad nimi pełną kontrolę: możesz w dowolnym momencie wyczyścić wszystkie dane w aplikacji (Ustawienia -> Kopia zapasowa -> Wyczyść dane) lub po prostu odinstalować aplikację. Samodzielnie decydujesz, gdzie i kiedy eksportujesz plik kopii zapasowej.</string>
 
-7. Zmiany polityki
-Jeśli ta polityka ulegnie zmianie, zaktualizowana wersja pojawi się w tym miejscu wraz z nową datą.
+    <string name="privacy_section6_title">6. Dzieci</string>
+    <string name="privacy_section6_body">Aplikacja nie jest skierowana do osób poniżej 16 roku życia i nie zbiera świadomie żadnych danych od dzieci.</string>
 
-8. Kontakt
-Pytania dotyczące prywatności: finars2026@gmail.com</string>
+    <string name="privacy_section7_title">7. Zmiany w Polityce Prywatności</string>
+    <string name="privacy_section7_body">Zastrzegamy sobie prawo do aktualizacji niniejszej Polityki Prywatności. Każda zmiana zostanie opublikowana w tym miejscu wraz z nową datą aktualizacji.</string>
+
+    <string name="privacy_section8_title">8. Kontakt</string>
+    <string name="privacy_section8_body">W razie jakichkolwiek pytań dotyczących prywatności lub działania aplikacji, skontaktuj się z nami: finars2026@gmail.com</string>
+
+    <string name="about_intro">FinArs to kompleksowa aplikacja do zarządzania finansami działalności nierejestrowanej i jednoosobowej działalności gospodarczej (JDG). Śledź przychody i wydatki, kontroluj limity, automatycznie licz podatki, wystawiaj faktury, zarządzaj magazynem i generuj gotowe raporty oraz deklaracje PIT — wszystko w jednym miejscu, z pełną historią operacji i powiadomień zawsze pod ręką.</string>
+    <string name="about_subscription_note">⭐ Subskrypcja Pro: plan miesięczny lub roczny, 7 dni za darmo, anulowanie w każdej chwili.</string>
+
+    <string name="about_section_finance_title">📊 Finanse i podatki</string>
+    <string-array name="about_bullets_finance">
+        <item>Ewidencja przychodów i wydatków z załącznikami paragonów i kolorowymi kategoriami</item>
+        <item>Automatyczne obliczanie zysku i podatku (skala 12%/32%, liniowy 19%, ryczałt)</item>
+        <item>Transakcje cykliczne (czynsz, abonamenty) tworzone automatycznie co miesiąc</item>
+        <item>Kontrola limitów: działalność nierejestrowana, próg 120 000 zł, zwolnienie z VAT (240 000 zł)</item>
+        <item>Historia powiadomień o zbliżających się i przekroczonych limitach, terminach faktur i innych</item>
+    </string-array>
+
+    <string name="about_section_warehouse_title">📦 Magazyn</string>
+    <string-array name="about_bullets_warehouse">
+        <item>Katalog produktów ze skanowaniem kodów kreskowych, stanami magazynowymi i alertami o niskim stanie</item>
+        <item>Sesje inwentaryzacji z historią</item>
+        <item>Produkty można dodawać bezpośrednio do faktur</item>
+    </string-array>
+
+    <string name="about_section_invoices_title">🧾 Faktury i rachunki (Pro)</string>
+    <string-array name="about_bullets_invoices">
+        <item>Wystawianie faktur/rachunków dla osób fizycznych i firm z generowaniem PDF</item>
+        <item>Statusy: Zapłacona / Oczekuje na zapłatę / Zaległa, plus przypomnienia o terminie płatności</item>
+        <item>Kontrola rocznego limitu gotówki (20 000 zł) dla sprzedaży osobom fizycznym</item>
+        <item>Historia faktur z wyszukiwaniem i filtrami</item>
+    </string-array>
+
+    <string name="about_section_reports_title">📄 Raporty i deklaracje</string>
+    <string-array name="about_bullets_reports">
+        <item>Podsumowanie przychodów/wydatków i wykres trendu za 6 miesięcy</item>
+        <item>Eksport raportu miesięcznego (bezpłatnie), rocznego i za dowolny okres (Pro) do Excela wraz z paragonami</item>
+        <item>Generowanie deklaracji PIT-36 / PIT-36L / PIT-28 — pomocniczy PDF oraz wypełnienie oficjalnego formularza (Pro)</item>
+    </string-array>
+
+    <string name="about_section_security_title">🔒 Bezpieczeństwo i wygoda</string>
+    <string-array name="about_bullets_security">
+        <item>Blokada aplikacji kodem PIN oraz odciskiem palca / twarzą</item>
+        <item>Kopia zapasowa i przywracanie danych (Pro)</item>
+        <item>Nowoczesny ciemny interfejs</item>
+        <item>Dostępne w języku polskim, rosyjskim i angielskim</item>
+        <item>Wszystkie dane finansowe są przechowywane lokalnie na urządzeniu</item>
+    </string-array>
     <string name="dialog_close">Zamknij</string>
     <string name="dialog_write">Napisz</string>
     <string name="pro_status_locked">Pro jest zablokowane. Odblokuj, aby uzyskać roczne i niestandardowe raporty Excel, kopię zapasową i przywracanie danych oraz usunąć reklamy.</string>

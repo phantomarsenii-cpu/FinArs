@@ -45,17 +45,20 @@ class LimitsNotificationWorker(context: Context, params: WorkerParameters) : Cor
                     m.exceeded -> notifyOnce(
                         prefs, "n_exceeded_$today",
                         ctx.getString(R.string.notif_limit_exceeded_title),
-                        ctx.getString(R.string.notif_limit_exceeded_text)
+                        ctx.getString(R.string.notif_limit_exceeded_text),
+                        LimitsActivity::class.java
                     )
                     m.percent >= 95 -> notifyOnce(
                         prefs, "n_95_$today",
                         ctx.getString(R.string.notif_limit_95_title),
-                        ctx.getString(R.string.notif_limit_95_text)
+                        ctx.getString(R.string.notif_limit_95_text),
+                        LimitsActivity::class.java
                     )
                     m.percent >= 80 -> notifyOnce(
                         prefs, "n_80_$today",
                         ctx.getString(R.string.notif_limit_80_title),
-                        ctx.getString(R.string.notif_limit_80_text)
+                        ctx.getString(R.string.notif_limit_80_text),
+                        LimitsActivity::class.java
                     )
                 }
             }
@@ -65,7 +68,8 @@ class LimitsNotificationWorker(context: Context, params: WorkerParameters) : Cor
                 notifyOnce(
                     prefs, "bracket90_${TaxHelper.currentYear()}",
                     ctx.getString(R.string.notif_bracket_title),
-                    ctx.getString(R.string.notif_bracket_text)
+                    ctx.getString(R.string.notif_bracket_text),
+                    LimitsActivity::class.java
                 )
             }
 
@@ -74,7 +78,8 @@ class LimitsNotificationWorker(context: Context, params: WorkerParameters) : Cor
                 notifyOnce(
                     prefs, "vat90_${TaxHelper.currentYear()}",
                     ctx.getString(R.string.notif_vat_title),
-                    ctx.getString(R.string.notif_vat_text)
+                    ctx.getString(R.string.notif_vat_text),
+                    LimitsActivity::class.java
                 )
             }
 
@@ -86,7 +91,8 @@ class LimitsNotificationWorker(context: Context, params: WorkerParameters) : Cor
                 notifyRepeatable(
                     prefs, "vat_exceeded_${TaxHelper.currentYear()}",
                     ctx.getString(R.string.notif_vat_exceeded_critical_title),
-                    ctx.getString(R.string.notif_vat_exceeded_critical_text)
+                    ctx.getString(R.string.notif_vat_exceeded_critical_text),
+                    SettingsTaxActivity::class.java
                 )
             }
 
@@ -97,7 +103,8 @@ class LimitsNotificationWorker(context: Context, params: WorkerParameters) : Cor
                 notifyRepeatable(
                     prefs, "kasa_exceeded_${TaxHelper.currentYear()}",
                     ctx.getString(R.string.notif_kasa_exceeded_title),
-                    ctx.getString(R.string.notif_kasa_exceeded_text)
+                    ctx.getString(R.string.notif_kasa_exceeded_text),
+                    SettingsTaxActivity::class.java
                 )
             }
 
@@ -108,7 +115,8 @@ class LimitsNotificationWorker(context: Context, params: WorkerParameters) : Cor
                 notifyOnce(
                     prefs, "advance_${cal.get(Calendar.YEAR)}_${cal.get(Calendar.MONTH)}",
                     ctx.getString(R.string.notif_advance_title),
-                    ctx.getString(R.string.notif_advance_text)
+                    ctx.getString(R.string.notif_advance_text),
+                    ReportActivity::class.java
                 )
             }
 
@@ -120,7 +128,8 @@ class LimitsNotificationWorker(context: Context, params: WorkerParameters) : Cor
                 notifyOnce(
                     prefs, "pit_deadline_${cal.get(Calendar.YEAR)}_$month",
                     ctx.getString(R.string.notif_pit_deadline_title),
-                    ctx.getString(R.string.notif_pit_deadline_text)
+                    ctx.getString(R.string.notif_pit_deadline_text),
+                    Pit36Activity::class.java
                 )
             }
 
@@ -130,10 +139,13 @@ class LimitsNotificationWorker(context: Context, params: WorkerParameters) : Cor
         }
     }
 
-    private fun notifyOnce(prefs: android.content.SharedPreferences, key: String, title: String, text: String) {
+    private fun notifyOnce(
+        prefs: android.content.SharedPreferences, key: String, title: String, text: String,
+        targetActivity: Class<*>? = null
+    ) {
         if (prefs.getBoolean("notif_shown_$key", false)) return
         prefs.edit().putBoolean("notif_shown_$key", true).apply()
-        showNotification(applicationContext, key.hashCode(), title, text)
+        showNotification(applicationContext, key.hashCode(), title, text, targetActivity)
     }
 
     /** Как notifyOnce, но допускает до N повторов В ТЕЧЕНИЕ ОДНОГО ДНЯ — N задаётся
@@ -141,8 +153,11 @@ class LimitsNotificationWorker(context: Context, params: WorkerParameters) : Cor
      *  по умолчанию 3). Используется только для действительно срочных ситуаций
      *  (превышен лимit VAT/kasy, просроченная фактура) — обычные предупреждения
      *  "приближаетесь к лимиту" по-прежнему используют notifyOnce (раз в день). */
-    private fun notifyRepeatable(prefs: android.content.SharedPreferences, key: String, title: String, text: String) {
-        notifyRepeatableStatic(applicationContext, prefs, key, title, text)
+    private fun notifyRepeatable(
+        prefs: android.content.SharedPreferences, key: String, title: String, text: String,
+        targetActivity: Class<*>? = null
+    ) {
+        notifyRepeatableStatic(applicationContext, prefs, key, title, text, targetActivity)
     }
 
     companion object {
@@ -184,7 +199,7 @@ class LimitsNotificationWorker(context: Context, params: WorkerParameters) : Cor
             // Start) независимо от того, было ли реально показано системное
             // уведомление — так пользователь не теряет запись, даже если разрешение
             // POST_NOTIFICATIONS не выдано.
-            NotificationLog.add(context, title, text)
+            NotificationLog.add(context, title, text, targetActivity)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                 val granted = ActivityCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) ==
                     PackageManager.PERMISSION_GRANTED

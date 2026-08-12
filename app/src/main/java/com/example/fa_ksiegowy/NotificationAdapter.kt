@@ -12,7 +12,8 @@ import java.util.Date
 import java.util.Locale
 
 class NotificationAdapter(
-    private val onDelete: (NotificationLog.Entry) -> Unit
+    private val onDelete: (NotificationLog.Entry) -> Unit,
+    private val onOpen: (NotificationLog.Entry) -> Unit = {}
 ) : RecyclerView.Adapter<NotificationAdapter.VH>() {
 
     private var items: List<NotificationLog.Entry> = emptyList()
@@ -48,6 +49,7 @@ class NotificationAdapter(
         holder.text.text = e.text
         holder.time.text = fmt.format(Date(e.timeMillis))
         holder.delete.setOnClickListener { onDelete(e) }
+        holder.itemView.setOnClickListener { onOpen(e) }
     }
 
     override fun getItemCount(): Int = items.size

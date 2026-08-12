@@ -187,6 +187,7 @@ class MineActivity : BaseActivity() {
         loadRecentEntries()
         loadMonthlySummaryChart()
         applyBusinessKindUi()
+        updateNotificationBadge()
         if (BillingManager.isPro(this)) {
             bannerAdView?.let { AdsManager.hideBanner(findViewById(R.id.ad_container), it) }
         }
@@ -197,6 +198,21 @@ class MineActivity : BaseActivity() {
     // BusinessKind) nie jest juz potrzebna — zostawiona pusta na wypadek,
     // gdyby cos jeszcze jej uzywalo w applyBusinessKindUi() z innego miejsca.
     private fun applyBusinessKindUi() {}
+
+    /** Licznik na dzwonku (iv_notifications) — liczba wpisow w historii powiadomien.
+     *  Rosnie przy kazdym nowym powiadomieniu (NotificationLog.add), maleje przy
+     *  usunieciu/wyczyszczeniu w NotificationsActivity — zawsze zsynchronizowany,
+     *  bo oba ekrany czytaja ten sam magazyn (NotificationLog), a nie osobny licznik. */
+    private fun updateNotificationBadge() {
+        val count = NotificationLog.count(this)
+        val badge = findViewById<TextView>(R.id.tv_notif_badge)
+        if (count <= 0) {
+            badge.visibility = View.GONE
+        } else {
+            badge.visibility = View.VISIBLE
+            badge.text = if (count > 99) "99+" else count.toString()
+        }
+    }
 
     private fun loadData() {
         CoroutineScope(Dispatchers.IO).launch {

@@ -14,7 +14,7 @@ import org.json.JSONObject
  * SharedPreferences w zupelnosci wystarcza do listy kilkudziesieciu wpisow.
  */
 object NotificationLog {
-    data class Entry(val id: Long, val title: String, val text: String, val timeMillis: Long)
+    data class Entry(val id: Long, val title: String, val text: String, val timeMillis: Long, val targetClass: String? = null)
 
     private const val PREFS = "notification_log"
     private const val KEY_ITEMS = "items"
@@ -22,12 +22,16 @@ object NotificationLog {
 
     private fun prefs(context: Context) = context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
 
-    fun add(context: Context, title: String, text: String) {
+    fun add(context: Context, title: String, text: String, targetClass: Class<*>? = null) {
         val list = getAll(context).toMutableList()
-        list.add(0, Entry(System.currentTimeMillis(), title, text, System.currentTimeMillis()))
+        list.add(0, Entry(System.currentTimeMillis(), title, text, System.currentTimeMillis(), targetClass?.name))
         val trimmed = list.take(MAX_ITEMS)
         save(context, trimmed)
     }
+
+    /** Liczba wpisow w historii — uzywana jako licznik na dzwonku na Start; spada
+     *  automatycznie po usunieciu/wyczyszczeniu powiadomien (patrz delete/clear). */
+    fun count(context: Context): Int = getAll(context).size
 
     fun getAll(context: Context): List<Entry> {
         val raw = prefs(context).getString(KEY_ITEMS, null) ?: return emptyList()
@@ -35,7 +39,10 @@ object NotificationLog {
             val arr = JSONArray(raw)
             (0 until arr.length()).map { i ->
                 val o = arr.getJSONObject(i)
-                Entry(o.getLong("id"), o.getString("title"), o.getString("text"), o.getLong("time"))
+                Entry(
+                    o.getLong("id"), o.getString("title"), o.getString("text"), o.getLong("time"),
+                    if (o.has("target") && !o.isNull("target")) o.getString("target") else null
+                )
             }
         } catch (e: Exception) {
             emptyList()
@@ -59,6 +66,7 @@ object NotificationLog {
                 put("title", e.title)
                 put("text", e.text)
                 put("time", e.timeMillis)
+                put("target", e.targetClass)
             })
         }
         prefs(context).edit().putString(KEY_ITEMS, arr.toString()).apply()

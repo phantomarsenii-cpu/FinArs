@@ -21,7 +21,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center_vertical"
-            android:layout_marginBottom="18dp">
+            android:layout_marginBottom="6dp">
 
             <ImageView
                 android:id="@+id/iv_back"
@@ -44,21 +44,25 @@
 
         </LinearLayout>
 
+        <TextView
+            android:id="@+id/tv_privacy_updated"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:textColor="@color/text_hint"
+            android:textSize="12sp"/>
+
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1">
+            android:layout_weight="1"
+            android:clipToPadding="false">
 
-            <TextView
-                android:id="@+id/tv_privacy_body"
+            <LinearLayout
+                android:id="@+id/ll_privacy_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/card_bg"
-                android:padding="16dp"
-                android:text="@string/privacy_policy_body"
-                android:textColor="@color/text_primary"
-                android:textSize="14sp"
-                android:lineSpacingExtra="4dp"/>
+                android:orientation="vertical"/>
 
         </ScrollView>
 

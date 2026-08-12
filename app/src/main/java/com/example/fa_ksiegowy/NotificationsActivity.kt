@@ -26,10 +26,13 @@ class NotificationsActivity : BaseActivity() {
             reload()
         }
 
-        adapter = NotificationAdapter { entry ->
-            NotificationLog.delete(this, entry.id)
-            reload()
-        }
+        adapter = NotificationAdapter(
+            onDelete = { entry ->
+                NotificationLog.delete(this, entry.id)
+                reload()
+            },
+            onOpen = { entry -> openTarget(entry) }
+        )
         findViewById<RecyclerView>(R.id.rv_notifications).apply {
             layoutManager = LinearLayoutManager(this@NotificationsActivity)
             adapter = this@NotificationsActivity.adapter
@@ -41,6 +44,19 @@ class NotificationsActivity : BaseActivity() {
     override fun onResume() {
         super.onResume()
         reload()
+    }
+
+    /** Tap na wpisie w historii powiadomien — otwiera ten sam ekran, ktory
+     *  otworzylby tap na systemowym powiadomieniu (patrz NotificationLog.targetClass,
+     *  zapisywane przez LimitsNotificationWorker.showNotification). */
+    private fun openTarget(entry: NotificationLog.Entry) {
+        val className = entry.targetClass ?: return
+        try {
+            val clazz = Class.forName(className)
+            startActivity(android.content.Intent(this, clazz))
+        } catch (e: ClassNotFoundException) {
+            // Stary wpis z wersji sprzed dodania targetClass — po prostu nic nie robimy.
+        }
     }
 
     private fun reload() {

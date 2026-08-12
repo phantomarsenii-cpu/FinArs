@@ -35,7 +35,8 @@ class StockNotificationWorker(context: Context, params: WorkerParameters) : Coro
                         p.name,
                         String.format(Locale.getDefault(), "%.1f", p.quantity),
                         p.unit
-                    )
+                    ),
+                    MagazinActivity::class.java
                 )
             }
             Result.success()
@@ -44,10 +45,13 @@ class StockNotificationWorker(context: Context, params: WorkerParameters) : Coro
         }
     }
 
-    private fun notifyOnce(prefs: SharedPreferences, key: String, title: String, text: String) {
+    private fun notifyOnce(
+        prefs: SharedPreferences, key: String, title: String, text: String,
+        targetActivity: Class<*>? = null
+    ) {
         if (prefs.getBoolean("notif_shown_$key", false)) return
         prefs.edit().putBoolean("notif_shown_$key", true).apply()
-        LimitsNotificationWorker.showNotification(applicationContext, key.hashCode(), title, text)
+        LimitsNotificationWorker.showNotification(applicationContext, key.hashCode(), title, text, targetActivity)
     }
 
     companion object {

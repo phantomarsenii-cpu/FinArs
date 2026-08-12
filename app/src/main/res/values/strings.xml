@@ -65,74 +65,94 @@
     <string name="about_app">About the app</string>
     <string name="about_version_label">Version %1$s</string>
     <string name="settings_menu_privacy">Privacy Policy</string>
-    <string name="about_description" formatted="false">FinArs is a comprehensive app for managing the finances of unregistered business activity and sole proprietorships (JDG). Track income and expenses, monitor limits, automatically calculate taxes, issue invoices, manage your warehouse, and generate ready-made reports and tax returns — all in one place, with the full history of operations and notifications always at hand.
-
-📊 Finances and taxes
-💰 Income and expense tracking with attached receipts and colour-coded categories
-📈 Automatic profit and tax calculation (12%/32% scale, 19% flat, lump-sum)
-🔁 Recurring transactions (rent, subscriptions) created automatically every month
-🚦 Limit tracking: unregistered activity, 120,000 zł tax bracket, VAT exemption (240,000 zł)
-🔔 Notification history for approaching and exceeded limits, invoice reminders and more
-
-📦 Warehouse
-🏬 Product catalogue with barcode scanning, stock levels and low-stock alerts
-📋 Stocktaking sessions with history
-🧾 Products can be added straight to invoices
-
-🧾 Invoices and receipts (Pro)
-📝 Issue invoices/receipts to individuals and companies with PDF generation
-✅ Statuses: Paid / Pending / Overdue, plus due-date reminders
-💵 Tracking of the annual 20,000 zł cash-sales limit for private individuals
-🔍 Invoice history with search and filters
-
-📄 Reports and tax returns
-📊 Income/expense summary and 6-month trend chart
-📥 Export monthly report (free), yearly and custom-period reports (Pro) to Excel with receipts
-🧮 Generate PIT-36 / PIT-36L / PIT-28 tax returns — helper PDF and official form filling (Pro)
-
-🔒 Security and convenience
-🔐 App lock with PIN code and fingerprint / face unlock
-💾 Backup and restore your data (Pro)
-🌙 Modern dark interface
-🌍 Available in Polish, Russian and English
-🔒 All financial data is stored locally on your device
-
-⭐ Pro subscription: monthly or yearly plan, 7 days free trial, cancel anytime.
-
-Contact: finars2026@gmail.com</string>
     <string name="about_email">finars2026@gmail.com</string>
-    <string name="privacy_policy_body" formatted="false">Last updated: 2026
 
-1. Data controller
-Contact for privacy questions: finars2026@gmail.com
+    <string name="privacy_updated_label">Last updated: August 11, 2026</string>
+    <string name="privacy_intro">We respect your privacy. FinArs was designed with maximum data security in mind — most information is stored exclusively on your device.</string>
 
-2. What data we process
-Your financial data (amounts, dates, comments, categories), warehouse/product data, receipt photos, and invoice details (counterparty name, tax ID if entered) are stored EXCLUSIVELY on your device. We do not upload this data to any server.
-The app-lock PIN is stored locally in hashed form and never leaves your device.
-Receipt photos scanned with the OCR feature are processed entirely on-device (Google ML Kit, on-device mode) — the photos are never sent to Google or anyone else.
+    <string name="privacy_section1_title">1. Data controller</string>
+    <string name="privacy_section1_body">The controller of the app is the creator of FinArs. For questions about privacy and data processing, contact: finars2026@gmail.com.</string>
 
-3. App permissions
-Camera — to scan receipts and product barcodes.
-Notifications — to remind you about approaching/exceeded limits and invoice due dates.
-Storage (older Android versions) — to save backups and export reports.
-Internet — required by the third-party services described below (ads, payments), not to upload your financial data.
+    <string name="privacy_section2_title">2. What data we process and where we store it</string>
+    <string name="privacy_section2_intro">All your key financial and business data is stored EXCLUSIVELY LOCALLY on your device. We do not have our own servers and do not collect this information.</string>
+    <string-array name="privacy_section2_bullets">
+        <item>Financial data and transactions: amounts, dates, categories, comments, and invoice details (including counterparty name and tax ID) never leave your phone.</item>
+        <item>Warehouse stock: product and stocktaking data is saved only in the app\'s local database.</item>
+        <item>Receipt photos and scans (OCR): the scanning feature runs on-device (Google ML Kit). Photos and recognised text are processed locally and never uploaded to the cloud.</item>
+        <item>Security (PIN / biometrics): the PIN is stored in hashed form in the device\'s secure storage and is never transmitted anywhere.</item>
+    </string-array>
 
-4. Third-party services
-Google AdMob — shows ads to users without a Pro subscription. AdMob may collect the device advertising ID and other data to serve ads (including personalised ads, subject to consent collected via Google\'s consent form for EU users). See policies.google.com/privacy
-Google Play Billing — handles the Pro subscription. Payments are processed by Google Play; we never see your payment card details.
-Google ML Kit — on-device text recognition for receipts; runs entirely on your device.
+    <string name="privacy_section3_title">3. Third-party services</string>
+    <string name="privacy_section3_intro">The app uses trusted external services to handle payments and ads:</string>
+    <string-array name="privacy_section3_bullets">
+        <item>Google Play Billing — handles the purchase and verification of the FinArs Pro subscription. We never see your payment card details (payment is handled by Google).</item>
+        <item>Google AdMob — shows ads to users without an active Pro subscription. AdMob may collect an anonymous advertising ID and diagnostic data to serve ads (subject to GDPR consent collected via Google\'s UMP consent form). Google\'s privacy policy: policies.google.com/privacy</item>
+        <item>Google ML Kit — text recognition for receipt photos, running 100% offline on your device.</item>
+    </string-array>
 
-5. Your rights
-Since your financial data never leaves your device, you are always in full control: you can delete it at any time via Settings -> Backup -> Clear all data, or by uninstalling the app. You can export a backup and store it yourself.
+    <string name="privacy_section4_title">4. Required app permissions</string>
+    <string name="privacy_section4_intro">The app only requests the permissions necessary for it to work:</string>
+    <string-array name="privacy_section4_bullets">
+        <item>Camera — required only to scan warehouse barcodes and to photograph receipts.</item>
+        <item>Notifications — required to remind you about invoice due dates and exceeded limits (e.g. unregistered activity).</item>
+        <item>Storage — required on older Android versions to save backups and export reports (e.g. PDF / CSV).</item>
+        <item>Internet access — required only by the ad and billing modules described above; it is not used to upload your financial data.</item>
+    </string-array>
 
-6. Children
-The app is not directed at children under 16, and we do not knowingly collect data from them.
+    <string name="privacy_section5_title">5. Data management and your rights</string>
+    <string name="privacy_section5_body">Since your data lives on your phone, you are always in full control: you can clear all data in the app at any time (Settings -> Backup -> Clear data), or simply uninstall the app. You decide yourself where and when to export your backup file.</string>
 
-7. Changes to this policy
-If this policy changes, the updated version will appear here with a new date.
+    <string name="privacy_section6_title">6. Children</string>
+    <string name="privacy_section6_body">The app is not directed at people under 16 years of age and does not knowingly collect any data from children.</string>
 
-8. Contact
-Privacy questions: finars2026@gmail.com</string>
+    <string name="privacy_section7_title">7. Changes to this Privacy Policy</string>
+    <string name="privacy_section7_body">We reserve the right to update this Privacy Policy. Any change will be published here with a new update date.</string>
+
+    <string name="privacy_section8_title">8. Contact</string>
+    <string name="privacy_section8_body">If you have any questions about privacy or how the app works, contact us: finars2026@gmail.com</string>
+
+    <string name="about_intro">FinArs is a comprehensive app for managing the finances of unregistered business activity and sole proprietorships (JDG). Track income and expenses, monitor limits, automatically calculate taxes, issue invoices, manage your warehouse, and generate ready-made reports and tax returns — all in one place, with the full history of operations and notifications always at hand.</string>
+    <string name="about_subscription_note">⭐ Pro subscription: monthly or yearly plan, 7 days free trial, cancel anytime.</string>
+
+    <string name="about_section_finance_title">📊 Finances and taxes</string>
+    <string-array name="about_bullets_finance">
+        <item>Income and expense tracking with attached receipts and colour-coded categories</item>
+        <item>Automatic profit and tax calculation (12%/32% scale, 19% flat, lump-sum)</item>
+        <item>Recurring transactions (rent, subscriptions) created automatically every month</item>
+        <item>Limit tracking: unregistered activity, 120,000 zł tax bracket, VAT exemption (240,000 zł)</item>
+        <item>Notification history for approaching and exceeded limits, invoice reminders and more</item>
+    </string-array>
+
+    <string name="about_section_warehouse_title">📦 Warehouse</string>
+    <string-array name="about_bullets_warehouse">
+        <item>Product catalogue with barcode scanning, stock levels and low-stock alerts</item>
+        <item>Stocktaking sessions with history</item>
+        <item>Products can be added straight to invoices</item>
+    </string-array>
+
+    <string name="about_section_invoices_title">🧾 Invoices and receipts (Pro)</string>
+    <string-array name="about_bullets_invoices">
+        <item>Issue invoices/receipts to individuals and companies with PDF generation</item>
+        <item>Statuses: Paid / Pending / Overdue, plus due-date reminders</item>
+        <item>Tracking of the annual 20,000 zł cash-sales limit for private individuals</item>
+        <item>Invoice history with search and filters</item>
+    </string-array>
+
+    <string name="about_section_reports_title">📄 Reports and tax returns</string>
+    <string-array name="about_bullets_reports">
+        <item>Income/expense summary and 6-month trend chart</item>
+        <item>Export monthly report (free), yearly and custom-period reports (Pro) to Excel with receipts</item>
+        <item>Generate PIT-36 / PIT-36L / PIT-28 tax returns — helper PDF and official form filling (Pro)</item>
+    </string-array>
+
+    <string name="about_section_security_title">🔒 Security and convenience</string>
+    <string-array name="about_bullets_security">
+        <item>App lock with PIN code and fingerprint / face unlock</item>
+        <item>Backup and restore your data (Pro)</item>
+        <item>Modern dark interface</item>
+        <item>Available in Polish, Russian and English</item>
+        <item>All financial data is stored locally on your device</item>
+    </string-array>
     <string name="dialog_close">Close</string>
     <string name="dialog_write">Write</string>
     <string name="pro_status_locked">Pro is locked. Unlock to get yearly/custom Excel reports, backup \&amp; restore, and remove ads.</string>
