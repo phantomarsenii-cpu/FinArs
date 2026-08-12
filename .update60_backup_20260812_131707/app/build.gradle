@@ -66,12 +66,12 @@ android {
     }
 
     // Domyslnie AGP nazywa plik wyjsciowy wg nazwy modulu ("app-debug.apk"),
-    // niezaleznie od android:label aplikacji. Nadpisujemy nazwe pliku
-    // wyjsciowego na prosta, stala nazwe "FinArs.apk" (bez wersji/wariantu
-    // w nazwie — sama wersja jest widoczna w samej aplikacji po instalacji).
+    // niezaleznie od android:label aplikacji — dlatego pobrany z GitHub Actions
+    // plik zawsze nazywal sie "app-debug.apk", a nie "FinArs...". Nadpisujemy
+    // nazwe pliku wyjsciowego dla kazdego wariantu.
     applicationVariants.all { variant ->
         variant.outputs.all { output ->
-            outputFileName = "FinArs.apk"
+            outputFileName = "FinArs-${variant.versionName}-${variant.name}.apk"
         }
     }
 }

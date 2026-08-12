@@ -49,4 +49,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: FinArs-debug-apk
-          path: app/build/outputs/apk/debug/FinArs.apk
+          path: app/build/outputs/apk/debug/FinArs-*-debug.apk

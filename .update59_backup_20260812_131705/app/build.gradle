@@ -4,16 +4,15 @@ plugins {
     id 'com.google.devtools.ksp'
 }
 
-// Update: numer wersji byl oparty o date/godzine builda (nieczytelny, nie
-// rosnie w prosty sposob). Teraz numer wersji to zwykly licznik zapisany w
-// pliku version.txt w korzeniu repo: 1.0, 1.1, 1.2, ... Plik jest odczytywany
-// tutaj (versionCode/versionName), a incrementowany i commitowany z powrotem
-// do repo automatycznie przez GitHub Actions PO kazdym udanym buildzie (patrz
-// .github/workflows/build.yml, krok "Bump build version number") — dzieki
-// czemu kolejny build automatycznie dostaje kolejny numer, bez recznej pracy.
-def versionFile = file("$rootDir/version.txt")
-def buildNumber = versionFile.exists() ? versionFile.text.trim().toInteger() : 0
-def buildDateStamp = "${buildNumber}"
+// Update: wersja aplikacji byla zahardkodowana (versionCode 1 / "1.0") i nigdy
+// sie nie zmieniala, wiec Android nie widzial nowej wersji przy kazdej
+// instalacji. Liczymy versionCode automatycznie z aktualnego czasu (minuty od
+// wlasnego "zerowego" punktu w czasie, zeby liczba zmiescila sie w Int i byla
+// mala) — kazdy build ma wiec zawsze wiekszy, unikalny kod. versionName
+// pokazuje czytelna date builda.
+def CUSTOM_EPOCH_MILLIS = 1735689600000L // 2025-01-01 00:00:00 UTC
+def autoVersionCode = (int) ((System.currentTimeMillis() - CUSTOM_EPOCH_MILLIS) / 60000L)
+def buildDateStamp = new Date().format('yyyy.MM.dd')
 
 android {
     signingConfigs {
@@ -32,7 +31,7 @@ android {
         applicationId "com.example.fa_ksiegowy"
         minSdk 26
         targetSdk 34
-        versionCode buildNumber + 1
+        versionCode autoVersionCode
         versionName "1.${buildDateStamp}"
         multiDexEnabled true
     }
@@ -66,12 +65,12 @@ android {
     }
 
     // Domyslnie AGP nazywa plik wyjsciowy wg nazwy modulu ("app-debug.apk"),
-    // niezaleznie od android:label aplikacji. Nadpisujemy nazwe pliku
-    // wyjsciowego na prosta, stala nazwe "FinArs.apk" (bez wersji/wariantu
-    // w nazwie — sama wersja jest widoczna w samej aplikacji po instalacji).
+    // niezaleznie od android:label aplikacji — dlatego pobrany z GitHub Actions
+    // plik zawsze nazywal sie "app-debug.apk", a nie "FinArs...". Nadpisujemy
+    // nazwe pliku wyjsciowego dla kazdego wariantu.
     applicationVariants.all { variant ->
         variant.outputs.all { output ->
-            outputFileName = "FinArs.apk"
+            outputFileName = "FinArs-${variant.versionName}-${variant.name}.apk"
         }
     }
 }
