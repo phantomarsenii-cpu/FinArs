@@ -111,7 +111,7 @@
     <string name="privacy_section8_title">8. Contact</string>
     <string name="privacy_section8_body">If you have any questions about privacy or how the app works, contact us: finars2026@gmail.com</string>
 
-    <string name="about_intro">FinArs is a comprehensive app for managing the finances of unregistered business activity. Track income and expenses, monitor limits, automatically calculate taxes, issue invoices, manage your warehouse, and generate ready-made reports and tax returns — all in one place, with the full history of operations and notifications always at hand.</string>
+    <string name="about_intro">FinArs is a comprehensive app for managing the finances of unregistered business activity and sole proprietorships (JDG). Track income and expenses, monitor limits, automatically calculate taxes, issue invoices, manage your warehouse, and generate ready-made reports and tax returns — all in one place, with the full history of operations and notifications always at hand.</string>
     <string name="about_subscription_note">⭐ Pro subscription: monthly or yearly plan, 7 days free trial, cancel anytime.</string>
 
     <string name="about_section_finance_title">📊 Finances and taxes</string>
@@ -172,7 +172,7 @@
     <string name="backup_pro_locked_message">Backup and restore is a Pro feature. Unlock Pro to keep your data safe with a backup file.</string>
     <string name="pro_purchase_error">Could not start the purchase. Check your connection and try again.</string>
     <string name="pro_info_title">Pro version</string>
-    <string name="pro_info_message">Pro unlocks:\n\n\u2022 Issuing invoices and receipts (PDF)\n\u2022 Yearly Excel report\n\u2022 Custom-period Excel report\n\u2022 PIT-36 tax return generation\n\u2022 Backup &amp; restore\n\u2022 No ads</string>
+    <string name="pro_info_message">Pro unlocks:\n\n\u2022 Issuing invoices and receipts (PDF)\n\u2022 Yearly Excel report\n\u2022 Custom-period Excel report\n\u2022 PIT-36 / PIT-36L / PIT-28 tax return generation\n\u2022 Backup &amp; restore\n\u2022 No ads\n\nThis is a one-time purchase — pay once, keep it forever.</string>
     <string name="pro_info_continue">Continue to purchase</string>
     <string name="enter_code_button">Have a code?</string>
     <string name="enter_code_title">Enter code</string>

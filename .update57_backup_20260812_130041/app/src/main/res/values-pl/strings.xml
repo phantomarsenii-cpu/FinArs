@@ -111,7 +111,7 @@
     <string name="privacy_section8_title">8. Kontakt</string>
     <string name="privacy_section8_body">W razie jakichkolwiek pytań dotyczących prywatności lub działania aplikacji, skontaktuj się z nami: finars2026@gmail.com</string>
 
-    <string name="about_intro">FinArs to kompleksowa aplikacja do zarządzania finansami działalności nierejestrowanej. Śledź przychody i wydatki, kontroluj limity, automatycznie licz podatki, wystawiaj faktury, zarządzaj magazynem i generuj gotowe raporty oraz deklaracje PIT — wszystko w jednym miejscu, z pełną historią operacji i powiadomień zawsze pod ręką.</string>
+    <string name="about_intro">FinArs to kompleksowa aplikacja do zarządzania finansami działalności nierejestrowanej i jednoosobowej działalności gospodarczej (JDG). Śledź przychody i wydatki, kontroluj limity, automatycznie licz podatki, wystawiaj faktury, zarządzaj magazynem i generuj gotowe raporty oraz deklaracje PIT — wszystko w jednym miejscu, z pełną historią operacji i powiadomień zawsze pod ręką.</string>
     <string name="about_subscription_note">⭐ Subskrypcja Pro: plan miesięczny lub roczny, 7 dni za darmo, anulowanie w każdej chwili.</string>
 
     <string name="about_section_finance_title">📊 Finanse i podatki</string>
@@ -172,7 +172,7 @@
     <string name="backup_pro_locked_message">Kopia zapasowa i przywracanie to funkcja Pro. Odblokuj Pro, aby zabezpieczyć swoje dane plikiem kopii zapasowej.</string>
     <string name="pro_purchase_error">Nie udało się otworzyć zakupu. Sprawdź połączenie i spróbuj ponownie.</string>
     <string name="pro_info_title">Wersja Pro</string>
-    <string name="pro_info_message">Pro odblokowuje:\n\n\u2022 Wystawianie faktur i rachunków (PDF)\n\u2022 Raport roczny w Excelu\n\u2022 Raport za dowolny okres\n\u2022 Generowanie deklaracji PIT-36\n\u2022 Kopia zapasowa i przywracanie danych\n\u2022 Brak reklam</string>
+    <string name="pro_info_message">Pro odblokowuje:\n\n\u2022 Wystawianie faktur i rachunków (PDF)\n\u2022 Raport roczny w Excelu\n\u2022 Raport za dowolny okres\n\u2022 Generowanie deklaracji PIT-36 / PIT-36L / PIT-28\n\u2022 Kopia zapasowa i przywracanie danych\n\u2022 Brak reklam\n\nTo jednorazowy zakup — płacisz raz, dostęp zostaje na zawsze.</string>
     <string name="pro_info_continue">Przejdź do zakupu</string>
     <string name="enter_code_button">Masz kod?</string>
     <string name="enter_code_title">Wprowadź kod</string>
