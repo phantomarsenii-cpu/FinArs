@@ -78,7 +78,7 @@
     <string-array name="privacy_section2_bullets">
         <item>Dane finansowe i transakcje: kwoty, daty, kategorie, komentarze oraz numery i dane faktur (w tym dane kontrahentów i NIP) nie opuszczają Twojego telefonu.</item>
         <item>Stan magazynowy: dane o produktach i inwentaryzacji są zapisywane wyłącznie w lokalnej bazie danych aplikacji.</item>
-        <item>Zdjęcia i skany paragonów (OCR): funkcja skanowania działa w trybie on-device (Google ML Kit). Zdjęcia i odczytany tekst są przetwarzane lokalnie i nie są wysyłane do chmury.</item>
+        <item>Zdjęcia paragonów dołączane ręcznie do transakcji: przechowywane wyłącznie lokalnie na Twoim urządzeniu, nigdy nie są wysyłane do chmury.</item>
         <item>Zabezpieczenia (PIN / biometria): kod PIN jest przechowywany w postaci zaszyfrowanej w bezpiecznym magazynie danych urządzenia i nigdy nie jest nigdzie przesyłany.</item>
     </string-array>
 
@@ -86,8 +86,8 @@
     <string name="privacy_section3_intro">Aplikacja korzysta z zaufanych usług zewnętrznych do obsługi płatności i reklam:</string>
     <string-array name="privacy_section3_bullets">
         <item>Google Play Billing — obsługuje proces zakupu i weryfikacji subskrypcji FinArs Pro. Nie mamy dostępu do danych Twojej karty płatniczej (płatność obsługuje Google).</item>
+        <item>RevenueCat — po publikacji aplikacji będzie zarządzać statusem subskrypcji Pro (aktywna / wygasła / okres próbny), przetwarzając anonimowy identyfikator użytkownika i status zakupu, aby przyznać dostęp do funkcji Pro na wszystkich Twoich urządzeniach.</item>
         <item>Google AdMob — wyświetla reklamy użytkownikom bez aktywnej subskrypcji Pro. AdMob może zbierać anonimowy identyfikator reklamowy oraz dane diagnostyczne w celu serwowania reklam (zgodnie z wyrażoną zgodą RODO/GDPR za pośrednictwem formularza zgody Google UMP). Polityka prywatności Google: policies.google.com/privacy</item>
-        <item>Google ML Kit — rozpoznawanie tekstu ze zdjęć paragonów, działające w 100% w trybie offline na Twoim urządzeniu.</item>
     </string-array>
 
     <string name="privacy_section4_title">4. Wymagane uprawnienia aplikacji</string>
@@ -117,9 +117,9 @@
     <string name="about_section_finance_title">📊 Finanse i podatki</string>
     <string-array name="about_bullets_finance">
         <item>Ewidencja przychodów i wydatków z załącznikami paragonów i kolorowymi kategoriami</item>
-        <item>Automatyczne obliczanie zysku i podatku (skala 12%/32%, liniowy 19%, ryczałt)</item>
+        <item>Automatyczne obliczanie zysku i podatku (skala 12%/32%)</item>
         <item>Transakcje cykliczne (czynsz, abonamenty) tworzone automatycznie co miesiąc</item>
-        <item>Kontrola limitów: działalność nierejestrowana, próg 120 000 zł, zwolnienie z VAT (240 000 zł)</item>
+        <item>Kontrola limitu działalności nierejestrowanej (próg 120 000 zł)</item>
         <item>Historia powiadomień o zbliżających się i przekroczonych limitach, terminach faktur i innych</item>
     </string-array>
 
@@ -142,7 +142,7 @@
     <string-array name="about_bullets_reports">
         <item>Podsumowanie przychodów/wydatków i wykres trendu za 6 miesięcy</item>
         <item>Eksport raportu miesięcznego (bezpłatnie), rocznego i za dowolny okres (Pro) do Excela wraz z paragonami</item>
-        <item>Generowanie deklaracji PIT-36 / PIT-36L / PIT-28 — pomocniczy PDF oraz wypełnienie oficjalnego formularza (Pro)</item>
+        <item>Generowanie deklaracji PIT-36 — pomocniczy PDF oraz wypełnienie oficjalnego formularza (Pro)</item>
     </string-array>
 
     <string name="about_section_security_title">🔒 Bezpieczeństwo i wygoda</string>

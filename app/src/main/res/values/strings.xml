@@ -78,7 +78,7 @@
     <string-array name="privacy_section2_bullets">
         <item>Financial data and transactions: amounts, dates, categories, comments, and invoice details (including counterparty name and tax ID) never leave your phone.</item>
         <item>Warehouse stock: product and stocktaking data is saved only in the app\'s local database.</item>
-        <item>Receipt photos and scans (OCR): the scanning feature runs on-device (Google ML Kit). Photos and recognised text are processed locally and never uploaded to the cloud.</item>
+        <item>Receipt photos attached manually to transactions: stored exclusively on your device, never uploaded to the cloud.</item>
         <item>Security (PIN / biometrics): the PIN is stored in hashed form in the device\'s secure storage and is never transmitted anywhere.</item>
     </string-array>
 
@@ -86,8 +86,8 @@
     <string name="privacy_section3_intro">The app uses trusted external services to handle payments and ads:</string>
     <string-array name="privacy_section3_bullets">
         <item>Google Play Billing — handles the purchase and verification of the FinArs Pro subscription. We never see your payment card details (payment is handled by Google).</item>
+        <item>RevenueCat — once the app is published, will manage the Pro subscription status (active / expired / trial), processing an anonymous user identifier and purchase status to grant Pro access across your devices.</item>
         <item>Google AdMob — shows ads to users without an active Pro subscription. AdMob may collect an anonymous advertising ID and diagnostic data to serve ads (subject to GDPR consent collected via Google\'s UMP consent form). Google\'s privacy policy: policies.google.com/privacy</item>
-        <item>Google ML Kit — text recognition for receipt photos, running 100% offline on your device.</item>
     </string-array>
 
     <string name="privacy_section4_title">4. Required app permissions</string>
@@ -117,9 +117,9 @@
     <string name="about_section_finance_title">📊 Finances and taxes</string>
     <string-array name="about_bullets_finance">
         <item>Income and expense tracking with attached receipts and colour-coded categories</item>
-        <item>Automatic profit and tax calculation (12%/32% scale, 19% flat, lump-sum)</item>
+        <item>Automatic profit and tax calculation (12%/32% scale)</item>
         <item>Recurring transactions (rent, subscriptions) created automatically every month</item>
-        <item>Limit tracking: unregistered activity, 120,000 zł tax bracket, VAT exemption (240,000 zł)</item>
+        <item>Unregistered-activity limit tracking (120,000 zł threshold)</item>
         <item>Notification history for approaching and exceeded limits, invoice reminders and more</item>
     </string-array>
 
@@ -142,7 +142,7 @@
     <string-array name="about_bullets_reports">
         <item>Income/expense summary and 6-month trend chart</item>
         <item>Export monthly report (free), yearly and custom-period reports (Pro) to Excel with receipts</item>
-        <item>Generate PIT-36 / PIT-36L / PIT-28 tax returns — helper PDF and official form filling (Pro)</item>
+        <item>Generate PIT-36 tax returns — helper PDF and official form filling (Pro)</item>
     </string-array>
 
     <string name="about_section_security_title">🔒 Security and convenience</string>
