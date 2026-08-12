@@ -29,7 +29,7 @@ android {
     compileSdk 34
 
     defaultConfig {
-        applicationId "com.finars.app"
+        applicationId "com.example.fa_ksiegowy"
         minSdk 26
         targetSdk 34
         versionCode buildNumber + 1
