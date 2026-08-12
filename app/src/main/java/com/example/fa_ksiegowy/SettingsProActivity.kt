@@ -1,43 +1,109 @@
 package com.example.fa_ksiegowy
 
-import android.app.AlertDialog
+import android.graphics.Color
 import android.os.Bundle
-import android.widget.Button
+import android.text.SpannableStringBuilder
+import android.text.style.ForegroundColorSpan
+import android.view.View
+import android.widget.FrameLayout
+import android.widget.ImageView
 import android.widget.TextView
 
-/** Разблокировка Pro-версии — подписка (месяц/год) через Google Play Billing, с 7-дневным пробным периодом. */
+/**
+ * Ekran "Wersja Pro" — pelnoekranowy paywall subskrypcji (miesiac/rok) przez
+ * Google Play Billing, z 7-dniowym okresem probnym. Zastepuje dawne okno
+ * dialogowe potwierdzenia zakupu — caly przeplyw miesci sie teraz na jednym
+ * ekranie zgodnie z referencyjnym projektem.
+ */
 class SettingsProActivity : BaseActivity() {
+
+    /** Aktualnie wybrany plan w karcie wyboru — domyslnie roczny (najlepsza oferta). */
+    private var selectedProductId: String = BillingManager.PRO_YEARLY_PRODUCT_ID
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings_pro)
-        findViewById<android.view.View>(R.id.iv_back).setOnClickListener { finish() }
+        findViewById<View>(R.id.iv_back).setOnClickListener { finish() }
+        setupHeader()
         setupProSection()
     }
 
+    private fun setupHeader() {
+        val tvHeader = findViewById<TextView>(R.id.tv_paywall_header)
+        val white = getString(R.string.paywall_header_white)
+        val blue = getString(R.string.paywall_header_blue)
+        val full = "$white $blue"
+        val spannable = SpannableStringBuilder(full)
+        spannable.setSpan(
+            ForegroundColorSpan(Color.WHITE),
+            0, white.length,
+            SpannableStringBuilder.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
+        spannable.setSpan(
+            ForegroundColorSpan(getColorCompat(R.color.accent_blue_light)),
+            white.length + 1, full.length,
+            SpannableStringBuilder.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
+        tvHeader.text = spannable
+    }
+
+    private fun getColorCompat(colorRes: Int): Int =
+        androidx.core.content.ContextCompat.getColor(this, colorRes)
+
     private fun refreshUi() {
         val tvStatus = findViewById<TextView>(R.id.tv_pro_status)
-        val tvTrialHint = findViewById<TextView>(R.id.tv_pro_trial_hint)
-        val btnMonthly = findViewById<Button>(R.id.btn_plan_monthly)
-        val btnYearly = findViewById<Button>(R.id.btn_plan_yearly)
+        val cardYearly = findViewById<FrameLayout>(R.id.card_yearly)
+        val cardMonthly = findViewById<FrameLayout>(R.id.card_monthly)
+        val btnCta = findViewById<FrameLayout>(R.id.btn_cta)
+        val tvCta = findViewById<TextView>(R.id.tv_cta)
 
         if (BillingManager.isPro(this)) {
             tvStatus.text = getString(R.string.pro_status_active)
-            tvTrialHint.visibility = android.view.View.GONE
-            btnMonthly.isEnabled = false
-            btnYearly.isEnabled = false
-            btnMonthly.text = getString(R.string.pro_status_active)
-            btnYearly.visibility = android.view.View.GONE
+            tvStatus.visibility = View.VISIBLE
+            cardYearly.isEnabled = false
+            cardMonthly.isEnabled = false
+            cardYearly.alpha = 0.5f
+            cardMonthly.alpha = 0.5f
+            btnCta.isEnabled = false
+            btnCta.alpha = 0.5f
+            tvCta.text = getString(R.string.pro_status_active)
         } else {
-            tvStatus.text = getString(R.string.pro_status_locked)
-            tvTrialHint.visibility = android.view.View.VISIBLE
-            btnMonthly.isEnabled = true
-            btnYearly.isEnabled = true
-            btnYearly.visibility = android.view.View.VISIBLE
+            tvStatus.visibility = View.GONE
+            cardYearly.isEnabled = true
+            cardMonthly.isEnabled = true
+            cardYearly.alpha = 1f
+            cardMonthly.alpha = 1f
+            btnCta.isEnabled = true
+            btnCta.alpha = 1f
+            tvCta.text = getString(R.string.paywall_cta)
+            applySelectionState()
         }
     }
 
+    private fun applySelectionState() {
+        val cardYearly = findViewById<FrameLayout>(R.id.card_yearly)
+        val cardMonthly = findViewById<FrameLayout>(R.id.card_monthly)
+        val radioYearly = findViewById<ImageView>(R.id.radio_yearly)
+        val radioMonthly = findViewById<ImageView>(R.id.radio_monthly)
+
+        val yearlySelected = selectedProductId == BillingManager.PRO_YEARLY_PRODUCT_ID
+        cardYearly.setBackgroundResource(if (yearlySelected) R.drawable.card_plan_selected else R.drawable.card_plan_unselected)
+        cardMonthly.setBackgroundResource(if (!yearlySelected) R.drawable.card_plan_selected else R.drawable.card_plan_unselected)
+        radioYearly.setImageResource(if (yearlySelected) R.drawable.ic_radio_selected else R.drawable.ic_radio_unselected)
+        radioMonthly.setImageResource(if (!yearlySelected) R.drawable.ic_radio_selected else R.drawable.ic_radio_unselected)
+    }
+
     private fun setupProSection() {
+        val tvPriceYearly = findViewById<TextView>(R.id.tv_price_yearly)
+        val tvPriceMonthly = findViewById<TextView>(R.id.tv_price_monthly)
+        val tvTrialYearly = findViewById<TextView>(R.id.tv_trial_yearly)
+        val tvTrialMonthly = findViewById<TextView>(R.id.tv_trial_monthly)
+
+        // Domyslne ceny (te same co w prawdziwej konfiguracji Google Play) — widoczne
+        // od razu, zanim doczyta sie prawdziwa cena z Billing.
+        tvTrialYearly.text = getString(R.string.paywall_trial_yearly, getString(R.string.paywall_price_yearly_default))
+        tvTrialMonthly.text = getString(R.string.paywall_trial_monthly, getString(R.string.paywall_price_monthly_default))
+
         refreshUi()
 
         BillingManager.connect(this) { connected ->
@@ -47,42 +113,38 @@ class SettingsProActivity : BaseActivity() {
                 if (!BillingManager.isPro(this)) {
                     BillingManager.querySubscriptionPlans { monthly, yearly ->
                         runOnUiThread {
-                            val btnMonthly = findViewById<Button>(R.id.btn_plan_monthly)
-                            val btnYearly = findViewById<Button>(R.id.btn_plan_yearly)
-                            btnMonthly.text = if (monthly != null) {
-                                getString(R.string.pro_plan_monthly_price, monthly.price)
-                            } else getString(R.string.pro_plan_monthly)
-                            btnYearly.text = if (yearly != null) {
-                                getString(R.string.pro_plan_yearly_price, yearly.price)
-                            } else getString(R.string.pro_plan_yearly)
+                            if (yearly != null) {
+                                tvPriceYearly.text = yearly.price
+                                tvTrialYearly.text = getString(R.string.paywall_trial_yearly, yearly.price)
+                            }
+                            if (monthly != null) {
+                                tvPriceMonthly.text = monthly.price
+                                tvTrialMonthly.text = getString(R.string.paywall_trial_monthly, monthly.price)
+                            }
                         }
                     }
                 }
             }
         }
 
-        findViewById<Button>(R.id.btn_plan_monthly).setOnClickListener {
-            confirmAndLaunch(BillingManager.PRO_MONTHLY_PRODUCT_ID)
+        findViewById<FrameLayout>(R.id.card_yearly).setOnClickListener {
+            selectedProductId = BillingManager.PRO_YEARLY_PRODUCT_ID
+            applySelectionState()
         }
-        findViewById<Button>(R.id.btn_plan_yearly).setOnClickListener {
-            confirmAndLaunch(BillingManager.PRO_YEARLY_PRODUCT_ID)
+        findViewById<FrameLayout>(R.id.card_monthly).setOnClickListener {
+            selectedProductId = BillingManager.PRO_MONTHLY_PRODUCT_ID
+            applySelectionState()
         }
-    }
-
-    private fun confirmAndLaunch(productId: String) {
-        AlertDialog.Builder(this)
-            .setTitle(getString(R.string.pro_info_title))
-            .setMessage(getString(R.string.pro_info_message))
-            .setPositiveButton(getString(R.string.pro_info_continue)) { _, _ ->
-                BillingManager.launchPurchase(this, productId)
+        findViewById<FrameLayout>(R.id.btn_cta).setOnClickListener {
+            if (!BillingManager.isPro(this)) {
+                BillingManager.launchPurchase(this, selectedProductId)
             }
-            .setNegativeButton(getString(R.string.dialog_close), null)
-            .show()
+        }
     }
 
     override fun onResume() {
         super.onResume()
-        // На случай возврата из окна оплаты Google Play — обновить статус и кнопки.
+        // Na wypadek powrotu z okna oplaty Google Play — odswiez status i wyglad ekranu.
         BillingManager.restorePurchases(this) { refreshUi() }
     }
 }
