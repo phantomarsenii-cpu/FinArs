@@ -237,7 +237,14 @@ object SubscriptionService {
             },
             onSuccess = { _, customerInfo ->
                 applyCustomerInfo(activity, customerInfo)
-                onResult(true, null, false)
+                val isPro = isProActive(activity)
+                val diag = if (!isPro) {
+                    "Purchase succeeded, but entitlement '$ENTITLEMENT_ID' is not active. " +
+                        "Active entitlements: ${customerInfo.entitlements.active.keys}. " +
+                        "All entitlements on this customer: ${customerInfo.entitlements.all.keys}"
+                } else null
+                Log.i(TAG, "Purchase success. isPro=$isPro. active=${customerInfo.entitlements.active.keys}, all=${customerInfo.entitlements.all.keys}")
+                onResult(true, diag, false)
             }
         )
     }

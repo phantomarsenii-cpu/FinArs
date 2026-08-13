@@ -188,6 +188,12 @@ class SettingsProActivity : BaseActivity() {
                         btnCta.isEnabled = true
                         if (success) {
                             refreshUi()
+                            if (errorMessage != null) {
+                                // Диагностика: покупка прошла, но isPro всё ещё false — показываем,
+                                // какие entitlements реально пришли от RevenueCat, чтобы свериться
+                                // с ENTITLEMENT_ID в SubscriptionService.kt.
+                                showFullError("Purchase succeeded — entitlement mismatch?", errorMessage)
+                            }
                         } else if (!userCancelled && errorMessage != null) {
                             // Не показываем диалог при обычной отмене пользователем — только при реальной ошибке.
                             showFullError("Purchase error", errorMessage)
