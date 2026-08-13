@@ -18,7 +18,7 @@
         android:paddingStart="20dp"
         android:paddingEnd="20dp"
         android:paddingTop="28dp"
-        android:paddingBottom="110dp">
+        android:paddingBottom="170dp">
 
         <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
             android:text="@string/settings" android:textSize="18sp" android:textStyle="bold"
@@ -108,9 +108,25 @@
     </LinearLayout>
     </ScrollView>
 
-    <include layout="@layout/bottom_nav_bar"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom"/>
+        android:layout_gravity="bottom"
+        android:orientation="vertical">
+
+        <FrameLayout
+            android:id="@+id/ad_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="14dp"
+            android:layout_marginEnd="14dp"
+            android:layout_marginBottom="6dp"
+            android:visibility="gone"/>
+
+        <include layout="@layout/bottom_nav_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+    </LinearLayout>
 
 </FrameLayout>

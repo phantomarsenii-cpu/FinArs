@@ -2,9 +2,12 @@ package com.example.fa_ksiegowy
 
 import android.content.Intent
 import android.view.View
+import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleOwner
 
 /**
  * Wires up the persistent bottom navigation bar included (via
@@ -32,6 +35,31 @@ object BottomNavBar {
         activity.findViewById<View>(R.id.nav_add)?.setOnClickListener {
             activity.startActivity(Intent(activity, AddEntryActivity::class.java))
         }
+
+        attachAdBanner(activity)
+    }
+
+    /**
+     * Единый рекламный баннер, зафиксированный над нижней навигацией — общий для
+     * всех 4 главных вкладок (Start/Magazyn/Raporty/Ustawienia), а не отдельная
+     * реализация в каждом экране. Каждый из этих 4 layout-ов должен содержать
+     * FrameLayout с id ad_container рядом с <include layout="@layout/bottom_nav_bar">
+     * (см. activity_mine.xml) — если его нет, баннер на этом экране просто не покажется.
+     * Скрывается автоматически при активной Pro-подписке и уничтожается вместе с Activity.
+     */
+    private fun attachAdBanner(activity: AppCompatActivity) {
+        val container = activity.findViewById<FrameLayout>(R.id.ad_container) ?: return
+        val adView = AdsManager.setupAndLoadBanner(activity, container)
+        activity.lifecycle.addObserver(object : DefaultLifecycleObserver {
+            override fun onResume(owner: LifecycleOwner) {
+                if (BillingManager.isPro(activity)) {
+                    AdsManager.hideBanner(container, adView)
+                }
+            }
+            override fun onDestroy(owner: LifecycleOwner) {
+                adView.destroy()
+            }
+        })
     }
 
     private fun bind(

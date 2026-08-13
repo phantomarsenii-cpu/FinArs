@@ -180,7 +180,7 @@
     <string name="paywall_feature_1">Wystawianie faktur i rachunków (PDF)</string>
     <string name="paywall_feature_2">Generowanie deklaracji PIT-36</string>
     <string name="paywall_feature_3">Raporty roczne i niestandardowe (Excel)</string>
-    <string name="paywall_feature_4">Kopia zapasowa danych w chmurze i lokalnie</string>
+    <string name="paywall_feature_4">Kopia zapasowa danych na urządzeniu</string>
     <string name="paywall_feature_5">Brak reklam</string>
     <string name="paywall_badge">NAJPOPULARNIEJSZY • OSZCZĘDZASZ 30%</string>
     <string name="paywall_plan_yearly_title">Plan Roczny</string>

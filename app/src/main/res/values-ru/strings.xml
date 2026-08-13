@@ -180,7 +180,7 @@
     <string name="paywall_feature_1">Выставление счетов и фактур (PDF)</string>
     <string name="paywall_feature_2">Формирование декларации PIT-36</string>
     <string name="paywall_feature_3">Годовые и произвольные отчёты Excel</string>
-    <string name="paywall_feature_4">Резервная копия данных в облаке и локально</string>
+    <string name="paywall_feature_4">Резервная копия данных на устройстве</string>
     <string name="paywall_feature_5">Без рекламы</string>
     <string name="paywall_badge">САМЫЙ ПОПУЛЯРНЫЙ • ЭКОНОМИЯ 30%</string>
     <string name="paywall_plan_yearly_title">Годовой план</string>

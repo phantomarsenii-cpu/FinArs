@@ -13,7 +13,6 @@ import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
-import android.widget.FrameLayout
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
@@ -22,7 +21,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.gms.ads.AdView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -33,7 +31,6 @@ import java.util.Locale
 class MineActivity : BaseActivity() {
     private lateinit var db: AppDatabase
     private lateinit var recentEntriesAdapter: EntryAdapter
-    private var bannerAdView: AdView? = null
 
     private val notificationPermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { /* результат не критичен для UI */ }
@@ -105,11 +102,6 @@ class MineActivity : BaseActivity() {
             adapter = recentEntriesAdapter
         }
 
-        bannerAdView = AdsManager.setupAndLoadBanner(
-            this,
-            findViewById<FrameLayout>(R.id.ad_container),
-            findViewById(R.id.tv_ad_debug)
-        )
         setupHiddenDevCodeGesture()
         requestNotificationPermissionIfNeeded()
         LimitsNotificationWorker.schedule(this)
@@ -176,7 +168,6 @@ class MineActivity : BaseActivity() {
     }
 
     override fun onDestroy() {
-        bannerAdView?.destroy()
         super.onDestroy()
     }
 
@@ -188,9 +179,6 @@ class MineActivity : BaseActivity() {
         loadMonthlySummaryChart()
         applyBusinessKindUi()
         updateNotificationBadge()
-        if (BillingManager.isPro(this)) {
-            bannerAdView?.let { AdsManager.hideBanner(findViewById(R.id.ad_container), it) }
-        }
     }
 
     // Update: Magazyn jest teraz stalym elementem dolnej nawigacji, wiec ta

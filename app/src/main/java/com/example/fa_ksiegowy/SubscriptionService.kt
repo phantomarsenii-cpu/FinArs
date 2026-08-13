@@ -42,13 +42,15 @@ object SubscriptionService {
     // Test Store не привязан к Google Play или Galaxy Store — работает одинаково для обоих.
     private const val TEST_API_KEY = "test_BFXzgXddRkopsjEDdnaRTNtVXuY"
 
-    // TODO: вставить боевые публичные ключи после того, как протестируете покупки через
-    // Test Store (RevenueCat Dashboard -> Project settings -> API keys). У каждого магазина
-    // СВОЙ отдельный публичный ключ (goog_XXXXX для Google Play, galx_XXXXX для Galaxy Store).
-    // Пока они пустые — сервис использует Test Store всегда, независимо от того, откуда
-    // реально установлено приложение (см. buildConfiguration()).
-    private const val GOOGLE_PLAY_API_KEY = "" // напр. "goog_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
-    private const val GALAXY_STORE_API_KEY = "" // напр. "galx_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+    // Боевые публичные ключи RevenueCat (RevenueCat Dashboard -> Project settings -> API keys).
+    // У каждого магазина СВОЙ ключ (goog_ для Google Play, galx_ для Galaxy Store).
+    // Используются ТОЛЬКО когда StoreDetector реально определил соответствующий магазин
+    // как источник установки — см. buildConfiguration(). При установке не через сам
+    // магазин (adb install, тестовая сборка из Termux и т.п.) SDK всё равно уходит на
+    // Test Store — это ожидаемо, т.к. ни Google Play, ни Galaxy Store не признают такую
+    // установку "своей" и не смогут провести боевую покупку.
+    private const val GOOGLE_PLAY_API_KEY = "goog_BCFJgInKuKxeVFyaScMVzMJMqCi"
+    private const val GALAXY_STORE_API_KEY = "galx_EKAyCEqEnDpKXmPjQCvobAludwy"
 
     // Пока идёт тестирование на Galaxy-устройстве через боевой ключ (после того как он появится),
     // GalaxyBillingMode.TEST позволяет проверить покупку без реального списания денег.

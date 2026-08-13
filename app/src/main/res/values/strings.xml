@@ -180,7 +180,7 @@
     <string name="paywall_feature_1">Issuing invoices and receipts (PDF)</string>
     <string name="paywall_feature_2">PIT-36 tax return generation</string>
     <string name="paywall_feature_3">Yearly and custom Excel reports</string>
-    <string name="paywall_feature_4">Cloud and local data backup</string>
+    <string name="paywall_feature_4">Local data backup</string>
     <string name="paywall_feature_5">No ads</string>
     <string name="paywall_badge">MOST POPULAR • SAVE 30%</string>
     <string name="paywall_plan_yearly_title">Yearly Plan</string>
