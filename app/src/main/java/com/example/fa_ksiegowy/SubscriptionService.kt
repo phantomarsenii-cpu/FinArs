@@ -60,7 +60,7 @@ object SubscriptionService {
      * приложения (единый доступ и для месячной, и для годовой подписки).
      * TODO: сверить точное название с RevenueCat Dashboard -> Entitlements (сейчас "premium").
      */
-    const val ENTITLEMENT_ID = "premium"
+    const val ENTITLEMENT_ID = "FinArs Pro"
 
     private const val OFFERING_ID = "default"
 
