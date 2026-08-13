@@ -8,7 +8,6 @@ import android.view.View
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 
 /**
  * Ekran "Wersja Pro" — pelnoekranowy paywall subskrypcji (miesiac/rok) przez
@@ -46,28 +45,6 @@ class SettingsProActivity : BaseActivity() {
             SpannableStringBuilder.SPAN_EXCLUSIVE_EXCLUSIVE
         )
         tvHeader.text = spannable
-        applyStoreSpecificFooter()
-    }
-
-    /**
-     * Текст "Отмена в любой момент в ..." должен называть тот магазин, через который
-     * реально пройдёт подписка (Google Play или Galaxy Store) — а не быть жёстко
-     * зашитым на Google Play, как раньше. Если магазин не определён (тестовая
-     * установка через Termux/adb, Test Store) — оставляем нейтральный текст без
-     * названия магазина.
-     */
-    private fun applyStoreSpecificFooter() {
-        val tvFooter = findViewById<TextView>(R.id.tv_footer_cancel_anytime)
-        val storeNameRes = when (SubscriptionService.detectedStore) {
-            StoreSource.GOOGLE_PLAY -> R.string.store_name_google_play
-            StoreSource.GALAXY_STORE -> R.string.store_name_galaxy_store
-            StoreSource.OTHER -> null
-        }
-        tvFooter.text = if (storeNameRes != null) {
-            getString(R.string.paywall_footer_1_store, getString(storeNameRes))
-        } else {
-            getString(R.string.paywall_footer_1)
-        }
     }
 
     private fun getColorCompat(colorRes: Int): Int =
@@ -160,29 +137,7 @@ class SettingsProActivity : BaseActivity() {
         }
         findViewById<FrameLayout>(R.id.btn_cta).setOnClickListener {
             if (!BillingManager.isPro(this)) {
-                val btnCta = findViewById<FrameLayout>(R.id.btn_cta)
-                btnCta.isEnabled = false
-                BillingManager.launchPurchase(this, selectedProductId) { success, errorMessage, userCancelled ->
-                    runOnUiThread {
-                        btnCta.isEnabled = true
-                        if (success) {
-                            refreshUi()
-                        } else if (!userCancelled && errorMessage != null) {
-                            // Не показываем тост при обычной отмене пользователем — только при реальной ошибке.
-                            Toast.makeText(this, errorMessage, Toast.LENGTH_LONG).show()
-                        }
-                    }
-                }
-            }
-        }
-
-        findViewById<TextView>(R.id.tv_restore_purchases).setOnClickListener {
-            BillingManager.restorePurchases(this) { isPro ->
-                runOnUiThread {
-                    refreshUi()
-                    val messageRes = if (isPro) R.string.paywall_restore_success else R.string.paywall_restore_nothing_found
-                    Toast.makeText(this, getString(messageRes), Toast.LENGTH_SHORT).show()
-                }
+                BillingManager.launchPurchase(this, selectedProductId)
             }
         }
     }

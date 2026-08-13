@@ -194,14 +194,8 @@
     <string name="paywall_per_month_note">Only 8.33 zł / month</string>
     <string name="paywall_cta">Try 7 days for 0 zł</string>
     <string name="paywall_footer_1">Free for the first 7 days.\nCancel anytime in Google Play.</string>
-    <string name="paywall_footer_1_store">Free for the first 7 days.\nCancel anytime in %1$s.</string>
-    <string name="store_name_google_play">Google Play</string>
-    <string name="store_name_galaxy_store">Galaxy Store</string>
     <string name="paywall_data_safe">Your data is safe</string>
     <string name="paywall_footer_2">Billing starts after 7 days.\nYou can cancel at any time.</string>
-    <string name="paywall_restore_purchases">Restore purchases</string>
-    <string name="paywall_restore_success">Purchases restored — Pro is active</string>
-    <string name="paywall_restore_nothing_found">No active purchases found</string>
     <string name="enter_code_button">Have a code?</string>
     <string name="enter_code_title">Enter code</string>
     <string name="enter_code_hint">Code</string>

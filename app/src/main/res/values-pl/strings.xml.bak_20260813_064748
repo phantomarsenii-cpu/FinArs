@@ -194,14 +194,8 @@
     <string name="paywall_per_month_note">Tylko 8,33 zł / miesiąc</string>
     <string name="paywall_cta">Wypróbuj 7 dni za 0 zł</string>
     <string name="paywall_footer_1">Bez opłat przez pierwsze 7 dni.\nAnulujesz w każdej chwili w Google Play.</string>
-    <string name="paywall_footer_1_store">Bez opłat przez pierwsze 7 dni.\nAnulujesz w każdej chwili w %1$s.</string>
-    <string name="store_name_google_play">Google Play</string>
-    <string name="store_name_galaxy_store">Galaxy Store</string>
     <string name="paywall_data_safe">Twoje dane są bezpieczne</string>
     <string name="paywall_footer_2">Płatność rozpocznie się po 7 dniach.\nMożesz anulować w dowolnym momencie.</string>
-    <string name="paywall_restore_purchases">Przywróć zakupy</string>
-    <string name="paywall_restore_success">Zakupy przywrócone — Pro jest aktywne</string>
-    <string name="paywall_restore_nothing_found">Nie znaleziono aktywnych zakupów</string>
     <string name="enter_code_button">Masz kod?</string>
     <string name="enter_code_title">Wprowadź kod</string>
     <string name="enter_code_hint">Kod</string>
