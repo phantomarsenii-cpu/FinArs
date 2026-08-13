@@ -1,5 +1,6 @@
 package com.example.fa_ksiegowy
 
+import android.app.AlertDialog
 import android.graphics.Color
 import android.os.Bundle
 import android.text.SpannableStringBuilder
@@ -73,6 +74,16 @@ class SettingsProActivity : BaseActivity() {
     private fun getColorCompat(colorRes: Int): Int =
         androidx.core.content.ContextCompat.getColor(this, colorRes)
 
+    /** Временный диагностический диалог — показывает ПОЛНЫЙ текст ошибки RevenueCat
+     * (тост обрезает длинные сообщения, а нам важна именно underlyingErrorMessage). */
+    private fun showFullError(title: String, message: String) {
+        AlertDialog.Builder(this)
+            .setTitle(title)
+            .setMessage(message)
+            .setPositiveButton("OK", null)
+            .show()
+    }
+
     private fun refreshUi() {
         val tvStatus = findViewById<TextView>(R.id.tv_pro_status)
         val cardYearly = findViewById<FrameLayout>(R.id.card_yearly)
@@ -135,7 +146,7 @@ class SettingsProActivity : BaseActivity() {
                     // Временная диагностика: показываем точную причину, почему RevenueCat не отдал
                     // оффер/пакеты — это нужно, чтобы понять, что поправить в Dashboard.
                     if (errorMessage != null) {
-                        Toast.makeText(this, "RC offerings error: $errorMessage", Toast.LENGTH_LONG).show()
+                        showFullError("RC offerings error", errorMessage)
                     }
                     return@runOnUiThread
                 }
@@ -152,7 +163,7 @@ class SettingsProActivity : BaseActivity() {
                                 tvTrialMonthly.text = getString(R.string.paywall_trial_monthly, monthly.price)
                             }
                             if (plansError != null) {
-                                Toast.makeText(this, "RC plans error: $plansError", Toast.LENGTH_LONG).show()
+                                showFullError("RC plans error", plansError)
                             }
                         }
                     }
@@ -178,8 +189,8 @@ class SettingsProActivity : BaseActivity() {
                         if (success) {
                             refreshUi()
                         } else if (!userCancelled && errorMessage != null) {
-                            // Не показываем тост при обычной отмене пользователем — только при реальной ошибке.
-                            Toast.makeText(this, errorMessage, Toast.LENGTH_LONG).show()
+                            // Не показываем диалог при обычной отмене пользователем — только при реальной ошибке.
+                            showFullError("Purchase error", errorMessage)
                         }
                     }
                 }
