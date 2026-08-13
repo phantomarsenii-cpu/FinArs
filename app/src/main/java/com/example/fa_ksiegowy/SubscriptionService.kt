@@ -161,16 +161,29 @@ object SubscriptionService {
         context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE).getBoolean(KEY_IS_PRO_RC, false)
 
     /** Загружает Offering "default" (или текущий, если "default" не настроен) и кэширует его. */
-    fun fetchOfferings(onResult: (Offering?) -> Unit) {
+    fun fetchOfferings(onResult: (offering: Offering?, errorMessage: String?) -> Unit) {
         Purchases.sharedInstance.getOfferingsWith(
             onError = { error ->
-                Log.w(TAG, "getOfferings failed: ${error.message}")
-                onResult(null)
+                val msg = "getOfferings failed: ${error.message} (${error.underlyingErrorMessage})"
+                Log.e(TAG, msg)
+                onResult(null, msg)
             },
             onSuccess = { offerings: Offerings ->
+                // Отладочный лог: список всех офферингов и их пакетов, полученных от RevenueCat —
+                // полезно, если "default" или конкретный пакет не находится.
+                Log.i(TAG, "Offerings received: all=${offerings.all.keys}, current=${offerings.current?.identifier}")
+                offerings.all.values.forEach { off ->
+                    Log.i(TAG, "  Offering '${off.identifier}' packages=${off.availablePackages.map { it.identifier }}")
+                }
                 val offering = offerings.getOffering(OFFERING_ID) ?: offerings.current
                 cachedOffering = offering
-                onResult(offering)
+                if (offering == null) {
+                    val msg = "Offering '$OFFERING_ID' not found and no current offering set. Available: ${offerings.all.keys}"
+                    Log.e(TAG, msg)
+                    onResult(null, msg)
+                } else {
+                    onResult(offering, null)
+                }
             }
         )
     }
@@ -192,8 +205,17 @@ object SubscriptionService {
         else -> null
     }
 
-    fun findPackage(identifier: String): Package? =
-        cachedOffering?.availablePackages?.firstOrNull { it.identifier == identifier }
+    fun findPackage(identifier: String): Package? {
+        val pkg = cachedOffering?.availablePackages?.firstOrNull { it.identifier == identifier }
+        if (pkg == null) {
+            Log.w(
+                TAG,
+                "findPackage('$identifier') = null. cachedOffering='${cachedOffering?.identifier}', " +
+                    "available=${cachedOffering?.availablePackages?.map { it.identifier }}"
+            )
+        }
+        return pkg
+    }
 
     /**
      * Покупка пакета (месяц/год). RevenueCat сам определяет, через какой магазин делать
@@ -203,7 +225,8 @@ object SubscriptionService {
     fun purchase(activity: Activity, packageIdentifier: String, onResult: (success: Boolean, errorMessage: String?, userCancelled: Boolean) -> Unit) {
         val pkg = findPackage(packageIdentifier)
         if (pkg == null) {
-            onResult(false, "Package not found: $packageIdentifier", false)
+            val available = cachedOffering?.availablePackages?.map { it.identifier }
+            onResult(false, "Package not found: $packageIdentifier. Offering='${cachedOffering?.identifier}', available=$available", false)
             return
         }
         val params = PurchaseParams.Builder(activity, pkg).build()

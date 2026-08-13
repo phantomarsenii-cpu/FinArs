@@ -71,20 +71,22 @@ object BillingManager {
      * Инициализирует RevenueCat (если ещё не было сделано в FaApp.onCreate — на всякий
      * случай, это безопасно вызывать повторно) и подгружает Offering "default", чтобы
      * дальше можно было запросить цены/триал через querySubscriptionPlans().
+     * errorMessage заполнен, если оффер не загрузился — полезно для диагностики
+     * (можно показать пользователю/залогировать).
      */
-    fun connect(context: Context, onReady: (connected: Boolean) -> Unit) {
+    fun connect(context: Context, onReady: (connected: Boolean, errorMessage: String?) -> Unit) {
         SubscriptionService.init(context)
-        SubscriptionService.fetchOfferings { offering ->
-            onReady(offering != null)
+        SubscriptionService.fetchOfferings { offering, errorMessage ->
+            onReady(offering != null, errorMessage)
         }
     }
 
     /** Подтягивает цену и длину пробного периода обоих планов подписки из RevenueCat. */
-    fun querySubscriptionPlans(callback: (monthly: SubscriptionService.PlanInfo?, yearly: SubscriptionService.PlanInfo?) -> Unit) {
-        SubscriptionService.fetchOfferings {
+    fun querySubscriptionPlans(callback: (monthly: SubscriptionService.PlanInfo?, yearly: SubscriptionService.PlanInfo?, errorMessage: String?) -> Unit) {
+        SubscriptionService.fetchOfferings { _, errorMessage ->
             val monthly = SubscriptionService.planInfoFor(SubscriptionService.PACKAGE_MONTHLY)
             val yearly = SubscriptionService.planInfoFor(SubscriptionService.PACKAGE_YEARLY)
-            callback(monthly, yearly)
+            callback(monthly, yearly, errorMessage)
         }
     }
 

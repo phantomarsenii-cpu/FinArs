@@ -129,12 +129,19 @@ class SettingsProActivity : BaseActivity() {
 
         refreshUi()
 
-        BillingManager.connect(this) { connected ->
+        BillingManager.connect(this) { connected, errorMessage ->
             runOnUiThread {
-                if (!connected) return@runOnUiThread
+                if (!connected) {
+                    // Временная диагностика: показываем точную причину, почему RevenueCat не отдал
+                    // оффер/пакеты — это нужно, чтобы понять, что поправить в Dashboard.
+                    if (errorMessage != null) {
+                        Toast.makeText(this, "RC offerings error: $errorMessage", Toast.LENGTH_LONG).show()
+                    }
+                    return@runOnUiThread
+                }
                 BillingManager.restorePurchases(this) { refreshUi() }
                 if (!BillingManager.isPro(this)) {
-                    BillingManager.querySubscriptionPlans { monthly, yearly ->
+                    BillingManager.querySubscriptionPlans { monthly, yearly, plansError ->
                         runOnUiThread {
                             if (yearly != null) {
                                 tvPriceYearly.text = yearly.price
@@ -143,6 +150,9 @@ class SettingsProActivity : BaseActivity() {
                             if (monthly != null) {
                                 tvPriceMonthly.text = monthly.price
                                 tvTrialMonthly.text = getString(R.string.paywall_trial_monthly, monthly.price)
+                            }
+                            if (plansError != null) {
+                                Toast.makeText(this, "RC plans error: $plansError", Toast.LENGTH_LONG).show()
                             }
                         }
                     }
