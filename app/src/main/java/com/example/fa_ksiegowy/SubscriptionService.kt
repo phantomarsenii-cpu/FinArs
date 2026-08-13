@@ -40,7 +40,7 @@ object SubscriptionService {
     // Тестовый ключ (RevenueCat Test Store) — им сейчас проверяется весь сценарий покупки
     // (offerings/paywall/purchase/restore) БЕЗ реального биллинга какого-либо магазина.
     // Test Store не привязан к Google Play или Galaxy Store — работает одинаково для обоих.
-    private const val TEST_API_KEY = "Test_BFXzgXddRkopsjEDdnaRTNtVXuY"
+    private const val TEST_API_KEY = "test_BFXzgXddRkopsjEDdnaRTNtVXuY"
 
     // TODO: вставить боевые публичные ключи после того, как протестируете покупки через
     // Test Store (RevenueCat Dashboard -> Project settings -> API keys). У каждого магазина
