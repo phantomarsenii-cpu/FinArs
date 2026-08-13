@@ -67,7 +67,7 @@ object SubscriptionService {
     // Идентификаторы пакетов внутри Offering "default" — стандартные RevenueCat-пакеты
     // (видны в Dashboard как "$rc_monthly" / "$rc_yearly", см. Update-40 offering).
     const val PACKAGE_MONTHLY = "\$rc_monthly"
-    const val PACKAGE_YEARLY = "\$rc_yearly"
+    const val PACKAGE_YEARLY = "\$rc_annual"
 
     private const val PREFS_NAME = "settings"
     private const val KEY_IS_PRO_RC = "isProRevenueCat"
