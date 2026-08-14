@@ -4,7 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 
-/** Выбор языка приложения. Смена языка перезапускает MineActivity как единственный
+/** Выбор языка приложения. Смена языка перезапускает MainActivity как единственный
  *  экран в задаче, чтобы весь UI (в т.ч. уже открытые экраны) пересобрался с новой локалью. */
 class SettingsLanguageActivity : BaseActivity() {
 
@@ -20,7 +20,7 @@ class SettingsLanguageActivity : BaseActivity() {
 
     private fun setLocale(code: String) {
         LocaleHelper.setLanguage(this, code)
-        val intent = Intent(this, MineActivity::class.java)
+        val intent = Intent(this, MainActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
         startActivity(intent)
         finishAffinity()

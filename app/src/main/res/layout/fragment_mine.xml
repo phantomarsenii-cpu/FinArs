@@ -446,33 +446,10 @@
 
         </LinearLayout>
 
-        <!-- Update: рекламный баннер больше не здесь — теперь он зафиксирован над
-             нижней навигацией (см. блок ниже, после </ScrollView>), одинаково на
-             всех 4 главных вкладках, вместо того чтобы скроллиться вместе с контентом
-             только на этом экране. Логику подключения см. в BottomNavBar.attach(). -->
+        <!-- Рекламный баннер и нижняя навигация теперь в MainActivity (общий,
+             фиксированный контейнер поверх этого фрагмента) — не здесь. -->
 
     </LinearLayout>
     </ScrollView>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:orientation="vertical">
-
-        <FrameLayout
-            android:id="@+id/ad_container"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="14dp"
-            android:layout_marginEnd="14dp"
-            android:layout_marginBottom="6dp"
-            android:visibility="gone"/>
-
-        <include layout="@layout/bottom_nav_bar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-
-    </LinearLayout>
 
 </FrameLayout>

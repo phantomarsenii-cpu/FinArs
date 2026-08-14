@@ -193,7 +193,7 @@
     <string name="paywall_trial_monthly">7 dni za 0 zł, potem %1$s / miesiąc</string>
     <string name="paywall_per_month_note">Tylko 8,33 zł / miesiąc</string>
     <string name="paywall_cta">Wypróbuj 7 dni za 0 zł</string>
-    <string name="paywall_footer_1">Bez opłat przez pierwsze 7 dni.\nAnulujesz w każdej chwili w Google Play.</string>
+    <string name="paywall_footer_1">Bez opłat przez pierwsze 7 dni.\nAnulujesz w dowolnym momencie w sklepie z aplikacjami.</string>
     <string name="paywall_footer_1_store">Bez opłat przez pierwsze 7 dni.\nAnulujesz w każdej chwili w %1$s.</string>
     <string name="store_name_google_play">Google Play</string>
     <string name="store_name_galaxy_store">Galaxy Store</string>

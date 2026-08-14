@@ -46,7 +46,7 @@
         <activity android:name=".InventoryHistoryActivity" android:exported="false" />
         <activity android:name=".AddEditProductActivity" android:exported="false" />
         <activity android:name=".SelectProductsActivity" android:exported="false" />
-        <activity android:name=".MineActivity" android:exported="true">
+        <activity android:name=".MainActivity" android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

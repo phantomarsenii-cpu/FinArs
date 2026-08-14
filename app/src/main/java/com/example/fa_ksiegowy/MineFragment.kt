@@ -2,14 +2,17 @@ package com.example.fa_ksiegowy
 
 import android.Manifest
 import android.app.AlertDialog
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
@@ -17,57 +20,66 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.Calendar
 import java.util.Locale
 
-class MineActivity : BaseActivity() {
+class MineFragment : Fragment() {
     private lateinit var db: AppDatabase
     private lateinit var recentEntriesAdapter: EntryAdapter
 
     private val notificationPermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { /* результат не критичен для UI */ }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_mine)
-        BottomNavBar.attach(this, BottomNavBar.Tab.START)
-        db = AppDatabase.getInstance(this)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        return inflater.inflate(R.layout.fragment_mine, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        // Update: setContentView/BottomNavBar.attach убраны — этот экран теперь фрагмент
+        // внутри MainActivity, у которого нав-бар и рекламный баннер уже созданы один раз
+        // на уровне Activity (см. MainActivity.kt), а не пересоздаются здесь.
+        db = AppDatabase.getInstance(requireContext())
 
         // Единая кнопка добавления: выбор дохода/расхода происходит уже внутри
         // AddEntryActivity (переключатель с подсветкой выбранного варианта).
         // По умолчанию открываем на "доход", это чаще нужное действие.
-        findViewById<Button>(R.id.btn_add_entry).setOnClickListener {
-            startActivity(Intent(this, AddEntryActivity::class.java).putExtra("isIncome", true))
+        requireView().findViewById<Button>(R.id.btn_add_entry).setOnClickListener {
+            startActivity(Intent(requireContext(), AddEntryActivity::class.java).putExtra("isIncome", true))
         }
-        findViewById<Button>(R.id.btn_settings).setOnClickListener {
-            startActivity(Intent(this, SettingsActivity::class.java))
+        requireView().findViewById<Button>(R.id.btn_settings).setOnClickListener {
+            startActivity(Intent(requireContext(), SettingsActivity::class.java))
         }
-        findViewById<View>(R.id.iv_notifications).setOnClickListener {
-            startActivity(Intent(this, NotificationsActivity::class.java))
+        requireView().findViewById<View>(R.id.iv_notifications).setOnClickListener {
+            startActivity(Intent(requireContext(), NotificationsActivity::class.java))
         }
-        findViewById<Button>(R.id.btn_reports).setOnClickListener {
-            startActivity(Intent(this, ReportActivity::class.java))
+        requireView().findViewById<Button>(R.id.btn_reports).setOnClickListener {
+            startActivity(Intent(requireContext(), ReportActivity::class.java))
         }
-        findViewById<Button>(R.id.btn_history).setOnClickListener {
-            startActivity(Intent(this, HistoryActivity::class.java))
+        requireView().findViewById<Button>(R.id.btn_history).setOnClickListener {
+            startActivity(Intent(requireContext(), HistoryActivity::class.java))
         }
-        findViewById<Button>(R.id.btn_invoices).setOnClickListener {
-            if (BillingManager.isPro(this)) {
-                startActivity(Intent(this, AddInvoiceActivity::class.java))
+        requireView().findViewById<Button>(R.id.btn_invoices).setOnClickListener {
+            if (BillingManager.isPro(requireContext())) {
+                startActivity(Intent(requireContext(), AddInvoiceActivity::class.java))
             } else {
-                androidx.appcompat.app.AlertDialog.Builder(this)
+                androidx.appcompat.app.AlertDialog.Builder(requireContext())
                     .setTitle(getString(R.string.pro_feature_locked_title))
                     .setMessage(getString(R.string.invoice_pro_locked_message))
                     .setPositiveButton(getString(R.string.pro_feature_locked_go_settings)) { _, _ ->
-                        startActivity(Intent(this, SettingsActivity::class.java))
+                        startActivity(Intent(requireContext(), SettingsActivity::class.java))
                     }
                     .setNegativeButton(getString(R.string.dialog_close), null)
                     .show()
@@ -77,43 +89,43 @@ class MineActivity : BaseActivity() {
         // bottom_nav_bar.xml) — nie jest juz na karcie Start.
 
         // Karta "Limity" -> pelnoekranowy podglad (dokladnie wedlug makietu).
-        findViewById<View>(R.id.card_limits).setOnClickListener {
-            startActivity(Intent(this, LimitsActivity::class.java))
+        requireView().findViewById<View>(R.id.card_limits).setOnClickListener {
+            startActivity(Intent(requireContext(), LimitsActivity::class.java))
         }
         // "Edytuj" -> edycja formy dzialalnosci/stawek w ustawieniach podatkowych.
-        findViewById<TextView>(R.id.tv_edit_limits).setOnClickListener {
-            startActivity(Intent(this, SettingsTaxActivity::class.java))
+        requireView().findViewById<TextView>(R.id.tv_edit_limits).setOnClickListener {
+            startActivity(Intent(requireContext(), SettingsTaxActivity::class.java))
         }
 
         // "Zobacz wszystkie" nad lista ostatnich transakcji -> pelna historia.
-        findViewById<TextView>(R.id.tv_view_all_entries).setOnClickListener {
-            startActivity(Intent(this, HistoryActivity::class.java))
+        requireView().findViewById<TextView>(R.id.tv_view_all_entries).setOnClickListener {
+            startActivity(Intent(requireContext(), HistoryActivity::class.java))
         }
 
         recentEntriesAdapter = EntryAdapter { entry ->
             startActivity(
-                Intent(this, AddEntryActivity::class.java)
+                Intent(requireContext(), AddEntryActivity::class.java)
                     .putExtra("entryId", entry.id)
                     .putExtra("isIncome", entry.isIncome)
             )
         }
-        findViewById<RecyclerView>(R.id.rv_recent_entries).apply {
-            layoutManager = LinearLayoutManager(this@MineActivity)
+        requireView().findViewById<RecyclerView>(R.id.rv_recent_entries).apply {
+            layoutManager = LinearLayoutManager(requireContext())
             adapter = recentEntriesAdapter
         }
 
         setupHiddenDevCodeGesture()
         requestNotificationPermissionIfNeeded()
-        LimitsNotificationWorker.schedule(this)
-        InvoiceReminderWorker.schedule(this)
-        RecurringEntryWorker.schedule(this)
-        StockNotificationWorker.schedule(this)
+        LimitsNotificationWorker.schedule(requireContext())
+        InvoiceReminderWorker.schedule(requireContext())
+        RecurringEntryWorker.schedule(requireContext())
+        StockNotificationWorker.schedule(requireContext())
     }
 
     /** На Android 13+ уведомления требуют явного разрешения — запрашиваем один раз при первом запуске экрана. */
     private fun requestNotificationPermissionIfNeeded() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            val granted = ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) ==
+            val granted = ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.POST_NOTIFICATIONS) ==
                 PackageManager.PERMISSION_GRANTED
             if (!granted) {
                 notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
@@ -134,15 +146,15 @@ class MineActivity : BaseActivity() {
         val showCodeDialog = Runnable {
             if (triggered) return@Runnable
             triggered = true
-            val input = EditText(this)
+            val input = EditText(requireContext())
             input.hint = getString(R.string.enter_code_hint)
-            AlertDialog.Builder(this)
+            AlertDialog.Builder(requireContext())
                 .setTitle(getString(R.string.enter_code_title))
                 .setView(input)
                 .setPositiveButton(getString(R.string.enter_code_apply)) { _, _ ->
-                    val ok = BillingManager.tryUnlockWithDevCode(this, input.text.toString())
+                    val ok = BillingManager.tryUnlockWithDevCode(requireContext(), input.text.toString())
                     Toast.makeText(
-                        this,
+                        requireContext(),
                         getString(if (ok) R.string.enter_code_success else R.string.enter_code_wrong),
                         Toast.LENGTH_SHORT
                     ).show()
@@ -151,7 +163,7 @@ class MineActivity : BaseActivity() {
                 .show()
         }
 
-        findViewById<ImageView>(R.id.iv_logo).setOnTouchListener { _, event ->
+        requireView().findViewById<ImageView>(R.id.iv_logo).setOnTouchListener { _, event ->
             when (event.action) {
                 MotionEvent.ACTION_DOWN -> {
                     triggered = false
@@ -165,10 +177,6 @@ class MineActivity : BaseActivity() {
                 else -> false
             }
         }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
     }
 
     override fun onResume() {
@@ -192,8 +200,8 @@ class MineActivity : BaseActivity() {
      *  usunieciu/wyczyszczeniu w NotificationsActivity — zawsze zsynchronizowany,
      *  bo oba ekrany czytaja ten sam magazyn (NotificationLog), a nie osobny licznik. */
     private fun updateNotificationBadge() {
-        val count = NotificationLog.count(this)
-        val badge = findViewById<TextView>(R.id.tv_notif_badge)
+        val count = NotificationLog.count(requireContext())
+        val badge = requireView().findViewById<TextView>(R.id.tv_notif_badge)
         if (count <= 0) {
             badge.visibility = View.GONE
         } else {
@@ -203,7 +211,7 @@ class MineActivity : BaseActivity() {
     }
 
     private fun loadData() {
-        CoroutineScope(Dispatchers.IO).launch {
+        viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
             // Баланс/статистика/налог — только за текущий календарный год,
             // так как лимит 30 000 zł годовой (см. TaxHelper).
             val year = TaxHelper.currentYear()
@@ -214,7 +222,7 @@ class MineActivity : BaseActivity() {
             val expense = yearEntries.filter { !it.isIncome }.sumOf { it.amount }
             val profit = income - expense
 
-            val prefs = getSharedPreferences("settings", MODE_PRIVATE)
+            val prefs = requireContext().getSharedPreferences("settings", Context.MODE_PRIVATE)
             val otherIncome = TaxHelper.getOtherIncome(prefs, year)
             val activityType = ActivityTypeHelper.get(prefs)
             val ryczaltRate = ActivityTypeHelper.getRyczaltRate(prefs)
@@ -230,17 +238,17 @@ class MineActivity : BaseActivity() {
             }
 
             withContext(Dispatchers.Main) {
-                findViewById<TextView>(R.id.tv_balance).text = formatMoney(profit) + " zł"
-                findViewById<TextView>(R.id.tv_stat_income).text = formatMoney(income)
-                findViewById<TextView>(R.id.tv_stat_expense).text = formatMoney(expense)
-                findViewById<TextView>(R.id.tv_stat_profit).text = formatMoney(profit)
+                requireView().findViewById<TextView>(R.id.tv_balance).text = formatMoney(profit) + " zł"
+                requireView().findViewById<TextView>(R.id.tv_stat_income).text = formatMoney(income)
+                requireView().findViewById<TextView>(R.id.tv_stat_expense).text = formatMoney(expense)
+                requireView().findViewById<TextView>(R.id.tv_stat_profit).text = formatMoney(profit)
                 // Динамическая подпись налога: "0% — необлагаемый минимум" / "12%" /
                 // "Прогрессивная шкала 12%/32%" для skali, либо своя подпись для
                 // liniowy/ryczałt — вместо одной фиксированной формулировки.
-                findViewById<TextView>(R.id.tv_stat_tax_label).text = getString(taxLabelRes)
-                findViewById<TextView>(R.id.tv_stat_tax).text = formatMoney(taxResult.tax)
+                requireView().findViewById<TextView>(R.id.tv_stat_tax_label).text = getString(taxLabelRes)
+                requireView().findViewById<TextView>(R.id.tv_stat_tax).text = formatMoney(taxResult.tax)
                 // Чистая прибыль = прибыль минус налог по выбранной форме налогообложения.
-                findViewById<TextView>(R.id.tv_stat_net_profit).text = formatMoney(profit - taxResult.tax)
+                requireView().findViewById<TextView>(R.id.tv_stat_net_profit).text = formatMoney(profit - taxResult.tax)
             }
 
             // Trend "vs poprzedni miesiac": porownanie zysku (przychod - wydatek) biezacego
@@ -263,7 +271,7 @@ class MineActivity : BaseActivity() {
                 prevMonthEntries.filter { !it.isIncome }.sumOf { it.amount }
 
             withContext(Dispatchers.Main) {
-                val trendView = findViewById<TextView>(R.id.tv_balance_trend)
+                val trendView = requireView().findViewById<TextView>(R.id.tv_balance_trend)
                 if (prevMonthProfit == 0.0) {
                     trendView.visibility = View.GONE
                 } else {
@@ -273,7 +281,7 @@ class MineActivity : BaseActivity() {
                     trendView.text = String.format(Locale.getDefault(), "%s %.1f%%", arrow, kotlin.math.abs(changePercent))
                     trendView.setBackgroundResource(if (up) R.drawable.icon_badge_green_bg else R.drawable.icon_badge_red_bg)
                     trendView.setTextColor(
-                        ContextCompat.getColor(this@MineActivity, if (up) R.color.badge_percent_green else R.color.badge_percent_red)
+                        ContextCompat.getColor(requireContext(), if (up) R.color.badge_percent_green else R.color.badge_percent_red)
                     )
                     trendView.visibility = View.VISIBLE
                 }
@@ -283,13 +291,13 @@ class MineActivity : BaseActivity() {
 
     /** Laduje 5 najnowszych operacji (dochod/wydatek) do karty "Ostatnie transakcje" na glownym ekranie. */
     private fun loadRecentEntries() {
-        CoroutineScope(Dispatchers.IO).launch {
+        viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
             val recent = db.entryDao().getAll().take(5)
             withContext(Dispatchers.Main) {
                 recentEntriesAdapter.submitList(recent)
-                findViewById<View>(R.id.tv_no_recent_entries).visibility =
+                requireView().findViewById<View>(R.id.tv_no_recent_entries).visibility =
                     if (recent.isEmpty()) View.VISIBLE else View.GONE
-                findViewById<View>(R.id.rv_recent_entries).visibility =
+                requireView().findViewById<View>(R.id.rv_recent_entries).visibility =
                     if (recent.isEmpty()) View.GONE else View.VISIBLE
             }
         }
@@ -301,7 +309,7 @@ class MineActivity : BaseActivity() {
      * wizualizacja trendu bez pisania od zera osobnego wykresu liniowego.
      */
     private fun loadMonthlySummaryChart() {
-        CoroutineScope(Dispatchers.IO).launch {
+        viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
             val cal = Calendar.getInstance()
             cal.set(Calendar.DAY_OF_MONTH, 1); cal.set(Calendar.HOUR_OF_DAY, 0)
             cal.set(Calendar.MINUTE, 0); cal.set(Calendar.SECOND, 0); cal.set(Calendar.MILLISECOND, 0)
@@ -331,7 +339,7 @@ class MineActivity : BaseActivity() {
                 )
             }
             withContext(Dispatchers.Main) {
-                findViewById<DualLineChartView>(R.id.chart_monthly_summary).submitData(
+                requireView().findViewById<DualLineChartView>(R.id.chart_monthly_summary).submitData(
                     points.map { DualLineChartView.Point(it.label, it.income, it.expense) }
                 )
             }
@@ -340,48 +348,48 @@ class MineActivity : BaseActivity() {
 
     /** Обновляет три гейджа лимитов и красный баннер превышения лимита niezarejestrowanej działalności. */
     private fun loadLimits() {
-        CoroutineScope(Dispatchers.IO).launch {
-            val limits = LimitsHelper.compute(this@MineActivity)
+        viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
+            val limits = LimitsHelper.compute(requireContext())
             withContext(Dispatchers.Main) {
                 // Лимит "Działalność nierejestrowana, ten miesiąc" актуален ТОЛЬКО для
                 // niezarejestrowanej — для любой Zarejestrowana JDG (skala/liniowy/ryczałt)
                 // его вообще не существует, поэтому он скрыт.
-                findViewById<View>(R.id.layout_limit_monthly).visibility =
+                requireView().findViewById<View>(R.id.layout_limit_monthly).visibility =
                     if (limits.activityType == ActivityType.NIEZAREJESTROWANA) View.VISIBLE else View.GONE
                 // Порог 120 000 zł/rok (12% -> 32%) актуален только для niezarejestrowanej
                 // и dla skali (JDG_SKALA) — dla liniowy i ryczałt taki próg nie istnieje
                 // (inna konstrukcja podatku), поэтому скрыт для них.
-                findViewById<View>(R.id.layout_limit_bracket).visibility =
+                requireView().findViewById<View>(R.id.layout_limit_bracket).visibility =
                     if (limits.activityType == ActivityType.NIEZAREJESTROWANA || limits.activityType == ActivityType.JDG_SKALA)
                         View.VISIBLE else View.GONE
                 // Limit zwolnienia z VAT dotyczy wszystkich form działalności — widoczny zawsze.
 
-                findViewById<TextView>(R.id.tv_limit_monthly_label).text =
+                requireView().findViewById<TextView>(R.id.tv_limit_monthly_label).text =
                     "${formatMoney(limits.monthly.current)} zł / ${formatMoney(limits.monthly.limit)} zł"
-                findViewById<ProgressBar>(R.id.pb_limit_monthly).progress = limits.monthly.percent.coerceAtMost(100)
-                findViewById<TextView>(R.id.tv_limit_monthly_percent).text = "${limits.monthly.percent.coerceAtMost(100)}%"
+                requireView().findViewById<ProgressBar>(R.id.pb_limit_monthly).progress = limits.monthly.percent.coerceAtMost(100)
+                requireView().findViewById<TextView>(R.id.tv_limit_monthly_percent).text = "${limits.monthly.percent.coerceAtMost(100)}%"
 
                 // Update: dwuetapowa szkala progu podatkowego zamiast jednej mylącej
                 // "Pierwszy próg (120 000 zł)" — zob. LimitsHelper.BracketStageStatus.
                 val stage = limits.bracketStage
-                findViewById<TextView>(R.id.tv_limit_bracket_title).text = when (stage.stage) {
+                requireView().findViewById<TextView>(R.id.tv_limit_bracket_title).text = when (stage.stage) {
                     LimitsHelper.BracketStage.TAX_FREE -> getString(R.string.limit_bracket_title_tax_free)
                     LimitsHelper.BracketStage.RATE_12 -> getString(R.string.limit_bracket_title_rate12)
                     LimitsHelper.BracketStage.RATE_32 -> getString(R.string.limit_bracket_title_rate32)
                 }
-                findViewById<TextView>(R.id.tv_limit_bracket_label).text =
+                requireView().findViewById<TextView>(R.id.tv_limit_bracket_label).text =
                     "${formatMoney(stage.barCurrent)} zł / ${formatMoney(stage.barLimit)} zł"
-                findViewById<ProgressBar>(R.id.pb_limit_bracket).progress = stage.percent
-                findViewById<TextView>(R.id.tv_limit_bracket_percent).text = "${stage.percent.coerceAtMost(100)}%"
+                requireView().findViewById<ProgressBar>(R.id.pb_limit_bracket).progress = stage.percent
+                requireView().findViewById<TextView>(R.id.tv_limit_bracket_percent).text = "${stage.percent.coerceAtMost(100)}%"
 
-                findViewById<TextView>(R.id.tv_limit_vat_label).text =
+                requireView().findViewById<TextView>(R.id.tv_limit_vat_label).text =
                     getString(
                         R.string.limit_vat_label,
                         formatMoney(limits.vat.current), formatMoney(limits.vat.limit)
                     )
-                findViewById<ProgressBar>(R.id.pb_limit_vat).progress = limits.vat.percent.coerceAtMost(100)
+                requireView().findViewById<ProgressBar>(R.id.pb_limit_vat).progress = limits.vat.percent.coerceAtMost(100)
 
-                val warning = findViewById<TextView>(R.id.tv_limit_warning)
+                val warning = requireView().findViewById<TextView>(R.id.tv_limit_warning)
                 if (limits.activityType == ActivityType.NIEZAREJESTROWANA && limits.monthly.exceeded) {
                     warning.text = getString(R.string.limit_exceeded_warning)
                     warning.visibility = View.VISIBLE
