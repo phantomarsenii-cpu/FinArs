@@ -66,7 +66,10 @@ class MineFragment : Fragment() {
             startActivity(Intent(requireContext(), NotificationsActivity::class.java))
         }
         requireView().findViewById<Button>(R.id.btn_reports).setOnClickListener {
-            startActivity(Intent(requireContext(), ReportActivity::class.java))
+            // Update: раньше открывал ReportActivity отдельным экраном (пересоздавая
+            // баннер/нав-бар); теперь и Mine, и Report — фрагменты внутри одного
+            // MainActivity, поэтому просто переключаем вкладку — мгновенно, без мигания.
+            (activity as? MainActivity)?.openTab(BottomNavBar.Tab.REPORTS)
         }
         requireView().findViewById<Button>(R.id.btn_history).setOnClickListener {
             startActivity(Intent(requireContext(), HistoryActivity::class.java))

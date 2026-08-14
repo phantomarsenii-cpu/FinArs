@@ -116,7 +116,10 @@ class LimitsNotificationWorker(context: Context, params: WorkerParameters) : Cor
                     prefs, "advance_${cal.get(Calendar.YEAR)}_${cal.get(Calendar.MONTH)}",
                     ctx.getString(R.string.notif_advance_title),
                     ctx.getString(R.string.notif_advance_text),
-                    ReportActivity::class.java
+                    // Update: ReportActivity удалён — теперь MainActivity (единый хост),
+                    // с флагом, какую вкладку открыть при тапе по уведомлению.
+                    MainActivity::class.java,
+                    android.os.Bundle().apply { putString(MainActivity.EXTRA_OPEN_TAB, MainActivity.TAB_REPORTS) }
                 )
             }
 
@@ -141,11 +144,12 @@ class LimitsNotificationWorker(context: Context, params: WorkerParameters) : Cor
 
     private fun notifyOnce(
         prefs: android.content.SharedPreferences, key: String, title: String, text: String,
-        targetActivity: Class<*>? = null
+        targetActivity: Class<*>? = null,
+        intentExtras: android.os.Bundle? = null
     ) {
         if (prefs.getBoolean("notif_shown_$key", false)) return
         prefs.edit().putBoolean("notif_shown_$key", true).apply()
-        showNotification(applicationContext, key.hashCode(), title, text, targetActivity)
+        showNotification(applicationContext, key.hashCode(), title, text, targetActivity, intentExtras)
     }
 
     /** Как notifyOnce, но допускает до N повторов В ТЕЧЕНИЕ ОДНОГО ДНЯ — N задаётся

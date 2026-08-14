@@ -18,21 +18,21 @@ import androidx.lifecycle.LifecycleOwner
  *
  * Update: миграция на единый MainActivity-хост (фрагменты вместо отдельных Activity —
  * чтобы нижняя навигация и рекламный баннер не пересоздавались при переключении вкладок).
- * Этап 2: Start (MineFragment) и Magazyn (MagazinFragment) переведены на фрагменты внутри
- * MainActivity — attachHost()/updateVisual() используются MainActivity. Raporty/Ustawienia
- * пока ещё отдельные Activity — используют старый attach(), как и раньше; "Start" и
- * "Magazyn" из НИХ теперь ведут в MainActivity (с нужной вкладкой через Intent-экстра),
- * а не в удалённые MineActivity/MagazinActivity.
+ * Этап 3: Start (MineFragment), Magazyn (MagazinFragment) и Raporty (ReportFragment)
+ * переведены на фрагменты внутри MainActivity — attachHost()/updateVisual() используются
+ * MainActivity. Ustawienia пока ещё отдельная Activity — использует старый attach(), как
+ * и раньше; "Start"/"Magazyn"/"Raporty" из НЕЁ теперь ведут в MainActivity (с нужной
+ * вкладкой через Intent-экстра), а не в удалённые MineActivity/MagazinActivity/ReportActivity.
  */
 object BottomNavBar {
 
     enum class Tab { START, TRANSACTIONS, MAGAZIN, REPORTS, SETTINGS }
 
-    /** Для оставшихся экранов-Activity (Raporty/Ustawienia). */
+    /** Для оставшихся экранов-Activity (Ustawienia). */
     fun attach(activity: AppCompatActivity, current: Tab) {
         bindToMainActivityTab(activity, R.id.nav_start, Tab.START, current)
         bindToMainActivityTab(activity, R.id.nav_magazin, Tab.MAGAZIN, current)
-        bind(activity, R.id.nav_reports, Tab.REPORTS, current, ReportActivity::class.java)
+        bindToMainActivityTab(activity, R.id.nav_reports, Tab.REPORTS, current)
         bind(activity, R.id.nav_settings, Tab.SETTINGS, current, SettingsActivity::class.java)
         attachAddButton(activity)
         attachAdBanner(activity)
@@ -50,8 +50,14 @@ object BottomNavBar {
             Tab.REPORTS to R.id.nav_reports,
             Tab.SETTINGS to R.id.nav_settings
         ).forEach { (tab, viewId) ->
+            // Update: раньше здесь была проверка "if (tab != current)", но attachHost()
+            // вызывается ОДИН РАЗ в onCreate — current фиксировался в замыкании навсегда
+            // и не обновлялся при переключении вкладок, из-за чего после первого перехода
+            // (например Start -> Magazyn) клики по остальным вкладкам просто игнорировались.
+            // Актуальную проверку "уже на этой вкладке — ничего не делать" корректно
+            // делает MainActivity.switchTo() с живым полем currentTab — здесь она не нужна.
             mainActivity.findViewById<View>(viewId)?.setOnClickListener {
-                if (tab != current) onTabSelected(tab)
+                onTabSelected(tab)
             }
         }
         updateVisual(mainActivity, current)
@@ -115,10 +121,10 @@ object BottomNavBar {
         pill?.setBackgroundResource(if (active) R.drawable.nav_active_pill_bg else 0)
     }
 
-    /** "Start"/"Magazyn" с оставшихся экранов-Activity (Raporty/Ustawienia) ведут в
-     * MainActivity (единый фрагмент-хост), а не в удалённые MineActivity/MagazinActivity.
-     * FLAG_ACTIVITY_CLEAR_TOP переиспользует уже существующий (singleTask) экземпляр
-     * MainActivity вместо создания нового поверх стека. */
+    /** "Start"/"Magazyn"/"Raporty" с оставшегося экрана-Activity (Ustawienia) ведут в
+     * MainActivity (единый фрагмент-хост), а не в удалённые MineActivity/MagazinActivity/
+     * ReportActivity. FLAG_ACTIVITY_CLEAR_TOP переиспользует уже существующий (singleTask)
+     * экземпляр MainActivity вместо создания нового поверх стека. */
     private fun bindToMainActivityTab(activity: AppCompatActivity, viewId: Int, tab: Tab, current: Tab) {
         val group = activity.findViewById<View>(viewId) ?: return
         val active = tab == current
@@ -128,7 +134,11 @@ object BottomNavBar {
             if (!active) {
                 val intent = Intent(activity, MainActivity::class.java).apply {
                     flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
-                    if (tab == Tab.MAGAZIN) putExtra(MainActivity.EXTRA_OPEN_TAB, MainActivity.TAB_MAGAZIN)
+                    when (tab) {
+                        Tab.MAGAZIN -> putExtra(MainActivity.EXTRA_OPEN_TAB, MainActivity.TAB_MAGAZIN)
+                        Tab.REPORTS -> putExtra(MainActivity.EXTRA_OPEN_TAB, MainActivity.TAB_REPORTS)
+                        else -> { /* Tab.START — вкладка по умолчанию, экстра не нужна */ }
+                    }
                 }
                 activity.startActivity(intent)
                 activity.finish()

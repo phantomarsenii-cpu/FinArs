@@ -39,7 +39,6 @@
         <activity android:name=".AddInvoiceActivity" android:exported="false" />
         <activity android:name=".AddInvoiceCorrectionActivity" android:exported="false" />
         <activity android:name=".InvoiceHistoryActivity" android:exported="false" />
-        <activity android:name=".ReportActivity" android:exported="false" />
         <activity android:name=".HistoryActivity" android:exported="false" />
         <activity android:name=".InventoryActivity" android:exported="false" />
         <activity android:name=".InventoryHistoryActivity" android:exported="false" />

@@ -3,16 +3,18 @@ package com.example.fa_ksiegowy
 import android.app.DatePickerDialog
 import android.content.Intent
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import java.util.Calendar
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -30,36 +32,45 @@ import java.util.Locale
 import java.util.zip.ZipEntry
 import java.util.zip.ZipOutputStream
 
-class ReportActivity : BaseActivity() {
+class ReportFragment : Fragment() {
     lateinit var db: AppDatabase
     /** true = biezacy miesiac, false = biezacy rok — dla karty "Podsumowanie"/"Trend" (nie ma to wplywu na przyciski eksportu ponizej, ktore maja wlasny zakres). */
     private var summaryIsMonth: Boolean = true
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_report)
-        BottomNavBar.attach(this, BottomNavBar.Tab.REPORTS)
-        db = AppDatabase.getInstance(this)
-        findViewById<Button>(R.id.btn_report_month).setOnClickListener { generateForMonth() }
-        findViewById<Button>(R.id.btn_report_year).setOnClickListener {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        return inflater.inflate(R.layout.fragment_report, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        // Update: setContentView/BottomNavBar.attach убраны — этот экран теперь фрагмент
+        // внутри MainActivity, у которого нав-бар и рекламный баннер уже созданы один раз
+        // на уровне Activity (см. MainActivity.kt), а не пересоздаются здесь.
+        db = AppDatabase.getInstance(requireContext())
+        requireView().findViewById<Button>(R.id.btn_report_month).setOnClickListener { generateForMonth() }
+        requireView().findViewById<Button>(R.id.btn_report_year).setOnClickListener {
             runIfPro { generateForYear() }
         }
-        findViewById<Button>(R.id.btn_report_custom).setOnClickListener {
+        requireView().findViewById<Button>(R.id.btn_report_custom).setOnClickListener {
             runIfPro { showCustomRangePicker() }
         }
-        findViewById<View>(R.id.btn_period).setOnClickListener { showPeriodPicker() }
+        requireView().findViewById<View>(R.id.btn_period).setOnClickListener { showPeriodPicker() }
         loadSummary()
         loadTrend()
     }
 
     private fun showPeriodPicker() {
         AppDialog.showOptionPicker(
-            context = this,
+            context = requireContext(),
             title = getString(R.string.select_period),
             options = listOf("month" to getString(R.string.period_this_month), "year" to getString(R.string.period_this_year))
         ) { selected ->
             summaryIsMonth = selected == "month"
-            findViewById<TextView>(R.id.tv_period).text =
+            requireView().findViewById<TextView>(R.id.tv_period).text =
                 if (summaryIsMonth) getString(R.string.period_this_month) else getString(R.string.period_this_year)
             loadSummary()
         }
@@ -67,7 +78,7 @@ class ReportActivity : BaseActivity() {
 
     /** Wypelnia karte "Podsumowanie" (donut + legenda) oraz karte rozkladu procentowego. */
     private fun loadSummary() {
-        CoroutineScope(Dispatchers.IO).launch {
+        viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
             val cal = Calendar.getInstance()
             val from: Long
             val to: Long
@@ -87,7 +98,7 @@ class ReportActivity : BaseActivity() {
             val income = entries.filter { it.isIncome }.sumOf { it.amount }
             val expense = entries.filter { !it.isIncome }.sumOf { it.amount }
             val profit = income - expense
-            val prefs = getSharedPreferences("settings", MODE_PRIVATE)
+            val prefs = requireContext().getSharedPreferences("settings", android.content.Context.MODE_PRIVATE)
             val activityType = ActivityTypeHelper.get(prefs)
             val ryczaltRate = ActivityTypeHelper.getRyczaltRate(prefs)
             val year = TaxHelper.currentYear()
@@ -104,30 +115,30 @@ class ReportActivity : BaseActivity() {
             val taxPct = (tax / total * 100).toInt()
 
             withContext(Dispatchers.Main) {
-                findViewById<DonutChartView>(R.id.donut_chart).submitData(
+                requireView().findViewById<DonutChartView>(R.id.donut_chart).submitData(
                     listOf(
-                        DonutChartView.Segment(income, ContextCompat.getColor(this@ReportActivity, R.color.income_green)),
-                        DonutChartView.Segment(expense, ContextCompat.getColor(this@ReportActivity, R.color.expense_red)),
-                        DonutChartView.Segment(tax, ContextCompat.getColor(this@ReportActivity, R.color.accent_purple))
+                        DonutChartView.Segment(income, ContextCompat.getColor(requireContext(), R.color.income_green)),
+                        DonutChartView.Segment(expense, ContextCompat.getColor(requireContext(), R.color.expense_red)),
+                        DonutChartView.Segment(tax, ContextCompat.getColor(requireContext(), R.color.accent_purple))
                     ),
                     getString(R.string.summary_total),
                     formatMoney(income + expense)
                 )
-                findViewById<TextView>(R.id.tv_legend_income).text = formatMoney(income) + " zł"
-                findViewById<TextView>(R.id.tv_legend_expense).text = formatMoney(expense) + " zł"
-                findViewById<TextView>(R.id.tv_legend_tax).text = formatMoney(tax) + " zł"
+                requireView().findViewById<TextView>(R.id.tv_legend_income).text = formatMoney(income) + " zł"
+                requireView().findViewById<TextView>(R.id.tv_legend_expense).text = formatMoney(expense) + " zł"
+                requireView().findViewById<TextView>(R.id.tv_legend_tax).text = formatMoney(tax) + " zł"
 
-                findViewById<TextView>(R.id.tv_breakdown_income).text = formatMoney(income) + " zł"
-                findViewById<TextView>(R.id.tv_breakdown_expense).text = formatMoney(expense) + " zł"
-                findViewById<TextView>(R.id.tv_breakdown_tax_label).text = getString(R.string.legend_tax_pct, taxPct)
-                findViewById<TextView>(R.id.tv_breakdown_tax).text = formatMoney(tax) + " zł"
+                requireView().findViewById<TextView>(R.id.tv_breakdown_income).text = formatMoney(income) + " zł"
+                requireView().findViewById<TextView>(R.id.tv_breakdown_expense).text = formatMoney(expense) + " zł"
+                requireView().findViewById<TextView>(R.id.tv_breakdown_tax_label).text = getString(R.string.legend_tax_pct, taxPct)
+                requireView().findViewById<TextView>(R.id.tv_breakdown_tax).text = formatMoney(tax) + " zł"
 
-                findViewById<ProgressBar>(R.id.pb_income).progress = incomePct
-                findViewById<ProgressBar>(R.id.pb_expense).progress = expensePct
-                findViewById<ProgressBar>(R.id.pb_tax).progress = taxPct
-                findViewById<TextView>(R.id.tv_breakdown_income_pct).text = "$incomePct%"
-                findViewById<TextView>(R.id.tv_breakdown_expense_pct).text = "$expensePct%"
-                findViewById<TextView>(R.id.tv_breakdown_tax_pct).text = "$taxPct%"
+                requireView().findViewById<ProgressBar>(R.id.pb_income).progress = incomePct
+                requireView().findViewById<ProgressBar>(R.id.pb_expense).progress = expensePct
+                requireView().findViewById<ProgressBar>(R.id.pb_tax).progress = taxPct
+                requireView().findViewById<TextView>(R.id.tv_breakdown_income_pct).text = "$incomePct%"
+                requireView().findViewById<TextView>(R.id.tv_breakdown_expense_pct).text = "$expensePct%"
+                requireView().findViewById<TextView>(R.id.tv_breakdown_tax_pct).text = "$taxPct%"
             }
         }
     }
@@ -136,7 +147,7 @@ class ReportActivity : BaseActivity() {
 
     /** Ładuje zysk netto (przychod - wydatki) za ostatnie 6 miesiecy dla karty "Trend". */
     private fun loadTrend() {
-        CoroutineScope(Dispatchers.IO).launch {
+        viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
             val cal = Calendar.getInstance()
             val monthFmt = SimpleDateFormat("LLL", Locale.getDefault())
             val points = mutableListOf<TrendLineChartView.Point>()
@@ -159,21 +170,21 @@ class ReportActivity : BaseActivity() {
             }
 
             withContext(Dispatchers.Main) {
-                findViewById<TrendLineChartView>(R.id.trend_chart).submitData(points)
+                requireView().findViewById<TrendLineChartView>(R.id.trend_chart).submitData(points)
             }
         }
     }
 
     /** Годовой и произвольный отчёт — платная функция; месячный остаётся бесплатным. */
     private fun runIfPro(action: () -> Unit) {
-        if (BillingManager.isPro(this)) {
+        if (BillingManager.isPro(requireContext())) {
             action()
         } else {
-            androidx.appcompat.app.AlertDialog.Builder(this)
+            androidx.appcompat.app.AlertDialog.Builder(requireContext())
                 .setTitle(getString(R.string.pro_feature_locked_title))
                 .setMessage(getString(R.string.pro_feature_locked_message))
                 .setPositiveButton(getString(R.string.pro_feature_locked_go_settings)) { _, _ ->
-                    startActivity(Intent(this, SettingsActivity::class.java))
+                    startActivity(Intent(requireContext(), SettingsActivity::class.java))
                 }
                 .setNegativeButton(getString(R.string.dialog_close), null)
                 .show()
@@ -188,7 +199,7 @@ class ReportActivity : BaseActivity() {
     private fun showCustomRangePicker() {
         val cal = Calendar.getInstance()
         DatePickerDialog(
-            this,
+            requireContext(),
             { _, fromYear, fromMonth, fromDay ->
                 val fromCal = Calendar.getInstance()
                 fromCal.set(fromYear, fromMonth, fromDay, 0, 0, 0)
@@ -196,7 +207,7 @@ class ReportActivity : BaseActivity() {
                 val fromMillis = fromCal.timeInMillis
 
                 DatePickerDialog(
-                    this,
+                    requireContext(),
                     { _, toYear, toMonth, toDay ->
                         val toCal = Calendar.getInstance()
                         toCal.set(toYear, toMonth, toDay, 23, 59, 59)
@@ -204,7 +215,7 @@ class ReportActivity : BaseActivity() {
                         val toMillis = toCal.timeInMillis
 
                         if (toMillis < fromMillis) {
-                            Toast.makeText(this, getString(R.string.custom_range_invalid), Toast.LENGTH_LONG).show()
+                            Toast.makeText(requireContext(), getString(R.string.custom_range_invalid), Toast.LENGTH_LONG).show()
                             return@DatePickerDialog
                         }
                         generateReport(fromMillis, toMillis, getString(R.string.report_title_custom), applyAnnualLimit = false)
@@ -240,26 +251,26 @@ class ReportActivity : BaseActivity() {
         applyAnnualLimit: Boolean, year: Int = TaxHelper.currentYear(), fileTypeCode: String = "REPORT_CUSTOM"
     ) {
         setButtonsEnabled(false)
-        Toast.makeText(this, getString(R.string.report_generating), Toast.LENGTH_SHORT).show()
-        CoroutineScope(Dispatchers.IO).launch {
+        Toast.makeText(requireContext(), getString(R.string.report_generating), Toast.LENGTH_SHORT).show()
+        viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
             try {
                 val entries = db.entryDao().getBetween(from, to)
                 if (entries.isEmpty()) {
                     withContext(Dispatchers.Main) {
-                        Toast.makeText(this@ReportActivity, getString(R.string.no_entries), Toast.LENGTH_LONG).show()
+                        Toast.makeText(requireContext(), getString(R.string.no_entries), Toast.LENGTH_LONG).show()
                         setButtonsEnabled(true)
                     }
                     return@launch
                 }
 
-                val reportsDir = File(getExternalFilesDir(null), "reports")
+                val reportsDir = File(requireContext().getExternalFilesDir(null), "reports")
                 reportsDir.mkdirs()
                 val xlsx = File(reportsDir, FileNaming.reportFileName(fileTypeCode, "xlsx"))
                 val wb = XSSFWorkbook()
                 val sheet = wb.createSheet(getString(R.string.report_sheet_name))
 
                 val dateFmt = SimpleDateFormat("dd.MM.yyyy HH:mm", Locale.getDefault())
-                val prefs = getSharedPreferences("settings", MODE_PRIVATE)
+                val prefs = requireContext().getSharedPreferences("settings", android.content.Context.MODE_PRIVATE)
 
                 // ---- styles (types inferred as XSSFCellStyle — required by XSSFCell.setCellStyle) ----
                 val titleFont = wb.createFont().apply {
@@ -469,26 +480,26 @@ class ReportActivity : BaseActivity() {
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
                     setButtonsEnabled(true)
-                    Toast.makeText(this@ReportActivity, getString(R.string.report_error, e.message ?: ""), Toast.LENGTH_LONG).show()
+                    Toast.makeText(requireContext(), getString(R.string.report_error, e.message ?: ""), Toast.LENGTH_LONG).show()
                 }
             }
         }
     }
 
     private fun setButtonsEnabled(enabled: Boolean) {
-        findViewById<Button>(R.id.btn_report_month).isEnabled = enabled
-        findViewById<Button>(R.id.btn_report_year).isEnabled = enabled
-        findViewById<Button>(R.id.btn_report_custom).isEnabled = enabled
+        requireView().findViewById<Button>(R.id.btn_report_month).isEnabled = enabled
+        requireView().findViewById<Button>(R.id.btn_report_year).isEnabled = enabled
+        requireView().findViewById<Button>(R.id.btn_report_custom).isEnabled = enabled
     }
 
     private fun shareFile(file: File) {
-        val uri = FileProvider.getUriForFile(this, "$packageName.fileprovider", file)
+        val uri = FileProvider.getUriForFile(requireContext(), "${requireContext().packageName}.fileprovider", file)
         val intent = Intent(Intent.ACTION_SEND).apply {
             type = "application/zip"
             putExtra(Intent.EXTRA_STREAM, uri)
             addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
         }
-        Toast.makeText(this, getString(R.string.report_ready), Toast.LENGTH_SHORT).show()
+        Toast.makeText(requireContext(), getString(R.string.report_ready), Toast.LENGTH_SHORT).show()
         startActivity(Intent.createChooser(intent, getString(R.string.report_share_title)))
     }
 }
