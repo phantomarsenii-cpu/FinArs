@@ -60,7 +60,10 @@ class MineFragment : Fragment() {
             startActivity(Intent(requireContext(), AddEntryActivity::class.java).putExtra("isIncome", true))
         }
         requireView().findViewById<Button>(R.id.btn_settings).setOnClickListener {
-            startActivity(Intent(requireContext(), SettingsActivity::class.java))
+            // Update: раньше открывал SettingsActivity отдельным экраном (пересоздавая
+            // баннер/нав-бар); теперь оба — фрагменты внутри одного MainActivity,
+            // поэтому просто переключаем вкладку — мгновенно, без мигания.
+            (activity as? MainActivity)?.openTab(BottomNavBar.Tab.SETTINGS)
         }
         requireView().findViewById<View>(R.id.iv_notifications).setOnClickListener {
             startActivity(Intent(requireContext(), NotificationsActivity::class.java))
@@ -82,7 +85,7 @@ class MineFragment : Fragment() {
                     .setTitle(getString(R.string.pro_feature_locked_title))
                     .setMessage(getString(R.string.invoice_pro_locked_message))
                     .setPositiveButton(getString(R.string.pro_feature_locked_go_settings)) { _, _ ->
-                        startActivity(Intent(requireContext(), SettingsActivity::class.java))
+                        (activity as? MainActivity)?.openTab(BottomNavBar.Tab.SETTINGS)
                     }
                     .setNegativeButton(getString(R.string.dialog_close), null)
                     .show()

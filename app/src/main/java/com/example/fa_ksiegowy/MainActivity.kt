@@ -5,19 +5,21 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 
 /**
- * Постоянный хост для главных вкладок. Заменяет собой бывшие MineActivity/
- * MagazinActivity/ReportActivity — все прежние ссылки на них теперь указывают сюда.
+ * Постоянный хост для всех главных вкладок. Заменяет собой бывшие MineActivity/
+ * MagazinActivity/ReportActivity/SettingsActivity — все прежние ссылки на них теперь
+ * указывают сюда.
  *
- * Update: миграция на единый Activity-хост с фрагментами — нижняя навигация и рекламный
- * баннер создаются ОДИН РАЗ за всё время жизни этой Activity и не пересоздаются при
- * переключении вкладок. Переключение между уже переведёнными на фрагменты вкладками идёт
- * через show/hide (а не replace) — так у каждой вкладки сохраняется состояние (скролл,
- * загруженные данные) между переключениями, а не пересоздаётся с нуля.
+ * Update: миграция на единый Activity-хост с фрагментами завершена (этап 4) — нижняя
+ * навигация и рекламный баннер создаются ОДИН РАЗ за всё время жизни этой Activity и
+ * никогда не пересоздаются ни при каком переключении вкладок. Переключение идёт через
+ * show/hide (а не replace) — у каждой вкладки сохраняется состояние (скролл, загруженные
+ * данные) между переключениями, а не пересоздаётся с нуля.
  *
- * Этап 3: переведены Start (MineFragment), Magazyn (MagazinFragment) и Raporty
- * (ReportFragment). Ustawienia пока ещё отдельная Activity — переключение на неё
- * по-старому запускает Activity (см. BottomNavBar.attach на ней самой). Будет переведена
- * на следующем этапе.
+ * Все 4 вкладки — Start (MineFragment), Magazyn (MagazinFragment), Raporty (ReportFragment),
+ * Ustawienia (SettingsFragment) — теперь фрагменты внутри этой Activity. Отдельные Activity
+ * остаются только у экранов ВНЕ нижней навигации (AddEntryActivity, LimitsActivity,
+ * HistoryActivity и т.д. — они по-прежнему показывают нав-бар как удобство через
+ * BottomNavBar.attach(), но не входят в этот фрагмент-хост).
  */
 class MainActivity : BaseActivity() {
 
@@ -59,6 +61,7 @@ class MainActivity : BaseActivity() {
         when (intent?.getStringExtra(EXTRA_OPEN_TAB)) {
             TAB_MAGAZIN -> BottomNavBar.Tab.MAGAZIN
             TAB_REPORTS -> BottomNavBar.Tab.REPORTS
+            TAB_SETTINGS -> BottomNavBar.Tab.SETTINGS
             TAB_START -> BottomNavBar.Tab.START
             else -> null
         }
@@ -67,25 +70,15 @@ class MainActivity : BaseActivity() {
         BottomNavBar.attachHost(this, currentTab) { tab -> switchTo(tab) }
     }
 
-    /**
-     * Переключение вкладки. Start/Magazyn/Raporty — фрагменты внутри этой же Activity
-     * (show/hide, без recreate — баннер и нав-бар не трогаются). Ustawienia пока
-     * отдельная Activity — обычный startActivity, как было раньше (следующий этап миграции).
-     */
+    /** Публичный вход для фрагментов (например, кнопка "Raporty" на дашборде
+     * MineFragment) — переключает вкладку мгновенно, тем же механизмом, что и
+     * нижняя навигация, без пересоздания Activity/баннера. */
+    fun openTab(tab: BottomNavBar.Tab) = switchTo(tab)
+
+    /** Переключение вкладки — все 4 вкладки теперь фрагменты внутри этой же Activity
+     * (show/hide, без recreate — баннер и нав-бар не трогаются). */
     private fun switchTo(tab: BottomNavBar.Tab) {
         if (tab == currentTab) return
-
-        if (tab != BottomNavBar.Tab.START && tab != BottomNavBar.Tab.MAGAZIN && tab != BottomNavBar.Tab.REPORTS) {
-            val target = when (tab) {
-                BottomNavBar.Tab.SETTINGS -> SettingsActivity::class.java
-                else -> return
-            }
-            startActivity(Intent(this, target))
-            finish()
-            @Suppress("DEPRECATION")
-            overridePendingTransition(0, 0)
-            return
-        }
 
         val fm = supportFragmentManager
         val tx = fm.beginTransaction()
@@ -104,16 +97,12 @@ class MainActivity : BaseActivity() {
         BottomNavBar.updateVisual(this, currentTab)
     }
 
-    /** Публичный вход для фрагментов (например, кнопка "Raporty" на дашборде
-     * MineFragment) — переключает вкладку мгновенно, тем же механизмом, что и
-     * нижняя навигация, без пересоздания Activity/баннера. */
-    fun openTab(tab: BottomNavBar.Tab) = switchTo(tab)
-
     private fun tagFor(tab: BottomNavBar.Tab) = "tab_${tab.name}"
 
     private fun createFragment(tab: BottomNavBar.Tab): Fragment = when (tab) {
         BottomNavBar.Tab.MAGAZIN -> MagazinFragment()
         BottomNavBar.Tab.REPORTS -> ReportFragment()
+        BottomNavBar.Tab.SETTINGS -> SettingsFragment()
         else -> MineFragment()
     }
 
@@ -121,11 +110,12 @@ class MainActivity : BaseActivity() {
         private const val KEY_CURRENT_TAB = "current_tab"
 
         /** Публичные константы для Intent-экстра "какую вкладку открыть" — используются
-         * воркерами уведомлений (см. StockNotificationWorker, LimitsNotificationWorker)
-         * при тапе по push-уведомлению. */
+         * воркерами уведомлений (StockNotificationWorker, LimitsNotificationWorker) и
+         * экранами-детализациями (HistoryActivity, LimitsActivity) через BottomNavBar. */
         const val EXTRA_OPEN_TAB = "open_tab"
         const val TAB_MAGAZIN = "MAGAZIN"
         const val TAB_REPORTS = "REPORTS"
+        const val TAB_SETTINGS = "SETTINGS"
         const val TAB_START = "START"
     }
 }

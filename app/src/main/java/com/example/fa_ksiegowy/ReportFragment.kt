@@ -184,7 +184,7 @@ class ReportFragment : Fragment() {
                 .setTitle(getString(R.string.pro_feature_locked_title))
                 .setMessage(getString(R.string.pro_feature_locked_message))
                 .setPositiveButton(getString(R.string.pro_feature_locked_go_settings)) { _, _ ->
-                    startActivity(Intent(requireContext(), SettingsActivity::class.java))
+                    (activity as? MainActivity)?.openTab(BottomNavBar.Tab.SETTINGS)
                 }
                 .setNegativeButton(getString(R.string.dialog_close), null)
                 .show()

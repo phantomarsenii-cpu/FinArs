@@ -7,7 +7,7 @@ import java.security.MessageDigest
 /**
  * Фасад над SubscriptionService (RevenueCat), сохраняющий исторические имена методов
  * (isPro/connect/restorePurchases/querySubscriptionPlans/launchPurchase), которые уже
- * вызываются из MainActivity/MineFragment/ReportFragment, SettingsActivity, SettingsProActivity и
+ * вызываются из MainActivity/MineFragment/ReportFragment/SettingsFragment, SettingsProActivity и
  * AdsManager. Экраны, которые пользуются BillingManager, менять не пришлось — реальный
  * биллинг теперь идёт через RevenueCat (Google Play Billing ИЛИ Samsung IAP — в
  * зависимости от того, откуда установлено приложение, см. StoreDetector.kt), а не

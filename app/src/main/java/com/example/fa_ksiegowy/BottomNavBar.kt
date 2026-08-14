@@ -28,12 +28,13 @@ object BottomNavBar {
 
     enum class Tab { START, TRANSACTIONS, MAGAZIN, REPORTS, SETTINGS }
 
-    /** Для оставшихся экранов-Activity (Ustawienia). */
+    /** Для оставшихся экранов-Activity, которые показывают нижнюю навигацию как
+     * удобство (не являются одной из 4 главных вкладок) — HistoryActivity, LimitsActivity. */
     fun attach(activity: AppCompatActivity, current: Tab) {
         bindToMainActivityTab(activity, R.id.nav_start, Tab.START, current)
         bindToMainActivityTab(activity, R.id.nav_magazin, Tab.MAGAZIN, current)
         bindToMainActivityTab(activity, R.id.nav_reports, Tab.REPORTS, current)
-        bind(activity, R.id.nav_settings, Tab.SETTINGS, current, SettingsActivity::class.java)
+        bindToMainActivityTab(activity, R.id.nav_settings, Tab.SETTINGS, current)
         attachAddButton(activity)
         attachAdBanner(activity)
     }
@@ -125,53 +126,34 @@ object BottomNavBar {
      * MainActivity (единый фрагмент-хост), а не в удалённые MineActivity/MagazinActivity/
      * ReportActivity. FLAG_ACTIVITY_CLEAR_TOP переиспользует уже существующий (singleTask)
      * экземпляр MainActivity вместо создания нового поверх стека. */
+    /** "Start"/"Magazyn"/"Raporty"/"Ustawienia" с отдельных экранов-детализации
+     * (HistoryActivity, LimitsActivity — показывают нижнюю навигацию для удобства, но
+     * сами не являются одной из вкладок MainActivity) всегда ведут в MainActivity,
+     * даже если визуально "своя" вкладка уже подсвечена активной. Это НЕ то же самое,
+     * что переключение вкладок внутри самого MainActivity (там повторный тап по уже
+     * активной вкладке действительно должен быть no-op — см. attachHost/switchTo).
+     * Update: раньше здесь ошибочно стоял `if (!active)`, из-за чего, например, кнопка
+     * "Start" на экране Limits (который тоже подсвечивает Start) вообще не реагировала —
+     * пользователь не мог вернуться на главный экран отсюда одним тапом. */
     private fun bindToMainActivityTab(activity: AppCompatActivity, viewId: Int, tab: Tab, current: Tab) {
         val group = activity.findViewById<View>(viewId) ?: return
-        val active = tab == current
-        applyVisual(activity, group, active)
+        applyVisual(activity, group, tab == current)
 
         group.setOnClickListener {
-            if (!active) {
-                val intent = Intent(activity, MainActivity::class.java).apply {
-                    flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
-                    when (tab) {
-                        Tab.MAGAZIN -> putExtra(MainActivity.EXTRA_OPEN_TAB, MainActivity.TAB_MAGAZIN)
-                        Tab.REPORTS -> putExtra(MainActivity.EXTRA_OPEN_TAB, MainActivity.TAB_REPORTS)
-                        else -> { /* Tab.START — вкладка по умолчанию, экстра не нужна */ }
-                    }
+            val intent = Intent(activity, MainActivity::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+                when (tab) {
+                    Tab.MAGAZIN -> putExtra(MainActivity.EXTRA_OPEN_TAB, MainActivity.TAB_MAGAZIN)
+                    Tab.REPORTS -> putExtra(MainActivity.EXTRA_OPEN_TAB, MainActivity.TAB_REPORTS)
+                    Tab.SETTINGS -> putExtra(MainActivity.EXTRA_OPEN_TAB, MainActivity.TAB_SETTINGS)
+                    else -> { /* Tab.START — вкладка по умолчанию, экстра не нужна */ }
                 }
-                activity.startActivity(intent)
-                activity.finish()
-                @Suppress("DEPRECATION")
-                activity.overridePendingTransition(0, 0)
             }
+            activity.startActivity(intent)
+            activity.finish()
+            @Suppress("DEPRECATION")
+            activity.overridePendingTransition(0, 0)
         }
     }
 
-    private fun bind(
-        activity: AppCompatActivity,
-        viewId: Int,
-        tab: Tab,
-        current: Tab,
-        target: Class<*>
-    ) {
-        val group = activity.findViewById<View>(viewId) ?: return
-        val active = tab == current
-        applyVisual(activity, group, active)
-
-        group.setOnClickListener {
-            if (!active) {
-                activity.startActivity(Intent(activity, target))
-                activity.finish()
-                // Update: стандартная анимация перехода между Activity (fade/slide) заставляла
-                // нижнюю навигацию и рекламный баннер визуально "мигать" при переключении вкладок,
-                // хотя оба экрана выглядят там одинаково — убираем анимацию для мгновенного,
-                // незаметного переключения (deprecated с API 34, но метод по-прежнему рабочий
-                // на всех версиях; замена overrideActivityTransition усложнила бы код без
-                // выигрыша, т.к. переход всё равно должен быть нулевым).
-                @Suppress("DEPRECATION")
-                activity.overridePendingTransition(0, 0)
-            }
-        }
-    }
 }

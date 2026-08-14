@@ -289,7 +289,12 @@ class AddEntryActivity : BaseActivity() {
                     .setTitle(getString(R.string.pro_feature_locked_title))
                     .setMessage(getString(R.string.invoice_pro_locked_message))
                     .setPositiveButton(getString(R.string.pro_feature_locked_go_settings)) { _, _ ->
-                        startActivity(Intent(this, SettingsActivity::class.java))
+                        // Update: SettingsActivity удалён — теперь MainActivity (единый
+                        // фрагмент-хост), с флагом, какую вкладку открыть.
+                        startActivity(Intent(this, MainActivity::class.java).apply {
+                            flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+                            putExtra(MainActivity.EXTRA_OPEN_TAB, MainActivity.TAB_SETTINGS)
+                        })
                     }
                     .setNegativeButton(getString(R.string.dialog_close), null)
                     .show()
