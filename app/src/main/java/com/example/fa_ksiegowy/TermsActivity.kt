@@ -19,7 +19,7 @@ import java.util.Date
  * 
  * После принятия Terms проверяется, выбран ли пользователем тип деятельности.
  * Если нет (is_tax_type_selected == false), направляется на SettingsTaxActivity
- * для обязательного выбора, иначе на MineActivity.
+ * для обязательного выбора, иначе на MainActivity.
  *
  * Режим "просмотр" (readOnly = true) — вызывается из Настроек:
  * чекбокс и кнопка принятия скрыты, внизу показана плашка со статусом
@@ -95,7 +95,7 @@ class TermsActivity : BaseActivity() {
                     Intent(this, SettingsTaxActivity::class.java)
                 } else {
                     // Переход на главную страницу
-                    Intent(this, MineActivity::class.java)
+                    Intent(this, MainActivity::class.java)
                 }
                 startActivity(nextIntent)
                 finish()

@@ -38,7 +38,7 @@ object AdsManager {
 
     private var sdkInitialized = false
     private const val TEST_BANNER_UNIT_ID = "ca-app-pub-3940256099942544/6300978111"
-    private const val PROD_BANNER_UNIT_ID = "ca-app-pub-9218963926031039/4293553475"
+    private const val PROD_BANNER_UNIT_ID = "ca-app-pub-9218963926031039/9552844934"
 
     private fun setDebugStatus(debugView: TextView?, text: String) {
         Log.i("AdsManager", "STATUS: $text")

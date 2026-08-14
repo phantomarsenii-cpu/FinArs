@@ -69,6 +69,30 @@ class AddInvoiceActivity : BaseActivity() {
         }
     }
 
+    // Wgrywanie logo firmy (blok Sprzedawca) — patrz InvoiceLogoStore i punkt 3
+    // wymagań (custom logo w PDF zamiast domyślnego logo FinArs).
+    private val pickLogoLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+        if (uri != null) {
+            val ok = InvoiceLogoStore.saveFromUri(applicationContext, uri)
+            if (ok) {
+                Toast.makeText(this, getString(R.string.logo_uploaded_toast), Toast.LENGTH_SHORT).show()
+                refreshLogoPreview()
+            } else {
+                Toast.makeText(this, getString(R.string.logo_upload_error), Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    private fun refreshLogoPreview() {
+        val path = InvoiceLogoStore.load(applicationContext)
+        val iv = findViewById<android.widget.ImageView>(R.id.iv_seller_logo_preview)
+        if (path != null) {
+            iv.setImageBitmap(android.graphics.BitmapFactory.decodeFile(path))
+        } else {
+            iv.setImageResource(R.drawable.logo)
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_invoice)
@@ -108,6 +132,11 @@ class AddInvoiceActivity : BaseActivity() {
         }
 
         findViewById<Button>(R.id.btn_vat_rate).setOnClickListener { showVatRatePicker() }
+
+        findViewById<Button>(R.id.btn_upload_logo).setOnClickListener {
+            pickLogoLauncher.launch("image/*")
+        }
+        refreshLogoPreview()
 
         loadSellerData()
         refreshCashLimit()
@@ -528,9 +557,13 @@ class AddInvoiceActivity : BaseActivity() {
                     )
                 }
 
-                val saved = InvoiceFileStorage.savePdf(applicationContext, fileName) { out ->
-                    InvoicePdfGenerator.generate(
-                        context = this@AddInvoiceActivity,
+                // Update: renderowanie PDF przełączone na InvoiceHtmlPdfGenerator (WebView +
+                // android.print, szablon assets/invoice_template.html) — WebView wymaga
+                // wątku głównego, więc renderujemy najpierw do bajtów na Dispatchers.Main,
+                // a dopiero potem zapisujemy plik na IO (jak dotychczas).
+                val pdfBytes = withContext(Dispatchers.Main) {
+                    InvoiceHtmlPdfGenerator.generate(
+                        context = applicationContext,
                         seller = seller,
                         invoiceNumber = invoiceNumber,
                         issueDateMillis = issueDateMillis,
@@ -549,9 +582,11 @@ class AddInvoiceActivity : BaseActivity() {
                         dueDateMillis = if (invoiceStatus == InvoiceStatus.PENDING) dueDateMillis else null,
                         items = itemsForPdf,
                         vatRate = vatRateForInvoice,
-                        isReceipt = isReceiptForInvoice,
-                        out = out
+                        isReceipt = isReceiptForInvoice
                     )
+                }
+                val saved = InvoiceFileStorage.savePdf(applicationContext, fileName) { out ->
+                    out.write(pdfBytes)
                 }
 
                 val invoiceId = dao.insert(

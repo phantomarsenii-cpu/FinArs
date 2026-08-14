@@ -106,9 +106,9 @@ class AddInvoiceCorrectionActivity : BaseActivity() {
             val originalItems = db.invoiceItemDao().getForInvoice(originalInvoice.id)
             val originalVatRate = VatRate.fromStorageKeyOrNull(originalInvoice.vatRate)
 
-            val saved = InvoiceFileStorage.savePdf(applicationContext, fileName) { out ->
-                InvoicePdfGenerator.generateCorrection(
-                    context = this@AddInvoiceCorrectionActivity,
+            val pdfBytes = withContext(Dispatchers.Main) {
+                InvoiceHtmlPdfGenerator.generateCorrection(
+                    context = applicationContext,
                     seller = InvoiceSellerDataStore.load(applicationContext),
                     correctionNumber = correctionNumber,
                     issueDateMillis = issueDateMillis,
@@ -123,9 +123,11 @@ class AddInvoiceCorrectionActivity : BaseActivity() {
                     correctedAmount = corrected,
                     reason = reason,
                     items = originalItems,
-                    vatRate = originalVatRate,
-                    out = out
+                    vatRate = originalVatRate
                 )
+            }
+            val saved = InvoiceFileStorage.savePdf(applicationContext, fileName) { out ->
+                out.write(pdfBytes)
             }
 
             db.invoiceCorrectionDao().insert(

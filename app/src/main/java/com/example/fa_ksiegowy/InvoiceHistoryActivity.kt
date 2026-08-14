@@ -334,9 +334,9 @@ class InvoiceHistoryActivity : BaseActivity() {
                     AppDatabase.getInstance(applicationContext).invoiceDao().update(paidInvoice)
                     val items = AppDatabase.getInstance(applicationContext).invoiceItemDao().getForInvoice(invoice.id)
                     val regenerated = try {
-                        InvoiceFileStorage.overwritePdf(applicationContext, invoice.pdfFilePath) { out ->
-                            InvoicePdfGenerator.generate(
-                                context = this@InvoiceHistoryActivity,
+                        val pdfBytes = withContext(Dispatchers.Main) {
+                            InvoiceHtmlPdfGenerator.generate(
+                                context = applicationContext,
                                 seller = InvoiceSellerDataStore.load(applicationContext),
                                 invoiceNumber = paidInvoice.invoiceNumber,
                                 issueDateMillis = paidInvoice.issueDateMillis,
@@ -353,9 +353,11 @@ class InvoiceHistoryActivity : BaseActivity() {
                                 paymentMethod = paidInvoice.paymentMethod,
                                 invoiceStatus = InvoiceStatus.PAID,
                                 dueDateMillis = null,
-                                items = items,
-                                out = out
+                                items = items
                             )
+                        }
+                        InvoiceFileStorage.overwritePdf(applicationContext, invoice.pdfFilePath) { out ->
+                            out.write(pdfBytes)
                         }
                     } catch (e: Exception) {
                         false

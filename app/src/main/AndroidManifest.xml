@@ -21,7 +21,6 @@
             android:value="ca-app-pub-9218963926031039~6835956339" />
 
         <activity android:name=".TermsActivity" android:exported="false" />
-        <activity android:name=".SettingsActivity" android:exported="false" />
         <activity android:name=".SettingsProActivity" android:exported="false" />
         <activity android:name=".SettingsBackupActivity" android:exported="false" />
         <activity android:name=".SettingsLanguageActivity" android:exported="false" />
@@ -39,14 +38,13 @@
         <activity android:name=".AddInvoiceActivity" android:exported="false" />
         <activity android:name=".AddInvoiceCorrectionActivity" android:exported="false" />
         <activity android:name=".InvoiceHistoryActivity" android:exported="false" />
-        <activity android:name=".ReportActivity" android:exported="false" />
         <activity android:name=".HistoryActivity" android:exported="false" />
-        <activity android:name=".MagazinActivity" android:exported="false" />
         <activity android:name=".InventoryActivity" android:exported="false" />
         <activity android:name=".InventoryHistoryActivity" android:exported="false" />
         <activity android:name=".AddEditProductActivity" android:exported="false" />
         <activity android:name=".SelectProductsActivity" android:exported="false" />
-        <activity android:name=".MineActivity" android:exported="true">
+        <activity android:name=".MainActivity" android:exported="true"
+            android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

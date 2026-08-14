@@ -11,7 +11,7 @@ import java.util.Locale
 /**
  * Pelnoekranowy widok "Limity" — dokladnie wedlug makietu (2 karty limitow +
  * karta informacyjna "O limitach"). Otwierany z karty Limitow na ekranie
- * glownym (MineActivity).
+ * glownym (MainActivity / MineFragment).
  */
 class LimitsActivity : BaseActivity() {
 

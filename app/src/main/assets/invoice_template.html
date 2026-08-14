@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<title>{{DOC_TITLE}}</title>
+<style>
+  /* =========================================================================
+     FinArs — uniwersalny szablon PDF (FAKTURA + FAKTURA KORYGUJĄCA)
+     Paleta zgodna z app/src/main/res/values/colors.xml:
+       accent_blue_dark #1230A8 (accent), #E9F2FE (header fill),
+       #C7D3E8 (grid/border), #6B7094 (hint), #12162E (text), zielony #1B7F3C
+     Strona A4, białe tło (druk), bez ciemnych wypełnień w nagłówku/stopce.
+     ========================================================================= */
+
+  @page { size: A4; margin: 0; }
+
+  :root{
+    --accent:#1230A8;
+    --accent-light:#29B6F6;
+    --text:#12162E;
+    --hint:#6B7094;
+    --grid:#C7D3E8;
+    --header-fill:#E9F2FE;
+    --row-alt:#F6F9FE;
+    --green:#1B7F3C;
+    --green-bg:#1B7F3C;
+    --orange:#CC6A00;
+    --icon-blue:#1230A8;
+  }
+
+  *{ box-sizing:border-box; margin:0; padding:0; }
+
+  html,body{
+    background:#FFFFFF;
+    color:var(--text);
+    font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;
+    font-size:9.5pt;
+    -webkit-print-color-adjust:exact;
+    print-color-adjust:exact;
+  }
+
+  .page{
+    position:relative;
+    width:210mm;
+    min-height:297mm;
+    padding:17mm 17mm 14mm 17mm;
+    overflow:hidden; /* dla fal tła */
+    background:#FFFFFF;
+  }
+
+  /* --- fale tła w nagłówku (SVG, jasne, nie przeszkadzają w druku) --- */
+  .waves-top{
+    position:absolute; top:0; right:0; width:120mm; height:55mm;
+    opacity:0.55; pointer-events:none; z-index:0;
+  }
+  .waves-bottom{
+    position:absolute; bottom:0; left:0; width:100%; height:40mm;
+    opacity:0.5; pointer-events:none; z-index:0;
+  }
+
+  /* --- wszystko poza falami leży nad tłem --- */
+  .content{ position:relative; z-index:1; }
+
+  /* =========================== HEADER =========================== */
+  .header{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    margin-bottom:9mm;
+  }
+  .brand{ display:flex; flex-direction:column; align-items:center; width:26mm; }
+  .brand img.logo{
+    width:22mm; height:22mm; object-fit:contain; display:block;
+  }
+  .brand .brand-name{
+    margin-top:1.5mm; font-size:8.5pt; font-weight:700; color:var(--accent);
+    letter-spacing:0.2px;
+  }
+
+  .doc-title-block{ flex:1; margin-left:8mm; }
+  .doc-title{
+    font-size:19pt; font-weight:800; color:var(--accent);
+    letter-spacing:0.2px; line-height:1.15;
+  }
+  .doc-subtitle{
+    font-size:9pt; color:var(--hint); margin-top:1.5mm;
+  }
+  .doc-dates{ margin-top:2.5mm; font-size:9pt; color:var(--text); line-height:1.6; }
+  .doc-dates b{ font-weight:600; }
+
+  /* ===================== SPRZEDAWCA / NABYWCA ===================== */
+  .parties{
+    display:flex; gap:6mm; margin-bottom:7mm;
+  }
+  .party-box{
+    flex:1;
+    border:0.9pt solid var(--grid);
+    border-radius:3.5mm;
+    padding:4mm 5mm 5mm 5mm;
+  }
+  .party-head{
+    display:flex; align-items:center; justify-content:space-between;
+    border-bottom:0.75pt solid var(--grid);
+    padding-bottom:2.2mm; margin-bottom:2.8mm;
+  }
+  .party-head .party-label{
+    font-size:8pt; font-weight:700; letter-spacing:0.6px; color:var(--text);
+  }
+  .party-icon{
+    width:5.6mm; height:5.6mm; border-radius:50%;
+    background:var(--icon-blue);
+    display:flex; align-items:center; justify-content:center;
+    flex-shrink:0;
+  }
+  .party-icon svg{ width:3.1mm; height:3.1mm; }
+  .party-name{ font-size:10pt; font-weight:700; color:var(--text); margin-bottom:1.2mm; }
+  .party-line{ font-size:8.7pt; color:var(--text); margin-bottom:1mm; line-height:1.4; }
+  .party-note{ font-size:7.3pt; color:#555555; line-height:1.4; margin-top:1.5mm; }
+
+  /* ============================ TABLE ============================ */
+  .table-title{
+    font-size:9.5pt; font-weight:700; color:var(--text); margin:5mm 0 2mm 0;
+  }
+  table.items{
+    width:100%; border-collapse:collapse; margin-bottom:2mm;
+    border:0.9pt solid var(--accent); border-radius:2mm; overflow:hidden;
+  }
+  table.items th{
+    background:var(--header-fill);
+    color:var(--accent);
+    font-size:7.6pt; font-weight:700; text-transform:none;
+    text-align:left; padding:2.6mm 2mm;
+    border-bottom:0.75pt solid var(--grid);
+    border-right:0.6pt solid var(--grid);
+  }
+  table.items th:last-child, table.items td:last-child{ border-right:none; }
+  table.items td{
+    font-size:8.6pt; color:var(--text);
+    padding:2.4mm 2mm;
+    border-bottom:0.6pt solid var(--grid);
+    border-right:0.6pt solid var(--grid);
+  }
+  table.items tbody tr:nth-child(even){ background:var(--row-alt); }
+  table.items tbody tr:last-child td{ border-bottom:none; }
+
+  .col-lp{ width:6%; }
+  .col-name{ width:38%; }
+  .col-unit{ width:9%; }
+  .col-qty{ width:9%; }
+  .col-price{ width:18%; text-align:right; }
+  .col-total{ width:20%; text-align:right; }
+  table.items td.num, table.items th.num{ text-align:right; }
+
+  /* --- pasek sumy, wyrównany do prawej kolumny tabeli --- */
+  .sum-row{
+    display:flex; justify-content:flex-end; align-items:stretch;
+    margin-bottom:6mm;
+  }
+  .sum-label-wrap{
+    display:flex; align-items:center;
+    padding-right:4mm;
+    font-size:9.5pt; font-weight:700; color:var(--green);
+    letter-spacing:0.3px;
+  }
+  .sum-amount{
+    background:var(--green-bg);
+    color:#FFFFFF;
+    font-size:12.5pt; font-weight:800;
+    padding:2.6mm 6mm;
+    border-radius:2mm;
+    min-width:28mm; text-align:center;
+  }
+
+  /* --- korekta: blok przyczyny + podsumowanie kwot --- */
+  .reason-block{ margin-bottom:5mm; }
+  .reason-title{ font-size:9pt; font-weight:700; color:var(--accent); margin-bottom:1.5mm; }
+  .reason-text{ font-size:8.8pt; color:var(--text); line-height:1.5; }
+
+  .delta-block{
+    display:flex; gap:6mm; margin-bottom:6mm; flex-wrap:wrap;
+  }
+  .delta-chip{
+    border:0.9pt solid var(--grid); border-radius:2.5mm;
+    padding:2.6mm 4mm; font-size:8.8pt; color:var(--text);
+  }
+  .delta-chip b{ display:block; font-size:10pt; margin-top:0.8mm; }
+  .delta-chip.positive b{ color:var(--green); }
+  .delta-chip.negative b{ color:#CC3B30; }
+
+  /* ======================= FOOTER (avoid split) ======================= */
+  .footer-wrap{
+    page-break-inside:avoid; break-inside:avoid;
+  }
+
+  .status-payment-row{
+    display:flex; justify-content:space-between; gap:6mm; margin-bottom:5mm;
+  }
+  .payment-info{ flex:1; }
+  .info-line{
+    display:flex; align-items:flex-start; gap:2.2mm; margin-bottom:2.5mm;
+  }
+  .info-icon{ width:4.4mm; height:4.4mm; flex-shrink:0; margin-top:0.4mm; }
+  .info-text{ font-size:8.8pt; color:var(--text); line-height:1.5; }
+  .info-text .label{ color:var(--hint); }
+  .legal-title{ font-size:8.3pt; font-weight:700; color:var(--text); margin-bottom:1mm; }
+  .legal-text{ font-size:7.6pt; color:var(--text); line-height:1.45; }
+
+  .status-box{
+    width:52mm; border:0.9pt solid var(--grid); border-radius:3mm;
+    padding:3.5mm 4mm; display:flex; align-items:center; gap:3mm;
+    height:fit-content;
+  }
+  .status-icon{
+    width:7mm; height:7mm; border-radius:50%; flex-shrink:0;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .status-box.status-paid .status-icon{ background:var(--green); }
+  .status-box.status-pending .status-icon{ background:var(--orange); }
+  .status-icon svg{ width:4mm; height:4mm; }
+  .status-label{ font-size:7.3pt; color:var(--hint); letter-spacing:0.5px; font-weight:700; }
+  .status-text{ font-size:10pt; font-weight:800; margin-top:0.6mm; }
+  .status-box.status-paid .status-text{ color:var(--green); }
+  .status-box.status-pending .status-text{ color:var(--orange); }
+
+  .signatures{
+    display:flex; gap:8mm; margin-bottom:9mm;
+  }
+  .sig-box{ flex:1; }
+  .sig-line{
+    border-bottom:0.9pt solid var(--grid); height:11mm;
+    display:flex; align-items:flex-end; padding-bottom:1.5mm;
+    font-size:8.6pt; font-weight:700; color:var(--text);
+  }
+  .sig-caption{ font-size:7.2pt; color:var(--hint); margin-top:1.5mm; }
+
+  .bottom{
+    position:relative; text-align:center; padding-top:2mm;
+  }
+  .bottom img.qr{
+    width:24mm; height:24mm; background:#FFFFFF; padding:1.5mm;
+    display:block; margin:0 auto 3mm auto;
+  }
+  .bottom .thanks{ font-size:9.5pt; font-weight:700; color:var(--text); }
+  .bottom .scan{ font-size:8pt; color:var(--hint); margin-top:0.8mm; }
+
+  /* --- compact-footer: dla 3-5 pozycji, żeby wszystko zmieściło się na 1 str. --- */
+  .compact-footer .status-payment-row{ margin-bottom:3.5mm; gap:4mm; }
+  .compact-footer .info-line{ margin-bottom:1.6mm; }
+  .compact-footer .status-box{ padding:2.6mm 3.2mm; }
+  .compact-footer .signatures{ margin-bottom:6mm; gap:6mm; }
+  .compact-footer .sig-line{ height:8mm; }
+  .compact-footer .bottom img.qr{ width:20mm; height:20mm; margin-bottom:2mm; }
+
+</style>
+</head>
+<body>
+<div class="page">
+
+  <svg class="waves-top" viewBox="0 0 400 200" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0,120 C80,60 160,180 240,100 C300,40 340,120 400,80" fill="none" stroke="#C7D3E8" stroke-width="1.2"/>
+    <path d="M20,150 C100,90 180,200 260,130 C320,70 360,150 400,110" fill="none" stroke="#DCE6F7" stroke-width="1.2"/>
+    <circle cx="330" cy="55" r="2.2" fill="#8FA5D8"/>
+    <circle cx="60" cy="70" r="1.6" fill="#8FA5D8"/>
+  </svg>
+
+  <svg class="waves-bottom" viewBox="0 0 600 160" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0,80 C80,20 160,140 260,70 C340,15 420,90 500,50 C540,30 570,55 600,40" fill="none" stroke="#C7D3E8" stroke-width="1.2"/>
+    <path d="M0,110 C90,55 170,160 270,100 C350,50 430,120 520,80 C560,60 585,80 600,70" fill="none" stroke="#DCE6F7" stroke-width="1.2"/>
+    <circle cx="40" cy="55" r="2" fill="#8FA5D8"/>
+    <circle cx="560" cy="100" r="2" fill="#8FA5D8"/>
+  </svg>
+
+  <div class="content">
+
+    <!-- ===================== HEADER ===================== -->
+    <div class="header">
+      <div class="brand">
+        {{LOGO_IMG_TAG}}
+        {{BRAND_NAME_HTML}}
+      </div>
+      <div class="doc-title-block">
+        <div class="doc-title">{{DOC_TITLE}}</div>
+        {{SUBTITLE_LINE_HTML}}
+        <div class="doc-dates">{{DOC_DATES_HTML}}</div>
+      </div>
+    </div>
+
+    <!-- ===================== SPRZEDAWCA / NABYWCA ===================== -->
+    <div class="parties">
+      <div class="party-box">
+        <div class="party-head">
+          <span class="party-label">SPRZEDAWCA</span>
+          <span class="party-icon">{{USER_ICON_SVG}}</span>
+        </div>
+        {{SELLER_BODY_HTML}}
+      </div>
+      <div class="party-box">
+        <div class="party-head">
+          <span class="party-label">NABYWCA</span>
+          <span class="party-icon">{{USER_ICON_SVG}}</span>
+        </div>
+        {{BUYER_BODY_HTML}}
+      </div>
+    </div>
+
+    <!-- ===================== TABELE POZYCJI ===================== -->
+    {{ITEMS_TABLES_HTML}}
+
+    <!-- ===================== KOREKTA: PRZYCZYNA + DELTA ===================== -->
+    {{CORRECTION_BLOCK_HTML}}
+
+    <!-- ===================== FOOTER (nie rozrywać między stronami) ===================== -->
+    <div class="footer-wrap {{FOOTER_COMPACT_CLASS}}">
+
+      <div class="status-payment-row">
+        <div class="payment-info">
+          {{PAYMENT_INFO_LINES_HTML}}
+          {{LEGAL_VAT_BLOCK_HTML}}
+        </div>
+        <div class="status-box {{STATUS_CLASS}}">
+          <span class="status-icon">{{STATUS_ICON_SVG}}</span>
+          <div>
+            <div class="status-label">STATUS</div>
+            <div class="status-text">{{STATUS_TEXT}}</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="signatures">
+        <div class="sig-box">
+          <div class="sig-line">{{SIGN_ISSUED_LABEL}}</div>
+          <div class="sig-caption">{{SIGN_ISSUED_CAPTION}}</div>
+        </div>
+        <div class="sig-box">
+          <div class="sig-line">{{SIGN_RECEIVED_LABEL}}</div>
+          <div class="sig-caption">{{SIGN_RECEIVED_CAPTION}}</div>
+        </div>
+      </div>
+
+      <div class="bottom">
+        {{QR_IMG_TAG}}
+        <div class="thanks">Dziękujemy za zaufanie!</div>
+        <div class="scan">Zeskanuj i pobierz FinArs</div>
+      </div>
+
+    </div>
+
+  </div>
+</div>
+</body>
+</html>

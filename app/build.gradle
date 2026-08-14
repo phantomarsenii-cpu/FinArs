@@ -81,6 +81,11 @@ dependencies {
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3"
     implementation "androidx.core:core-ktx:1.10.1"
     implementation "androidx.appcompat:appcompat:1.6.1"
+    // Update: нужны для перехода MineActivity -> MineFragment (единый MainActivity-хост
+    // с постоянным баннером/нав-баром) — Fragment.viewLifecycleOwner.lifecycleScope
+    // безопасно останавливает фоновые корутины при уничтожении view фрагмента.
+    implementation "androidx.fragment:fragment-ktx:1.6.2"
+    implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.7.0"
     implementation "androidx.activity:activity-ktx:1.7.2"
     implementation "com.google.android.material:material:1.9.0"
     implementation "androidx.constraintlayout:constraintlayout:2.1.4"
@@ -90,12 +95,23 @@ dependencies {
     implementation "androidx.room:room-ktx:2.5.0"
     implementation "org.apache.poi:poi-ooxml:5.2.3"
     implementation "androidx.multidex:multidex:2.0.1"
-    implementation "com.android.billingclient:billing-ktx:7.1.1"
+    // Update: прямой com.android.billingclient:billing-ktx убран — реальный биллинг
+    // теперь идёт через RevenueCat (см. SubscriptionService.kt), который тянет свой
+    // billing client сам; отдельная зависимость только создавала риск конфликта версий.
     implementation "com.google.android.gms:play-services-ads:23.6.0"
     implementation "com.google.android.ump:user-messaging-platform:3.1.0"
     implementation "androidx.biometric:biometric:1.1.0"
     implementation "androidx.work:work-runtime-ktx:2.9.0"
     implementation "com.tom-roush:pdfbox-android:2.0.27.0"
+
+    // RevenueCat: единый Pro-доступ (Monthly/Yearly) поверх Google Play Billing И
+    // Samsung IAP (Galaxy Store) — см. SubscriptionService.kt / StoreDetector.kt.
+    // "purchases" по умолчанию поддерживает Google Play; "purchases-store-galaxy"
+    // добавляет поддержку Samsung Galaxy Store (используется runtime-конфигурацией
+    // GalaxyConfiguration, выбирается автоматически в зависимости от того, откуда
+    // установлено приложение — см. StoreDetector.kt).
+    implementation "com.revenuecat.purchases:purchases:10.15.1"
+    implementation "com.revenuecat.purchases:purchases-store-galaxy:10.15.1"
 
     // Update 41: OCR чеков (ML Kit, работает на устройстве, без интернета).
     // Примечание: у Google ML Kit нет on-device модели для кириллицы, поэтому

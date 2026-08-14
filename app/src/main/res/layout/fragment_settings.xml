@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.example.fa_ksiegowy.AnimatedMeshBackgroundView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+    <ScrollView
+        android:layout_width="match_parent" android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:fillViewport="true">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:paddingTop="28dp"
+        android:paddingBottom="170dp">
+
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:text="@string/settings" android:textSize="18sp" android:textStyle="bold"
+            android:textColor="@color/text_primary" android:gravity="center" android:layout_marginBottom="20dp"/>
+
+        <!-- Podatek i limity -->
+        <LinearLayout android:id="@+id/btn_menu_tax" style="@style/SettingsRow">
+            <FrameLayout style="@style/SettingsRowIconBadge" android:background="@drawable/icon_badge_blue_bg">
+                <ImageView style="@style/SettingsRowIcon" android:src="@drawable/ic_settings_tax"/>
+            </FrameLayout>
+            <TextView style="@style/SettingsRowLabel" android:text="@string/settings_menu_tax"/>
+            <ImageView style="@style/SettingsRowChevron"/>
+        </LinearLayout>
+
+        <!-- Bezpieczenstwo -->
+        <LinearLayout android:id="@+id/btn_menu_security" style="@style/SettingsRow">
+            <FrameLayout style="@style/SettingsRowIconBadge" android:background="@drawable/icon_badge_purple_bg">
+                <ImageView style="@style/SettingsRowIcon" android:src="@drawable/ic_settings_security"/>
+            </FrameLayout>
+            <TextView style="@style/SettingsRowLabel" android:text="@string/settings_menu_security"/>
+            <ImageView style="@style/SettingsRowChevron"/>
+        </LinearLayout>
+
+        <!-- Kopia zapasowa (Pro) -->
+        <LinearLayout android:id="@+id/btn_menu_backup" style="@style/SettingsRow">
+            <FrameLayout style="@style/SettingsRowIconBadge" android:background="@drawable/icon_badge_blue_bg">
+                <ImageView style="@style/SettingsRowIcon" android:src="@drawable/ic_settings_backup"/>
+            </FrameLayout>
+            <TextView style="@style/SettingsRowLabel" android:text="@string/settings_menu_backup"/>
+            <ImageView style="@style/SettingsRowChevron"/>
+        </LinearLayout>
+
+        <!-- Generuj PIT (Pro) -->
+        <LinearLayout android:id="@+id/btn_menu_pit36" style="@style/SettingsRow">
+            <FrameLayout style="@style/SettingsRowIconBadge" android:background="@drawable/icon_badge_green_bg">
+                <ImageView style="@style/SettingsRowIcon" android:src="@drawable/ic_settings_pit"/>
+            </FrameLayout>
+            <TextView style="@style/SettingsRowLabel" android:text="@string/settings_menu_pit36"/>
+            <ImageView style="@style/SettingsRowChevron"/>
+        </LinearLayout>
+
+        <!-- Jezyk -->
+        <LinearLayout android:id="@+id/btn_menu_language" style="@style/SettingsRow">
+            <FrameLayout style="@style/SettingsRowIconBadge" android:background="@drawable/icon_badge_blue_bg">
+                <ImageView style="@style/SettingsRowIcon" android:src="@drawable/ic_settings_language"/>
+            </FrameLayout>
+            <TextView style="@style/SettingsRowLabel" android:text="@string/settings_menu_language"/>
+            <ImageView style="@style/SettingsRowChevron"/>
+        </LinearLayout>
+
+        <!-- Wersja Pro -->
+        <LinearLayout android:id="@+id/btn_menu_pro" style="@style/SettingsRow">
+            <FrameLayout style="@style/SettingsRowIconBadge" android:background="@drawable/icon_badge_orange_bg">
+                <ImageView style="@style/SettingsRowIcon" android:src="@drawable/ic_settings_pro"/>
+            </FrameLayout>
+            <TextView style="@style/SettingsRowLabel" android:text="@string/settings_menu_pro"/>
+            <ImageView style="@style/SettingsRowChevron"/>
+        </LinearLayout>
+
+        <!-- O aplikacji -->
+        <LinearLayout android:id="@+id/btn_menu_about" style="@style/SettingsRow">
+            <FrameLayout style="@style/SettingsRowIconBadge" android:background="@drawable/icon_badge_blue_bg">
+                <ImageView style="@style/SettingsRowIcon" android:src="@drawable/ic_info"/>
+            </FrameLayout>
+            <TextView style="@style/SettingsRowLabel" android:text="@string/about_app"/>
+            <ImageView style="@style/SettingsRowChevron"/>
+        </LinearLayout>
+
+        <!-- Polityka prywatnosci (wymagana do publikacji w Google Play) -->
+        <LinearLayout android:id="@+id/btn_menu_privacy" style="@style/SettingsRow">
+            <FrameLayout style="@style/SettingsRowIconBadge" android:background="@drawable/icon_badge_green_bg">
+                <ImageView style="@style/SettingsRowIcon" android:src="@drawable/ic_settings_privacy"/>
+            </FrameLayout>
+            <TextView style="@style/SettingsRowLabel" android:text="@string/settings_menu_privacy"/>
+            <ImageView style="@style/SettingsRowChevron"/>
+        </LinearLayout>
+
+        <!-- Warunki korzystania -->
+        <LinearLayout android:id="@+id/btn_menu_terms" style="@style/SettingsRow">
+            <FrameLayout style="@style/SettingsRowIconBadge" android:background="@drawable/icon_badge_blue_bg">
+                <ImageView style="@style/SettingsRowIcon" android:src="@drawable/ic_settings_terms"/>
+            </FrameLayout>
+            <TextView style="@style/SettingsRowLabel" android:text="@string/settings_menu_terms"/>
+            <ImageView style="@style/SettingsRowChevron"/>
+        </LinearLayout>
+
+    </LinearLayout>
+    </ScrollView>
+
+    <!-- Рекламный баннер и нижняя навигация теперь в MainActivity (общий,
+         фиксированный контейнер поверх этого фрагмента) — не здесь. -->
+
+</FrameLayout>

@@ -1,3 +1,28 @@
+#!/data/data/com.termux/files/usr/bin/bash
+# FinArs — debug_revenuecat_fulldialog.sh
+# Тост обрезал длинную ошибку RevenueCat (credentials issue...) — заменяем на
+# AlertDialog с полным текстом, чтобы увидеть underlyingErrorMessage целиком.
+# Меняет ТОЛЬКО SettingsProActivity.kt.
+set -euo pipefail
+
+echo "=== FinArs: полный текст ошибки RevenueCat (диалог вместо тоста) ==="
+
+REPO_ROOT="$HOME/FA_ksiegowy"
+cd "$REPO_ROOT"
+
+TS=$(date +%Y%m%d_%H%M%S)
+PKG_DIR="app/src/main/java/com/example/fa_ksiegowy"
+
+if [ ! -d "$PKG_DIR" ]; then
+    echo "ERROR: $PKG_DIR не найден. Запустите из корня репозитория."
+    exit 1
+fi
+
+echo "--- Backing up files ---"
+[ -f "$PKG_DIR/SettingsProActivity.kt" ] && cp "$PKG_DIR/SettingsProActivity.kt" "$PKG_DIR/SettingsProActivity.kt.bak_${TS}" || true
+
+echo "Writing $PKG_DIR/SettingsProActivity.kt"
+cat > "$PKG_DIR/SettingsProActivity.kt" << 'FINARS_EOF'
 package com.example.fa_ksiegowy
 
 import android.app.AlertDialog
@@ -188,12 +213,6 @@ class SettingsProActivity : BaseActivity() {
                         btnCta.isEnabled = true
                         if (success) {
                             refreshUi()
-                            if (errorMessage != null) {
-                                // Диагностика: покупка прошла, но isPro всё ещё false — показываем,
-                                // какие entitlements реально пришли от RevenueCat, чтобы свериться
-                                // с ENTITLEMENT_ID в SubscriptionService.kt.
-                                showFullError("Purchase succeeded — entitlement mismatch?", errorMessage)
-                            }
                         } else if (!userCancelled && errorMessage != null) {
                             // Не показываем диалог при обычной отмене пользователем — только при реальной ошибке.
                             showFullError("Purchase error", errorMessage)
@@ -220,3 +239,76 @@ class SettingsProActivity : BaseActivity() {
         BillingManager.restorePurchases(this) { refreshUi() }
     }
 }
+FINARS_EOF
+
+
+echo ""
+echo "--- Проверка баланса скобок ---"
+CHECK_FAILED=0
+for f in SettingsProActivity.kt; do
+    if python3 - "$PKG_DIR/$f" << 'PYCHECK_EOF'
+import sys
+path = sys.argv[1]
+s = open(path, encoding="utf-8").read()
+stack = []
+pairs = {')': '(', ']': '[', '}': '{'}
+in_string = False
+str_char = ''
+i = 0
+line = 1
+while i < len(s):
+    c = s[i]
+    if c == '\n':
+        line += 1
+    if in_string:
+        if c == '\\\\':
+            i += 2
+            continue
+        if c == str_char:
+            in_string = False
+        i += 1
+        continue
+    if c in ('"', "'"):
+        in_string = True
+        str_char = c
+        i += 1
+        continue
+    if c == '/' and i + 1 < len(s) and s[i + 1] == '/':
+        j = s.find('\n', i)
+        i = j if j != -1 else len(s)
+        continue
+    if c in '([{':
+        stack.append((c, line))
+    elif c in ')]}':
+        if not stack or pairs[c] != stack[-1][0]:
+            print(f"{path}: MISMATCH at line {line}")
+            sys.exit(1)
+        stack.pop()
+    i += 1
+if stack:
+    print(f"{path}: UNCLOSED {stack}")
+    sys.exit(1)
+print(f"{path}: OK")
+PYCHECK_EOF
+    then
+        :
+    else
+        CHECK_FAILED=1
+    fi
+done
+if [ "$CHECK_FAILED" -ne 0 ]; then
+    echo "ERROR: синтаксическая проблема — остановка без коммита."
+    exit 1
+fi
+
+echo ""
+echo "--- git add / commit / push ---"
+git add "$PKG_DIR/SettingsProActivity.kt"
+if git diff --cached --quiet; then
+    echo "Нет изменений для коммита."
+else
+    git commit -m "Show full RevenueCat error text in a dialog instead of a truncated toast"
+    git push origin main
+    echo ""
+    echo "Готово. Пуш выполнен — сборка APK запустится в GitHub Actions."
+fi

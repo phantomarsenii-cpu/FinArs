@@ -278,9 +278,27 @@ class AddEntryActivity : BaseActivity() {
         }
         // "Faktura" nie jest trzecim stanem tej samej operacji — to osobny przeplyw
         // (patrz AddInvoiceActivity), wiec od razu nawigujemy i zamykamy ten ekran.
+        // Update: ta sciezka pomijala sprawdzenie Pro (w przeciwienstwie do analogicznego
+        // przycisku na ekranie glownym) — kazdy mogl wystawiac faktury bez subskrypcji.
         findViewById<Button>(R.id.btn_type_invoice).setOnClickListener {
-            startActivity(Intent(this, AddInvoiceActivity::class.java))
-            finish()
+            if (BillingManager.isPro(this)) {
+                startActivity(Intent(this, AddInvoiceActivity::class.java))
+                finish()
+            } else {
+                androidx.appcompat.app.AlertDialog.Builder(this)
+                    .setTitle(getString(R.string.pro_feature_locked_title))
+                    .setMessage(getString(R.string.invoice_pro_locked_message))
+                    .setPositiveButton(getString(R.string.pro_feature_locked_go_settings)) { _, _ ->
+                        // Update: SettingsActivity удалён — теперь MainActivity (единый
+                        // фрагмент-хост), с флагом, какую вкладку открыть.
+                        startActivity(Intent(this, MainActivity::class.java).apply {
+                            flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+                            putExtra(MainActivity.EXTRA_OPEN_TAB, MainActivity.TAB_SETTINGS)
+                        })
+                    }
+                    .setNegativeButton(getString(R.string.dialog_close), null)
+                    .show()
+            }
         }
     }
 

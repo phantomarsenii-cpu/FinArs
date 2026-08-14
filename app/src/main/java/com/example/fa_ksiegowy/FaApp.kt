@@ -30,6 +30,10 @@ class FaApp : Application() {
 
     override fun onCreate() {
         super.onCreate()
+        // Инициализация RevenueCat: определяет магазин установки (Google Play / Galaxy
+        // Store / прочее) и конфигурирует Purchases SDK соответствующим ключом.
+        // См. SubscriptionService.kt и StoreDetector.kt.
+        SubscriptionService.init(this)
         LimitsNotificationWorker.createChannel(this)
         val defaultHandler = Thread.getDefaultUncaughtExceptionHandler()
         Thread.setDefaultUncaughtExceptionHandler { thread, throwable ->

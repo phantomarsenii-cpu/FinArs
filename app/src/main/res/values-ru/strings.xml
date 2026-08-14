@@ -180,7 +180,7 @@
     <string name="paywall_feature_1">Выставление счетов и фактур (PDF)</string>
     <string name="paywall_feature_2">Формирование декларации PIT-36</string>
     <string name="paywall_feature_3">Годовые и произвольные отчёты Excel</string>
-    <string name="paywall_feature_4">Резервная копия данных в облаке и локально</string>
+    <string name="paywall_feature_4">Резервная копия данных на устройстве</string>
     <string name="paywall_feature_5">Без рекламы</string>
     <string name="paywall_badge">САМЫЙ ПОПУЛЯРНЫЙ • ЭКОНОМИЯ 30%</string>
     <string name="paywall_plan_yearly_title">Годовой план</string>
@@ -193,9 +193,15 @@
     <string name="paywall_trial_monthly">7 дней бесплатно, потом %1$s / месяц</string>
     <string name="paywall_per_month_note">Всего 8,33 zł / месяц</string>
     <string name="paywall_cta">Попробовать 7 дней за 0 zł</string>
-    <string name="paywall_footer_1">Бесплатно первые 7 дней.\nОтмена в любой момент в Google Play.</string>
+    <string name="paywall_footer_1">Бесплатно первые 7 дней.\nОтмена в любой момент в магазине приложений.</string>
+    <string name="paywall_footer_1_store">Бесплатно первые 7 дней.\nОтмена в любой момент в %1$s.</string>
+    <string name="store_name_google_play">Google Play</string>
+    <string name="store_name_galaxy_store">Galaxy Store</string>
     <string name="paywall_data_safe">Ваши данные защищены</string>
     <string name="paywall_footer_2">Списание начнётся через 7 дней.\nВы можете отменить в любой момент.</string>
+    <string name="paywall_restore_purchases">Восстановить покупки</string>
+    <string name="paywall_restore_success">Покупки восстановлены — Pro активен</string>
+    <string name="paywall_restore_nothing_found">Активных покупок не найдено</string>
     <string name="enter_code_button">Есть код?</string>
     <string name="enter_code_title">Введите код</string>
     <string name="enter_code_hint">Код</string>
@@ -517,6 +523,9 @@
     <string name="invoice_pdf_table_brutto">Стоимость брутто</string>
     <string name="invoice_pdf_receipt_label">Фактура выставлена к фискальному чеку</string>
     <string name="invoice_pdf_paid_stamp">ОПЛАЧЕНО</string>
+    <string name="upload_logo_button">Загрузить логотип компании</string>
+    <string name="logo_uploaded_toast">Логотип сохранён</string>
+    <string name="logo_upload_error">Не удалось загрузить логотип</string>
     <string name="invoice_pdf_payment_date">Дата оплаты</string>
     <string name="invoice_pdf_footer">Документ создан в приложении FinArs. Не является официальной бухгалтерской или налоговой консультацией — в случае сомнений обратитесь к налоговому консультанту.</string>
     <string name="seller_bank_account">Номер счёта (необязательно)</string>
