@@ -36,7 +36,10 @@ class StockNotificationWorker(context: Context, params: WorkerParameters) : Coro
                         String.format(Locale.getDefault(), "%.1f", p.quantity),
                         p.unit
                     ),
-                    MagazinActivity::class.java
+                    // Update: MagazinActivity удалён — теперь MainActivity (единый хост),
+                    // с флагом, какую вкладку открыть при тапе по уведомлению.
+                    MainActivity::class.java,
+                    android.os.Bundle().apply { putString(MainActivity.EXTRA_OPEN_TAB, MainActivity.TAB_MAGAZIN) }
                 )
             }
             Result.success()
@@ -47,11 +50,12 @@ class StockNotificationWorker(context: Context, params: WorkerParameters) : Coro
 
     private fun notifyOnce(
         prefs: SharedPreferences, key: String, title: String, text: String,
-        targetActivity: Class<*>? = null
+        targetActivity: Class<*>? = null,
+        intentExtras: android.os.Bundle? = null
     ) {
         if (prefs.getBoolean("notif_shown_$key", false)) return
         prefs.edit().putBoolean("notif_shown_$key", true).apply()
-        LimitsNotificationWorker.showNotification(applicationContext, key.hashCode(), title, text, targetActivity)
+        LimitsNotificationWorker.showNotification(applicationContext, key.hashCode(), title, text, targetActivity, intentExtras)
     }
 
     companion object {

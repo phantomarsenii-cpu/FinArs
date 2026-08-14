@@ -194,7 +194,11 @@ class LimitsNotificationWorker(context: Context, params: WorkerParameters) : Cor
             }
         }
 
-        fun showNotification(context: Context, id: Int, title: String, text: String, targetActivity: Class<*>? = null) {
+        fun showNotification(
+            context: Context, id: Int, title: String, text: String,
+            targetActivity: Class<*>? = null,
+            intentExtras: android.os.Bundle? = null
+        ) {
             // Логируем в историю уведомлений (экран открывается через колокольчик на
             // Start) независимо от того, было ли реально показано системное
             // уведомление — так пользователь не теряет запись, даже если разрешение
@@ -216,6 +220,7 @@ class LimitsNotificationWorker(context: Context, params: WorkerParameters) : Cor
             if (targetActivity != null) {
                 val openIntent = Intent(context, targetActivity).apply {
                     flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+                    if (intentExtras != null) putExtras(intentExtras)
                 }
                 val pendingIntent = PendingIntent.getActivity(
                     context, id, openIntent,

@@ -3,21 +3,24 @@ package com.example.fa_ksiegowy
 import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.journeyapps.barcodescanner.ScanContract
 import com.journeyapps.barcodescanner.ScanOptions
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 /** Склад: список товаров, добавление вручную или сканированием штрихкода, удаление. */
-class MagazinActivity : BaseActivity() {
+class MagazinFragment : Fragment() {
     private lateinit var adapter: ProductAdapter
 
     private val scanLauncher = registerForActivityResult(ScanContract()) { result ->
@@ -25,26 +28,32 @@ class MagazinActivity : BaseActivity() {
         if (barcode != null) handleScannedBarcode(barcode)
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_magazin)
-        BottomNavBar.attach(this, BottomNavBar.Tab.MAGAZIN)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        return inflater.inflate(R.layout.fragment_magazin, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         adapter = ProductAdapter(
             onClick = { p ->
-                startActivity(Intent(this, AddEditProductActivity::class.java).putExtra("productId", p.id))
+                startActivity(Intent(requireContext(), AddEditProductActivity::class.java).putExtra("productId", p.id))
             },
             onLongClick = { p -> confirmDelete(p); true }
         )
-        findViewById<RecyclerView>(R.id.rv_products).apply {
-            layoutManager = LinearLayoutManager(this@MagazinActivity)
-            adapter = this@MagazinActivity.adapter
+        requireView().findViewById<RecyclerView>(R.id.rv_products).apply {
+            layoutManager = LinearLayoutManager(requireContext())
+            adapter = this@MagazinFragment.adapter
         }
 
-        findViewById<Button>(R.id.btn_add_product_manual).setOnClickListener {
-            startActivity(Intent(this, AddEditProductActivity::class.java))
+        requireView().findViewById<Button>(R.id.btn_add_product_manual).setOnClickListener {
+            startActivity(Intent(requireContext(), AddEditProductActivity::class.java))
         }
-        findViewById<Button>(R.id.btn_scan_barcode).setOnClickListener {
+        requireView().findViewById<Button>(R.id.btn_scan_barcode).setOnClickListener {
             scanLauncher.launch(
                 ScanOptions()
                     .setDesiredBarcodeFormats(ScanOptions.ALL_CODE_TYPES)
@@ -53,8 +62,8 @@ class MagazinActivity : BaseActivity() {
                     .setOrientationLocked(true)
             )
         }
-        findViewById<Button>(R.id.btn_inventory).setOnClickListener {
-            startActivity(Intent(this, InventoryActivity::class.java))
+        requireView().findViewById<Button>(R.id.btn_inventory).setOnClickListener {
+            startActivity(Intent(requireContext(), InventoryActivity::class.java))
         }
     }
 
@@ -64,12 +73,12 @@ class MagazinActivity : BaseActivity() {
     }
 
     private fun loadProducts() {
-        CoroutineScope(Dispatchers.IO).launch {
-            val all = AppDatabase.getInstance(applicationContext).productDao().getAll()
+        viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
+            val all = AppDatabase.getInstance(requireContext().applicationContext).productDao().getAll()
             withContext(Dispatchers.Main) {
                 adapter.submitList(all)
                 val low = all.filter { it.isLowStock }
-                val banner = findViewById<TextView>(R.id.tv_low_stock_banner)
+                val banner = requireView().findViewById<TextView>(R.id.tv_low_stock_banner)
                 if (low.isNotEmpty()) {
                     banner.text = getString(R.string.low_stock_banner, low.size)
                     banner.visibility = View.VISIBLE
@@ -84,20 +93,20 @@ class MagazinActivity : BaseActivity() {
      *  иначе пробуем найти название в Open Food Facts, а если не нашли — открываем ручной ввод
      *  с уже подставленным штрихкодом. */
     private fun handleScannedBarcode(barcode: String) {
-        CoroutineScope(Dispatchers.IO).launch {
-            val existing = AppDatabase.getInstance(applicationContext).productDao().getByBarcode(barcode)
+        viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
+            val existing = AppDatabase.getInstance(requireContext().applicationContext).productDao().getByBarcode(barcode)
             if (existing != null) {
                 withContext(Dispatchers.Main) {
-                    startActivity(Intent(this@MagazinActivity, AddEditProductActivity::class.java).putExtra("productId", existing.id))
+                    startActivity(Intent(requireContext(), AddEditProductActivity::class.java).putExtra("productId", existing.id))
                 }
                 return@launch
             }
             withContext(Dispatchers.Main) {
-                Toast.makeText(this@MagazinActivity, getString(R.string.looking_up_product), Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), getString(R.string.looking_up_product), Toast.LENGTH_SHORT).show()
             }
             val name = ProductLookupService.lookupName(barcode)
             withContext(Dispatchers.Main) {
-                val i = Intent(this@MagazinActivity, AddEditProductActivity::class.java)
+                val i = Intent(requireContext(), AddEditProductActivity::class.java)
                 i.putExtra("barcode", barcode)
                 if (name != null) i.putExtra("prefillName", name)
                 startActivity(i)
@@ -106,12 +115,12 @@ class MagazinActivity : BaseActivity() {
     }
 
     private fun confirmDelete(p: Product) {
-        AlertDialog.Builder(this)
+        AlertDialog.Builder(requireContext())
             .setTitle(getString(R.string.delete_confirm_title))
             .setMessage(getString(R.string.delete_confirm_message))
             .setPositiveButton(getString(R.string.delete_confirm_yes)) { _, _ ->
-                CoroutineScope(Dispatchers.IO).launch {
-                    AppDatabase.getInstance(applicationContext).productDao().delete(p)
+                viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
+                    AppDatabase.getInstance(requireContext().applicationContext).productDao().delete(p)
                     withContext(Dispatchers.Main) { loadProducts() }
                 }
             }
