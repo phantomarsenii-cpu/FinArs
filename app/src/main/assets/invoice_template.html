@@ -2,6 +2,13 @@
 <html lang="pl">
 <head>
 <meta charset="UTF-8">
+<!-- Ważne: bez tego WebView sam "zgaduje" szerokość viewportu przy renderze off-screen
+     (poza ekranem, przez ręczne measure/layout) i potrafi przeskalować treść niezgodnie
+     z rzeczywistą szerokością Bitmapy, dając efekt "przybliżenia"/obciętej strony w PDF.
+     794 poniżej = 210mm w CSS-px (210*96/25.4), MUSI być zgodne z RENDER_WIDTH_PX
+     w InvoiceHtmlPdfGenerator.kt — inaczej .page (width:210mm) nie wypełni viewportu
+     w 100% i strona wyjdzie z pustym marginesem po prawej. -->
+<meta name="viewport" content="width=794, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>{{DOC_TITLE}}</title>
 <style>
   /* =========================================================================

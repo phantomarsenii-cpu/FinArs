@@ -388,7 +388,10 @@ object InvoiceHtmlPdfGenerator {
 
     // Szerokość renderu w px (arbitralna, dobrana pod ostrość); wysokość strony A4 liczona
     // z tej samej proporcji 210:297, żeby cięcie na strony odpowiadało realnym proporcjom A4.
-    private const val RENDER_WIDTH_PX = 1000
+    // 794px = 210mm w CSS-px (210 * 96/25.4) — MUSI być zgodne z <meta name="viewport"
+    // content="width=794..."> w invoice_template.html, inaczej .page nie wypełni
+    // viewportu 1:1 i strona wyjdzie przeskalowana/obcięta.
+    private const val RENDER_WIDTH_PX = 794
     private const val A4_RATIO = 297f / 210f
     private val PAGE_HEIGHT_PX = (RENDER_WIDTH_PX * A4_RATIO).toInt()
     private const val PDF_PAGE_WIDTH_PT = 595
@@ -425,9 +428,13 @@ object InvoiceHtmlPdfGenerator {
         val webView = WebView(activity)
         webView.setLayerType(View.LAYER_TYPE_SOFTWARE, null)
         webView.settings.javaScriptEnabled = true // potrzebne tylko do pomiaru wysokości/pozycji (własny HTML, bez zewnętrznych treści)
-        webView.settings.useWideViewPort = false
-        webView.settings.loadWithOverviewMode = false
+        // Krytyczne dla poprawnego skalowania: useWideViewPort=false IGNOROWAŁO nasz
+        // <meta name="viewport">, a WebView sam zgadywał szerokość na podstawie gęstości
+        // ekranu — stąd wcześniejszy błąd "przybliżonej"/obciętej strony w PDF.
+        webView.settings.useWideViewPort = true
+        webView.settings.loadWithOverviewMode = true
         webView.settings.textZoom = 100
+        webView.setInitialScale(0) // 0 = auto, niech przeglądarka sama dopasuje wg meta viewport
 
         // Dołączamy off-screen (daleko poza ekranem), żeby user nic nie widział, ale WebView
         // miał prawdziwe okno/surface do renderowania.
