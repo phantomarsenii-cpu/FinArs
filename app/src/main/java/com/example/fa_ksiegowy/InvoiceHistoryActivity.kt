@@ -336,7 +336,7 @@ class InvoiceHistoryActivity : BaseActivity() {
                     val regenerated = try {
                         val pdfBytes = withContext(Dispatchers.Main) {
                             InvoiceHtmlPdfGenerator.generate(
-                                context = applicationContext,
+                                context = this@InvoiceHistoryActivity,
                                 seller = InvoiceSellerDataStore.load(applicationContext),
                                 invoiceNumber = paidInvoice.invoiceNumber,
                                 issueDateMillis = paidInvoice.issueDateMillis,

@@ -563,7 +563,7 @@ class AddInvoiceActivity : BaseActivity() {
                 // a dopiero potem zapisujemy plik na IO (jak dotychczas).
                 val pdfBytes = withContext(Dispatchers.Main) {
                     InvoiceHtmlPdfGenerator.generate(
-                        context = applicationContext,
+                        context = this@AddInvoiceActivity,
                         seller = seller,
                         invoiceNumber = invoiceNumber,
                         issueDateMillis = issueDateMillis,

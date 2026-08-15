@@ -108,7 +108,7 @@ class AddInvoiceCorrectionActivity : BaseActivity() {
 
             val pdfBytes = withContext(Dispatchers.Main) {
                 InvoiceHtmlPdfGenerator.generateCorrection(
-                    context = applicationContext,
+                    context = this@AddInvoiceCorrectionActivity,
                     seller = InvoiceSellerDataStore.load(applicationContext),
                     correctionNumber = correctionNumber,
                     issueDateMillis = issueDateMillis,

@@ -1,5 +1,6 @@
 package com.example.fa_ksiegowy
 
+import android.app.Activity
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -8,11 +9,15 @@ import android.graphics.Color
 import android.graphics.RectF
 import android.graphics.pdf.PdfDocument
 import android.view.View
+import android.view.ViewGroup
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import android.widget.FrameLayout
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.withTimeout
 import org.json.JSONArray
 import java.io.ByteArrayOutputStream
 import java.text.SimpleDateFormat
@@ -401,82 +406,123 @@ object InvoiceHtmlPdfGenerator {
      *  .footer-wrap (to zastępuje CSS page-break-inside:avoid, którego przeglądarka i tak
      *  nie stosuje poza prawdziwym silnikiem druku).
      *
+     *  WAŻNE: WebView MUSI być rzeczywiście dołączony do okna (attached), inaczej
+     *  onPageFinished/evaluateJavascript/draw(canvas) potrafią nigdy się nie zakończyć albo
+     *  dać pustą bitmapę — dlatego wymagamy tu kontekstu Activity (nie applicationContext)
+     *  i na czas renderu dokładamy WebView do decorView poza widocznym obszarem ekranu.
+     *  Cały proces owinięty jest w withTimeout — jeśli coś jednak "zawiśnie", dostaniemy
+     *  jasny wyjątek zamiast zamrożonego UI na czas nieokreślony.
+     *
      *  MUSI być wywołane z wątku głównego (WebView) — dlatego przełączamy dispatcher tutaj. */
     private suspend fun renderHtmlToPdf(context: Context, html: String): ByteArray = withContext(Dispatchers.Main) {
-        val webView = WebView(context.applicationContext)
-        // Ważne: bez software layer Bitmap z view.draw(canvas) często wychodzi pusty/biały,
-        // bo WebView domyślnie renderuje się przez warstwę sprzętową powiązaną z oknem,
-        // którego tu nie mamy (renderujemy off-screen).
+        val activity = resolveActivity(context)
+            ?: throw IllegalStateException(
+                "InvoiceHtmlPdfGenerator wymaga kontekstu Activity (nie applicationContext) — " +
+                "WebView musi być dołączony do okna, żeby renderowanie działało niezawodnie."
+            )
+        val decor = activity.window.decorView as ViewGroup
+
+        val webView = WebView(activity)
         webView.setLayerType(View.LAYER_TYPE_SOFTWARE, null)
         webView.settings.javaScriptEnabled = true // potrzebne tylko do pomiaru wysokości/pozycji (własny HTML, bez zewnętrznych treści)
         webView.settings.useWideViewPort = false
         webView.settings.loadWithOverviewMode = false
         webView.settings.textZoom = 100
 
-        val fullBitmap: Bitmap = suspendCancellableCoroutine { cont ->
-            webView.webViewClient = object : WebViewClient() {
-                override fun onPageFinished(view: WebView, url: String) {
-                    // mały odstęp — daje WebView domalować base64-owe obrazy (logo/QR) i fonty
-                    // po zdarzeniu onPageFinished, zanim zrobimy zrzut do Bitmapy
-                    view.postDelayed({
-                        view.evaluateJavascript("document.body.scrollHeight") { heightStr ->
-                            val cssHeight = heightStr?.toFloatOrNull()?.toInt() ?: RENDER_WIDTH_PX
-                            val totalHeightPx = maxOf(cssHeight, 1)
-                            view.measure(
-                                View.MeasureSpec.makeMeasureSpec(RENDER_WIDTH_PX, View.MeasureSpec.EXACTLY),
-                                View.MeasureSpec.makeMeasureSpec(totalHeightPx, View.MeasureSpec.EXACTLY)
-                            )
-                            view.layout(0, 0, RENDER_WIDTH_PX, totalHeightPx)
-                            val bmp = Bitmap.createBitmap(RENDER_WIDTH_PX, totalHeightPx, Bitmap.Config.ARGB_8888)
-                            val canvas = Canvas(bmp)
-                            canvas.drawColor(Color.WHITE)
-                            view.draw(canvas)
-                            if (cont.isActive) cont.resume(bmp)
+        // Dołączamy off-screen (daleko poza ekranem), żeby user nic nie widział, ale WebView
+        // miał prawdziwe okno/surface do renderowania.
+        val params = FrameLayout.LayoutParams(RENDER_WIDTH_PX, ViewGroup.LayoutParams.WRAP_CONTENT)
+        webView.layoutParams = params
+        webView.translationX = -100000f
+        decor.addView(webView, params)
+
+        try {
+            val fullBitmap: Bitmap = withTimeout(20_000) {
+                suspendCancellableCoroutine { cont ->
+                    webView.webViewClient = object : WebViewClient() {
+                        override fun onPageFinished(view: WebView, url: String) {
+                            // mały odstęp — daje WebView domalować base64-owe obrazy (logo/QR) i fonty
+                            // po zdarzeniu onPageFinished, zanim zrobimy zrzut do Bitmapy
+                            view.postDelayed({
+                                if (!cont.isActive) return@postDelayed
+                                view.evaluateJavascript("document.body.scrollHeight") { heightStr ->
+                                    if (!cont.isActive) return@evaluateJavascript
+                                    val cssHeight = heightStr?.toFloatOrNull()?.toInt() ?: RENDER_WIDTH_PX
+                                    val totalHeightPx = maxOf(cssHeight, 1)
+                                    view.measure(
+                                        View.MeasureSpec.makeMeasureSpec(RENDER_WIDTH_PX, View.MeasureSpec.EXACTLY),
+                                        View.MeasureSpec.makeMeasureSpec(totalHeightPx, View.MeasureSpec.EXACTLY)
+                                    )
+                                    view.layout(0, 0, RENDER_WIDTH_PX, totalHeightPx)
+                                    val bmp = Bitmap.createBitmap(RENDER_WIDTH_PX, totalHeightPx, Bitmap.Config.ARGB_8888)
+                                    val canvas = Canvas(bmp)
+                                    canvas.drawColor(Color.WHITE)
+                                    view.draw(canvas)
+                                    if (cont.isActive) cont.resume(bmp)
+                                }
+                            }, 150)
                         }
-                    }, 150)
+                    }
+                    webView.loadDataWithBaseURL(null, html, "text/html", "UTF-8", null)
                 }
             }
-            webView.loadDataWithBaseURL(null, html, "text/html", "UTF-8", null)
-        }
 
-        // Zakresy [top, bottom] w px bitmapy, których NIE wolno przecinać cięciem strony
-        val avoidRanges = getAvoidBreakRanges(webView)
-        webView.destroy()
-
-        val document = PdfDocument()
-        var top = 0
-        var pageNumber = 1
-        val totalHeight = fullBitmap.height
-        while (top < totalHeight) {
-            var bottom = minOf(top + PAGE_HEIGHT_PX, totalHeight)
-            for (range in avoidRanges) {
-                if (top < range.first && bottom in (range.first + 1) until range.second) {
-                    bottom = range.first
-                    break
-                }
+            // Zakresy [top, bottom] w px bitmapy, których NIE wolno przecinać cięciem strony
+            val avoidRanges = try {
+                withTimeout(5_000) { getAvoidBreakRanges(webView) }
+            } catch (e: TimeoutCancellationException) {
+                emptyList()
             }
-            if (bottom <= top) bottom = minOf(top + PAGE_HEIGHT_PX, totalHeight)
 
-            val sliceHeight = bottom - top
-            val slice = Bitmap.createBitmap(fullBitmap, 0, top, RENDER_WIDTH_PX, sliceHeight)
+            val document = PdfDocument()
+            var top = 0
+            var pageNumber = 1
+            val totalHeight = fullBitmap.height
+            while (top < totalHeight) {
+                var bottom = minOf(top + PAGE_HEIGHT_PX, totalHeight)
+                for (range in avoidRanges) {
+                    if (top < range.first && bottom in (range.first + 1) until range.second) {
+                        bottom = range.first
+                        break
+                    }
+                }
+                if (bottom <= top) bottom = minOf(top + PAGE_HEIGHT_PX, totalHeight)
 
-            val page = document.startPage(
-                PdfDocument.PageInfo.Builder(PDF_PAGE_WIDTH_PT, PDF_PAGE_HEIGHT_PT, pageNumber).create()
-            )
-            val destHeight = sliceHeight.toFloat() * PDF_PAGE_WIDTH_PT / RENDER_WIDTH_PX
-            page.canvas.drawBitmap(slice, null, RectF(0f, 0f, PDF_PAGE_WIDTH_PT.toFloat(), destHeight), null)
-            document.finishPage(page)
-            slice.recycle()
+                val sliceHeight = bottom - top
+                val slice = Bitmap.createBitmap(fullBitmap, 0, top, RENDER_WIDTH_PX, sliceHeight)
 
-            top = bottom
-            pageNumber++
+                val page = document.startPage(
+                    PdfDocument.PageInfo.Builder(PDF_PAGE_WIDTH_PT, PDF_PAGE_HEIGHT_PT, pageNumber).create()
+                )
+                val destHeight = sliceHeight.toFloat() * PDF_PAGE_WIDTH_PT / RENDER_WIDTH_PX
+                page.canvas.drawBitmap(slice, null, RectF(0f, 0f, PDF_PAGE_WIDTH_PT.toFloat(), destHeight), null)
+                document.finishPage(page)
+                slice.recycle()
+
+                top = bottom
+                pageNumber++
+            }
+
+            val out = ByteArrayOutputStream()
+            document.writeTo(out)
+            document.close()
+            fullBitmap.recycle()
+            out.toByteArray()
+        } finally {
+            decor.removeView(webView)
+            webView.destroy()
         }
+    }
 
-        val out = ByteArrayOutputStream()
-        document.writeTo(out)
-        document.close()
-        fullBitmap.recycle()
-        out.toByteArray()
+    /** Context przekazany przez wywołującego bywa Activity bezpośrednio albo ContextWrapper
+     *  wokół niej — rozwijamy warstwy, żeby dostać się do prawdziwej Activity (i jej okna). */
+    private fun resolveActivity(context: Context): Activity? {
+        var c = context
+        while (c is android.content.ContextWrapper) {
+            if (c is Activity) return c
+            c = c.baseContext
+        }
+        return c as? Activity
     }
 
     /** Zwraca listę [top, bottom] (w px bitmapy) dla każdego elementu .footer-wrap —
