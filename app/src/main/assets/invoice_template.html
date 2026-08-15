@@ -13,26 +13,27 @@
 <style>
   /* =========================================================================
      FinArs — uniwersalny szablon PDF (FAKTURA + FAKTURA KORYGUJĄCA)
-     Paleta zgodna z app/src/main/res/values/colors.xml:
-       accent_blue_dark #1230A8 (accent), #E9F2FE (header fill),
-       #C7D3E8 (grid/border), #6B7094 (hint), #12162E (text), zielony #1B7F3C
+     Paleta zmierzona bezpośrednio z dostarczonej makiety (piksel po pikselu):
+       #0B2A52 (granat — tytuł/logo/ikony), #1A1A1A (czarne/neutralne obramowania
+       tabeli i kart), #12541C (zielony — suma/status), #6B7094 (hint).
+       Tabela BEZ kolorowego wypełnienia nagłówka — biała, jak reszta wiersza.
      Strona A4, białe tło (druk), bez ciemnych wypełnień w nagłówku/stopce.
      ========================================================================= */
 
   @page { size: A4; margin: 0; }
 
   :root{
-    --accent:#1230A8;
+    --accent:#0B2A52;
     --accent-light:#29B6F6;
-    --text:#12162E;
+    --text:#0B1E3E;
     --hint:#6B7094;
-    --grid:#C7D3E8;
-    --header-fill:#E9F2FE;
-    --row-alt:#F6F9FE;
-    --green:#1B7F3C;
-    --green-bg:#1B7F3C;
+    --grid:#1A1A1A;
+    --header-fill:#FFFFFF;
+    --row-alt:#FFFFFF;
+    --green:#12541C;
+    --green-bg:#12541C;
     --orange:#CC6A00;
-    --icon-blue:#1230A8;
+    --icon-blue:#0B2A52;
   }
 
   *{ box-sizing:border-box; margin:0; padding:0; }
@@ -55,14 +56,18 @@
     background:#FFFFFF;
   }
 
-  /* --- fale tła w nagłówku (SVG, jasne, nie przeszkadzają w druku) --- */
+  /* --- fale tła w nagłówku i stopce (SVG, cienkie, neutralne, nie przeszkadzają w druku) --- */
   .waves-top{
     position:absolute; top:0; right:0; width:120mm; height:55mm;
-    opacity:0.55; pointer-events:none; z-index:0;
+    opacity:0.4; pointer-events:none; z-index:0;
   }
-  .waves-bottom{
-    position:absolute; bottom:0; left:0; width:100%; height:40mm;
-    opacity:0.5; pointer-events:none; z-index:0;
+  .waves-bottom-left{
+    position:absolute; bottom:0; left:0; width:92mm; height:38mm;
+    opacity:0.4; pointer-events:none; z-index:0;
+  }
+  .waves-bottom-right{
+    position:absolute; bottom:0; right:0; width:92mm; height:38mm;
+    opacity:0.4; pointer-events:none; z-index:0;
   }
 
   /* --- wszystko poza falami leży nad tłem --- */
@@ -130,14 +135,14 @@
   }
   table.items{
     width:100%; border-collapse:collapse; margin-bottom:2mm;
-    border:0.9pt solid var(--accent); border-radius:2mm; overflow:hidden;
+    border:0.9pt solid var(--grid); border-radius:2mm; overflow:hidden;
   }
   table.items th{
     background:var(--header-fill);
-    color:var(--accent);
+    color:var(--text);
     font-size:7.6pt; font-weight:700; text-transform:none;
     text-align:left; padding:2.6mm 2mm;
-    border-bottom:0.75pt solid var(--grid);
+    border-bottom:0.9pt solid var(--grid);
     border-right:0.6pt solid var(--grid);
   }
   table.items th:last-child, table.items td:last-child{ border-right:none; }
@@ -160,7 +165,7 @@
 
   /* --- tabela + pasek sumy jako JEDEN spójny blok z ramką (jak na makiecie) --- */
   .table-with-total{
-    border:0.9pt solid var(--accent); border-radius:2mm; overflow:hidden; margin-bottom:6mm;
+    border:0.9pt solid var(--grid); border-radius:2mm; overflow:hidden; margin-bottom:6mm;
   }
   .table-with-total table.items{ border:none; border-radius:0; margin-bottom:0; }
   .sum-row{
@@ -250,7 +255,8 @@
     display:block; margin:0 auto 3mm auto;
   }
   .bottom .thanks{ font-size:9.5pt; font-weight:700; color:var(--text); }
-  .bottom .scan{ font-size:8pt; color:var(--hint); margin-top:0.8mm; }
+  .bottom .scan{ font-size:8pt; color:var(--hint); margin-top:0.8mm; display:flex; align-items:center; justify-content:center; gap:2.5mm; }
+  .scan-dash{ display:inline-block; width:6mm; height:0.6pt; background:var(--hint); }
 
   /* --- compact-footer: dla 3-5 pozycji, żeby wszystko zmieściło się na 1 str. --- */
   .compact-footer .status-payment-row{ margin-bottom:3.5mm; gap:4mm; }
@@ -266,17 +272,30 @@
 <div class="page">
 
   <svg class="waves-top" viewBox="0 0 400 200" xmlns="http://www.w3.org/2000/svg">
-    <path d="M0,120 C80,60 160,180 240,100 C300,40 340,120 400,80" fill="none" stroke="#C7D3E8" stroke-width="1.2"/>
-    <path d="M20,150 C100,90 180,200 260,130 C320,70 360,150 400,110" fill="none" stroke="#DCE6F7" stroke-width="1.2"/>
-    <circle cx="330" cy="55" r="2.2" fill="#8FA5D8"/>
-    <circle cx="60" cy="70" r="1.6" fill="#8FA5D8"/>
+    <path d="M40,150 C120,90 180,190 240,120 C290,65 330,130 400,90" fill="none" stroke="#1A1A1A" stroke-width="0.9"/>
+    <path d="M60,165 C140,105 195,205 255,135 C300,82 340,145 400,108" fill="none" stroke="#1A1A1A" stroke-width="0.9"/>
+    <path d="M80,178 C155,120 210,215 268,150 C310,98 350,158 400,124" fill="none" stroke="#1A1A1A" stroke-width="0.8"/>
+    <path d="M100,190 C170,135 222,225 278,163 C318,113 356,170 400,138" fill="none" stroke="#1A1A1A" stroke-width="0.7"/>
+    <circle cx="345" cy="70" r="2.1" fill="#1A1A1A"/>
+    <circle cx="95" cy="140" r="1.5" fill="#1A1A1A"/>
   </svg>
 
-  <svg class="waves-bottom" viewBox="0 0 600 160" xmlns="http://www.w3.org/2000/svg">
-    <path d="M0,80 C80,20 160,140 260,70 C340,15 420,90 500,50 C540,30 570,55 600,40" fill="none" stroke="#C7D3E8" stroke-width="1.2"/>
-    <path d="M0,110 C90,55 170,160 270,100 C350,50 430,120 520,80 C560,60 585,80 600,70" fill="none" stroke="#DCE6F7" stroke-width="1.2"/>
-    <circle cx="40" cy="55" r="2" fill="#8FA5D8"/>
-    <circle cx="560" cy="100" r="2" fill="#8FA5D8"/>
+  <svg class="waves-bottom-left" viewBox="0 0 400 160" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0,60 C60,15 110,105 170,65 C215,35 255,75 320,50" fill="none" stroke="#1A1A1A" stroke-width="0.9"/>
+    <path d="M0,75 C65,32 118,120 178,80 C222,50 262,90 328,64" fill="none" stroke="#1A1A1A" stroke-width="0.9"/>
+    <path d="M0,90 C68,50 124,133 184,95 C228,66 267,104 335,78" fill="none" stroke="#1A1A1A" stroke-width="0.8"/>
+    <path d="M0,105 C70,68 128,145 190,110 C233,82 271,118 340,92" fill="none" stroke="#1A1A1A" stroke-width="0.7"/>
+    <path d="M0,120 C72,86 132,157 196,125 C238,98 275,132 344,106" fill="none" stroke="#1A1A1A" stroke-width="0.6"/>
+    <circle cx="30" cy="45" r="2" fill="#1A1A1A"/>
+  </svg>
+
+  <svg class="waves-bottom-right" viewBox="0 0 400 160" xmlns="http://www.w3.org/2000/svg">
+    <path d="M400,60 C340,15 290,105 230,65 C185,35 145,75 80,50" fill="none" stroke="#1A1A1A" stroke-width="0.9"/>
+    <path d="M400,75 C335,32 282,120 222,80 C178,50 138,90 72,64" fill="none" stroke="#1A1A1A" stroke-width="0.9"/>
+    <path d="M400,90 C332,50 276,133 216,95 C172,66 133,104 65,78" fill="none" stroke="#1A1A1A" stroke-width="0.8"/>
+    <path d="M400,105 C330,68 272,145 210,110 C167,82 129,118 60,92" fill="none" stroke="#1A1A1A" stroke-width="0.7"/>
+    <path d="M400,120 C328,86 268,157 204,125 C162,98 125,132 56,106" fill="none" stroke="#1A1A1A" stroke-width="0.6"/>
+    <circle cx="370" cy="45" r="2" fill="#1A1A1A"/>
   </svg>
 
   <div class="content">
@@ -349,7 +368,7 @@
       <div class="bottom">
         {{QR_IMG_TAG}}
         <div class="thanks">Dziękujemy za zaufanie!</div>
-        <div class="scan">Zeskanuj i pobierz FinArs</div>
+        <div class="scan"><span class="scan-dash"></span>Zeskanuj i pobierz FinArs<span class="scan-dash"></span></div>
       </div>
 
     </div>
