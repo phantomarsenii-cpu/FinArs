@@ -3,30 +3,30 @@ package com.example.fa_ksiegowy
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.os.CancellationSignal
-import android.os.ParcelFileDescriptor
-import android.print.PageRange
-import android.print.PrintAttributes
-import android.print.PrintDocumentAdapter
-import android.print.PrintDocumentInfo
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.RectF
+import android.graphics.pdf.PdfDocument
+import android.view.View
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
+import org.json.JSONArray
 import java.io.ByteArrayOutputStream
-import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 import kotlin.coroutines.resume
-import kotlin.coroutines.resumeWithException
 
 /**
  * Generuje PDF fatur/korekt na podstawie assets/invoice_template.html (pixel-perfect
- * wzór dostarczony przez użytkownika), renderowany przez ukryty WebView i zapisywany
- * do PDF przez natywny android.print API (bez dialogu drukowania — sterowane
- * programowo, PrintDocumentAdapter.onLayout/onWrite wywoływane ręcznie).
+ * wzór dostarczony przez użytkownika), renderowany przez ukryty WebView. PDF budowany jest
+ * z jednego długiego zrzutu Bitmapy całego dokumentu, ciętego ręcznie na strony A4 —
+ * android.print.PrintDocumentAdapter NIE jest tu używany (jego LayoutResultCallback/
+ * WriteResultCallback mają konstruktory package-private i nie da się ich podklasować spoza
+ * pakietu android.print — to twardy limit kompilatora, nie coś do obejścia).
  *
  * Zamiennik dla InvoicePdfGenerator (rysowanie na Canvas) — ten sam zestaw parametrów
  * wejściowych i ta sama logika biznesowa (pozycje, VAT, korekta), inny silnik renderowania.
@@ -381,65 +381,134 @@ object InvoiceHtmlPdfGenerator {
 
     // ============================= RENDER: WebView -> PDF bajty =============================
 
-    /** Renderuje gotowy HTML do PDF bez pokazywania systemowego dialogu drukowania —
-     *  sterujemy PrintDocumentAdapter programowo (onLayout -> onWrite do pliku tymczasowego).
-     *  MUSI być wywołane z wątku głównego (WebView) — dlatego przełączamy dispatcher tutaj,
-     *  a nie zakładamy, w jakim kontekście wywołujący nas uruchomił. */
+    // Szerokość renderu w px (arbitralna, dobrana pod ostrość); wysokość strony A4 liczona
+    // z tej samej proporcji 210:297, żeby cięcie na strony odpowiadało realnym proporcjom A4.
+    private const val RENDER_WIDTH_PX = 1000
+    private const val A4_RATIO = 297f / 210f
+    private val PAGE_HEIGHT_PX = (RENDER_WIDTH_PX * A4_RATIO).toInt()
+    private const val PDF_PAGE_WIDTH_PT = 595
+    private const val PDF_PAGE_HEIGHT_PT = 842
+
+    /** Renderuje gotowy HTML do PDF BEZ systemowego dialogu drukowania.
+     *
+     *  UWAGA: android.print.PrintDocumentAdapter.LayoutResultCallback/WriteResultCallback
+     *  mają konstruktory package-private — nie da się ich podklasować spoza pakietu
+     *  android.print (to nie jest hack do obejścia, to twardy limit Kotlina/Javy przy
+     *  kompilacji), więc "ręczne" sterowanie PrintDocumentAdapter z kodu aplikacji jest
+     *  niemożliwe. Zamiast tego renderujemy WebView do jednego długiego Bitmapu (cała
+     *  wysokość dokumentu), a następnie TNIEMY go ręcznie na strony A4 w Kotlinie —
+     *  pilnując przez getBoundingClientRect(), żeby cięcie nie wypadło w środku bloku
+     *  .footer-wrap (to zastępuje CSS page-break-inside:avoid, którego przeglądarka i tak
+     *  nie stosuje poza prawdziwym silnikiem druku).
+     *
+     *  MUSI być wywołane z wątku głównego (WebView) — dlatego przełączamy dispatcher tutaj. */
     private suspend fun renderHtmlToPdf(context: Context, html: String): ByteArray = withContext(Dispatchers.Main) {
-        suspendCancellableCoroutine { cont ->
-            val webView = WebView(context.applicationContext)
-            webView.settings.javaScriptEnabled = false
+        val webView = WebView(context.applicationContext)
+        // Ważne: bez software layer Bitmap z view.draw(canvas) często wychodzi pusty/biały,
+        // bo WebView domyślnie renderuje się przez warstwę sprzętową powiązaną z oknem,
+        // którego tu nie mamy (renderujemy off-screen).
+        webView.setLayerType(View.LAYER_TYPE_SOFTWARE, null)
+        webView.settings.javaScriptEnabled = true // potrzebne tylko do pomiaru wysokości/pozycji (własny HTML, bez zewnętrznych treści)
+        webView.settings.useWideViewPort = false
+        webView.settings.loadWithOverviewMode = false
+        webView.settings.textZoom = 100
+
+        val fullBitmap: Bitmap = suspendCancellableCoroutine { cont ->
             webView.webViewClient = object : WebViewClient() {
                 override fun onPageFinished(view: WebView, url: String) {
-                    try {
-                        val adapter = view.createPrintDocumentAdapter("finars_invoice")
-                        val attributes = PrintAttributes.Builder()
-                            .setMediaSize(PrintAttributes.MediaSize.ISO_A4)
-                            .setResolution(PrintAttributes.Resolution("finars_pdf", "finars_pdf", 300, 300))
-                            .setMinMargins(PrintAttributes.Margins.NO_MARGINS)
-                            .build()
-
-                        adapter.onLayout(null, attributes, null, object : PrintDocumentAdapter.LayoutResultCallback() {
-                            override fun onLayoutFinished(info: PrintDocumentInfo?, changed: Boolean) {
-                                val tempFile = File.createTempFile("finars_invoice_", ".pdf", context.cacheDir)
-                                val pfd = ParcelFileDescriptor.open(
-                                    tempFile,
-                                    ParcelFileDescriptor.MODE_CREATE or ParcelFileDescriptor.MODE_READ_WRITE or ParcelFileDescriptor.MODE_TRUNCATE
-                                )
-                                adapter.onWrite(arrayOf(PageRange.ALL_PAGES), pfd, CancellationSignal(), object : PrintDocumentAdapter.WriteResultCallback() {
-                                    override fun onWriteFinished(pages: Array<out PageRange>?) {
-                                        try {
-                                            pfd.close()
-                                            val bytes = tempFile.readBytes()
-                                            tempFile.delete()
-                                            webView.destroy()
-                                            if (cont.isActive) cont.resume(bytes)
-                                        } catch (e: Exception) {
-                                            if (cont.isActive) cont.resumeWithException(e)
-                                        }
-                                    }
-                                    override fun onWriteFailed(error: CharSequence?) {
-                                        webView.destroy()
-                                        if (cont.isActive) cont.resumeWithException(
-                                            IllegalStateException("PDF write failed: $error")
-                                        )
-                                    }
-                                })
-                            }
-                            override fun onLayoutFailed(error: CharSequence?) {
-                                webView.destroy()
-                                if (cont.isActive) cont.resumeWithException(
-                                    IllegalStateException("PDF layout failed: $error")
-                                )
-                            }
-                        }, null)
-                    } catch (e: Exception) {
-                        webView.destroy()
-                        if (cont.isActive) cont.resumeWithException(e)
-                    }
+                    // mały odstęp — daje WebView domalować base64-owe obrazy (logo/QR) i fonty
+                    // po zdarzeniu onPageFinished, zanim zrobimy zrzut do Bitmapy
+                    view.postDelayed({
+                        view.evaluateJavascript("document.body.scrollHeight") { heightStr ->
+                            val cssHeight = heightStr?.toFloatOrNull()?.toInt() ?: RENDER_WIDTH_PX
+                            val totalHeightPx = maxOf(cssHeight, 1)
+                            view.measure(
+                                View.MeasureSpec.makeMeasureSpec(RENDER_WIDTH_PX, View.MeasureSpec.EXACTLY),
+                                View.MeasureSpec.makeMeasureSpec(totalHeightPx, View.MeasureSpec.EXACTLY)
+                            )
+                            view.layout(0, 0, RENDER_WIDTH_PX, totalHeightPx)
+                            val bmp = Bitmap.createBitmap(RENDER_WIDTH_PX, totalHeightPx, Bitmap.Config.ARGB_8888)
+                            val canvas = Canvas(bmp)
+                            canvas.drawColor(Color.WHITE)
+                            view.draw(canvas)
+                            if (cont.isActive) cont.resume(bmp)
+                        }
+                    }, 150)
                 }
             }
             webView.loadDataWithBaseURL(null, html, "text/html", "UTF-8", null)
+        }
+
+        // Zakresy [top, bottom] w px bitmapy, których NIE wolno przecinać cięciem strony
+        val avoidRanges = getAvoidBreakRanges(webView)
+        webView.destroy()
+
+        val document = PdfDocument()
+        var top = 0
+        var pageNumber = 1
+        val totalHeight = fullBitmap.height
+        while (top < totalHeight) {
+            var bottom = minOf(top + PAGE_HEIGHT_PX, totalHeight)
+            for (range in avoidRanges) {
+                if (top < range.first && bottom in (range.first + 1) until range.second) {
+                    bottom = range.first
+                    break
+                }
+            }
+            if (bottom <= top) bottom = minOf(top + PAGE_HEIGHT_PX, totalHeight)
+
+            val sliceHeight = bottom - top
+            val slice = Bitmap.createBitmap(fullBitmap, 0, top, RENDER_WIDTH_PX, sliceHeight)
+
+            val page = document.startPage(
+                PdfDocument.PageInfo.Builder(PDF_PAGE_WIDTH_PT, PDF_PAGE_HEIGHT_PT, pageNumber).create()
+            )
+            val destHeight = sliceHeight.toFloat() * PDF_PAGE_WIDTH_PT / RENDER_WIDTH_PX
+            page.canvas.drawBitmap(slice, null, RectF(0f, 0f, PDF_PAGE_WIDTH_PT.toFloat(), destHeight), null)
+            document.finishPage(page)
+            slice.recycle()
+
+            top = bottom
+            pageNumber++
+        }
+
+        val out = ByteArrayOutputStream()
+        document.writeTo(out)
+        document.close()
+        fullBitmap.recycle()
+        out.toByteArray()
+    }
+
+    /** Zwraca listę [top, bottom] (w px bitmapy) dla każdego elementu .footer-wrap —
+     *  używane do trzymania się z dala od cięcia strony w środku tego bloku. */
+    private suspend fun getAvoidBreakRanges(webView: WebView): List<Pair<Int, Int>> = suspendCancellableCoroutine { cont ->
+        val js = """
+            (function(){
+                var els = document.querySelectorAll('.footer-wrap');
+                var out = [];
+                for (var i=0;i<els.length;i++){
+                    var r = els[i].getBoundingClientRect();
+                    out.push([Math.round(r.top + window.scrollY), Math.round(r.bottom + window.scrollY)]);
+                }
+                return JSON.stringify(out);
+            })();
+        """.trimIndent()
+        webView.evaluateJavascript(js) { result ->
+            val ranges = try {
+                val clean = (result ?: "[]").let {
+                    var s = it.trim()
+                    if (s.startsWith("\"") && s.endsWith("\"")) s = s.substring(1, s.length - 1)
+                    s.replace("\\\"", "\"")
+                }
+                val arr = JSONArray(clean)
+                (0 until arr.length()).map { idx ->
+                    val pair = arr.getJSONArray(idx)
+                    pair.getInt(0) to pair.getInt(1)
+                }
+            } catch (e: Exception) {
+                emptyList()
+            }
+            if (cont.isActive) cont.resume(ranges)
         }
     }
 
