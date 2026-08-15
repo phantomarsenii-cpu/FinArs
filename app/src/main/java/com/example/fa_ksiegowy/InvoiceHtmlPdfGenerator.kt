@@ -86,14 +86,16 @@ object InvoiceHtmlPdfGenerator {
         val docKind = context.getString(R.string.invoice_pdf_faktura)
         val docTitle = "$docKind$vatSuffix $formattedNumber"
 
-        val datesHtml = "<b>${context.getString(R.string.invoice_pdf_issue_date)}:</b> ${dateFmt.format(Date(issueDateMillis))}" +
-            "&nbsp;&nbsp;&nbsp;<b>${context.getString(R.string.invoice_pdf_sale_date)}:</b> ${dateFmt.format(Date(serviceDateMillis))}"
+        val datesHtml = "<div>${context.getString(R.string.invoice_pdf_issue_date)}: ${dateFmt.format(Date(issueDateMillis))}</div>" +
+            "<div>${context.getString(R.string.invoice_pdf_sale_date)}: ${dateFmt.format(Date(serviceDateMillis))}</div>"
 
         val sellerHtml = buildSellerBody(context, seller, isVatPayer)
         val buyerHtml = buildBuyerBody(context, buyerName, buyerNip, buyerStreet, buyerPostalCode, buyerCity, isPhysicalPerson)
 
-        val itemsTableHtml = buildItemsTable(context, null, rows, vatRate) +
-            buildSumRow(context, totalAmount, vatRate != null)
+        val itemsTableHtml = "<div class=\"table-with-total\">" +
+            buildItemsTable(context, null, rows, vatRate) +
+            buildSumRow(context, totalAmount, vatRate != null) +
+            "</div>"
 
         val receiptBadge = if (isReceipt)
             "<div style=\"color:#1230A8;font-weight:700;font-size:8.5pt;margin-bottom:3mm;\">&#9679; ${esc(context.getString(R.string.invoice_pdf_receipt_label))}</div>"
@@ -297,8 +299,8 @@ object InvoiceHtmlPdfGenerator {
         sb.append("<th class=\"col-unit\">${esc(context.getString(R.string.invoice_pdf_table_unit))}</th>")
         sb.append("<th class=\"col-qty num\">${esc(context.getString(R.string.invoice_pdf_table_qty))}</th>")
         if (vatRate == null) {
-            sb.append("<th class=\"col-price num\">${esc(context.getString(R.string.invoice_pdf_table_price))}</th>")
-            sb.append("<th class=\"col-total num\">${esc(context.getString(R.string.invoice_pdf_table_total))}</th>")
+            sb.append("<th class=\"col-price num\">${esc(context.getString(R.string.invoice_pdf_table_price_netto))}</th>")
+            sb.append("<th class=\"col-total num\">${esc(context.getString(R.string.invoice_pdf_table_netto))}</th>")
         } else {
             sb.append("<th class=\"num\">${esc(context.getString(R.string.invoice_pdf_table_price_netto))}</th>")
             sb.append("<th class=\"num\">${esc(context.getString(R.string.invoice_pdf_table_netto))}</th>")

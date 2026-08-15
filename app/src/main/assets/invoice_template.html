@@ -158,14 +158,16 @@
   .col-total{ width:20%; text-align:right; }
   table.items td.num, table.items th.num{ text-align:right; }
 
-  /* --- pasek sumy, wyrównany do prawej kolumny tabeli --- */
+  /* --- tabela + pasek sumy jako JEDEN spójny blok z ramką (jak na makiecie) --- */
+  .table-with-total{
+    border:0.9pt solid var(--accent); border-radius:2mm; overflow:hidden; margin-bottom:6mm;
+  }
+  .table-with-total table.items{ border:none; border-radius:0; margin-bottom:0; }
   .sum-row{
-    display:flex; justify-content:flex-end; align-items:stretch;
-    margin-bottom:6mm;
+    display:flex; justify-content:space-between; align-items:center;
+    padding:3mm 4mm; background:#FFFFFF;
   }
   .sum-label-wrap{
-    display:flex; align-items:center;
-    padding-right:4mm;
     font-size:9.5pt; font-weight:700; color:var(--green);
     letter-spacing:0.3px;
   }
@@ -173,7 +175,7 @@
     background:var(--green-bg);
     color:#FFFFFF;
     font-size:12.5pt; font-weight:800;
-    padding:2.6mm 6mm;
+    padding:2.2mm 6mm;
     border-radius:2mm;
     min-width:28mm; text-align:center;
   }
@@ -244,7 +246,7 @@
     position:relative; text-align:center; padding-top:2mm;
   }
   .bottom img.qr{
-    width:24mm; height:24mm; background:#FFFFFF; padding:1.5mm;
+    width:28mm; height:28mm; background:#FFFFFF; padding:1.5mm;
     display:block; margin:0 auto 3mm auto;
   }
   .bottom .thanks{ font-size:9.5pt; font-weight:700; color:var(--text); }
@@ -256,7 +258,7 @@
   .compact-footer .status-box{ padding:2.6mm 3.2mm; }
   .compact-footer .signatures{ margin-bottom:6mm; gap:6mm; }
   .compact-footer .sig-line{ height:8mm; }
-  .compact-footer .bottom img.qr{ width:20mm; height:20mm; margin-bottom:2mm; }
+  .compact-footer .bottom img.qr{ width:23mm; height:23mm; margin-bottom:2mm; }
 
 </style>
 </head>
