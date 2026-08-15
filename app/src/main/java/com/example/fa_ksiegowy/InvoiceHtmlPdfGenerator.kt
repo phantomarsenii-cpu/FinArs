@@ -125,7 +125,7 @@ object InvoiceHtmlPdfGenerator {
             .replace("{{SUBTITLE_LINE_HTML}}", "")
             .replace("{{DOC_DATES_HTML}}", datesHtml)
             .replace("{{LOGO_IMG_TAG}}", buildLogoImgTag(context))
-            .replace("{{BRAND_NAME_HTML}}", "<div class=\"brand-name\">FinArs</div>")
+            .replace("{{BRAND_NAME_HTML}}", "")
             .replace("{{USER_ICON_SVG}}", USER_ICON)
             .replace("{{SELLER_BODY_HTML}}", sellerHtml)
             .replace("{{BUYER_BODY_HTML}}", buyerHtml)
@@ -216,7 +216,7 @@ object InvoiceHtmlPdfGenerator {
             .replace("{{SUBTITLE_LINE_HTML}}", subtitle)
             .replace("{{DOC_DATES_HTML}}", datesHtml)
             .replace("{{LOGO_IMG_TAG}}", buildLogoImgTag(context))
-            .replace("{{BRAND_NAME_HTML}}", "<div class=\"brand-name\">FinArs</div>")
+            .replace("{{BRAND_NAME_HTML}}", "")
             .replace("{{USER_ICON_SVG}}", USER_ICON)
             .replace("{{SELLER_BODY_HTML}}", sellerHtml)
             .replace("{{BUYER_BODY_HTML}}", buyerHtml)
@@ -386,14 +386,12 @@ object InvoiceHtmlPdfGenerator {
 
     // ============================= RENDER: WebView -> PDF bajty =============================
 
-    // Szerokość renderu w px (arbitralna, dobrana pod ostrość); wysokość strony A4 liczona
-    // z tej samej proporcji 210:297, żeby cięcie na strony odpowiadało realnym proporcjom A4.
-    // 794px = 210mm w CSS-px (210 * 96/25.4) — MUSI być zgodne z <meta name="viewport"
-    // content="width=794..."> w invoice_template.html, inaczej .page nie wypełni
-    // viewportu 1:1 i strona wyjdzie przeskalowana/obcięta.
-    private const val RENDER_WIDTH_PX = 794
+    // 794 CSS-px = 210mm (210 * 96/25.4) — MUSI być zgodne z <meta name="viewport"
+    // content="width=794..."> w invoice_template.html. To jest szerokość w "referencyjnych"
+    // pikselach CSS, NIE w surowych pikselach Androida — te dwie wartości różnią się o
+    // gęstość ekranu (density), patrz komentarz w renderHtmlToPdf().
+    private const val PAGE_CSS_WIDTH_PX = 794
     private const val A4_RATIO = 297f / 210f
-    private val PAGE_HEIGHT_PX = (RENDER_WIDTH_PX * A4_RATIO).toInt()
     private const val PDF_PAGE_WIDTH_PT = 595
     private const val PDF_PAGE_HEIGHT_PT = 842
 
@@ -409,7 +407,16 @@ object InvoiceHtmlPdfGenerator {
      *  .footer-wrap (to zastępuje CSS page-break-inside:avoid, którego przeglądarka i tak
      *  nie stosuje poza prawdziwym silnikiem druku).
      *
-     *  WAŻNE: WebView MUSI być rzeczywiście dołączony do okna (attached), inaczej
+     *  WAŻNE (gęstość ekranu): WebView/Chromium liczy CSS-px względem gęstości ekranu
+     *  (density) kontekstu, z którym został utworzony — 1 CSS-px odpowiada `density`
+     *  surowym pikselom Androida. Nasz <meta viewport width=794> deklaruje 794 CSS-px,
+     *  więc View/Bitmap MUSZĄ mieć szerokość 794*density surowych pikseli, inaczej
+     *  dostępna przestrzeń wyjdzie węższa niż zadeklarowana i treść zostanie ucięta z
+     *  prawej strony (a nie przeskalowana) — to była przyczyna wcześniejszego błędu.
+     *  Z tego samego powodu wszystkie pomiary z JS (scrollHeight, getBoundingClientRect)
+     *  zwracają CSS-px i też trzeba je przemnożyć przez density przed użyciem w Bitmapie.
+     *
+     *  WAŻNE (attach): WebView MUSI być rzeczywiście dołączony do okna (attached), inaczej
      *  onPageFinished/evaluateJavascript/draw(canvas) potrafią nigdy się nie zakończyć albo
      *  dać pustą bitmapę — dlatego wymagamy tu kontekstu Activity (nie applicationContext)
      *  i na czas renderu dokładamy WebView do decorView poza widocznym obszarem ekranu.
@@ -425,6 +432,10 @@ object InvoiceHtmlPdfGenerator {
             )
         val decor = activity.window.decorView as ViewGroup
 
+        val density = activity.resources.displayMetrics.density.let { if (it > 0f) it else 1f }
+        val renderWidthPx = (PAGE_CSS_WIDTH_PX * density).toInt().coerceAtLeast(1)
+        val pageHeightPx = (renderWidthPx * A4_RATIO).toInt()
+
         val webView = WebView(activity)
         webView.setLayerType(View.LAYER_TYPE_SOFTWARE, null)
         webView.settings.javaScriptEnabled = true // potrzebne tylko do pomiaru wysokości/pozycji (własny HTML, bez zewnętrznych treści)
@@ -438,7 +449,7 @@ object InvoiceHtmlPdfGenerator {
 
         // Dołączamy off-screen (daleko poza ekranem), żeby user nic nie widział, ale WebView
         // miał prawdziwe okno/surface do renderowania.
-        val params = FrameLayout.LayoutParams(RENDER_WIDTH_PX, ViewGroup.LayoutParams.WRAP_CONTENT)
+        val params = FrameLayout.LayoutParams(renderWidthPx, ViewGroup.LayoutParams.WRAP_CONTENT)
         webView.layoutParams = params
         webView.translationX = -100000f
         decor.addView(webView, params)
@@ -454,14 +465,15 @@ object InvoiceHtmlPdfGenerator {
                                 if (!cont.isActive) return@postDelayed
                                 view.evaluateJavascript("document.body.scrollHeight") { heightStr ->
                                     if (!cont.isActive) return@evaluateJavascript
-                                    val cssHeight = heightStr?.toFloatOrNull()?.toInt() ?: RENDER_WIDTH_PX
-                                    val totalHeightPx = maxOf(cssHeight, 1)
+                                    // scrollHeight przychodzi w CSS-px — przeliczamy na surowe px Androida
+                                    val cssHeight = heightStr?.toFloatOrNull() ?: (PAGE_CSS_WIDTH_PX * A4_RATIO)
+                                    val totalHeightPx = maxOf((cssHeight * density).toInt(), 1)
                                     view.measure(
-                                        View.MeasureSpec.makeMeasureSpec(RENDER_WIDTH_PX, View.MeasureSpec.EXACTLY),
+                                        View.MeasureSpec.makeMeasureSpec(renderWidthPx, View.MeasureSpec.EXACTLY),
                                         View.MeasureSpec.makeMeasureSpec(totalHeightPx, View.MeasureSpec.EXACTLY)
                                     )
-                                    view.layout(0, 0, RENDER_WIDTH_PX, totalHeightPx)
-                                    val bmp = Bitmap.createBitmap(RENDER_WIDTH_PX, totalHeightPx, Bitmap.Config.ARGB_8888)
+                                    view.layout(0, 0, renderWidthPx, totalHeightPx)
+                                    val bmp = Bitmap.createBitmap(renderWidthPx, totalHeightPx, Bitmap.Config.ARGB_8888)
                                     val canvas = Canvas(bmp)
                                     canvas.drawColor(Color.WHITE)
                                     view.draw(canvas)
@@ -475,8 +487,9 @@ object InvoiceHtmlPdfGenerator {
             }
 
             // Zakresy [top, bottom] w px bitmapy, których NIE wolno przecinać cięciem strony
+            // (getBoundingClientRect też zwraca CSS-px — przeliczamy przez density w środku)
             val avoidRanges = try {
-                withTimeout(5_000) { getAvoidBreakRanges(webView) }
+                withTimeout(5_000) { getAvoidBreakRanges(webView, density) }
             } catch (e: TimeoutCancellationException) {
                 emptyList()
             }
@@ -486,22 +499,22 @@ object InvoiceHtmlPdfGenerator {
             var pageNumber = 1
             val totalHeight = fullBitmap.height
             while (top < totalHeight) {
-                var bottom = minOf(top + PAGE_HEIGHT_PX, totalHeight)
+                var bottom = minOf(top + pageHeightPx, totalHeight)
                 for (range in avoidRanges) {
                     if (top < range.first && bottom in (range.first + 1) until range.second) {
                         bottom = range.first
                         break
                     }
                 }
-                if (bottom <= top) bottom = minOf(top + PAGE_HEIGHT_PX, totalHeight)
+                if (bottom <= top) bottom = minOf(top + pageHeightPx, totalHeight)
 
                 val sliceHeight = bottom - top
-                val slice = Bitmap.createBitmap(fullBitmap, 0, top, RENDER_WIDTH_PX, sliceHeight)
+                val slice = Bitmap.createBitmap(fullBitmap, 0, top, renderWidthPx, sliceHeight)
 
                 val page = document.startPage(
                     PdfDocument.PageInfo.Builder(PDF_PAGE_WIDTH_PT, PDF_PAGE_HEIGHT_PT, pageNumber).create()
                 )
-                val destHeight = sliceHeight.toFloat() * PDF_PAGE_WIDTH_PT / RENDER_WIDTH_PX
+                val destHeight = sliceHeight.toFloat() * PDF_PAGE_WIDTH_PT / renderWidthPx
                 page.canvas.drawBitmap(slice, null, RectF(0f, 0f, PDF_PAGE_WIDTH_PT.toFloat(), destHeight), null)
                 document.finishPage(page)
                 slice.recycle()
@@ -532,9 +545,9 @@ object InvoiceHtmlPdfGenerator {
         return c as? Activity
     }
 
-    /** Zwraca listę [top, bottom] (w px bitmapy) dla każdego elementu .footer-wrap —
-     *  używane do trzymania się z dala od cięcia strony w środku tego bloku. */
-    private suspend fun getAvoidBreakRanges(webView: WebView): List<Pair<Int, Int>> = suspendCancellableCoroutine { cont ->
+    /** Zwraca listę [top, bottom] w SUROWYCH px Bitmapy (nie CSS-px!) dla każdego elementu
+     *  .footer-wrap — używane do trzymania się z dala od cięcia strony w środku tego bloku. */
+    private suspend fun getAvoidBreakRanges(webView: WebView, density: Float): List<Pair<Int, Int>> = suspendCancellableCoroutine { cont ->
         val js = """
             (function(){
                 var els = document.querySelectorAll('.footer-wrap');
@@ -556,7 +569,7 @@ object InvoiceHtmlPdfGenerator {
                 val arr = JSONArray(clean)
                 (0 until arr.length()).map { idx ->
                     val pair = arr.getJSONArray(idx)
-                    pair.getInt(0) to pair.getInt(1)
+                    (pair.getInt(0) * density).toInt() to (pair.getInt(1) * density).toInt()
                 }
             } catch (e: Exception) {
                 emptyList()
