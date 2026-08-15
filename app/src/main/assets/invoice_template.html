@@ -42,7 +42,7 @@
     background:#FFFFFF;
     color:var(--text);
     font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;
-    font-size:9.5pt;
+    font-size:10.5pt;
     -webkit-print-color-adjust:exact;
     print-color-adjust:exact;
   }
@@ -51,27 +51,30 @@
     position:relative;
     width:210mm;
     min-height:297mm;
-    padding:17mm 17mm 14mm 17mm;
+    padding:14mm 14mm 12mm 14mm;
     overflow:hidden; /* dla fal tła */
     background:#FFFFFF;
   }
 
-  /* --- fale tła w nagłówku i stopce (SVG, cienkie, neutralne, nie przeszkadzają w druku) --- */
+  /* --- fale tła w nagłówku i stopce: PNG wycięte 1:1 z REFERENCE (nie SVG-przybliżenie) —
+     wymiary w mm przeliczone dokładnie z rozdzielczości pikselowej wycinków względem
+     całej strony REFERENCE (843x1264px = 210x297mm), żeby proporcje się zgadzały.
+     Opacity:1 — przezroczystość linii jest już zapisana w kanale alfa PNG. --- */
   .waves-top{
-    position:absolute; top:0; right:0; width:120mm; height:55mm;
-    opacity:0.4; pointer-events:none; z-index:0;
+    position:absolute; top:0; left:0; width:210mm; height:51.7mm;
+    opacity:1; pointer-events:none; z-index:0; object-fit:cover;
   }
   .waves-bottom-left{
-    position:absolute; bottom:0; left:0; width:92mm; height:38mm;
-    opacity:0.4; pointer-events:none; z-index:0;
+    position:absolute; bottom:0; left:0; width:84.7mm; height:62mm;
+    opacity:1; pointer-events:none; z-index:0; object-fit:cover;
   }
   .waves-bottom-right{
-    position:absolute; bottom:0; right:0; width:92mm; height:38mm;
-    opacity:0.4; pointer-events:none; z-index:0;
+    position:absolute; bottom:0; right:0; width:85.5mm; height:62mm;
+    opacity:1; pointer-events:none; z-index:0; object-fit:cover;
   }
 
   /* --- wszystko poza falami leży nad tłem --- */
-  .content{ position:relative; z-index:1; }
+  .content{ position:relative; z-index:1; display:flex; flex-direction:column; min-height:271mm; }
 
   /* =========================== HEADER =========================== */
   .header{
@@ -80,9 +83,9 @@
     align-items:flex-start;
     margin-bottom:9mm;
   }
-  .brand{ display:flex; flex-direction:column; align-items:center; width:30mm; }
+  .brand{ display:flex; flex-direction:column; align-items:center; width:32mm; }
   .brand img.logo{
-    max-width:30mm; max-height:18mm; width:auto; height:auto; object-fit:contain; display:block;
+    max-width:32mm; max-height:34mm; width:auto; height:auto; object-fit:contain; display:block;
   }
   .brand .brand-name{
     margin-top:1.5mm; font-size:8.5pt; font-weight:700; color:var(--accent);
@@ -91,13 +94,13 @@
 
   .doc-title-block{ flex:1; margin-left:8mm; }
   .doc-title{
-    font-size:19pt; font-weight:800; color:var(--accent);
+    font-size:25pt; font-weight:800; color:var(--accent);
     letter-spacing:0.2px; line-height:1.15;
   }
   .doc-subtitle{
-    font-size:9pt; color:var(--hint); margin-top:1.5mm;
+    font-size:9.5pt; color:var(--hint); margin-top:1.5mm;
   }
-  .doc-dates{ margin-top:2.5mm; font-size:9pt; color:var(--text); line-height:1.6; }
+  .doc-dates{ margin-top:2.5mm; font-size:10pt; color:var(--text); line-height:1.6; }
   .doc-dates b{ font-weight:600; }
 
   /* ===================== SPRZEDAWCA / NABYWCA ===================== */
@@ -116,7 +119,7 @@
     padding-bottom:2.2mm; margin-bottom:2.8mm;
   }
   .party-head .party-label{
-    font-size:8pt; font-weight:700; letter-spacing:0.6px; color:var(--text);
+    font-size:9pt; font-weight:700; letter-spacing:0.6px; color:var(--text);
   }
   .party-icon{
     width:5.6mm; height:5.6mm; border-radius:50%;
@@ -125,13 +128,13 @@
     flex-shrink:0;
   }
   .party-icon svg{ width:3.1mm; height:3.1mm; }
-  .party-name{ font-size:10pt; font-weight:700; color:var(--text); margin-bottom:1.2mm; }
-  .party-line{ font-size:8.7pt; color:var(--text); margin-bottom:1mm; line-height:1.4; }
-  .party-note{ font-size:7.3pt; color:#555555; line-height:1.4; margin-top:1.5mm; }
+  .party-name{ font-size:11.5pt; font-weight:700; color:var(--text); margin-bottom:1.2mm; }
+  .party-line{ font-size:9.5pt; color:var(--text); margin-bottom:1mm; line-height:1.4; }
+  .party-note{ font-size:8pt; color:#555555; line-height:1.4; margin-top:1.5mm; }
 
   /* ============================ TABLE ============================ */
   .table-title{
-    font-size:9.5pt; font-weight:700; color:var(--text); margin:5mm 0 2mm 0;
+    font-size:10.5pt; font-weight:700; color:var(--text); margin:5mm 0 2mm 0;
   }
   table.items{
     width:100%; border-collapse:collapse; margin-bottom:2mm;
@@ -140,14 +143,14 @@
   table.items th{
     background:var(--header-fill);
     color:var(--text);
-    font-size:7.6pt; font-weight:700; text-transform:none;
+    font-size:9pt; font-weight:700; text-transform:none;
     text-align:left; padding:2.6mm 2mm;
     border-bottom:0.9pt solid var(--grid);
     border-right:0.6pt solid var(--grid);
   }
   table.items th:last-child, table.items td:last-child{ border-right:none; }
   table.items td{
-    font-size:8.6pt; color:var(--text);
+    font-size:9.5pt; color:var(--text);
     padding:2.4mm 2mm;
     border-bottom:0.6pt solid var(--grid);
     border-right:0.6pt solid var(--grid);
@@ -173,13 +176,13 @@
     padding:3mm 4mm; background:#FFFFFF;
   }
   .sum-label-wrap{
-    font-size:9.5pt; font-weight:700; color:var(--green);
+    font-size:10.5pt; font-weight:700; color:var(--green);
     letter-spacing:0.3px;
   }
   .sum-amount{
     background:var(--green-bg);
     color:#FFFFFF;
-    font-size:12.5pt; font-weight:800;
+    font-size:14pt; font-weight:800;
     padding:2.2mm 6mm;
     border-radius:2mm;
     min-width:28mm; text-align:center;
@@ -187,15 +190,15 @@
 
   /* --- korekta: blok przyczyny + podsumowanie kwot --- */
   .reason-block{ margin-bottom:5mm; }
-  .reason-title{ font-size:9pt; font-weight:700; color:var(--accent); margin-bottom:1.5mm; }
-  .reason-text{ font-size:8.8pt; color:var(--text); line-height:1.5; }
+  .reason-title{ font-size:10pt; font-weight:700; color:var(--accent); margin-bottom:1.5mm; }
+  .reason-text{ font-size:9.5pt; color:var(--text); line-height:1.5; }
 
   .delta-block{
     display:flex; gap:6mm; margin-bottom:6mm; flex-wrap:wrap;
   }
   .delta-chip{
     border:0.9pt solid var(--grid); border-radius:2.5mm;
-    padding:2.6mm 4mm; font-size:8.8pt; color:var(--text);
+    padding:2.6mm 4mm; font-size:9.5pt; color:var(--text);
   }
   .delta-chip b{ display:block; font-size:10pt; margin-top:0.8mm; }
   .delta-chip.positive b{ color:var(--green); }
@@ -204,6 +207,7 @@
   /* ======================= FOOTER (avoid split) ======================= */
   .footer-wrap{
     page-break-inside:avoid; break-inside:avoid;
+    margin-top:auto; /* przykleja stopkę do dołu strony przy krótkiej fakturze (jak w REFERENCE) */
   }
 
   .status-payment-row{
@@ -214,10 +218,10 @@
     display:flex; align-items:flex-start; gap:2.2mm; margin-bottom:2.5mm;
   }
   .info-icon{ width:4.4mm; height:4.4mm; flex-shrink:0; margin-top:0.4mm; }
-  .info-text{ font-size:8.8pt; color:var(--text); line-height:1.5; }
+  .info-text{ font-size:9.5pt; color:var(--text); line-height:1.5; }
   .info-text .label{ color:var(--hint); }
-  .legal-title{ font-size:8.3pt; font-weight:700; color:var(--text); margin-bottom:1mm; }
-  .legal-text{ font-size:7.6pt; color:var(--text); line-height:1.45; }
+  .legal-title{ font-size:9pt; font-weight:700; color:var(--text); margin-bottom:1mm; }
+  .legal-text{ font-size:8.3pt; color:var(--text); line-height:1.45; }
 
   .status-box{
     width:52mm; border:0.9pt solid var(--grid); border-radius:3mm;
@@ -231,8 +235,8 @@
   .status-box.status-paid .status-icon{ background:var(--green); }
   .status-box.status-pending .status-icon{ background:var(--orange); }
   .status-icon svg{ width:4mm; height:4mm; }
-  .status-label{ font-size:7.3pt; color:var(--hint); letter-spacing:0.5px; font-weight:700; }
-  .status-text{ font-size:10pt; font-weight:800; margin-top:0.6mm; }
+  .status-label{ font-size:8pt; color:var(--hint); letter-spacing:0.5px; font-weight:700; }
+  .status-text{ font-size:11.5pt; font-weight:800; margin-top:0.6mm; }
   .status-box.status-paid .status-text{ color:var(--green); }
   .status-box.status-pending .status-text{ color:var(--orange); }
 
@@ -243,9 +247,9 @@
   .sig-line{
     border-bottom:0.9pt solid var(--grid); height:11mm;
     display:flex; align-items:flex-end; padding-bottom:1.5mm;
-    font-size:8.6pt; font-weight:700; color:var(--text);
+    font-size:9.3pt; font-weight:700; color:var(--text);
   }
-  .sig-caption{ font-size:7.2pt; color:var(--hint); margin-top:1.5mm; }
+  .sig-caption{ font-size:7.8pt; color:var(--hint); margin-top:1.5mm; }
 
   .bottom{
     position:relative; text-align:center; padding-top:2mm;
@@ -254,8 +258,8 @@
     width:28mm; height:28mm; background:#FFFFFF; padding:1.5mm;
     display:block; margin:0 auto 3mm auto;
   }
-  .bottom .thanks{ font-size:9.5pt; font-weight:700; color:var(--text); }
-  .bottom .scan{ font-size:8pt; color:var(--hint); margin-top:0.8mm; display:flex; align-items:center; justify-content:center; gap:2.5mm; }
+  .bottom .thanks{ font-size:10.5pt; font-weight:700; color:var(--text); }
+  .bottom .scan{ font-size:8.6pt; color:var(--hint); margin-top:0.8mm; display:flex; align-items:center; justify-content:center; gap:2.5mm; }
   .scan-dash{ display:inline-block; width:6mm; height:0.6pt; background:var(--hint); }
 
   /* --- compact-footer: dla 3-5 pozycji, żeby wszystko zmieściło się na 1 str. --- */
@@ -271,32 +275,9 @@
 <body>
 <div class="page">
 
-  <svg class="waves-top" viewBox="0 0 400 200" xmlns="http://www.w3.org/2000/svg">
-    <path d="M40,150 C120,90 180,190 240,120 C290,65 330,130 400,90" fill="none" stroke="#1A1A1A" stroke-width="0.9"/>
-    <path d="M60,165 C140,105 195,205 255,135 C300,82 340,145 400,108" fill="none" stroke="#1A1A1A" stroke-width="0.9"/>
-    <path d="M80,178 C155,120 210,215 268,150 C310,98 350,158 400,124" fill="none" stroke="#1A1A1A" stroke-width="0.8"/>
-    <path d="M100,190 C170,135 222,225 278,163 C318,113 356,170 400,138" fill="none" stroke="#1A1A1A" stroke-width="0.7"/>
-    <circle cx="345" cy="70" r="2.1" fill="#1A1A1A"/>
-    <circle cx="95" cy="140" r="1.5" fill="#1A1A1A"/>
-  </svg>
-
-  <svg class="waves-bottom-left" viewBox="0 0 400 160" xmlns="http://www.w3.org/2000/svg">
-    <path d="M0,60 C60,15 110,105 170,65 C215,35 255,75 320,50" fill="none" stroke="#1A1A1A" stroke-width="0.9"/>
-    <path d="M0,75 C65,32 118,120 178,80 C222,50 262,90 328,64" fill="none" stroke="#1A1A1A" stroke-width="0.9"/>
-    <path d="M0,90 C68,50 124,133 184,95 C228,66 267,104 335,78" fill="none" stroke="#1A1A1A" stroke-width="0.8"/>
-    <path d="M0,105 C70,68 128,145 190,110 C233,82 271,118 340,92" fill="none" stroke="#1A1A1A" stroke-width="0.7"/>
-    <path d="M0,120 C72,86 132,157 196,125 C238,98 275,132 344,106" fill="none" stroke="#1A1A1A" stroke-width="0.6"/>
-    <circle cx="30" cy="45" r="2" fill="#1A1A1A"/>
-  </svg>
-
-  <svg class="waves-bottom-right" viewBox="0 0 400 160" xmlns="http://www.w3.org/2000/svg">
-    <path d="M400,60 C340,15 290,105 230,65 C185,35 145,75 80,50" fill="none" stroke="#1A1A1A" stroke-width="0.9"/>
-    <path d="M400,75 C335,32 282,120 222,80 C178,50 138,90 72,64" fill="none" stroke="#1A1A1A" stroke-width="0.9"/>
-    <path d="M400,90 C332,50 276,133 216,95 C172,66 133,104 65,78" fill="none" stroke="#1A1A1A" stroke-width="0.8"/>
-    <path d="M400,105 C330,68 272,145 210,110 C167,82 129,118 60,92" fill="none" stroke="#1A1A1A" stroke-width="0.7"/>
-    <path d="M400,120 C328,86 268,157 204,125 C162,98 125,132 56,106" fill="none" stroke="#1A1A1A" stroke-width="0.6"/>
-    <circle cx="370" cy="45" r="2" fill="#1A1A1A"/>
-  </svg>
+  {{WAVE_TOP_IMG}}
+  {{WAVE_BOTTOM_LEFT_IMG}}
+  {{WAVE_BOTTOM_RIGHT_IMG}}
 
   <div class="content">
 

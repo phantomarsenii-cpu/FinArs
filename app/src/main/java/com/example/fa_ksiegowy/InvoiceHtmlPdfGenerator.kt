@@ -127,6 +127,9 @@ object InvoiceHtmlPdfGenerator {
             .replace("{{SUBTITLE_LINE_HTML}}", "")
             .replace("{{DOC_DATES_HTML}}", datesHtml)
             .replace("{{LOGO_IMG_TAG}}", buildLogoImgTag(context))
+            .replace("{{WAVE_TOP_IMG}}", buildWaveImgTag(context, "wave_top.png", "waves-top"))
+            .replace("{{WAVE_BOTTOM_LEFT_IMG}}", buildWaveImgTag(context, "wave_bottom_left.png", "waves-bottom-left"))
+            .replace("{{WAVE_BOTTOM_RIGHT_IMG}}", buildWaveImgTag(context, "wave_bottom_right.png", "waves-bottom-right"))
             .replace("{{BRAND_NAME_HTML}}", "")
             .replace("{{USER_ICON_SVG}}", USER_ICON)
             .replace("{{SELLER_BODY_HTML}}", sellerHtml)
@@ -218,6 +221,9 @@ object InvoiceHtmlPdfGenerator {
             .replace("{{SUBTITLE_LINE_HTML}}", subtitle)
             .replace("{{DOC_DATES_HTML}}", datesHtml)
             .replace("{{LOGO_IMG_TAG}}", buildLogoImgTag(context))
+            .replace("{{WAVE_TOP_IMG}}", buildWaveImgTag(context, "wave_top.png", "waves-top"))
+            .replace("{{WAVE_BOTTOM_LEFT_IMG}}", buildWaveImgTag(context, "wave_bottom_left.png", "waves-bottom-left"))
+            .replace("{{WAVE_BOTTOM_RIGHT_IMG}}", buildWaveImgTag(context, "wave_bottom_right.png", "waves-bottom-right"))
             .replace("{{BRAND_NAME_HTML}}", "")
             .replace("{{USER_ICON_SVG}}", USER_ICON)
             .replace("{{SELLER_BODY_HTML}}", sellerHtml)
@@ -351,14 +357,16 @@ object InvoiceHtmlPdfGenerator {
 
     /** Logo w lewym górnym rogu: jeśli użytkownik wgrał własne (patrz [InvoiceLogoStore]) —
      *  pokazujemy je (object-fit:contain, ograniczone przez CSS .brand img.logo), w
-     *  przeciwnym razie domyślne logo FinArs (R.drawable.logo) — zgodnie z wymaganiem punktu 3. */
+     *  przeciwnym razie logo wycięte 1:1 z zatwierdzonego REFERENCE (R.drawable.logo_reference,
+     *  NIE domyślne R.drawable.logo aplikacji — kolory/kształt/napis "FinArs" niezmienione,
+     *  tylko wycięte z oryginalnego pliku i podbite w rozdzielczości pod druk). */
     private fun buildLogoImgTag(context: Context): String {
         val userLogoPath = InvoiceLogoStore.load(context)
         val bitmap: Bitmap? = if (!userLogoPath.isNullOrBlank()) {
             try { BitmapFactory.decodeFile(userLogoPath) } catch (e: Exception) { null }
         } else null
         val bmp = bitmap ?: try {
-            BitmapFactory.decodeResource(context.resources, R.drawable.logo)
+            BitmapFactory.decodeResource(context.resources, R.drawable.logo_reference)
         } catch (e: Exception) { null }
         val base64 = bmp?.let { bitmapToBase64Png(it) }
         return if (base64 != null) "<img class=\"logo\" src=\"data:image/png;base64,$base64\"/>" else ""
@@ -372,6 +380,19 @@ object InvoiceHtmlPdfGenerator {
         val bmp = try { BitmapFactory.decodeResource(context.resources, resId) } catch (e: Exception) { null } ?: return ""
         val base64 = bitmapToBase64Png(bmp)
         return "<img class=\"qr\" src=\"data:image/png;base64,$base64\"/>"
+    }
+
+    /** Dekoracyjne fale (tło nagłówka/stopki) — wycięte 1:1 z zatwierdzonego REFERENCE
+     *  (assets/wave_top.png, wave_bottom_left.png, wave_bottom_right.png), NIE rysowane
+     *  jako przybliżenie SVG. cssClass odpowiada pozycjonowaniu zdefiniowanemu w CSS
+     *  (.waves-top / .waves-bottom-left / .waves-bottom-right). */
+    private fun buildWaveImgTag(context: Context, assetName: String, cssClass: String): String {
+        val base64 = try {
+            context.assets.open(assetName).use { it.readBytes() }
+        } catch (e: Exception) {
+            null
+        }?.let { android.util.Base64.encodeToString(it, android.util.Base64.NO_WRAP) } ?: return ""
+        return "<img class=\"$cssClass\" src=\"data:image/png;base64,$base64\"/>"
     }
 
     private fun bitmapToBase64Png(bitmap: Bitmap): String {
