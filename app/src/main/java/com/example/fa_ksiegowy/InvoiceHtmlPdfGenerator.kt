@@ -14,11 +14,9 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.FrameLayout
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeout
-import org.json.JSONArray
 import java.io.ByteArrayOutputStream
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -139,9 +137,7 @@ object InvoiceHtmlPdfGenerator {
             .replace("{{FOOTER_COMPACT_CLASS}}", footerCompactClass)
             .replace("{{PAYMENT_INFO_LINES_HTML}}", paymentLinesHtml.toString())
             .replace("{{LEGAL_VAT_BLOCK_HTML}}", legalVatHtml)
-            .replace("{{STATUS_CLASS}}", statusClass)
-            .replace("{{STATUS_ICON_SVG}}", statusIcon)
-            .replace("{{STATUS_TEXT}}", esc(statusText))
+            .replace("{{STATUS_BOX_HTML}}", buildStatusBoxHtml(statusClass, statusIcon, statusText))
             .replace("{{SIGN_ISSUED_LABEL}}", esc(context.getString(R.string.invoice_pdf_signature_issued_by)))
             .replace("{{SIGN_ISSUED_CAPTION}}", esc(context.getString(R.string.invoice_pdf_signature_issued_by_caption)))
             .replace("{{SIGN_RECEIVED_LABEL}}", esc(context.getString(R.string.invoice_pdf_signature_received_by)))
@@ -233,11 +229,11 @@ object InvoiceHtmlPdfGenerator {
             .replace("{{FOOTER_COMPACT_CLASS}}", footerCompactClass)
             // Faktura korygująca nie ma statusu płatności/terminu w oryginalnym generatorze —
             // zostawiamy blok podstawy prawnej VAT, a status pokazujemy jako neutralny placeholder.
+            // Update: faktura korygująca NIE pokazuje plakietki STATUS — nie ma tu statusu
+            // płatności w takim sensie jak zwykła faktura, plakietka wprowadzała w błąd.
             .replace("{{PAYMENT_INFO_LINES_HTML}}", "")
             .replace("{{LEGAL_VAT_BLOCK_HTML}}", legalVatHtml)
-            .replace("{{STATUS_CLASS}}", "status-paid")
-            .replace("{{STATUS_ICON_SVG}}", CHECK_ICON)
-            .replace("{{STATUS_TEXT}}", esc(context.getString(R.string.correction_pdf_title)))
+            .replace("{{STATUS_BOX_HTML}}", "")
             .replace("{{SIGN_ISSUED_LABEL}}", esc(context.getString(R.string.invoice_pdf_signature_issued_by)))
             .replace("{{SIGN_ISSUED_CAPTION}}", esc(context.getString(R.string.invoice_pdf_signature_issued_by_caption)))
             .replace("{{SIGN_RECEIVED_LABEL}}", esc(context.getString(R.string.invoice_pdf_signature_received_by)))
@@ -349,6 +345,20 @@ object InvoiceHtmlPdfGenerator {
             <div class="sum-row">
               <div class="sum-label-wrap">${esc(context.getString(R.string.invoice_pdf_sum_label))} DO ZAPŁATY</div>
               <div class="sum-amount">${money(totalAmount)}</div>
+            </div>
+        """.trimIndent()
+    }
+
+    /** Plakietka STATUS (ZAPŁACONO/OCZEKUJE NA ZAPŁATĘ) — tylko dla zwykłej faktury.
+     *  Faktura korygująca jej nie ma (patrz generateCorrection) — przekazuje pustą wartość. */
+    private fun buildStatusBoxHtml(statusClass: String, statusIconSvg: String, statusText: String): String {
+        return """
+            <div class="status-box $statusClass">
+              <span class="status-icon">$statusIconSvg</span>
+              <div>
+                <div class="status-label">STATUS</div>
+                <div class="status-text">${esc(statusText)}</div>
+              </div>
             </div>
         """.trimIndent()
     }
@@ -478,6 +488,7 @@ object InvoiceHtmlPdfGenerator {
         decor.addView(webView, params)
 
         try {
+            var avoidRangesResult: List<Pair<Int, Int>> = emptyList()
             val fullBitmap: Bitmap = withTimeout(20_000) {
                 suspendCancellableCoroutine { cont ->
                     webView.webViewClient = object : WebViewClient() {
@@ -486,10 +497,47 @@ object InvoiceHtmlPdfGenerator {
                             // po zdarzeniu onPageFinished, zanim zrobimy zrzut do Bitmapy
                             view.postDelayed({
                                 if (!cont.isActive) return@postDelayed
-                                view.evaluateJavascript("document.body.scrollHeight") { heightStr ->
+                                // WAŻNE: mierzymy scrollHeight ORAZ getBoundingClientRect() bloków
+                                // .footer-wrap w JEDNYM wywołaniu JS, PRZED jakimkolwiek measure()/
+                                // layout() Androida — osobne, późniejsze evaluateJavascript (po
+                                // zmianie rozmiaru View) okazało się niewiarygodne w praktyce
+                                // (getBoundingClientRect potrafił zwrócić nieaktualne dane), co
+                                // prowadziło do cięcia strony w środku stopki (obcięty QR, brak
+                                // reszty stopki na stronie 1).
+                                val js = """
+                                    (function(){
+                                        var out = { height: document.body.scrollHeight, footers: [] };
+                                        var els = document.querySelectorAll('.footer-wrap');
+                                        for (var i=0;i<els.length;i++){
+                                            var r = els[i].getBoundingClientRect();
+                                            out.footers.push([Math.round(r.top + window.scrollY), Math.round(r.bottom + window.scrollY)]);
+                                        }
+                                        return JSON.stringify(out);
+                                    })();
+                                """.trimIndent()
+                                view.evaluateJavascript(js) { resultStr ->
                                     if (!cont.isActive) return@evaluateJavascript
-                                    // scrollHeight przychodzi w CSS-px — przeliczamy na surowe px Androida
-                                    val cssHeight = heightStr?.toFloatOrNull() ?: (PAGE_CSS_WIDTH_PX * A4_RATIO)
+                                    var cssHeight = (PAGE_CSS_WIDTH_PX * A4_RATIO)
+                                    var ranges: List<Pair<Int, Int>> = emptyList()
+                                    try {
+                                        val clean = (resultStr ?: "").let {
+                                            var s = it.trim()
+                                            if (s.startsWith("\"") && s.endsWith("\"")) s = s.substring(1, s.length - 1)
+                                            s.replace("\\\"", "\"")
+                                        }
+                                        val obj = org.json.JSONObject(clean)
+                                        cssHeight = obj.optDouble("height", cssHeight.toDouble()).toFloat()
+                                        val arr = obj.optJSONArray("footers") ?: org.json.JSONArray()
+                                        ranges = (0 until arr.length()).map { idx ->
+                                            val pair = arr.getJSONArray(idx)
+                                            (pair.getInt(0) * density).toInt() to (pair.getInt(1) * density).toInt()
+                                        }
+                                    } catch (e: Exception) {
+                                        // Bezpieczny fallback — bez ochrony przed cięciem stopki,
+                                        // ale przynajmniej dalej renderujemy (lepsze niż całkiem
+                                        // przerwać generowanie PDF).
+                                    }
+                                    avoidRangesResult = ranges
                                     val totalHeightPx = maxOf((cssHeight * density).toInt(), 1)
                                     view.measure(
                                         View.MeasureSpec.makeMeasureSpec(renderWidthPx, View.MeasureSpec.EXACTLY),
@@ -509,13 +557,9 @@ object InvoiceHtmlPdfGenerator {
                 }
             }
 
-            // Zakresy [top, bottom] w px bitmapy, których NIE wolno przecinać cięciem strony
-            // (getBoundingClientRect też zwraca CSS-px — przeliczamy przez density w środku)
-            val avoidRanges = try {
-                withTimeout(5_000) { getAvoidBreakRanges(webView, density) }
-            } catch (e: TimeoutCancellationException) {
-                emptyList()
-            }
+            // Zakresy [top, bottom] w px bitmapy, których NIE wolno przecinać cięciem strony —
+            // zmierzone wcześniej, w tym samym wywołaniu JS co scrollHeight (patrz wyżej).
+            val avoidRanges = avoidRangesResult
 
             val document = PdfDocument()
             var top = 0
@@ -566,39 +610,6 @@ object InvoiceHtmlPdfGenerator {
             c = c.baseContext
         }
         return c as? Activity
-    }
-
-    /** Zwraca listę [top, bottom] w SUROWYCH px Bitmapy (nie CSS-px!) dla każdego elementu
-     *  .footer-wrap — używane do trzymania się z dala od cięcia strony w środku tego bloku. */
-    private suspend fun getAvoidBreakRanges(webView: WebView, density: Float): List<Pair<Int, Int>> = suspendCancellableCoroutine { cont ->
-        val js = """
-            (function(){
-                var els = document.querySelectorAll('.footer-wrap');
-                var out = [];
-                for (var i=0;i<els.length;i++){
-                    var r = els[i].getBoundingClientRect();
-                    out.push([Math.round(r.top + window.scrollY), Math.round(r.bottom + window.scrollY)]);
-                }
-                return JSON.stringify(out);
-            })();
-        """.trimIndent()
-        webView.evaluateJavascript(js) { result ->
-            val ranges = try {
-                val clean = (result ?: "[]").let {
-                    var s = it.trim()
-                    if (s.startsWith("\"") && s.endsWith("\"")) s = s.substring(1, s.length - 1)
-                    s.replace("\\\"", "\"")
-                }
-                val arr = JSONArray(clean)
-                (0 until arr.length()).map { idx ->
-                    val pair = arr.getJSONArray(idx)
-                    (pair.getInt(0) * density).toInt() to (pair.getInt(1) * density).toInt()
-                }
-            } catch (e: Exception) {
-                emptyList()
-            }
-            if (cont.isActive) cont.resume(ranges)
-        }
     }
 
     // ============================= SVG ikony (inline, bez zasobów sieciowych) =============================

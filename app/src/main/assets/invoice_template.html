@@ -61,7 +61,7 @@
      całej strony REFERENCE (843x1264px = 210x297mm), żeby proporcje się zgadzały.
      Opacity:1 — przezroczystość linii jest już zapisana w kanale alfa PNG. --- */
   .waves-top{
-    position:absolute; top:0; left:0; width:210mm; height:51.7mm;
+    position:absolute; top:0; right:0; width:55.6mm; height:51.7mm;
     opacity:1; pointer-events:none; z-index:0; object-fit:cover;
   }
   .waves-bottom-left{
@@ -326,13 +326,7 @@
           {{PAYMENT_INFO_LINES_HTML}}
           {{LEGAL_VAT_BLOCK_HTML}}
         </div>
-        <div class="status-box {{STATUS_CLASS}}">
-          <span class="status-icon">{{STATUS_ICON_SVG}}</span>
-          <div>
-            <div class="status-label">STATUS</div>
-            <div class="status-text">{{STATUS_TEXT}}</div>
-          </div>
-        </div>
+        {{STATUS_BOX_HTML}}
       </div>
 
       <div class="signatures">
