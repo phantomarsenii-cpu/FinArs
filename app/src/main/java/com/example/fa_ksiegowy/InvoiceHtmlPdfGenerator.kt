@@ -544,11 +544,24 @@ object InvoiceHtmlPdfGenerator {
                                         View.MeasureSpec.makeMeasureSpec(totalHeightPx, View.MeasureSpec.EXACTLY)
                                     )
                                     view.layout(0, 0, renderWidthPx, totalHeightPx)
-                                    val bmp = Bitmap.createBitmap(renderWidthPx, totalHeightPx, Bitmap.Config.ARGB_8888)
-                                    val canvas = Canvas(bmp)
-                                    canvas.drawColor(Color.WHITE)
-                                    view.draw(canvas)
-                                    if (cont.isActive) cont.resume(bmp)
+                                    // KRYTYCZNE: bez tego opóźnienia view.draw(canvas) potrafi
+                                    // złapać częściowo NIEOD-rysowaną klatkę — Chromium nie
+                                    // zdążył jeszcze zrasteryzować nowo odsłoniętego obszaru po
+                                    // powiększeniu View, przez co w Bitmapie pojawiają się stare/
+                                    // zduplikowane kafelki (np. nagłówek powtórzony niżej zamiast
+                                    // prawdziwej treści stopki). Druga klatka (post -> post)
+                                    // dodatkowo czeka na zakończenie bieżącego cyklu rysowania.
+                                    view.postDelayed({
+                                        if (!cont.isActive) return@postDelayed
+                                        view.post {
+                                            if (!cont.isActive) return@post
+                                            val bmp = Bitmap.createBitmap(renderWidthPx, totalHeightPx, Bitmap.Config.ARGB_8888)
+                                            val canvas = Canvas(bmp)
+                                            canvas.drawColor(Color.WHITE)
+                                            view.draw(canvas)
+                                            if (cont.isActive) cont.resume(bmp)
+                                        }
+                                    }, 350)
                                 }
                             }, 150)
                         }
