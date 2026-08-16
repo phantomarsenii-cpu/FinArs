@@ -74,7 +74,7 @@
   }
 
   /* --- wszystko poza falami leży nad tłem --- */
-  .content{ position:relative; z-index:1; display:flex; flex-direction:column; min-height:271mm; }
+  .content{ position:relative; z-index:1; }
 
   /* =========================== HEADER =========================== */
   .header{
@@ -207,7 +207,7 @@
   /* ======================= FOOTER (avoid split) ======================= */
   .footer-wrap{
     page-break-inside:avoid; break-inside:avoid;
-    margin-top:auto; /* przykleja stopkę do dołu strony przy krótkiej fakturze (jak w REFERENCE) */
+    margin-top:16mm; /* stały odstęp od poprzedniej sekcji zamiast ryzykownego flex-pinningu */
   }
 
   .status-payment-row{
