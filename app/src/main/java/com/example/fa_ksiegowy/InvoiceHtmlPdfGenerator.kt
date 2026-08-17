@@ -279,8 +279,13 @@ object InvoiceHtmlPdfGenerator {
     }
 
     private fun buildLegalVatBlock(context: Context): String = """
-        <div class="legal-title">${esc(context.getString(R.string.invoice_pdf_legal_basis_title))}</div>
-        <div class="legal-text">${esc(context.getString(R.string.invoice_pdf_legal_basis_text))}</div>
+        <div class="info-line">
+          <span class="info-icon">$PERCENT_ICON</span>
+          <span class="info-text">
+            <div class="legal-title">${esc(context.getString(R.string.invoice_pdf_legal_basis_title))}</div>
+            <div class="legal-text">${esc(context.getString(R.string.invoice_pdf_legal_basis_text))}</div>
+          </span>
+        </div>
     """.trimIndent()
 
     private fun infoLine(icon: String?, text: String): String =
@@ -574,10 +579,26 @@ object InvoiceHtmlPdfGenerator {
             // zmierzone wcześniej, w tym samym wywołaniu JS co scrollHeight (patrz wyżej).
             val avoidRanges = avoidRangesResult
 
+            // Zabezpieczenie przed "widmową" prawie pustą ostatnią stroną: jeśli całkowita
+            // wysokość dokumentu przekracza wielokrotność pageHeightPx tylko o drobny margines
+            // (np. zaokrąglenia modelu pudełkowego CSS przy min-height:271mm), a w tym
+            // nadmiarze NIE ma żadnej treści chronionej przed cięciem (.footer-wrap), po prostu
+            // przycinamy nadmiar zamiast tworzyć dodatkową, praktycznie pustą stronę.
+            val rawTotalHeight = fullBitmap.height
+            val pageCountFloor = rawTotalHeight / pageHeightPx
+            val remainder = rawTotalHeight - pageCountFloor * pageHeightPx
+            val trimThreshold = maxOf((pageHeightPx * 0.03).toInt(), 15)
+            val floorBoundary = pageCountFloor * pageHeightPx
+            val overlapsProtectedContent = avoidRanges.any { (first, second) -> second > floorBoundary && first < rawTotalHeight }
+            val totalHeight = if (pageCountFloor > 0 && remainder in 1 until trimThreshold && !overlapsProtectedContent) {
+                floorBoundary
+            } else {
+                rawTotalHeight
+            }
+
             val document = PdfDocument()
             var top = 0
             var pageNumber = 1
-            val totalHeight = fullBitmap.height
             while (top < totalHeight) {
                 var bottom = minOf(top + pageHeightPx, totalHeight)
                 for (range in avoidRanges) {
@@ -642,7 +663,13 @@ object InvoiceHtmlPdfGenerator {
         </svg>""".trimIndent()
 
     private val CALENDAR_ICON = """<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <rect x="3" y="5" width="18" height="16" rx="2" stroke="#12162E" stroke-width="1.6"/>
-        <path d="M3 9h18M8 3v4M16 3v4" stroke="#12162E" stroke-width="1.6" stroke-linecap="round"/>
+        <rect x="3" y="5" width="18" height="16" rx="2" stroke="#FFFFFF" stroke-width="1.8"/>
+        <path d="M3 9h18M8 3v4M16 3v4" stroke="#FFFFFF" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>""".trimIndent()
+
+    private val PERCENT_ICON = """<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="7" cy="7" r="3" stroke="#FFFFFF" stroke-width="1.8"/>
+        <circle cx="17" cy="17" r="3" stroke="#FFFFFF" stroke-width="1.8"/>
+        <path d="M5 19L19 5" stroke="#FFFFFF" stroke-width="1.8" stroke-linecap="round"/>
         </svg>""".trimIndent()
 }
