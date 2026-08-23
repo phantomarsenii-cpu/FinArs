@@ -678,12 +678,7 @@
     <string name="correction_original_invoice_label">Исходный документ: №%1$d, %2$s</string>
     <string name="correction_original_amount_label">Исходная сумма</string>
     <string name="correction_corrected_amount_hint">Сумма после корректировки (zł)</string>
-    <string name="correction_item_picker_hint">Позиции для корректировки</string>
-    <string name="correction_pick_items_button">Выбрать позиции</string>
-    <string name="correction_pick_items_dialog_title">Выберите позиции для корректировки</string>
-    <string name="correction_pick_items_confirm">Применить</string>
-    <string name="correction_no_items_selected_hint">Пока не выбрано ни одной позиции</string>
-    <string name="correction_no_items_selected_error">Выберите хотя бы одну позицию для корректировки</string>
+    <string name="correction_item_picker_hint">Позиция для корректировки</string>
     <string name="correction_reason_hint">Причина корректировки</string>
     <string name="correction_apply_to_income_label">Применить разницу к доходу (Przychód)</string>
     <string name="correction_save_button">Выставить корректировку</string>

@@ -164,14 +164,13 @@ object InvoiceHtmlPdfGenerator {
         reason: String,
         items: List<InvoiceItem> = emptyList(),
         vatRate: VatRate? = null,
-        // Update 62: gdy faktura ma >1 pozycji i użytkownik wybrał JEDNĄ LUB WIĘCEJ
-        // konkretnych pozycji do korekty (AddInvoiceCorrectionActivity) — correctedItems
-        // to mapa indeks-w-`items` -> nowa wartość (ilość*cena) TEJ pozycji. Pozostałe
-        // pozycje (nieobecne w mapie) zostają BEZ ZMIAN zamiast (jak wcześniej)
-        // proporcjonalnego przeskalowania wszystkich pozycji razem. Pusta mapa = stare
-        // zachowanie (korekta całej faktury, proporcjonalne przeskalowanie) — dotyczy
-        // faktur z 0-1 pozycją.
-        correctedItems: Map<Int, Double> = emptyMap()
+        // Update: gdy faktura ma >1 pozycji i użytkownik wybrał JEDNĄ konkretną pozycję do
+        // korekty (AddInvoiceCorrectionActivity) — correctedItemIndex wskazuje którą (indeks
+        // w `items`), correctedItemNewValue to jej nowa wartość (ilość*cena). Pozostałe
+        // pozycje zostają BEZ ZMIAN zamiast (jak wcześniej) proporcjonalnego przeskalowania
+        // wszystkich pozycji razem.
+        correctedItemIndex: Int? = null,
+        correctedItemNewValue: Double? = null
     ): ByteArray {
         val isVatPayer = seller.nip.isNotBlank()
         val dateFmt = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
@@ -187,20 +186,18 @@ object InvoiceHtmlPdfGenerator {
         val buyerHtml = buildBuyerBody(context, buyerName, buyerNip, buyerStreet, buyerPostalCode, buyerCity, buyerNip.isNullOrBlank())
 
         // "Przed korektą" to zawsze oryginalne pozycje bez zmian. "Po korekcie": jeśli
-        // wybrano co najmniej jedną pozycję (correctedItems niepuste) — zmieniają się TYLKO
-        // zaznaczone pozycje (każda wg swojej własnej nowej wartości), reszta zostaje
-        // identyczna; w przeciwnym razie (korekta całej faktury, 0-1 pozycji) — stare
-        // zachowanie: proporcjonalne przeskalowanie.
+        // wybrano konkretną pozycję (correctedItemIndex != null) — zmienia się TYLKO ta
+        // jedna pozycja, reszta zostaje identyczna; w przeciwnym razie (korekta całej
+        // faktury, 0-1 pozycji) — stare zachowanie: proporcjonalne przeskalowanie.
         val fallbackLabel = "${context.getString(R.string.correction_pdf_to_invoice)} $originalFormattedNumber"
         val beforeRows: List<Row> = if (items.isNotEmpty()) items.map { Row(it.name, it.quantity, it.unitPrice) }
             else listOf(Row(fallbackLabel, 1.0, originalAmount))
 
         val afterRows: List<Row> = when {
-            correctedItems.isNotEmpty() -> {
+            correctedItemIndex != null && correctedItemNewValue != null && correctedItemIndex in items.indices -> {
                 items.mapIndexed { idx, item ->
-                    val newValue = correctedItems[idx]
-                    if (newValue != null) {
-                        val newUnitPrice = if (item.quantity != 0.0) newValue / item.quantity else newValue
+                    if (idx == correctedItemIndex) {
+                        val newUnitPrice = if (item.quantity != 0.0) correctedItemNewValue / item.quantity else correctedItemNewValue
                         Row(item.name, item.quantity, newUnitPrice)
                     } else {
                         Row(item.name, item.quantity, item.unitPrice)

@@ -63,28 +63,14 @@
   .waves-top{
     position:absolute; top:0; right:0; width:56.2mm; height:54.9mm;
     opacity:1; pointer-events:none; z-index:0; object-fit:cover;
-    /* Update 62: lewa krawędź tego obrazka to sztuczne, wewnętrzne przycięcie (prawa
-       i górna krawędź pokrywają się z prawdziwą krawędzią strony) — bez maski linie
-       urywały się tam nagle, w pełnym kryciu. Maska rozmywa je do przezroczystości w
-       stronę lewej krawędzi, dając płynne pojawienie się zamiast ucięcia. */
-    -webkit-mask-image: linear-gradient(to right, transparent 0%, #000 32%);
-    mask-image: linear-gradient(to right, transparent 0%, #000 32%);
   }
   .waves-bottom-left{
     position:absolute; bottom:0; left:0; width:105.85mm; height:64.6mm;
     opacity:1; pointer-events:none; z-index:0; object-fit:cover;
-    /* Update 62: górna i prawa krawędź to sztuczne przycięcie (dolna i lewa pokrywają
-       się z krawędzią strony) — rozmycie w stronę górnego-prawego rogu. */
-    -webkit-mask-image: linear-gradient(to top right, #000 55%, transparent 100%);
-    mask-image: linear-gradient(to top right, #000 55%, transparent 100%);
   }
   .waves-bottom-right{
     position:absolute; bottom:0; right:0; width:105.85mm; height:64.6mm;
     opacity:1; pointer-events:none; z-index:0; object-fit:cover;
-    /* Update 62: górna i lewa krawędź to sztuczne przycięcie (dolna i prawa pokrywają
-       się z krawędzią strony) — rozmycie w stronę górnego-lewego rogu. */
-    -webkit-mask-image: linear-gradient(to top left, #000 55%, transparent 100%);
-    mask-image: linear-gradient(to top left, #000 55%, transparent 100%);
   }
 
   /* --- wszystko poza falami leży nad tłem --- */

@@ -1,13 +1,11 @@
 package com.example.fa_ksiegowy
 
 import android.os.Bundle
-import android.widget.ArrayAdapter
-import android.widget.AdapterView
+import android.text.InputType
 import android.widget.Button
 import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.LinearLayout
-import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
 import kotlinx.coroutines.CoroutineScope
@@ -24,12 +22,18 @@ import java.util.Locale
  * на строке фактуры (см. InvoiceAdapter/item_invoice.xml), обязательный extra —
  * EXTRA_INVOICE_ID.
  *
- * Update: если у оригинальной фактуры больше 1 позиции — показываем выбор КОНКРЕТНОЙ
- * позиции для корректировки (spinner_correction_item), и "Kwota po korekcie" тогда
- * относится к ЭТОЙ ОДНОЙ позиции, а не ко всей фактуре целиком — остальные позиции
- * остаются без изменений (раньше вся фактура пересчитывалась одной пропорцией, что
- * было некорректно для многопозиционных счетов). Для фактур с 0-1 позицией поведение
- * не изменилось (корректировка всей суммы, spinner скрыт).
+ * Update 62: если у оригинальной фактуры больше 1 позиции — теперь можно выбрать
+ * НЕСКОЛЬКО позиций сразу (btn_pick_items открывает AppDialog.showMultiCheckboxPicker —
+ * то же самое оформление диалогов, что и во всём приложении, вместо стандартного
+ * системного Spinner-попапа). Для каждой выбранной позиции показывается отдельное
+ * поле "Kwota po korekcie" (см. rebuildSelectedItemsRows) — остальные, невыбранные
+ * позиции остаются без изменений. Итоговая скорректированная сумма считается как
+ * originalInvoice.amount минус сумма старых значений выбранных позиций плюс сумма
+ * новых значений. Раньше можно было скорректировать только ОДНУ позицию за раз —
+ * для нескольких позиций пользователю приходилось выставлять отдельную корректу на
+ * каждую, что было неверно (одна корректировка должна покрывать все изменения сразу).
+ * Для фактур с 0-1 позицией поведение не изменилось (корректировка всей суммы одним
+ * полем et_corrected_amount).
  *
  * Дельта (correctedAmount - originalAmount) может быть, по желанию пользователя
  * (галочка cb_apply_to_income, отмечена по умолчанию), сразу же записана как Entry
@@ -46,7 +50,15 @@ class AddInvoiceCorrectionActivity : BaseActivity() {
 
     private lateinit var originalInvoice: Invoice
     private var originalItems: List<InvoiceItem> = emptyList()
-    private var selectedItemIndex: Int? = null // null = tryb "cała faktura" (0-1 pozycji)
+
+    // Update 62: индексы (в originalItems) выбранных для корректировки позиций,
+    // в порядке выбора; для каждой — уже введённое/предзаполненное значение "Kwota
+    // po korekcie", сохраняется при переоткрытии диалога выбора, чтобы не сбрасывать
+    // то, что пользователь уже ввёл.
+    private val selectedItemIndices = LinkedHashSet<Int>()
+    private val itemPendingValues = LinkedHashMap<Int, Double>()
+    private val itemAmountFields = LinkedHashMap<Int, EditText>()
+
     private val moneyFmt = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -90,59 +102,142 @@ class AddInvoiceCorrectionActivity : BaseActivity() {
         )
     }
 
-    /** Pokazuje spinner wyboru pozycji tylko gdy oryginalna faktura ma >1 pozycję —
-     *  dla 0-1 pozycji zachowanie zostaje dokładnie takie jak wcześniej. */
+    /** Update 62: pokazuje wybór WIELU pozycji do korekty tylko gdy oryginalna faktura
+     *  ma >1 pozycję — dla 0-1 pozycji zachowanie zostaje dokładnie takie jak wcześniej
+     *  (pojedyncze pole et_corrected_amount dla całej faktury). */
     private fun setupItemPicker() {
         if (originalItems.size <= 1) return
 
-        val pickerContainer = findViewById<LinearLayout>(R.id.ll_item_picker)
-        pickerContainer.visibility = android.view.View.VISIBLE
+        findViewById<LinearLayout>(R.id.ll_item_picker).visibility = android.view.View.VISIBLE
+        // W trybie wielu pozycji kwota "całej faktury" nie ma zastosowania — liczy się
+        // z sumy pól per-pozycja (patrz rebuildSelectedItemsRows/saveCorrection).
+        findViewById<TextView>(R.id.tv_corrected_amount_label).visibility = android.view.View.GONE
+        findViewById<EditText>(R.id.et_corrected_amount).visibility = android.view.View.GONE
 
-        val spinner = findViewById<Spinner>(R.id.spinner_correction_item)
-        val labels = originalItems.map { item ->
+        findViewById<Button>(R.id.btn_pick_items).setOnClickListener { openItemPickerDialog() }
+        rebuildSelectedItemsRows()
+    }
+
+    /** Update 62: własny dialog w stylu aplikacji (AppDialog — ciemna karta, przyciski-
+     *  pigułki), zamiast systemowego Spinnera, który otwierał standardowe, "czarne"
+     *  okienko niepasujące do reszty interfejsu. Pozwala zaznaczyć checkboxami DOWOLNĄ
+     *  liczbę pozycji naraz. */
+    private fun openItemPickerDialog() {
+        val options = originalItems.mapIndexed { index, item ->
             val value = item.quantity * item.unitPrice
-            "${item.name} — ${String.format(Locale.getDefault(), "%.2f", value)} zł"
+            index to "${item.name} — ${String.format(Locale.getDefault(), "%.2f", value)} zł"
         }
-        spinner.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, labels)
-
-        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>?, view: android.view.View?, position: Int, id: Long) {
-                selectedItemIndex = position
-                val item = originalItems[position]
-                val value = item.quantity * item.unitPrice
-                findViewById<EditText>(R.id.et_corrected_amount).setText(
-                    String.format(Locale.US, "%.2f", value)
-                )
+        AppDialog.showMultiCheckboxPicker(
+            context = this,
+            title = getString(R.string.correction_pick_items_dialog_title),
+            options = options,
+            preselected = selectedItemIndices,
+            confirmText = getString(R.string.correction_pick_items_confirm),
+            cancelText = getString(R.string.confirm_cancel)
+        ) { chosen ->
+            // Zachowujemy już wpisane kwoty dla pozycji, które nadal są zaznaczone;
+            // dla nowo zaznaczonych pozycji podpowiadamy oryginalną wartość.
+            selectedItemIndices.clear()
+            for (idx in originalItems.indices) {
+                if (chosen.contains(idx)) selectedItemIndices.add(idx)
             }
-            override fun onNothingSelected(parent: AdapterView<*>?) {}
+            itemPendingValues.keys.retainAll(selectedItemIndices)
+            rebuildSelectedItemsRows()
         }
-        // wybór domyślny: pierwsza pozycja
-        selectedItemIndex = 0
+    }
+
+    /** Update 62: buduje dynamicznie po jednym polu "Kwota po korekcie" dla każdej
+     *  zaznaczonej pozycji wewnątrz ll_selected_items_amounts. */
+    private fun rebuildSelectedItemsRows() {
+        val container = findViewById<LinearLayout>(R.id.ll_selected_items_amounts)
+        container.removeAllViews()
+        itemAmountFields.clear()
+
+        val emptyHint = findViewById<TextView>(R.id.tv_no_items_selected)
+        emptyHint.visibility = if (selectedItemIndices.isEmpty()) android.view.View.VISIBLE else android.view.View.GONE
+
+        val density = resources.displayMetrics.density
+        for (idx in selectedItemIndices) {
+            val item = originalItems.getOrNull(idx) ?: continue
+            val oldValue = item.quantity * item.unitPrice
+
+            val row = LinearLayout(this).apply {
+                orientation = LinearLayout.VERTICAL
+                val lp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+                lp.topMargin = (14 * density).toInt()
+                layoutParams = lp
+            }
+
+            val label = TextView(this).apply {
+                text = "${item.name} · ${getString(R.string.correction_original_amount_label)}: " +
+                    "${String.format(Locale.getDefault(), "%.2f", oldValue)} zł"
+                textSize = 13f
+                setTextColor(resources.getColor(R.color.text_secondary, theme))
+            }
+            row.addView(label)
+
+            val amountField = EditText(this).apply {
+                setText(String.format(Locale.US, "%.2f", itemPendingValues[idx] ?: oldValue))
+                inputType = InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_DECIMAL
+                setTextColor(resources.getColor(R.color.text_primary, theme))
+                setBackgroundResource(R.drawable.input_field_bg)
+                val padH = (18 * density).toInt()
+                setPadding(padH, 0, padH, 0)
+                val lp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, (52 * density).toInt())
+                lp.topMargin = (6 * density).toInt()
+                layoutParams = lp
+            }
+            row.addView(amountField)
+
+            container.addView(row)
+            itemAmountFields[idx] = amountField
+        }
     }
 
     private fun saveCorrection() {
-        val correctedText = findViewById<EditText>(R.id.et_corrected_amount).text.toString().replace(",", ".").trim()
-        val enteredValue = correctedText.toDoubleOrNull()
-        if (enteredValue == null) {
-            Toast.makeText(this, getString(R.string.enter_amount), Toast.LENGTH_SHORT).show()
-            return
-        }
         val reason = findViewById<EditText>(R.id.et_reason).text.toString().trim()
         if (reason.isBlank()) {
             Toast.makeText(this, getString(R.string.correction_reason_required_error), Toast.LENGTH_SHORT).show()
             return
         }
 
-        // Update: w trybie "jedna pozycja" (>1 pozycji na oryginalnej fakturze) wpisana
-        // kwota dotyczy TYLKO wybranej pozycji — reszta faktury się nie zmienia. Całkowita
-        // skorygowana kwota faktury (do bazy/PDF/przychodu) jest liczona z tego przeliczona,
-        // zamiast (jak wcześniej) proporcjonalnie skalować wszystkie pozycje naraz.
-        val itemIndex = selectedItemIndex
+        // Update 62: w trybie "wiele pozycji" (>1 pozycji na oryginalnej fakturze) każda
+        // zaznaczona pozycja ma własną wpisaną kwotę — całkowita skorygowana kwota
+        // faktury to originalInvoice.amount pomniejszone o sumę starych wartości
+        // zaznaczonych pozycji i powiększone o sumę nowo wpisanych. Pozostałe pozycje
+        // (niezaznaczone) zostają bez zmian.
+        val correctedItems = LinkedHashMap<Int, Double>()
         val corrected: Double
-        if (itemIndex != null && itemIndex in originalItems.indices) {
-            val oldItemValue = originalItems[itemIndex].quantity * originalItems[itemIndex].unitPrice
-            corrected = originalInvoice.amount - oldItemValue + enteredValue
+
+        if (originalItems.size > 1) {
+            if (selectedItemIndices.isEmpty()) {
+                Toast.makeText(this, getString(R.string.correction_no_items_selected_error), Toast.LENGTH_SHORT).show()
+                return
+            }
+            var sumOld = 0.0
+            var sumNew = 0.0
+            for (idx in selectedItemIndices) {
+                val field = itemAmountFields[idx] ?: continue
+                val text = field.text.toString().replace(",", ".").trim()
+                val value = text.toDoubleOrNull()
+                if (value == null) {
+                    Toast.makeText(this, getString(R.string.enter_amount), Toast.LENGTH_SHORT).show()
+                    return
+                }
+                itemPendingValues[idx] = value
+                val oldValue = originalItems[idx].quantity * originalItems[idx].unitPrice
+                sumOld += oldValue
+                sumNew += value
+                correctedItems[idx] = value
+            }
+            corrected = originalInvoice.amount - sumOld + sumNew
         } else {
+            val correctedText = findViewById<EditText>(R.id.et_corrected_amount).text.toString().replace(",", ".").trim()
+            val enteredValue = correctedText.toDoubleOrNull()
+            if (enteredValue == null) {
+                Toast.makeText(this, getString(R.string.enter_amount), Toast.LENGTH_SHORT).show()
+                return
+            }
             corrected = enteredValue
         }
 
@@ -180,8 +275,7 @@ class AddInvoiceCorrectionActivity : BaseActivity() {
                     reason = reason,
                     items = originalItems,
                     vatRate = originalVatRate,
-                    correctedItemIndex = itemIndex,
-                    correctedItemNewValue = if (itemIndex != null) enteredValue else null
+                    correctedItems = correctedItems
                 )
             }
             val saved = InvoiceFileStorage.savePdf(applicationContext, fileName) { out ->
@@ -226,4 +320,3 @@ class AddInvoiceCorrectionActivity : BaseActivity() {
         }
     }
 }
-

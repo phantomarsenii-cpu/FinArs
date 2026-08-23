@@ -678,12 +678,7 @@
     <string name="correction_original_invoice_label">Dokument oryginalny: nr %1$d, %2$s</string>
     <string name="correction_original_amount_label">Kwota oryginalna</string>
     <string name="correction_corrected_amount_hint">Kwota po korekcie (zł)</string>
-    <string name="correction_item_picker_hint">Pozycje do korekty</string>
-    <string name="correction_pick_items_button">Wybierz pozycje</string>
-    <string name="correction_pick_items_dialog_title">Wybierz pozycje do korekty</string>
-    <string name="correction_pick_items_confirm">Zastosuj</string>
-    <string name="correction_no_items_selected_hint">Nie wybrano jeszcze żadnej pozycji</string>
-    <string name="correction_no_items_selected_error">Wybierz przynajmniej jedną pozycję do korekty</string>
+    <string name="correction_item_picker_hint">Pozycja do korekty</string>
     <string name="correction_reason_hint">Przyczyna korekty</string>
     <string name="correction_apply_to_income_label">Zastosuj różnicę do przychodu</string>
     <string name="correction_save_button">Wystaw korektę</string>
