@@ -39,7 +39,19 @@
             android:textColor="@color/text_secondary" android:textSize="13sp"/>
     </LinearLayout>
 
-    <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+    <!-- Update: wybór POZYCJI do korekty — widoczny tylko gdy oryginalna faktura ma
+         więcej niż 1 pozycję (dla faktur z jedną pozycją zachowanie jest jak dotychczas:
+         kwota po korekcie odnosi się do całej faktury). -->
+    <LinearLayout android:id="@+id/ll_item_picker" android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:orientation="vertical" android:visibility="gone" android:layout_marginBottom="14dp">
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:text="@string/correction_item_picker_hint" android:textSize="13sp"
+            android:textColor="@color/text_secondary" android:layout_marginBottom="8dp"/>
+        <Spinner android:id="@+id/spinner_correction_item" android:layout_width="match_parent" android:layout_height="56dp"
+            android:background="@drawable/input_field_bg" android:paddingStart="18dp" android:paddingEnd="18dp"/>
+    </LinearLayout>
+
+    <TextView android:id="@+id/tv_corrected_amount_label" android:layout_width="match_parent" android:layout_height="wrap_content"
         android:text="@string/correction_corrected_amount_hint" android:textSize="13sp"
         android:textColor="@color/text_secondary" android:layout_marginBottom="8dp"/>
     <EditText android:id="@+id/et_corrected_amount" android:layout_width="match_parent" android:layout_height="56dp"

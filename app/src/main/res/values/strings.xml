@@ -686,6 +686,7 @@
     <string name="correction_original_invoice_label">Original document: #%1$d, %2$s</string>
     <string name="correction_original_amount_label">Original amount</string>
     <string name="correction_corrected_amount_hint">Corrected amount (zł)</string>
+    <string name="correction_item_picker_hint">Item to correct</string>
     <string name="correction_reason_hint">Reason for the correction</string>
     <string name="correction_apply_to_income_label">Apply the difference to income (Przychód)</string>
     <string name="correction_save_button">Issue correction</string>

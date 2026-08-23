@@ -1,9 +1,13 @@
 package com.example.fa_ksiegowy
 
 import android.os.Bundle
+import android.widget.ArrayAdapter
+import android.widget.AdapterView
 import android.widget.Button
 import android.widget.CheckBox
 import android.widget.EditText
+import android.widget.LinearLayout
+import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
 import kotlinx.coroutines.CoroutineScope
@@ -20,6 +24,13 @@ import java.util.Locale
  * на строке фактуры (см. InvoiceAdapter/item_invoice.xml), обязательный extra —
  * EXTRA_INVOICE_ID.
  *
+ * Update: если у оригинальной фактуры больше 1 позиции — показываем выбор КОНКРЕТНОЙ
+ * позиции для корректировки (spinner_correction_item), и "Kwota po korekcie" тогда
+ * относится к ЭТОЙ ОДНОЙ позиции, а не ко всей фактуре целиком — остальные позиции
+ * остаются без изменений (раньше вся фактура пересчитывалась одной пропорцией, что
+ * было некорректно для многопозиционных счетов). Для фактур с 0-1 позицией поведение
+ * не изменилось (корректировка всей суммы, spinner скрыт).
+ *
  * Дельта (correctedAmount - originalAmount) может быть, по желанию пользователя
  * (галочка cb_apply_to_income, отмечена по умолчанию), сразу же записана как Entry
  * (isIncome=true, amount=delta) — это тот же самый механизм, которым обычные
@@ -34,6 +45,8 @@ class AddInvoiceCorrectionActivity : BaseActivity() {
     }
 
     private lateinit var originalInvoice: Invoice
+    private var originalItems: List<InvoiceItem> = emptyList()
+    private var selectedItemIndex: Int? = null // null = tryb "cała faktura" (0-1 pozycji)
     private val moneyFmt = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -48,14 +61,18 @@ class AddInvoiceCorrectionActivity : BaseActivity() {
         }
 
         CoroutineScope(Dispatchers.IO).launch {
-            val invoice = AppDatabase.getInstance(applicationContext).invoiceDao().getById(invoiceId)
+            val db = AppDatabase.getInstance(applicationContext)
+            val invoice = db.invoiceDao().getById(invoiceId)
+            val items = if (invoice != null) db.invoiceItemDao().getForInvoice(invoice.id) else emptyList()
             withContext(Dispatchers.Main) {
                 if (invoice == null) {
                     finish()
                     return@withContext
                 }
                 originalInvoice = invoice
+                originalItems = items
                 bindOriginalInvoiceInfo()
+                setupItemPicker()
             }
         }
 
@@ -73,10 +90,40 @@ class AddInvoiceCorrectionActivity : BaseActivity() {
         )
     }
 
+    /** Pokazuje spinner wyboru pozycji tylko gdy oryginalna faktura ma >1 pozycję —
+     *  dla 0-1 pozycji zachowanie zostaje dokładnie takie jak wcześniej. */
+    private fun setupItemPicker() {
+        if (originalItems.size <= 1) return
+
+        val pickerContainer = findViewById<LinearLayout>(R.id.ll_item_picker)
+        pickerContainer.visibility = android.view.View.VISIBLE
+
+        val spinner = findViewById<Spinner>(R.id.spinner_correction_item)
+        val labels = originalItems.map { item ->
+            val value = item.quantity * item.unitPrice
+            "${item.name} — ${String.format(Locale.getDefault(), "%.2f", value)} zł"
+        }
+        spinner.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, labels)
+
+        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, view: android.view.View?, position: Int, id: Long) {
+                selectedItemIndex = position
+                val item = originalItems[position]
+                val value = item.quantity * item.unitPrice
+                findViewById<EditText>(R.id.et_corrected_amount).setText(
+                    String.format(Locale.US, "%.2f", value)
+                )
+            }
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
+        }
+        // wybór domyślny: pierwsza pozycja
+        selectedItemIndex = 0
+    }
+
     private fun saveCorrection() {
         val correctedText = findViewById<EditText>(R.id.et_corrected_amount).text.toString().replace(",", ".").trim()
-        val corrected = correctedText.toDoubleOrNull()
-        if (corrected == null) {
+        val enteredValue = correctedText.toDoubleOrNull()
+        if (enteredValue == null) {
             Toast.makeText(this, getString(R.string.enter_amount), Toast.LENGTH_SHORT).show()
             return
         }
@@ -85,6 +132,20 @@ class AddInvoiceCorrectionActivity : BaseActivity() {
             Toast.makeText(this, getString(R.string.correction_reason_required_error), Toast.LENGTH_SHORT).show()
             return
         }
+
+        // Update: w trybie "jedna pozycja" (>1 pozycji na oryginalnej fakturze) wpisana
+        // kwota dotyczy TYLKO wybranej pozycji — reszta faktury się nie zmienia. Całkowita
+        // skorygowana kwota faktury (do bazy/PDF/przychodu) jest liczona z tego przeliczona,
+        // zamiast (jak wcześniej) proporcjonalnie skalować wszystkie pozycje naraz.
+        val itemIndex = selectedItemIndex
+        val corrected: Double
+        if (itemIndex != null && itemIndex in originalItems.indices) {
+            val oldItemValue = originalItems[itemIndex].quantity * originalItems[itemIndex].unitPrice
+            corrected = originalInvoice.amount - oldItemValue + enteredValue
+        } else {
+            corrected = enteredValue
+        }
+
         val delta = corrected - originalInvoice.amount
         if (delta == 0.0) {
             Toast.makeText(this, getString(R.string.correction_zero_delta_error), Toast.LENGTH_SHORT).show()
@@ -99,11 +160,6 @@ class AddInvoiceCorrectionActivity : BaseActivity() {
             val correctionNumber = (db.invoiceCorrectionDao().getMaxCorrectionNumber() ?: 0) + 1
             val issueDateMillis = System.currentTimeMillis()
             val fileName = FileNaming.invoiceCorrectionFileName(correctionNumber, issueDateMillis)
-
-            // Update: pozycje oryginalnej faktury i jej stawka VAT — potrzebne, żeby
-            // faktura korygująca miała tabelę pozycji ("Przed korektą" / "Po korekcie"),
-            // a nie tylko trzy linijki tekstu z kwotami (zgłoszenie użytkownika).
-            val originalItems = db.invoiceItemDao().getForInvoice(originalInvoice.id)
             val originalVatRate = VatRate.fromStorageKeyOrNull(originalInvoice.vatRate)
 
             val pdfBytes = withContext(Dispatchers.Main) {
@@ -123,7 +179,9 @@ class AddInvoiceCorrectionActivity : BaseActivity() {
                     correctedAmount = corrected,
                     reason = reason,
                     items = originalItems,
-                    vatRate = originalVatRate
+                    vatRate = originalVatRate,
+                    correctedItemIndex = itemIndex,
+                    correctedItemNewValue = if (itemIndex != null) enteredValue else null
                 )
             }
             val saved = InvoiceFileStorage.savePdf(applicationContext, fileName) { out ->

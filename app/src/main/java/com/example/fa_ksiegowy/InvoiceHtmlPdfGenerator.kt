@@ -163,7 +163,14 @@ object InvoiceHtmlPdfGenerator {
         correctedAmount: Double,
         reason: String,
         items: List<InvoiceItem> = emptyList(),
-        vatRate: VatRate? = null
+        vatRate: VatRate? = null,
+        // Update: gdy faktura ma >1 pozycji i użytkownik wybrał JEDNĄ konkretną pozycję do
+        // korekty (AddInvoiceCorrectionActivity) — correctedItemIndex wskazuje którą (indeks
+        // w `items`), correctedItemNewValue to jej nowa wartość (ilość*cena). Pozostałe
+        // pozycje zostają BEZ ZMIAN zamiast (jak wcześniej) proporcjonalnego przeskalowania
+        // wszystkich pozycji razem.
+        correctedItemIndex: Int? = null,
+        correctedItemNewValue: Double? = null
     ): ByteArray {
         val isVatPayer = seller.nip.isNotBlank()
         val dateFmt = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
@@ -178,15 +185,31 @@ object InvoiceHtmlPdfGenerator {
         val sellerHtml = buildSellerBody(context, seller, isVatPayer)
         val buyerHtml = buildBuyerBody(context, buyerName, buyerNip, buyerStreet, buyerPostalCode, buyerCity, buyerNip.isNullOrBlank())
 
-        // --- ta sama logika co w InvoicePdfGenerator.generateCorrection: "Przed korektą" ---
-        // to oryginalne pozycje, "Po korekcie" to te same pozycje przeskalowane proporcjonalnie
-        // do correctedAmount. Logika NIE zmieniona — tylko renderowana w nowym HTML/CSS.
+        // "Przed korektą" to zawsze oryginalne pozycje bez zmian. "Po korekcie": jeśli
+        // wybrano konkretną pozycję (correctedItemIndex != null) — zmienia się TYLKO ta
+        // jedna pozycja, reszta zostaje identyczna; w przeciwnym razie (korekta całej
+        // faktury, 0-1 pozycji) — stare zachowanie: proporcjonalne przeskalowanie.
         val fallbackLabel = "${context.getString(R.string.correction_pdf_to_invoice)} $originalFormattedNumber"
         val beforeRows: List<Row> = if (items.isNotEmpty()) items.map { Row(it.name, it.quantity, it.unitPrice) }
             else listOf(Row(fallbackLabel, 1.0, originalAmount))
-        val scale = if (originalAmount != 0.0) correctedAmount / originalAmount else 1.0
-        val afterRows: List<Row> = if (items.isNotEmpty()) items.map { Row(it.name, it.quantity, it.unitPrice * scale) }
-            else listOf(Row(fallbackLabel, 1.0, correctedAmount))
+
+        val afterRows: List<Row> = when {
+            correctedItemIndex != null && correctedItemNewValue != null && correctedItemIndex in items.indices -> {
+                items.mapIndexed { idx, item ->
+                    if (idx == correctedItemIndex) {
+                        val newUnitPrice = if (item.quantity != 0.0) correctedItemNewValue / item.quantity else correctedItemNewValue
+                        Row(item.name, item.quantity, newUnitPrice)
+                    } else {
+                        Row(item.name, item.quantity, item.unitPrice)
+                    }
+                }
+            }
+            items.isNotEmpty() -> {
+                val scale = if (originalAmount != 0.0) correctedAmount / originalAmount else 1.0
+                items.map { Row(it.name, it.quantity, it.unitPrice * scale) }
+            }
+            else -> listOf(Row(fallbackLabel, 1.0, correctedAmount))
+        }
 
         val tablesHtml = StringBuilder()
         tablesHtml.append(buildItemsTable(context, context.getString(R.string.correction_pdf_before_table_title), beforeRows, vatRate))
@@ -596,18 +619,27 @@ object InvoiceHtmlPdfGenerator {
                 rawTotalHeight
             }
 
+            // Górny margines strony (mm), wstrzykiwany ręcznie dla stron 2+ — pierwsza strona
+            // ma go już "wypieczonego" w bitmapie (bo .page ma padding-top w CSS), ale każda
+            // kolejna strona zaczyna się dokładnie tam, gdzie skończyła się poprzednia (środek
+            // ciągłego dokumentu), więc bez tego treść zaczynałaby się od samej krawędzi papieru.
+            val topMarginPt = 14f * 72f / 25.4f
+            val topMarginPx = (topMarginPt * renderWidthPx / PDF_PAGE_WIDTH_PT).toInt()
+
             val document = PdfDocument()
             var top = 0
             var pageNumber = 1
             while (top < totalHeight) {
-                var bottom = minOf(top + pageHeightPx, totalHeight)
+                val isFirstPage = (top == 0)
+                val availableHeightPx = if (isFirstPage) pageHeightPx else pageHeightPx - topMarginPx
+                var bottom = minOf(top + availableHeightPx, totalHeight)
                 for (range in avoidRanges) {
                     if (top < range.first && bottom in (range.first + 1) until range.second) {
                         bottom = range.first
                         break
                     }
                 }
-                if (bottom <= top) bottom = minOf(top + pageHeightPx, totalHeight)
+                if (bottom <= top) bottom = minOf(top + availableHeightPx, totalHeight)
 
                 val sliceHeight = bottom - top
                 val slice = Bitmap.createBitmap(fullBitmap, 0, top, renderWidthPx, sliceHeight)
@@ -616,7 +648,8 @@ object InvoiceHtmlPdfGenerator {
                     PdfDocument.PageInfo.Builder(PDF_PAGE_WIDTH_PT, PDF_PAGE_HEIGHT_PT, pageNumber).create()
                 )
                 val destHeight = sliceHeight.toFloat() * PDF_PAGE_WIDTH_PT / renderWidthPx
-                page.canvas.drawBitmap(slice, null, RectF(0f, 0f, PDF_PAGE_WIDTH_PT.toFloat(), destHeight), null)
+                val destTop = if (isFirstPage) 0f else topMarginPt
+                page.canvas.drawBitmap(slice, null, RectF(0f, destTop, PDF_PAGE_WIDTH_PT.toFloat(), destTop + destHeight), null)
                 document.finishPage(page)
                 slice.recycle()
 
