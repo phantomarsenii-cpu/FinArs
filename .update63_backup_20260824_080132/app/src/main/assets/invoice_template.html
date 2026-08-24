@@ -203,28 +203,6 @@
     min-width:28mm; text-align:center;
   }
 
-  /* Update 63: wiersze rozbicia VAT wewnatrz table.items — blok "W tym" (osobne stawki)
-     i wiersz "Razem" (laczne netto/VAT/brutto), widoczne tylko gdy pozycje faktury maja
-     rozne stawki VAT (patrz InvoiceHtmlPdfGenerator.buildItemsTable). */
-  .vat-breakdown-row td{
-    font-size:9pt; color:#666666; font-style:italic;
-    border-top:none;
-  }
-  .vat-total-row td{
-    font-size:9.5pt; font-weight:800; color:var(--text);
-    border-top:0.9pt solid var(--grid);
-  }
-
-  /* Update 63: trzy linijki Wartosc netto/VAT/brutto nad zielonym paskiem "DO ZAPLATY",
-     widoczne tylko gdy VAT obowiazuje (patrz InvoiceHtmlPdfGenerator.buildSumRow). */
-  .totals-breakdown{
-    padding:2.5mm 4mm 0 4mm; background:#FFFFFF;
-  }
-  .totals-line{
-    display:flex; justify-content:space-between; align-items:center;
-    font-size:9.5pt; color:var(--text); padding:0.8mm 0;
-  }
-
   /* --- korekta: blok przyczyny + podsumowanie kwot --- */
   .reason-block{ margin-bottom:5mm; }
   .reason-title{ font-size:10pt; font-weight:700; color:var(--accent); margin-bottom:1.5mm; }

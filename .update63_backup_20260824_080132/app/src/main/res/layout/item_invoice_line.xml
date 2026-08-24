@@ -104,22 +104,4 @@
         android:paddingEnd="14dp"
         android:visibility="gone"/>
 
-    <!-- Update 63: stawka VAT TEJ KONKRETNEJ pozycji — widoczna tylko gdy sprzedawca jest
-         już zarejestrowanym podatnikiem VAT (zob. AddInvoiceActivity.refreshItemVatButtonVisibility);
-         różne pozycje na jednej fakturze mogą mieć różne stawki VAT. -->
-    <Button
-        android:id="@+id/btn_item_vat_rate"
-        android:layout_width="match_parent"
-        android:layout_height="44dp"
-        android:layout_marginTop="8dp"
-        android:background="@drawable/card_bg"
-        android:text="@string/vat_rate_choose"
-        android:textAllCaps="false"
-        android:textColor="@color/accent_cyan"
-        android:textSize="13sp"
-        android:gravity="start|center_vertical"
-        android:paddingStart="14dp"
-        android:paddingEnd="14dp"
-        android:visibility="gone"/>
-
 </LinearLayout>

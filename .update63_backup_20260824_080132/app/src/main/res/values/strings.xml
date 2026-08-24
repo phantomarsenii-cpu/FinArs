@@ -484,8 +484,6 @@
     <string name="vat_rate_selected" formatted="false">VAT rate: %1$s</string>
     <string name="vat_rate_picker_title">VAT rate</string>
     <string name="vat_rate_required_error">Choose a VAT rate for this invoice</string>
-    <string name="vat_rate_required_per_item_error">Choose a VAT rate for every item</string>
-    <string name="vat_rate_per_item_info">VAT is now registered — choose a VAT rate for each item below</string>
     <string name="vat_rate_23">23% (standard)</string>
     <string name="vat_rate_8">8% (reduced)</string>
     <string name="vat_rate_5">5% (minimum)</string>
@@ -523,7 +521,6 @@
     <string name="invoice_pdf_table_vat_rate">VAT rate</string>
     <string name="invoice_pdf_table_vat_amount">VAT amount</string>
     <string name="invoice_pdf_table_brutto">Gross value</string>
-    <string name="invoice_pdf_vat_breakdown_label">Included</string>
     <string name="invoice_pdf_receipt_label">Invoice issued for the fiscal receipt (paragon)</string>
     <string name="invoice_pdf_paid_stamp">PAID</string>
     <string name="upload_logo_button">Upload company logo</string>

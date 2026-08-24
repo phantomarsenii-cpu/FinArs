@@ -484,8 +484,6 @@
     <string name="vat_rate_selected" formatted="false">Stawka VAT: %1$s</string>
     <string name="vat_rate_picker_title">Stawka VAT</string>
     <string name="vat_rate_required_error">Wybierz stawkę VAT dla tej faktury</string>
-    <string name="vat_rate_required_per_item_error">Wybierz stawkę VAT dla każdej pozycji</string>
-    <string name="vat_rate_per_item_info">Jesteś już płatnikiem VAT — wybierz stawkę VAT dla każdej pozycji poniżej</string>
     <string name="vat_rate_23">23% (podstawowa)</string>
     <string name="vat_rate_8">8% (obniżona)</string>
     <string name="vat_rate_5">5% (minimalna)</string>
@@ -523,7 +521,6 @@
     <string name="invoice_pdf_table_vat_rate">Stawka VAT</string>
     <string name="invoice_pdf_table_vat_amount">Kwota VAT</string>
     <string name="invoice_pdf_table_brutto">Wartość brutto</string>
-    <string name="invoice_pdf_vat_breakdown_label">W tym</string>
     <string name="invoice_pdf_receipt_label">Faktura wystawiona do paragonu fiskalnego</string>
     <string name="invoice_pdf_paid_stamp">ZAPŁACONO</string>
     <string name="upload_logo_button">Wgraj logo firmy</string>

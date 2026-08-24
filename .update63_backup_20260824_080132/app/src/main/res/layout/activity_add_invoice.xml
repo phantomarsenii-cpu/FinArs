@@ -367,17 +367,19 @@
         android:textStyle="bold"
         android:visibility="gone"/>
 
-    <!-- Update 63: stawka VAT jest teraz wybierana OSOBNO na każdej pozycji poniżej
-         (zob. item_invoice_line.xml/btn_item_vat_rate) — ta podpowiedź tylko informuje o
-         tym, widoczna gdy sprzedawca jest już zarejestrowanym podatnikiem VAT. -->
-    <TextView
-        android:id="@+id/tv_vat_rate_info"
+    <!-- Stawka VAT — widoczna tylko gdy sprzedawca jest już zarejestrowanym podatnikiem VAT. -->
+    <Button
+        android:id="@+id/btn_vat_rate"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="52dp"
         android:layout_marginBottom="10dp"
-        android:text="@string/vat_rate_per_item_info"
-        android:textColor="@color/text_secondary"
-        android:textSize="12sp"
+        android:background="@drawable/input_field_bg"
+        android:textAllCaps="false"
+        android:textColor="@color/text_primary"
+        android:textSize="14sp"
+        android:gravity="start|center_vertical"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
         android:visibility="gone"/>
 
     <!-- "Do paragonu" — widoczne tylko po potwierdzeniu posiadania kasy fiskalnej. -->

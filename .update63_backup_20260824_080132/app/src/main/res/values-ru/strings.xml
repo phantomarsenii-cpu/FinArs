@@ -484,8 +484,6 @@
     <string name="vat_rate_selected" formatted="false">Ставка VAT: %1$s</string>
     <string name="vat_rate_picker_title">Ставка VAT</string>
     <string name="vat_rate_required_error">Выберите ставку VAT для этой фактуры</string>
-    <string name="vat_rate_required_per_item_error">Выберите ставку VAT для каждой позиции</string>
-    <string name="vat_rate_per_item_info">Вы уже плательщик VAT — выберите ставку VAT для каждой позиции ниже</string>
     <string name="vat_rate_23">23% (базовая)</string>
     <string name="vat_rate_8">8% (сниженная)</string>
     <string name="vat_rate_5">5% (минимальная)</string>
@@ -523,7 +521,6 @@
     <string name="invoice_pdf_table_vat_rate">Ставка VAT</string>
     <string name="invoice_pdf_table_vat_amount">Сумма VAT</string>
     <string name="invoice_pdf_table_brutto">Стоимость брутто</string>
-    <string name="invoice_pdf_vat_breakdown_label">В т.ч.</string>
     <string name="invoice_pdf_receipt_label">Фактура выставлена к фискальному чеку</string>
     <string name="invoice_pdf_paid_stamp">ОПЛАЧЕНО</string>
     <string name="upload_logo_button">Загрузить логотип компании</string>

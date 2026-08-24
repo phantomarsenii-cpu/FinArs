@@ -5,7 +5,4 @@
          независимых "тега" (категория ryczałtu и id товара со склада). -->
     <item name="tag_ryczalt_category" type="id"/>
     <item name="tag_product_id" type="id"/>
-    <!-- Update 63: stawka VAT (storageKey VatRate) TEJ KONKRETNEJ pozycji faktury —
-         patrz btn_item_vat_rate w item_invoice_line.xml i AddInvoiceActivity.addItemRow. -->
-    <item name="tag_vat_rate" type="id"/>
 </resources>

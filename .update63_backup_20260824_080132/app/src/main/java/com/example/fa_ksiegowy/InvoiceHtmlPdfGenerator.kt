@@ -45,10 +45,7 @@ object InvoiceHtmlPdfGenerator {
     // --- Kolory zgodne z InvoicePdfGenerator / colors.xml, używane też w SVG ikonach ---
     private const val ICON_WHITE = "#FFFFFF"
 
-    // Update 63: Row ma teraz WLASNA stawke VAT (wczesniej jedna stawka byla wspolna dla
-    // calej faktury) — rozne pozycje moga miec rozne stawki (towar 23%, ksiazka 5% itd.),
-    // dokladnie jak w prawdziwej fakturze VAT z wieloma stawkami na jednym dokumencie.
-    private data class Row(val name: String, val qty: Double, val unitPrice: Double, val vatRate: VatRate? = null)
+    private data class Row(val name: String, val qty: Double, val unitPrice: Double)
 
     // ============================= PUBLICZNE API =============================
 
@@ -78,15 +75,9 @@ object InvoiceHtmlPdfGenerator {
         val dateFmt = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
         val numberFmt = SimpleDateFormat("MM/yyyy", Locale.US)
 
-        // Update 63: kazda pozycja ma teraz WLASNA stawke VAT (InvoiceItem.vatRate) —
-        // rozne towary/uslugi na jednej fakturze moga byc opodatkowane roznymi stawkami.
-        // Parametr vatRate ponizej to juz tylko FALLBACK dla przypadku brzegowego (items
-        // puste, pojedyncza pozycja z serviceName/amount) — w normalnym przebiegu (zawsze,
-        // patrz AddInvoiceActivity) items nie jest puste.
-        val rows: List<Row> = if (items.isNotEmpty()) items.map { Row(it.name, it.quantity, it.unitPrice, VatRate.fromStorageKeyOrNull(it.vatRate)) }
-            else listOf(Row(serviceName, 1.0, amount, vatRate))
-        val netTotal = rows.sumOf { it.qty * it.unitPrice }
-        val vatTotal = rows.sumOf { row -> row.vatRate?.vatAmount(row.qty * row.unitPrice) ?: 0.0 }
+        val rows: List<Row> = if (items.isNotEmpty()) items.map { Row(it.name, it.quantity, it.unitPrice) }
+            else listOf(Row(serviceName, 1.0, amount))
+        val totalAmount = rows.sumOf { it.qty * it.unitPrice }
 
         val formattedNumber = "$invoiceNumber/${numberFmt.format(Date(issueDateMillis))}"
         val vatSuffix = if (isVatPayer) " VAT" else ""
@@ -100,8 +91,8 @@ object InvoiceHtmlPdfGenerator {
         val buyerHtml = buildBuyerBody(context, buyerName, buyerNip, buyerStreet, buyerPostalCode, buyerCity, isPhysicalPerson)
 
         val itemsTableHtml = "<div class=\"table-with-total\">" +
-            buildItemsTable(context, null, rows) +
-            buildSumRow(context, netTotal, vatTotal, rows.any { it.vatRate != null }) +
+            buildItemsTable(context, null, rows, vatRate) +
+            buildSumRow(context, totalAmount, vatRate != null) +
             "</div>"
 
         val receiptBadge = if (isReceipt)
@@ -201,35 +192,31 @@ object InvoiceHtmlPdfGenerator {
         // identyczna; w przeciwnym razie (korekta całej faktury, 0-1 pozycji) — stare
         // zachowanie: proporcjonalne przeskalowanie.
         val fallbackLabel = "${context.getString(R.string.correction_pdf_to_invoice)} $originalFormattedNumber"
-        // Update 63: stawka VAT KAZDEJ pozycji (item.vatRate) nie zmienia sie przy korekcie —
-        // korekta zmienia tylko kwote, dlatego before/after rows dziedziczy te sama stawke
-        // co oryginalna pozycja.
-        val beforeRows: List<Row> = if (items.isNotEmpty()) items.map { Row(it.name, it.quantity, it.unitPrice, VatRate.fromStorageKeyOrNull(it.vatRate)) }
-            else listOf(Row(fallbackLabel, 1.0, originalAmount, vatRate))
+        val beforeRows: List<Row> = if (items.isNotEmpty()) items.map { Row(it.name, it.quantity, it.unitPrice) }
+            else listOf(Row(fallbackLabel, 1.0, originalAmount))
 
         val afterRows: List<Row> = when {
             correctedItems.isNotEmpty() -> {
                 items.mapIndexed { idx, item ->
-                    val itemVat = VatRate.fromStorageKeyOrNull(item.vatRate)
                     val newValue = correctedItems[idx]
                     if (newValue != null) {
                         val newUnitPrice = if (item.quantity != 0.0) newValue / item.quantity else newValue
-                        Row(item.name, item.quantity, newUnitPrice, itemVat)
+                        Row(item.name, item.quantity, newUnitPrice)
                     } else {
-                        Row(item.name, item.quantity, item.unitPrice, itemVat)
+                        Row(item.name, item.quantity, item.unitPrice)
                     }
                 }
             }
             items.isNotEmpty() -> {
                 val scale = if (originalAmount != 0.0) correctedAmount / originalAmount else 1.0
-                items.map { Row(it.name, it.quantity, it.unitPrice * scale, VatRate.fromStorageKeyOrNull(it.vatRate)) }
+                items.map { Row(it.name, it.quantity, it.unitPrice * scale) }
             }
-            else -> listOf(Row(fallbackLabel, 1.0, correctedAmount, vatRate))
+            else -> listOf(Row(fallbackLabel, 1.0, correctedAmount))
         }
 
         val tablesHtml = StringBuilder()
-        tablesHtml.append(buildItemsTable(context, context.getString(R.string.correction_pdf_before_table_title), beforeRows))
-        tablesHtml.append(buildItemsTable(context, context.getString(R.string.correction_pdf_after_table_title), afterRows))
+        tablesHtml.append(buildItemsTable(context, context.getString(R.string.correction_pdf_before_table_title), beforeRows, vatRate))
+        tablesHtml.append(buildItemsTable(context, context.getString(R.string.correction_pdf_after_table_title), afterRows, vatRate))
 
         val delta = correctedAmount - originalAmount
         val deltaSign = if (delta >= 0) "+" else ""
@@ -331,23 +318,11 @@ object InvoiceHtmlPdfGenerator {
         "<div class=\"info-line\">${if (icon != null) "<span class=\"info-icon\">$icon</span>" else "<span class=\"info-icon\"></span>"}<span class=\"info-text\">${esc(text)}</span></div>"
 
     /** Buduje tabelę pozycji — bez VAT (Lp/Nazwa/Jedn./Ilość/Cena netto/Wartość netto, jak
-     *  na dostarczonym makiecie) lub z VAT (dodatkowo Stawka VAT/Kwota VAT/Wartość brutto).
-     *  Update 63: stawka VAT jest teraz WŁASNOŚCIĄ KAŻDEJ POZYCJI (row.vatRate) zamiast
-     *  jednej wspólnej stawki na całą fakturę — różne towary/usługi mogą mieć różne stawki
-     *  na jednym dokumencie. Tabela pokazuje kolumny VAT, jeśli CHOĆ JEDNA pozycja ma
-     *  ustawioną stawkę. Gdy wśród pozycji występuje więcej niż jedna różna stawka VAT,
-     *  pod pozycjami dodawany jest blok "W tym" (podsumowanie netto/VAT/brutto osobno dla
-     *  każdej stawki) oraz wiersz "Razem" (łączne netto/VAT/brutto) — dokładnie jak w
-     *  standardowej fakturze VAT z wieloma stawkami. */
-    private fun buildItemsTable(context: Context, title: String?, rows: List<Row>): String {
+     *  na dostarczonym makiecie) lub z VAT (dodatkowo Stawka VAT/Kwota VAT/Wartość brutto),
+     *  dokładnie ta sama logika kolumn co w InvoicePdfGenerator — tylko jako <table> HTML. */
+    private fun buildItemsTable(context: Context, title: String?, rows: List<Row>, vatRate: VatRate?): String {
         val qtyStr: (Double) -> String = { q -> if (q == q.toLong().toDouble()) q.toLong().toString() else q.toString() }
         val money: (Double) -> String = { String.format(Locale.US, "%,.2f", it).replace(",", " ").replace(".", ",") + " zł" }
-        val vatLabel: (VatRate?) -> String = { rate ->
-            if (rate == null) "—"
-            else rate.percent?.let { p -> val i = p.toInt(); if (i.toDouble() == p) "$i%" else "$p%" } ?: rate.storageKey
-        }
-
-        val hasVat = rows.any { it.vatRate != null }
 
         val sb = StringBuilder()
         if (title != null) sb.append("<div class=\"table-title\">${esc(title)}</div>")
@@ -356,7 +331,7 @@ object InvoiceHtmlPdfGenerator {
         sb.append("<th class=\"col-name\">${esc(context.getString(R.string.invoice_pdf_table_name))}</th>")
         sb.append("<th class=\"col-unit\">${esc(context.getString(R.string.invoice_pdf_table_unit))}</th>")
         sb.append("<th class=\"col-qty num\">${esc(context.getString(R.string.invoice_pdf_table_qty))}</th>")
-        if (!hasVat) {
+        if (vatRate == null) {
             sb.append("<th class=\"col-price num\">${esc(context.getString(R.string.invoice_pdf_table_price_netto))}</th>")
             sb.append("<th class=\"col-total num\">${esc(context.getString(R.string.invoice_pdf_table_netto))}</th>")
         } else {
@@ -368,90 +343,39 @@ object InvoiceHtmlPdfGenerator {
         }
         sb.append("</tr></thead><tbody>")
 
-        var sumNet = 0.0
-        var sumVat = 0.0
-        // Suma wg stawki VAT — do bloku "W tym" (klucz = etykieta stawki, np. "23%").
-        val byRate = LinkedHashMap<String, DoubleArray>()
+        val vatRateShort = vatRate?.percent?.let { p -> val i = p.toInt(); if (i.toDouble() == p) "$i%" else "$p%" } ?: vatRate?.storageKey
 
         rows.forEachIndexed { idx, row ->
-            val netValue = row.qty * row.unitPrice
-            sumNet += netValue
             sb.append("<tr>")
             sb.append("<td>${idx + 1}</td>")
             sb.append("<td>${esc(row.name)}</td>")
             sb.append("<td>${esc(context.getString(R.string.invoice_pdf_unit_piece))}</td>")
             sb.append("<td class=\"num\">${qtyStr(row.qty)}</td>")
-            if (!hasVat) {
+            if (vatRate == null) {
                 sb.append("<td class=\"num\">${money(row.unitPrice)}</td>")
-                sb.append("<td class=\"num\">${money(netValue)}</td>")
+                sb.append("<td class=\"num\">${money(row.qty * row.unitPrice)}</td>")
             } else {
-                val vatAmount = row.vatRate?.vatAmount(netValue) ?: 0.0
+                val netValue = row.qty * row.unitPrice
+                val vatAmount = vatRate.vatAmount(netValue)
                 val bruttoValue = netValue + vatAmount
-                sumVat += vatAmount
-                val rateLabel = vatLabel(row.vatRate)
                 sb.append("<td class=\"num\">${money(row.unitPrice)}</td>")
                 sb.append("<td class=\"num\">${money(netValue)}</td>")
-                sb.append("<td class=\"num\">${rateLabel}</td>")
+                sb.append("<td class=\"num\">${vatRateShort}</td>")
                 sb.append("<td class=\"num\">${money(vatAmount)}</td>")
                 sb.append("<td class=\"num\">${money(bruttoValue)}</td>")
-                val bucket = byRate.getOrPut(rateLabel) { DoubleArray(3) }
-                bucket[0] += netValue; bucket[1] += vatAmount; bucket[2] += bruttoValue
             }
             sb.append("</tr>")
         }
-        sb.append("</tbody>")
-
-        if (hasVat) {
-            // Blok "W tym": tylko gdy pozycje faktycznie mają różne stawki — przy jednej
-            // wspólnej stawce dublowałby wiersz "Razem" poniżej bez żadnej nowej informacji.
-            if (byRate.size > 1) {
-                var first = true
-                for ((rateLabel, sums) in byRate) {
-                    sb.append("<tr class=\"vat-breakdown-row\">")
-                    sb.append("<td colspan=\"4\"></td>")
-                    sb.append("<td>${if (first) esc(context.getString(R.string.invoice_pdf_vat_breakdown_label)) else ""}</td>")
-                    sb.append("<td class=\"num\">${money(sums[0])}</td>")
-                    sb.append("<td class=\"num\">${rateLabel}</td>")
-                    sb.append("<td class=\"num\">${money(sums[1])}</td>")
-                    sb.append("<td class=\"num\">${money(sums[2])}</td>")
-                    sb.append("</tr>")
-                    first = false
-                }
-            }
-            val grossTotal = sumNet + sumVat
-            sb.append("<tr class=\"vat-total-row\">")
-            sb.append("<td colspan=\"4\"></td>")
-            sb.append("<td>${esc(context.getString(R.string.invoice_pdf_table_total))}</td>")
-            sb.append("<td class=\"num\">${money(sumNet)}</td>")
-            sb.append("<td></td>")
-            sb.append("<td class=\"num\">${money(sumVat)}</td>")
-            sb.append("<td class=\"num\">${money(grossTotal)}</td>")
-            sb.append("</tr>")
-        }
-
-        sb.append("</table>")
+        sb.append("</tbody></table>")
         return sb.toString()
     }
 
-    private fun buildSumRow(context: Context, netTotal: Double, vatTotal: Double, hasVat: Boolean): String {
+    private fun buildSumRow(context: Context, totalAmount: Double, isVat: Boolean): String {
         val money: (Double) -> String = { String.format(Locale.US, "%,.2f", it).replace(",", " ").replace(".", ",") + " zł" }
-        val grossTotal = netTotal + vatTotal
-        // Update 63: gdy VAT obowiązuje, "DO ZAPŁATY" to kwota BRUTTO (netto+VAT) — wcześniej
-        // ten pasek zawsze pokazywał samo netto, nawet dla faktur z VAT, co było błędem
-        // (kupujący płaci netto+VAT, nie samo netto). Trzy linijki netto/VAT/brutto nad
-        // paskiem pokazują pełne rozliczenie, tak jak w dostarczonym wzorze.
-        val breakdownHtml = if (hasVat) """
-            <div class="totals-breakdown">
-              <div class="totals-line"><span>${esc(context.getString(R.string.invoice_pdf_table_netto))}</span><b>${money(netTotal)}</b></div>
-              <div class="totals-line"><span>${esc(context.getString(R.string.invoice_pdf_table_vat_amount))}</span><b>${money(vatTotal)}</b></div>
-              <div class="totals-line"><span>${esc(context.getString(R.string.invoice_pdf_table_brutto))}</span><b>${money(grossTotal)}</b></div>
-            </div>
-        """.trimIndent() else ""
         return """
-            $breakdownHtml
             <div class="sum-row">
               <div class="sum-label-wrap">${esc(context.getString(R.string.invoice_pdf_sum_label))} DO ZAPŁATY</div>
-              <div class="sum-amount">${money(if (hasVat) grossTotal else netTotal)}</div>
+              <div class="sum-amount">${money(totalAmount)}</div>
             </div>
         """.trimIndent()
     }
