@@ -10,7 +10,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase
 
 @Database(
     entities = [Entry::class, Invoice::class, RecurringEntry::class, Product::class, InvoiceItem::class, InventoryRecord::class, InventorySession::class, InvoiceCorrection::class],
-    version = 12,
+    version = 11,
     exportSchema = false
 )
 @TypeConverters(Converters::class)
@@ -149,18 +149,6 @@ abstract class AppDatabase : RoomDatabase() {
             }
         }
 
-        /** v11 -> v12: każda pozycja faktury (invoice_items) ma teraz WŁASNĄ stawkę VAT
-         *  (vatRate, storageKey [VatRate]) zamiast jednej wspólnej stawki na całą fakturę
-         *  (Invoice.vatRate, pozostawione bez zmian jako "podgląd" — patrz AddInvoiceActivity) —
-         *  różne towary/usługi na jednej fakturze mogą być opodatkowane różnymi stawkami.
-         *  Obyczajna migracja, bez utraty już zapisanych danych — dla wszystkich wcześniej
-         *  zapisanych pozycji kolumna pozostaje NULL. */
-        private val MIGRATION_11_12 = object : Migration(11, 12) {
-            override fun migrate(database: SupportSQLiteDatabase) {
-                database.execSQL("ALTER TABLE invoice_items ADD COLUMN vatRate TEXT")
-            }
-        }
-
         @Volatile private var INSTANCE: AppDatabase? = null
         fun getInstance(context: Context): AppDatabase {
             return INSTANCE ?: synchronized(this) {
@@ -168,7 +156,7 @@ abstract class AppDatabase : RoomDatabase() {
                     context.applicationContext,
                     AppDatabase::class.java,
                     "fa_ksiegowy.db"
-                ).addMigrations(MIGRATION_3_4, MIGRATION_4_5, MIGRATION_5_6, MIGRATION_6_7, MIGRATION_7_8, MIGRATION_8_9, MIGRATION_9_10, MIGRATION_10_11, MIGRATION_11_12).fallbackToDestructiveMigration().build().also { INSTANCE = it }
+                ).addMigrations(MIGRATION_3_4, MIGRATION_4_5, MIGRATION_5_6, MIGRATION_6_7, MIGRATION_7_8, MIGRATION_8_9, MIGRATION_9_10, MIGRATION_10_11).fallbackToDestructiveMigration().build().also { INSTANCE = it }
             }
         }
     }

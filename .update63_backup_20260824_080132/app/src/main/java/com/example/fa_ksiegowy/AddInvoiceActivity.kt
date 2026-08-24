@@ -56,10 +56,7 @@ class AddInvoiceActivity : BaseActivity() {
 
     /** Stan limitu VAT/kasy fiskalnej — odświeżany w onCreate/onResume (zob. refreshComplianceStatus). */
     private var compliance: VatComplianceHelper.ComplianceStatus? = null
-    // Update 63: stawka VAT jest teraz wybierana OSOBNO NA KAŻDEJ POZYCJI faktury (przycisk
-    // btn_item_vat_rate na każdym wierszu, wartość w tag_vat_rate) — różne towary/usługi
-    // mogą mieć różne stawki na jednej fakturze. Usunięto pojedynczy wybór na całą fakturę
-    // (dawne selectedVatRate/btn_vat_rate).
+    private var selectedVatRate: VatRate? = null
 
     private val activityType: ActivityType by lazy {
         ActivityTypeHelper.get(getSharedPreferences("settings", MODE_PRIVATE))
@@ -134,6 +131,8 @@ class AddInvoiceActivity : BaseActivity() {
             startActivity(Intent(this, InvoiceHistoryActivity::class.java))
         }
 
+        findViewById<Button>(R.id.btn_vat_rate).setOnClickListener { showVatRatePicker() }
+
         findViewById<Button>(R.id.btn_upload_logo).setOnClickListener {
             pickLogoLauncher.launch("image/*")
         }
@@ -186,17 +185,36 @@ class AddInvoiceActivity : BaseActivity() {
                     btnGenerate.alpha = 1.0f
                 }
 
-                // Update 63: stawka VAT jest teraz per-pozycja (patrz addItemRow) — tu tylko
-                // pokazujemy/chowamy podpowiedź nad listą pozycji i odświeżamy widoczność
-                // przycisku stawki NA KAŻDYM już istniejącym wierszu (dodane PRZED tym, jak
-                // status zdążył się załadować asynchronicznie, np. pierwszy pusty wiersz z onCreate).
-                findViewById<View>(R.id.tv_vat_rate_info).visibility =
-                    if (status.requiresVatRateSelection) View.VISIBLE else View.GONE
-                refreshAllItemRowsVatVisibility()
+                val btnVatRate = findViewById<Button>(R.id.btn_vat_rate)
+                if (status.requiresVatRateSelection) {
+                    btnVatRate.visibility = View.VISIBLE
+                    refreshVatRateButtonText()
+                } else {
+                    btnVatRate.visibility = View.GONE
+                    selectedVatRate = null
+                }
 
                 findViewById<View>(R.id.row_is_receipt).visibility =
                     if (status.allowsReceiptFlag) View.VISIBLE else View.GONE
             }
+        }
+    }
+
+    private fun refreshVatRateButtonText() {
+        val btn = findViewById<Button>(R.id.btn_vat_rate)
+        val rate = selectedVatRate
+        btn.text = if (rate != null) getString(R.string.vat_rate_selected, getString(rate.labelResId))
+        else getString(R.string.vat_rate_choose)
+    }
+
+    private fun showVatRatePicker() {
+        AppDialog.showOptionPicker(
+            context = this,
+            title = getString(R.string.vat_rate_picker_title),
+            options = VatRate.entries.map { it.storageKey to getString(it.labelResId) }
+        ) { selected ->
+            selectedVatRate = VatRate.fromStorageKeyOrNull(selected)
+            refreshVatRateButtonText()
         }
     }
 
@@ -265,23 +283,6 @@ class AddInvoiceActivity : BaseActivity() {
             btnCategory.visibility = View.GONE
         }
 
-        // Update 63: stawka VAT TEJ KONKRETNEJ pozycji — widoczna tylko gdy sprzedawca jest
-        // już zarejestrowanym podatnikiem VAT (compliance.requiresVatRateSelection); różne
-        // pozycje na jednej fakturze mogą mieć różne stawki (patrz InvoiceHtmlPdfGenerator).
-        val btnVat = row.findViewById<Button>(R.id.btn_item_vat_rate)
-        refreshItemVatButtonVisibility(btnVat)
-        refreshItemVatButtonText(row, btnVat)
-        btnVat.setOnClickListener {
-            AppDialog.showOptionPicker(
-                context = this,
-                title = getString(R.string.vat_rate_picker_title),
-                options = VatRate.entries.map { it.storageKey to getString(it.labelResId) }
-            ) { selected ->
-                row.setTag(R.id.tag_vat_rate, selected)
-                refreshItemVatButtonText(row, btnVat)
-            }
-        }
-
         val watcher = object : android.text.TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
@@ -299,26 +300,6 @@ class AddInvoiceActivity : BaseActivity() {
         val cat = RyczaltCategory.fromStorageKeyOrNull(row.getTag(R.id.tag_ryczalt_category) as? String)
         btn.text = if (cat != null) getString(R.string.ryczalt_category_selected, getString(cat.labelRes))
         else getString(R.string.ryczalt_category_choose)
-    }
-
-    private fun refreshItemVatButtonVisibility(btn: Button) {
-        btn.visibility = if (compliance?.requiresVatRateSelection == true) View.VISIBLE else View.GONE
-    }
-
-    private fun refreshItemVatButtonText(row: View, btn: Button) {
-        val rate = VatRate.fromStorageKeyOrNull(row.getTag(R.id.tag_vat_rate) as? String)
-        btn.text = if (rate != null) getString(R.string.vat_rate_selected, getString(rate.labelResId))
-        else getString(R.string.vat_rate_choose)
-    }
-
-    /** Wywoływane po (asynchronicznym) odświeżeniu compliance — pierwszy pusty wiersz
-     *  pozycji jest dodawany w onCreate ZANIM status zdąży się załadować, więc jego
-     *  przycisk stawki VAT trzeba doświetlić/dociemnić dopiero teraz. */
-    private fun refreshAllItemRowsVatVisibility() {
-        val container = findViewById<LinearLayout>(R.id.ll_invoice_items)
-        for (i in 0 until container.childCount) {
-            refreshItemVatButtonVisibility(container.getChildAt(i).findViewById(R.id.btn_item_vat_rate))
-        }
     }
 
     private fun renumberItemRows() {
@@ -486,10 +467,7 @@ class AddInvoiceActivity : BaseActivity() {
         val qty: Double,
         val price: Double,
         val category: String?,
-        val productId: Long?,
-        // Update 63: stawka VAT (storageKey VatRate) TEJ KONKRETNEJ pozycji — patrz
-        // btn_item_vat_rate/tag_vat_rate w addItemRow().
-        val vatRate: String?
+        val productId: Long?
     )
 
     /** Считывает все заполненные строки контейнера ll_invoice_items — пустые
@@ -509,8 +487,7 @@ class AddInvoiceActivity : BaseActivity() {
                     qty = if (qty == null || qty <= 0.0) 1.0 else qty,
                     price = price,
                     category = row.getTag(R.id.tag_ryczalt_category) as? String,
-                    productId = row.getTag(R.id.tag_product_id) as? Long,
-                    vatRate = row.getTag(R.id.tag_vat_rate) as? String
+                    productId = row.getTag(R.id.tag_product_id) as? Long
                 )
             )
         }
@@ -544,10 +521,9 @@ class AddInvoiceActivity : BaseActivity() {
             Toast.makeText(this, getString(R.string.invoice_blocked_toast), Toast.LENGTH_LONG).show()
             return
         }
-        // Update 63: sprzedawca jest już podatnikiem VAT — stawka VAT jest obowiązkowa na
-        // KAŻDEJ pozycji faktury (różne pozycje mogą mieć różne stawki).
-        if (compliance?.requiresVatRateSelection == true && lines.any { it.vatRate == null }) {
-            Toast.makeText(this, getString(R.string.vat_rate_required_per_item_error), Toast.LENGTH_LONG).show()
+        // Sprzedawca jest już podatnikiem VAT — stawka VAT jest obowiązkowa na każdej fakturze.
+        if (compliance?.requiresVatRateSelection == true && selectedVatRate == null) {
+            Toast.makeText(this, getString(R.string.vat_rate_required_error), Toast.LENGTH_LONG).show()
             return
         }
         // Ryczałt: каждая позиция обязана иметь категорию, чтобы налог считался
@@ -563,10 +539,7 @@ class AddInvoiceActivity : BaseActivity() {
         findViewById<Button>(R.id.btn_generate).isEnabled = false
         val seller = InvoiceSellerData(sellerName, sellerNip, sellerStreet, sellerPostal, sellerCity, sellerBankAccount)
         val issueDateMillis = System.currentTimeMillis()
-        // Update 63: Invoice.vatRate to teraz tylko pomocniczy "podgląd" — pełne dane per-pozycja
-        // są w InvoiceItem.vatRate (patrz itemsForPdf niżej). Zapisujemy wspólną stawkę TYLKO gdy
-        // WSZYSTKIE pozycje mają dokładnie tę samą stawkę; przy mieszanych stawkach zostaje null.
-        val vatRateStorageKeyForInvoice = lines.map { it.vatRate }.distinct().singleOrNull()
+        val vatRateForInvoice = selectedVatRate
         val isReceiptForInvoice = compliance?.allowsReceiptFlag == true &&
             findViewById<android.widget.Switch>(R.id.sw_is_receipt).isChecked
 
@@ -580,8 +553,7 @@ class AddInvoiceActivity : BaseActivity() {
                 val itemsForPdf = lines.map {
                     InvoiceItem(
                         invoiceId = 0, productId = it.productId, name = it.name,
-                        quantity = it.qty, unitPrice = it.price, ryczaltCategory = it.category,
-                        vatRate = it.vatRate
+                        quantity = it.qty, unitPrice = it.price, ryczaltCategory = it.category
                     )
                 }
 
@@ -609,9 +581,7 @@ class AddInvoiceActivity : BaseActivity() {
                         invoiceStatus = invoiceStatus,
                         dueDateMillis = if (invoiceStatus == InvoiceStatus.PENDING) dueDateMillis else null,
                         items = itemsForPdf,
-                        // Fallback tylko dla pustych items (nigdy nie zdarza się tutaj — lines
-                        // jest sprawdzone jako niepuste wyżej) — per-pozycja stawki są w items.
-                        vatRate = null,
+                        vatRate = vatRateForInvoice,
                         isReceipt = isReceiptForInvoice
                     )
                 }
@@ -638,7 +608,7 @@ class AddInvoiceActivity : BaseActivity() {
                         pdfFileName = fileName,
                         status = invoiceStatus,
                         dueDateMillis = if (invoiceStatus == InvoiceStatus.PENDING) dueDateMillis else null,
-                        vatRate = vatRateStorageKeyForInvoice,
+                        vatRate = vatRateForInvoice?.storageKey,
                         isReceipt = isReceiptForInvoice
                     )
                 )
@@ -648,8 +618,7 @@ class AddInvoiceActivity : BaseActivity() {
                 val itemsToInsert = lines.map {
                     InvoiceItem(
                         invoiceId = invoiceId, productId = it.productId, name = it.name,
-                        quantity = it.qty, unitPrice = it.price, ryczaltCategory = it.category,
-                        vatRate = it.vatRate
+                        quantity = it.qty, unitPrice = it.price, ryczaltCategory = it.category
                     )
                 }
                 AppDatabase.getInstance(applicationContext).invoiceItemDao().insertAll(itemsToInsert)
@@ -710,7 +679,9 @@ class AddInvoiceActivity : BaseActivity() {
                     // Возвращаем форму позиций к одной пустой строке для следующей фактуры.
                     findViewById<LinearLayout>(R.id.ll_invoice_items).removeAllViews()
                     addItemRow()
+                    selectedVatRate = null
                     findViewById<android.widget.Switch>(R.id.sw_is_receipt).isChecked = false
+                    refreshVatRateButtonText()
                     findViewById<Button>(R.id.btn_generate).isEnabled = true
                     findViewById<View>(R.id.row_after_generate).visibility = View.VISIBLE
                     Toast.makeText(

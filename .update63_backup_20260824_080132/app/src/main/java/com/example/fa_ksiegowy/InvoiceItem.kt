@@ -19,11 +19,5 @@ data class InvoiceItem(
     // заполняется, только когда в настройках выбран ActivityType.JDG_RYCZALT
     // (см. AddInvoiceActivity), так как одна фактура может содержать и товар,
     // и услугу с разными ставками ryczałtu одновременно.
-    val ryczaltCategory: String? = null,
-    // Update 63: stawka VAT (storageKey VatRate) TEJ KONKRETNEJ pozycji — zapełniana
-    // tylko gdy sprzedawca jest już zarejestrowanym podatnikiem VAT (zob.
-    // VatComplianceHelper). Różne pozycje na jednej fakturze mogą mieć różne stawki
-    // (towar 23%, książka 5% itd.) — dlatego stawka jest właściwością POZYCJI, a nie
-    // jednego wyboru na całą fakturę (jak dawniej Invoice.vatRate).
-    val vatRate: String? = null
+    val ryczaltCategory: String? = null
 )

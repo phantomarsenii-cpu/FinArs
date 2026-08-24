@@ -39,24 +39,16 @@
             android:textColor="@color/text_secondary" android:textSize="13sp"/>
     </LinearLayout>
 
-    <!-- Update 62: wybór WIELU pozycji do korekty naraz — widoczny tylko gdy oryginalna
-         faktura ma więcej niż 1 pozycję (dla faktur z jedną pozycją zachowanie jest jak
-         dotychczas: kwota po korekcie odnosi się do całej faktury, pole et_corrected_amount
-         poniżej). Przycisk btn_pick_items otwiera dialog w stylu aplikacji
-         (AppDialog.showMultiCheckboxPicker) zamiast standardowego systemowego Spinnera. -->
+    <!-- Update: wybór POZYCJI do korekty — widoczny tylko gdy oryginalna faktura ma
+         więcej niż 1 pozycję (dla faktur z jedną pozycją zachowanie jest jak dotychczas:
+         kwota po korekcie odnosi się do całej faktury). -->
     <LinearLayout android:id="@+id/ll_item_picker" android:layout_width="match_parent" android:layout_height="wrap_content"
         android:orientation="vertical" android:visibility="gone" android:layout_marginBottom="14dp">
         <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
             android:text="@string/correction_item_picker_hint" android:textSize="13sp"
             android:textColor="@color/text_secondary" android:layout_marginBottom="8dp"/>
-        <Button android:id="@+id/btn_pick_items" android:layout_width="match_parent" android:layout_height="52dp"
-            android:text="@string/correction_pick_items_button" android:textAllCaps="false" android:textSize="14sp"
-            android:textColor="@color/text_primary" android:background="@drawable/btn_pill_outline"/>
-        <TextView android:id="@+id/tv_no_items_selected" android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:text="@string/correction_no_items_selected_hint" android:textSize="13sp"
-            android:textColor="@color/text_secondary" android:layout_marginTop="10dp"/>
-        <LinearLayout android:id="@+id/ll_selected_items_amounts" android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:orientation="vertical"/>
+        <Spinner android:id="@+id/spinner_correction_item" android:layout_width="match_parent" android:layout_height="56dp"
+            android:background="@drawable/input_field_bg" android:paddingStart="18dp" android:paddingEnd="18dp"/>
     </LinearLayout>
 
     <TextView android:id="@+id/tv_corrected_amount_label" android:layout_width="match_parent" android:layout_height="wrap_content"
@@ -87,3 +79,4 @@
 </LinearLayout>
     </ScrollView>
 </FrameLayout>
+

@@ -484,8 +484,6 @@
     <string name="vat_rate_selected" formatted="false">VAT rate: %1$s</string>
     <string name="vat_rate_picker_title">VAT rate</string>
     <string name="vat_rate_required_error">Choose a VAT rate for this invoice</string>
-    <string name="vat_rate_required_per_item_error">Choose a VAT rate for every item</string>
-    <string name="vat_rate_per_item_info">VAT is now registered — choose a VAT rate for each item below</string>
     <string name="vat_rate_23">23% (standard)</string>
     <string name="vat_rate_8">8% (reduced)</string>
     <string name="vat_rate_5">5% (minimum)</string>
@@ -523,7 +521,6 @@
     <string name="invoice_pdf_table_vat_rate">VAT rate</string>
     <string name="invoice_pdf_table_vat_amount">VAT amount</string>
     <string name="invoice_pdf_table_brutto">Gross value</string>
-    <string name="invoice_pdf_vat_breakdown_label">Included</string>
     <string name="invoice_pdf_receipt_label">Invoice issued for the fiscal receipt (paragon)</string>
     <string name="invoice_pdf_paid_stamp">PAID</string>
     <string name="upload_logo_button">Upload company logo</string>
@@ -689,12 +686,7 @@
     <string name="correction_original_invoice_label">Original document: #%1$d, %2$s</string>
     <string name="correction_original_amount_label">Original amount</string>
     <string name="correction_corrected_amount_hint">Corrected amount (zł)</string>
-    <string name="correction_item_picker_hint">Items to correct</string>
-    <string name="correction_pick_items_button">Choose items</string>
-    <string name="correction_pick_items_dialog_title">Select items to correct</string>
-    <string name="correction_pick_items_confirm">Apply</string>
-    <string name="correction_no_items_selected_hint">No items selected yet</string>
-    <string name="correction_no_items_selected_error">Select at least one item to correct</string>
+    <string name="correction_item_picker_hint">Item to correct</string>
     <string name="correction_reason_hint">Reason for the correction</string>
     <string name="correction_apply_to_income_label">Apply the difference to income (Przychód)</string>
     <string name="correction_save_button">Issue correction</string>

@@ -10,7 +10,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import android.widget.Button
-import android.widget.CheckBox
 import android.widget.LinearLayout
 import android.widget.TextView
 
@@ -21,9 +20,7 @@ import android.widget.TextView
  * из тёмного интерфейса приложения. Используется и для простых диалогов с полем
  * ввода (см. InventoryActivity — количество при сканировании), и для компактного
  * вертикального меню выбора одного варианта (см. showOptionPicker — категория
- * ryczałtu в AddEntryActivity/AddInvoiceActivity), и для выбора НЕСКОЛЬКИХ вариантов
- * чекбоксами (см. showMultiCheckboxPicker — позиции для Faktura korygująca в
- * AddInvoiceCorrectionActivity).
+ * ryczałtu в AddEntryActivity/AddInvoiceActivity).
  */
 object AppDialog {
 
@@ -171,56 +168,5 @@ object AppDialog {
             cancelable = true
         )
         dialogRef[0] = dialog
-    }
-
-    /** Update 62: вертикальный список чекбоксов для выбора НЕСКОЛЬКИХ вариантов сразу
-     *  (используется для выбора позиций фактуры при Faktura korygująca) — в стиле
-     *  приложения (card_bg + pill-кнопки), вместо системного диалога/Spinner-попапа,
-     *  который рендерится стандартным (обычно тёмным) системным стилем, выбивающимся
-     *  из дизайна приложения. options — список пар (id, подпись); id — произвольный
-     *  идентификатор варианта (например индекс позиции в списке), возвращается в
-     *  onConfirm как Set выбранных id. Диалог закрывается по кнопке confirmText —
-     *  onConfirm вызывается только тогда (кнопка cancelText просто закрывает диалог
-     *  без вызова колбэка). */
-    fun showMultiCheckboxPicker(
-        context: Context,
-        title: String,
-        options: List<Pair<Int, String>>,
-        preselected: Set<Int>,
-        confirmText: String,
-        cancelText: String,
-        onConfirm: (Set<Int>) -> Unit
-    ) {
-        val density = context.resources.displayMetrics.density
-        val container = LinearLayout(context).apply { orientation = LinearLayout.VERTICAL }
-        val checkBoxes = mutableListOf<Pair<Int, CheckBox>>()
-
-        for ((index, pair) in options.withIndex()) {
-            val (id, label) = pair
-            val cb = CheckBox(context).apply {
-                text = label
-                textSize = 14f
-                setTextColor(context.resources.getColor(R.color.text_primary, context.theme))
-                isChecked = preselected.contains(id)
-            }
-            val lp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-            if (index > 0) lp.topMargin = (12 * density).toInt()
-            container.addView(cb, lp)
-            checkBoxes.add(id to cb)
-        }
-
-        show(
-            context = context,
-            title = title,
-            contentView = container,
-            positiveText = confirmText,
-            onPositive = {
-                val selected = checkBoxes.filter { it.second.isChecked }.map { it.first }.toSet()
-                onConfirm(selected)
-            },
-            negativeText = cancelText,
-            onNegative = {},
-            cancelable = true
-        )
     }
 }
