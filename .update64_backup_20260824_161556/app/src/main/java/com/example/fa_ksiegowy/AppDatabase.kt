@@ -9,8 +9,8 @@ import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 
 @Database(
-    entities = [Entry::class, Invoice::class, RecurringEntry::class, Product::class, InvoiceItem::class, InventoryRecord::class, InventorySession::class, InvoiceCorrection::class, Contractor::class],
-    version = 13,
+    entities = [Entry::class, Invoice::class, RecurringEntry::class, Product::class, InvoiceItem::class, InventoryRecord::class, InventorySession::class, InvoiceCorrection::class],
+    version = 12,
     exportSchema = false
 )
 @TypeConverters(Converters::class)
@@ -30,8 +30,6 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun inventoryRecordDao(): InventoryRecordDao
 
     abstract fun inventorySessionDao(): InventorySessionDao
-
-    abstract fun contractorDao(): ContractorDao
 
     companion object {
         /** v3 -> v4: добавлены таблицы склада и позиций фактур. Обычная миграция
@@ -163,20 +161,6 @@ abstract class AppDatabase : RoomDatabase() {
             }
         }
 
-        /** v12 -> v13: nowa tabela `contractors` — zapisani kontrahenci (nabywcy),
-         *  patrz Contractor/ContractorDao. Sprzedawca może zapisać dane nabywcy
-         *  wpisane w AddInvoiceActivity przyciskiem "Zapisz nabywcę", a potem
-         *  wybrać je z listy (SelectContractorActivity) przy kolejnej fakturze
-         *  zamiast wpisywać je ręcznie od nowa. Zwykła migracja, bez utraty
-         *  już zapisanych danych. */
-        private val MIGRATION_12_13 = object : Migration(12, 13) {
-            override fun migrate(database: SupportSQLiteDatabase) {
-                database.execSQL(
-                    "CREATE TABLE IF NOT EXISTS `contractors` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `isPhysicalPerson` INTEGER NOT NULL, `name` TEXT NOT NULL, `nip` TEXT, `street` TEXT NOT NULL, `postalCode` TEXT NOT NULL, `city` TEXT NOT NULL, `updatedAtMillis` INTEGER NOT NULL)"
-                )
-            }
-        }
-
         @Volatile private var INSTANCE: AppDatabase? = null
         fun getInstance(context: Context): AppDatabase {
             return INSTANCE ?: synchronized(this) {
@@ -184,7 +168,7 @@ abstract class AppDatabase : RoomDatabase() {
                     context.applicationContext,
                     AppDatabase::class.java,
                     "fa_ksiegowy.db"
-                ).addMigrations(MIGRATION_3_4, MIGRATION_4_5, MIGRATION_5_6, MIGRATION_6_7, MIGRATION_7_8, MIGRATION_8_9, MIGRATION_9_10, MIGRATION_10_11, MIGRATION_11_12, MIGRATION_12_13).fallbackToDestructiveMigration().build().also { INSTANCE = it }
+                ).addMigrations(MIGRATION_3_4, MIGRATION_4_5, MIGRATION_5_6, MIGRATION_6_7, MIGRATION_7_8, MIGRATION_8_9, MIGRATION_9_10, MIGRATION_10_11, MIGRATION_11_12).fallbackToDestructiveMigration().build().also { INSTANCE = it }
             }
         }
     }

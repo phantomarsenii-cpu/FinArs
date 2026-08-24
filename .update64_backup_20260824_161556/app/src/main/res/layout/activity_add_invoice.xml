@@ -123,17 +123,6 @@
             android:letterSpacing="0.08"
             android:layout_marginBottom="12dp"/>
 
-        <Button
-            android:id="@+id/btn_select_contractor"
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:layout_marginBottom="12dp"
-            android:background="@drawable/btn_pill_outline"
-            android:text="@string/select_contractor_button"
-            android:textAllCaps="false"
-            android:textSize="13sp"
-            android:textColor="@color/text_primary"/>
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -163,17 +152,6 @@
             <EditText android:id="@+id/et_buyer_postal" style="@style/InvoiceInputHalfStart" android:hint="@string/buyer_address_postal" android:inputType="text"/>
             <EditText android:id="@+id/et_buyer_city" style="@style/InvoiceInputHalfEnd" android:hint="@string/buyer_address_city" android:inputType="text"/>
         </LinearLayout>
-
-        <Button
-            android:id="@+id/btn_save_contractor"
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:layout_marginTop="12dp"
-            android:background="@drawable/btn_pill_outline"
-            android:text="@string/save_contractor_button"
-            android:textAllCaps="false"
-            android:textSize="13sp"
-            android:textColor="@color/text_primary"/>
 
     </LinearLayout>
 

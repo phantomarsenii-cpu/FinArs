@@ -454,16 +454,6 @@
     <string name="buyer_address_street">Ulica i numer</string>
     <string name="buyer_address_postal">Kod pocztowy</string>
     <string name="buyer_address_city">Miasto</string>
-    <string name="select_contractor_button">Wybierz kontrahenta</string>
-    <string name="save_contractor_button">Zapisz nabywcę</string>
-    <string name="select_contractor_title">Wybór kontrahenta</string>
-    <string name="contractors_empty">Brak zapisanych kontrahentów. Wypełnij dane nabywcy i naciśnij "Zapisz nabywcę".</string>
-    <string name="save_contractor_confirm_title">Zapisz nabywcę</string>
-    <string name="save_contractor_confirm_message">Zapisać "%1$s" jako kontrahenta do kolejnych faktur?</string>
-    <string name="contractor_saved">Kontrahent zapisany</string>
-    <string name="delete_contractor_confirm_title">Usunąć kontrahenta?</string>
-    <string name="delete_contractor_confirm_message">Usunąć "%1$s" z zapisanych kontrahentów?</string>
-    <string name="contractor_deleted">Kontrahent usunięty</string>
     <string name="invoice_service_section">Usługa / towar</string>
     <string name="service_name">Nazwa usługi lub towaru</string>
     <string name="service_amount">Kwota brutto (PLN)</string>

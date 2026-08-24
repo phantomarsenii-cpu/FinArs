@@ -454,16 +454,6 @@
     <string name="buyer_address_street">Street and number</string>
     <string name="buyer_address_postal">Postal code</string>
     <string name="buyer_address_city">City</string>
-    <string name="select_contractor_button">Select contractor</string>
-    <string name="save_contractor_button">Save buyer</string>
-    <string name="select_contractor_title">Select contractor</string>
-    <string name="contractors_empty">No saved contractors yet. Fill in the buyer details and tap "Save buyer".</string>
-    <string name="save_contractor_confirm_title">Save buyer</string>
-    <string name="save_contractor_confirm_message">Save "%1$s" as a contractor for future invoices?</string>
-    <string name="contractor_saved">Contractor saved</string>
-    <string name="delete_contractor_confirm_title">Delete contractor?</string>
-    <string name="delete_contractor_confirm_message">Delete "%1$s" from saved contractors?</string>
-    <string name="contractor_deleted">Contractor deleted</string>
     <string name="invoice_service_section">Item / service</string>
     <string name="service_name">Name of the service or item</string>
     <string name="service_amount">Gross amount (PLN)</string>

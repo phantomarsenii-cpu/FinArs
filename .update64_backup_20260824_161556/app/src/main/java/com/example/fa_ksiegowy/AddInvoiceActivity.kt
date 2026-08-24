@@ -72,15 +72,6 @@ class AddInvoiceActivity : BaseActivity() {
         }
     }
 
-    // Update: wybór zapisanego kontrahenta (nabywcy) z listy — patrz sekcja "Nabywca"
-    // (btn_select_contractor/btn_save_contractor) i SelectContractorActivity.
-    private val selectContractorLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        if (result.resultCode == RESULT_OK) {
-            val id = result.data?.getLongExtra("picked_contractor_id", -1L) ?: -1L
-            if (id != -1L) applyPickedContractor(id)
-        }
-    }
-
     // Wgrywanie logo firmy (blok Sprzedawca) — patrz InvoiceLogoStore i punkt 3
     // wymagań (custom logo w PDF zamiast domyślnego logo FinArs).
     private val pickLogoLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
@@ -126,11 +117,6 @@ class AddInvoiceActivity : BaseActivity() {
             isPhysicalPerson = checked
             findViewById<EditText>(R.id.et_buyer_nip).visibility = if (checked) View.GONE else View.VISIBLE
         }
-
-        findViewById<Button>(R.id.btn_select_contractor).setOnClickListener {
-            selectContractorLauncher.launch(Intent(this, SelectContractorActivity::class.java))
-        }
-        findViewById<Button>(R.id.btn_save_contractor).setOnClickListener { confirmSaveContractor() }
 
         findViewById<Button>(R.id.btn_add_warehouse_items).setOnClickListener {
             selectProductsLauncher.launch(Intent(this, SelectProductsActivity::class.java))
@@ -388,82 +374,6 @@ class AddInvoiceActivity : BaseActivity() {
                 findViewById<EditText>(R.id.et_seller_bank_account).setText(seller.bankAccount)
             }
         }
-    }
-
-    /** Wypełnia sekcję "Nabywca" danymi kontrahenta wybranego z listy
-     *  (SelectContractorActivity) — patrz selectContractorLauncher. */
-    private fun applyPickedContractor(contractorId: Long) {
-        CoroutineScope(Dispatchers.IO).launch {
-            val c = AppDatabase.getInstance(applicationContext).contractorDao().getById(contractorId)
-            withContext(Dispatchers.Main) {
-                if (c == null) return@withContext
-                isPhysicalPerson = c.isPhysicalPerson
-                findViewById<Switch>(R.id.sw_physical_person).isChecked = c.isPhysicalPerson
-                findViewById<EditText>(R.id.et_buyer_nip).visibility = if (c.isPhysicalPerson) View.GONE else View.VISIBLE
-                findViewById<EditText>(R.id.et_buyer_name).setText(c.name)
-                findViewById<EditText>(R.id.et_buyer_nip).setText(c.nip ?: "")
-                findViewById<EditText>(R.id.et_buyer_street).setText(c.street)
-                findViewById<EditText>(R.id.et_buyer_postal).setText(c.postalCode)
-                findViewById<EditText>(R.id.et_buyer_city).setText(c.city)
-            }
-        }
-    }
-
-    /** Przycisk "Zapisz nabywcę" — pyta o potwierdzenie (styl AppDialog, jak
-     *  reszta aplikacji) i zapisuje aktualnie wpisane dane sekcji "Nabywca"
-     *  jako kontrahenta. Jeśli kontrahent o tej samej nazwie już istnieje,
-     *  jego dane są aktualizowane zamiast tworzenia duplikatu. */
-    private fun confirmSaveContractor() {
-        val buyerName = findViewById<EditText>(R.id.et_buyer_name).text.toString().trim()
-        val buyerNip = findViewById<EditText>(R.id.et_buyer_nip).text.toString().trim()
-        val buyerStreet = findViewById<EditText>(R.id.et_buyer_street).text.toString().trim()
-        val buyerPostal = findViewById<EditText>(R.id.et_buyer_postal).text.toString().trim()
-        val buyerCity = findViewById<EditText>(R.id.et_buyer_city).text.toString().trim()
-
-        if (buyerName.isBlank()) {
-            Toast.makeText(this, getString(R.string.invoice_fill_required_fields), Toast.LENGTH_SHORT).show()
-            return
-        }
-
-        AppDialog.show(
-            context = this,
-            title = getString(R.string.save_contractor_confirm_title),
-            message = getString(R.string.save_contractor_confirm_message, buyerName),
-            positiveText = getString(R.string.confirm_yes),
-            onPositive = {
-                CoroutineScope(Dispatchers.IO).launch {
-                    val dao = AppDatabase.getInstance(applicationContext).contractorDao()
-                    val existing = dao.getByName(buyerName)
-                    if (existing != null) {
-                        dao.update(
-                            existing.copy(
-                                isPhysicalPerson = isPhysicalPerson,
-                                nip = if (isPhysicalPerson) null else buyerNip,
-                                street = buyerStreet,
-                                postalCode = buyerPostal,
-                                city = buyerCity,
-                                updatedAtMillis = System.currentTimeMillis()
-                            )
-                        )
-                    } else {
-                        dao.insert(
-                            Contractor(
-                                isPhysicalPerson = isPhysicalPerson,
-                                name = buyerName,
-                                nip = if (isPhysicalPerson) null else buyerNip,
-                                street = buyerStreet,
-                                postalCode = buyerPostal,
-                                city = buyerCity
-                            )
-                        )
-                    }
-                    withContext(Dispatchers.Main) {
-                        Toast.makeText(this@AddInvoiceActivity, getString(R.string.contractor_saved), Toast.LENGTH_SHORT).show()
-                    }
-                }
-            },
-            negativeText = getString(R.string.confirm_cancel)
-        )
     }
 
     private fun refreshCashLimit() {

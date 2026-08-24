@@ -43,7 +43,6 @@
         <activity android:name=".InventoryHistoryActivity" android:exported="false" />
         <activity android:name=".AddEditProductActivity" android:exported="false" />
         <activity android:name=".SelectProductsActivity" android:exported="false" />
-        <activity android:name=".SelectContractorActivity" android:exported="false" />
         <activity android:name=".MainActivity" android:exported="true"
             android:launchMode="singleTask">
             <intent-filter>

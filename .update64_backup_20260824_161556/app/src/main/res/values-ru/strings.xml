@@ -454,16 +454,6 @@
     <string name="buyer_address_street">Улица и номер</string>
     <string name="buyer_address_postal">Почтовый индекс</string>
     <string name="buyer_address_city">Город</string>
-    <string name="select_contractor_button">Выбрать контрагента</string>
-    <string name="save_contractor_button">Сохранить покупателя</string>
-    <string name="select_contractor_title">Выбор контрагента</string>
-    <string name="contractors_empty">Пока нет сохранённых контрагентов. Заполните данные покупателя и нажмите "Сохранить покупателя".</string>
-    <string name="save_contractor_confirm_title">Сохранить покупателя</string>
-    <string name="save_contractor_confirm_message">Сохранить "%1$s" как контрагента для следующих счетов?</string>
-    <string name="contractor_saved">Контрагент сохранён</string>
-    <string name="delete_contractor_confirm_title">Удалить контрагента?</string>
-    <string name="delete_contractor_confirm_message">Удалить "%1$s" из сохранённых контрагентов?</string>
-    <string name="contractor_deleted">Контрагент удалён</string>
     <string name="invoice_service_section">Услуга / товар</string>
     <string name="service_name">Наименование услуги или товара</string>
     <string name="service_amount">Сумма брутто (PLN)</string>
