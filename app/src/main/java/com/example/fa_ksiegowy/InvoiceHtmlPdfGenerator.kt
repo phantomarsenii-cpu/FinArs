@@ -126,8 +126,8 @@ object InvoiceHtmlPdfGenerator {
             context.getString(R.string.invoice_pdf_paid_stamp) else context.getString(R.string.invoice_pdf_pending_stamp)
         val statusIcon = if (invoiceStatus == InvoiceStatus.PAID) CHECK_ICON else CLOCK_ICON
 
-        // Update 4 (техтребование): компактный футер для 3-5 позиций, чтобы уместилось на 1 страницу.
-        val footerCompactClass = if (rows.size in 1..5) "compact-footer" else ""
+        // Update 4 (техтребование): компактный документ для 1-5 позиций, чтобы уместилось на 1 страницу.
+        val pageCompactClass = if (rows.size in 1..5) "compact" else ""
 
         val html = loadTemplate(context)
             .replace("{{DOC_TITLE}}", esc(docTitle))
@@ -143,7 +143,8 @@ object InvoiceHtmlPdfGenerator {
             .replace("{{BUYER_BODY_HTML}}", buyerHtml)
             .replace("{{ITEMS_TABLES_HTML}}", itemsTableHtml)
             .replace("{{CORRECTION_BLOCK_HTML}}", "")
-            .replace("{{FOOTER_COMPACT_CLASS}}", footerCompactClass)
+            .replace("{{PAGE_COMPACT_CLASS}}", pageCompactClass)
+            .replace("{{PAGE_FILLER_WAVES_HTML}}", buildPageFillerWavesHtml(context))
             .replace("{{PAYMENT_INFO_LINES_HTML}}", paymentLinesHtml.toString())
             .replace("{{LEGAL_VAT_BLOCK_HTML}}", legalVatHtml)
             .replace("{{STATUS_BOX_HTML}}", buildStatusBoxHtml(statusClass, statusIcon, statusText))
@@ -228,8 +229,10 @@ object InvoiceHtmlPdfGenerator {
         }
 
         val tablesHtml = StringBuilder()
-        tablesHtml.append(buildItemsTable(context, context.getString(R.string.correction_pdf_before_table_title), beforeRows))
-        tablesHtml.append(buildItemsTable(context, context.getString(R.string.correction_pdf_after_table_title), afterRows))
+        tablesHtml.append("<div class=\"table-title\">${esc(context.getString(R.string.correction_pdf_before_table_title))}</div>")
+        tablesHtml.append("<div class=\"table-frame\">").append(buildItemsTable(context, null, beforeRows)).append("</div>")
+        tablesHtml.append("<div class=\"table-title\">${esc(context.getString(R.string.correction_pdf_after_table_title))}</div>")
+        tablesHtml.append("<div class=\"table-frame\">").append(buildItemsTable(context, null, afterRows)).append("</div>")
 
         val delta = correctedAmount - originalAmount
         val deltaSign = if (delta >= 0) "+" else ""
@@ -248,8 +251,11 @@ object InvoiceHtmlPdfGenerator {
         """.trimIndent()
 
         val legalVatHtml = if (!isVatPayer) buildLegalVatBlock(context) else ""
-        val rowsTotal = beforeRows.size + afterRows.size
-        val footerCompactClass = if (rowsTotal in 1..5) "compact-footer" else ""
+        // Update: próg "kompaktowego" dokumentu liczony wg liczby POZYCJI (nie sumy wierszy
+        // obu tabel, co wcześniej podwajało licznik) — do 5 pozycji = "niewiele", zgodnie z
+        // oczekiwaniem, że korekta z max. 5 pozycjami zawsze mieści się na 1 stronie.
+        val positionsCount = maxOf(beforeRows.size, afterRows.size)
+        val pageCompactClass = if (positionsCount in 1..5) "compact" else ""
 
         val html = loadTemplate(context)
             .replace("{{DOC_TITLE}}", esc(docTitle))
@@ -265,7 +271,8 @@ object InvoiceHtmlPdfGenerator {
             .replace("{{BUYER_BODY_HTML}}", buyerHtml)
             .replace("{{ITEMS_TABLES_HTML}}", tablesHtml.toString())
             .replace("{{CORRECTION_BLOCK_HTML}}", correctionBlockHtml)
-            .replace("{{FOOTER_COMPACT_CLASS}}", footerCompactClass)
+            .replace("{{PAGE_COMPACT_CLASS}}", pageCompactClass)
+            .replace("{{PAGE_FILLER_WAVES_HTML}}", buildPageFillerWavesHtml(context))
             // Faktura korygująca nie ma statusu płatności/terminu w oryginalnym generatorze —
             // zostawiamy blok podstawy prawnej VAT, a status pokazujemy jako neutralny placeholder.
             // Update: faktura korygująca NIE pokazuje plakietki STATUS — nie ma tu statusu
@@ -504,12 +511,29 @@ object InvoiceHtmlPdfGenerator {
      *  jako przybliżenie SVG. cssClass odpowiada pozycjonowaniu zdefiniowanemu w CSS
      *  (.waves-top / .waves-bottom-left / .waves-bottom-right). */
     private fun buildWaveImgTag(context: Context, assetName: String, cssClass: String): String {
-        val base64 = try {
-            context.assets.open(assetName).use { it.readBytes() }
-        } catch (e: Exception) {
-            null
-        }?.let { android.util.Base64.encodeToString(it, android.util.Base64.NO_WRAP) } ?: return ""
+        val base64 = loadAssetBase64(context, assetName) ?: return ""
         return "<img class=\"$cssClass\" src=\"data:image/png;base64,$base64\"/>"
+    }
+
+    /** Wczytuje plik z assets/ i zwraca jego zawartość jako base64 (offline, wbudowane w HTML —
+     *  bez tego WebView renderowany off-screen bez podłączenia do sieci nie wczytałby obrazka
+     *  spod zwykłego względnego URL-a). Wspólne dla fal narożnikowych (.waves-*) i dekoracji
+     *  w .page-filler (patrz buildPageFillerWavesHtml) — jeden plik, jedno miejsce ładowania. */
+    private fun loadAssetBase64(context: Context, assetName: String): String? = try {
+        context.assets.open(assetName).use { it.readBytes() }
+    } catch (e: Exception) {
+        null
+    }?.let { android.util.Base64.encodeToString(it, android.util.Base64.NO_WRAP) }
+
+    /** Dekoracja wewnątrz .page-filler (patrz szablon HTML) — dwa z tych samych obrazków fal co w
+     *  narożnikach strony, tylko wyśrodkowane i półprzezroczyste, żeby wypełniona pustka (gdy
+     *  stopka jest doklejana do dołu kolejnej strony, patrz renderHtmlToPdf) wyglądała jak
+     *  świadomy element designu, a nie obcięta/pusta strona. Wysokość samego .page-filler jest
+     *  ustawiana dynamicznie z Kotlina (JS), ta funkcja tylko dostarcza jego zawartość HTML. */
+    private fun buildPageFillerWavesHtml(context: Context): String {
+        val base64 = loadAssetBase64(context, "wave_top.png") ?: return ""
+        return "<img class=\"filler-wave\" src=\"data:image/png;base64,$base64\"/>" +
+            "<img class=\"filler-wave filler-wave-2\" src=\"data:image/png;base64,$base64\"/>"
     }
 
     private fun bitmapToBase64Png(bitmap: Bitmap): String {
@@ -564,6 +588,98 @@ object InvoiceHtmlPdfGenerator {
      *  jasny wyjątek zamiast zamrożonego UI na czas nieokreślony.
      *
      *  MUSI być wywołane z wątku głównego (WebView) — dlatego przełączamy dispatcher tutaj. */
+    /** Wynik pomiaru JS layoutu dokumentu: całkowita wysokość (document.body.scrollHeight) i
+     *  zakresy [top,bottom] każdego .footer-wrap — wszystko w CSS-px (NIE surowych px Bitmapy),
+     *  czyli niezależnie od gęstości ekranu urządzenia. */
+    private data class Measurement(val cssHeightPx: Float, val footersCss: List<Pair<Float, Float>>)
+
+    private fun parseMeasurement(resultStr: String?, fallbackHeightCss: Float): Measurement {
+        var cssHeight = fallbackHeightCss
+        var footers: List<Pair<Float, Float>> = emptyList()
+        try {
+            val clean = (resultStr ?: "").let {
+                var s = it.trim()
+                if (s.startsWith("\"") && s.endsWith("\"")) s = s.substring(1, s.length - 1)
+                s.replace("\\\"", "\"")
+            }
+            val obj = org.json.JSONObject(clean)
+            cssHeight = obj.optDouble("height", cssHeight.toDouble()).toFloat()
+            val arr = obj.optJSONArray("footers") ?: org.json.JSONArray()
+            footers = (0 until arr.length()).map { idx ->
+                val pair = arr.getJSONArray(idx)
+                pair.getInt(0).toFloat() to pair.getInt(1).toFloat()
+            }
+        } catch (e: Exception) {
+            // Bezpieczny fallback — bez ochrony przed cięciem stopki / bez wypełniacza,
+            // ale przynajmniej dalej renderujemy (lepsze niż całkiem przerwać generowanie PDF).
+        }
+        return Measurement(cssHeight, footers)
+    }
+
+    /** Oblicza, o ile CSS-px trzeba powiększyć #page-filler (pusty <div> tuż PRZED .footer-wrap
+     *  w szablonie), żeby stopka wylądowała dokładnie przy DOLE strony, na którą trafia po
+     *  podziale na strony A4 — ale TYLKO gdy ląduje na 2. lub kolejnej stronie. Gdy cały
+     *  dokument mieści się na stronie 1, stopkę do dołu przykleja już sam flexbox
+     *  (.content{display:flex} + .footer-wrap{margin-top:auto} w CSS), więc zwracamy 0 i nie
+     *  dublujemy tego mechanizmu. Logika odzwierciedla TĘ SAMĄ regułę "avoid-cut", którą stosuje
+     *  finalne cięcie bitmapy na strony (patrz pętla `while (top < totalHeight)` w
+     *  renderHtmlToPdf) — tylko liczoną w CSS-px, PRZED wykonaniem właściwego renderu do Bitmapy. */
+    private fun computeFillerCss(
+        totalHeightCss: Float,
+        footerCss: Pair<Float, Float>,
+        pageHeightCss: Float,
+        topMarginCss: Float
+    ): Float {
+        val (footerTop, footerBottom) = footerCss
+        val footerHeight = footerBottom - footerTop
+        // Stopka wyższa niż cała strona nie powinna się zdarzyć (to by i tak przekroczyło
+        // dostępną wysokość strony w finalnym cięciu) — nic nie dosuwamy w takim skrajnym razie.
+        if (footerHeight <= 0f || footerHeight >= pageHeightCss) return 0f
+
+        val pages = simulatePageBoundaries(totalHeightCss, listOf(footerCss), pageHeightCss, topMarginCss)
+        val pageIndex = pages.indexOfFirst { footerTop >= it.first - 0.5f && footerTop < it.second + 0.5f }
+        if (pageIndex <= 0) return 0f // strona 1 — flexbox już przykleja stopkę do dołu
+
+        val page = pages[pageIndex]
+        val pageFullBottom = page.first + (pageHeightCss - topMarginCss)
+        val filler = pageFullBottom - footerBottom
+        return filler.coerceIn(0f, pageHeightCss)
+    }
+
+    /** Wylicza granice [top, bottom) kolejnych "stron" wewnątrz jednego długiego dokumentu —
+     *  DOKŁADNIE tę samą logikę "avoid-cut", którą stosuje finalne cięcie bitmapy na strony
+     *  (patrz pętla w renderHtmlToPdf), ale sparametryzowaną dowolną jednostką (tu: CSS-px do
+     *  planowania PRZED renderem), żeby obie fazy się nie rozjeżdżały. avoidRanges to zakresy
+     *  (np. .footer-wrap), przez które cięcie nie może przejść — jeśli naturalne cięcie
+     *  wypadłoby w środku takiego zakresu, koniec bieżącej strony cofa się do jego początku
+     *  (cały zakres ląduje w całości na kolejnej stronie). */
+    private fun simulatePageBoundaries(
+        totalHeight: Float,
+        avoidRanges: List<Pair<Float, Float>>,
+        pageHeight: Float,
+        topMargin: Float
+    ): List<Pair<Float, Float>> {
+        val pages = mutableListOf<Pair<Float, Float>>()
+        var top = 0f
+        var safety = 0
+        while (top < totalHeight && safety < 500) {
+            safety++
+            val isFirstPage = pages.isEmpty()
+            val available = if (isFirstPage) pageHeight else pageHeight - topMargin
+            var bottom = minOf(top + available, totalHeight)
+            for (range in avoidRanges) {
+                if (top < range.first && bottom > range.first && bottom < range.second) {
+                    bottom = range.first
+                    break
+                }
+            }
+            if (bottom <= top) bottom = minOf(top + available, totalHeight)
+            pages.add(top to bottom)
+            top = bottom
+        }
+        return pages
+    }
+
     private suspend fun renderHtmlToPdf(context: Context, html: String): ByteArray = withContext(Dispatchers.Main) {
         val activity = resolveActivity(context)
             ?: throw IllegalStateException(
@@ -596,79 +712,114 @@ object InvoiceHtmlPdfGenerator {
 
         try {
             var avoidRangesResult: List<Pair<Int, Int>> = emptyList()
+
+            // Rozmiar strony i górny margines w jednostkach CSS-px (NIEZALEŻNE od gęstości
+            // ekranu — te same wartości niezależnie od urządzenia, bo <meta viewport>
+            // deklaruje stałą szerokość 794 CSS-px) — używane do decyzji "czy stopka
+            // potrzebuje wypełniacza" PRZED właściwym renderem do Bitmapy (patrz computeFillerCss).
+            val pageHeightCss = PAGE_CSS_WIDTH_PX * A4_RATIO
+            val topMarginPtLocal = 14f * 72f / 25.4f
+            val topMarginCss = topMarginPtLocal * PAGE_CSS_WIDTH_PX / PDF_PAGE_WIDTH_PT
+
             val fullBitmap: Bitmap = withTimeout(20_000) {
                 suspendCancellableCoroutine { cont ->
+
+                    // Mierzy scrollHeight ORAZ getBoundingClientRect() bloku .footer-wrap w
+                    // JEDNYM wywołaniu JS (patrz komentarz niżej dlaczego to musi być jedno
+                    // wywołanie) — wywoływane DWA RAZY: raz na naturalnym layoucie, drugi raz
+                    // (tylko jeśli trzeba) po wstrzyknięciu wypełniacza (.page-filler).
+                    fun measureDoc(view: WebView, onResult: (Measurement) -> Unit) {
+                        // WAŻNE: mierzymy scrollHeight ORAZ getBoundingClientRect() bloków
+                        // .footer-wrap w JEDNYM wywołaniu JS, PRZED jakimkolwiek measure()/
+                        // layout() Androida — osobne, późniejsze evaluateJavascript (po
+                        // zmianie rozmiaru View) okazało się niewiarygodne w praktyce
+                        // (getBoundingClientRect potrafił zwrócić nieaktualne dane), co
+                        // prowadziło do cięcia strony w środku stopki (obcięty QR, brak
+                        // reszty stopki na stronie 1).
+                        val js = """
+                            (function(){
+                                var out = { height: document.body.scrollHeight, footers: [] };
+                                var els = document.querySelectorAll('.footer-wrap');
+                                for (var i=0;i<els.length;i++){
+                                    var r = els[i].getBoundingClientRect();
+                                    out.footers.push([Math.round(r.top + window.scrollY), Math.round(r.bottom + window.scrollY)]);
+                                }
+                                return JSON.stringify(out);
+                            })();
+                        """.trimIndent()
+                        view.evaluateJavascript(js) { resultStr ->
+                            onResult(parseMeasurement(resultStr, pageHeightCss))
+                        }
+                    }
+
+                    // Ostatni krok obu przebiegów: layout View na zmierzoną wysokość i zrzut do
+                    // Bitmapy. m.footersCss to zakresy w CSS-px — tu przeliczane na surowe px
+                    // Bitmapy (density) i zapamiętywane w avoidRangesResult do pętli cięcia stron.
+                    fun captureBitmap(view: WebView, m: Measurement) {
+                        avoidRangesResult = m.footersCss.map { (a, b) -> (a * density).toInt() to (b * density).toInt() }
+                        val totalHeightPx = maxOf((m.cssHeightPx * density).toInt(), 1)
+                        view.measure(
+                            View.MeasureSpec.makeMeasureSpec(renderWidthPx, View.MeasureSpec.EXACTLY),
+                            View.MeasureSpec.makeMeasureSpec(totalHeightPx, View.MeasureSpec.EXACTLY)
+                        )
+                        view.layout(0, 0, renderWidthPx, totalHeightPx)
+                        // KRYTYCZNE: bez tego opóźnienia view.draw(canvas) potrafi
+                        // złapać częściowo NIEOD-rysowaną klatkę — Chromium nie
+                        // zdążył jeszcze zrasteryzować nowo odsłoniętego obszaru po
+                        // powiększeniu View, przez co w Bitmapie pojawiają się stare/
+                        // zduplikowane kafelki (np. nagłówek powtórzony niżej zamiast
+                        // prawdziwej treści stopki). Druga klatka (post -> post)
+                        // dodatkowo czeka na zakończenie bieżącego cyklu rysowania.
+                        view.postDelayed({
+                            if (!cont.isActive) return@postDelayed
+                            view.post {
+                                if (!cont.isActive) return@post
+                                val bmp = Bitmap.createBitmap(renderWidthPx, totalHeightPx, Bitmap.Config.ARGB_8888)
+                                val canvas = Canvas(bmp)
+                                canvas.drawColor(Color.WHITE)
+                                view.draw(canvas)
+                                if (cont.isActive) cont.resume(bmp)
+                            }
+                        }, 350)
+                    }
+
                     webView.webViewClient = object : WebViewClient() {
                         override fun onPageFinished(view: WebView, url: String) {
                             // mały odstęp — daje WebView domalować base64-owe obrazy (logo/QR) i fonty
-                            // po zdarzeniu onPageFinished, zanim zrobimy zrzut do Bitmapy
+                            // po zdarzeniu onPageFinished, zanim zaczniemy mierzyć layout
                             view.postDelayed({
                                 if (!cont.isActive) return@postDelayed
-                                // WAŻNE: mierzymy scrollHeight ORAZ getBoundingClientRect() bloków
-                                // .footer-wrap w JEDNYM wywołaniu JS, PRZED jakimkolwiek measure()/
-                                // layout() Androida — osobne, późniejsze evaluateJavascript (po
-                                // zmianie rozmiaru View) okazało się niewiarygodne w praktyce
-                                // (getBoundingClientRect potrafił zwrócić nieaktualne dane), co
-                                // prowadziło do cięcia strony w środku stopki (obcięty QR, brak
-                                // reszty stopki na stronie 1).
-                                val js = """
-                                    (function(){
-                                        var out = { height: document.body.scrollHeight, footers: [] };
-                                        var els = document.querySelectorAll('.footer-wrap');
-                                        for (var i=0;i<els.length;i++){
-                                            var r = els[i].getBoundingClientRect();
-                                            out.footers.push([Math.round(r.top + window.scrollY), Math.round(r.bottom + window.scrollY)]);
+                                measureDoc(view) { m1 ->
+                                    if (!cont.isActive) return@measureDoc
+                                    val footerCss = m1.footersCss.firstOrNull()
+                                    val fillerCss = if (footerCss != null) {
+                                        computeFillerCss(m1.cssHeightPx, footerCss, pageHeightCss, topMarginCss)
+                                    } else 0f
+
+                                    if (fillerCss > 1.5f) {
+                                        // Stopka lądowałaby na 2. (lub kolejnej) stronie z zapasem
+                                        // miejsca PONIŻEJ niej — dosuwamy ją do samego dołu tamtej
+                                        // strony, wstrzykując wypełniacz (z dekoracją fal) PRZED nią
+                                        // i mierząc layout jeszcze raz na nowej, powiększonej wysokości.
+                                        val setFillerJs = """
+                                            (function(){
+                                                var el = document.getElementById('page-filler');
+                                                if (el){ el.style.display='block'; el.style.height='${fillerCss}px'; }
+                                            })();
+                                        """.trimIndent()
+                                        view.evaluateJavascript(setFillerJs) {
+                                            if (!cont.isActive) return@evaluateJavascript
+                                            view.postDelayed({
+                                                if (!cont.isActive) return@postDelayed
+                                                measureDoc(view) { m2 ->
+                                                    if (!cont.isActive) return@measureDoc
+                                                    captureBitmap(view, m2)
+                                                }
+                                            }, 120)
                                         }
-                                        return JSON.stringify(out);
-                                    })();
-                                """.trimIndent()
-                                view.evaluateJavascript(js) { resultStr ->
-                                    if (!cont.isActive) return@evaluateJavascript
-                                    var cssHeight = (PAGE_CSS_WIDTH_PX * A4_RATIO)
-                                    var ranges: List<Pair<Int, Int>> = emptyList()
-                                    try {
-                                        val clean = (resultStr ?: "").let {
-                                            var s = it.trim()
-                                            if (s.startsWith("\"") && s.endsWith("\"")) s = s.substring(1, s.length - 1)
-                                            s.replace("\\\"", "\"")
-                                        }
-                                        val obj = org.json.JSONObject(clean)
-                                        cssHeight = obj.optDouble("height", cssHeight.toDouble()).toFloat()
-                                        val arr = obj.optJSONArray("footers") ?: org.json.JSONArray()
-                                        ranges = (0 until arr.length()).map { idx ->
-                                            val pair = arr.getJSONArray(idx)
-                                            (pair.getInt(0) * density).toInt() to (pair.getInt(1) * density).toInt()
-                                        }
-                                    } catch (e: Exception) {
-                                        // Bezpieczny fallback — bez ochrony przed cięciem stopki,
-                                        // ale przynajmniej dalej renderujemy (lepsze niż całkiem
-                                        // przerwać generowanie PDF).
+                                    } else {
+                                        captureBitmap(view, m1)
                                     }
-                                    avoidRangesResult = ranges
-                                    val totalHeightPx = maxOf((cssHeight * density).toInt(), 1)
-                                    view.measure(
-                                        View.MeasureSpec.makeMeasureSpec(renderWidthPx, View.MeasureSpec.EXACTLY),
-                                        View.MeasureSpec.makeMeasureSpec(totalHeightPx, View.MeasureSpec.EXACTLY)
-                                    )
-                                    view.layout(0, 0, renderWidthPx, totalHeightPx)
-                                    // KRYTYCZNE: bez tego opóźnienia view.draw(canvas) potrafi
-                                    // złapać częściowo NIEOD-rysowaną klatkę — Chromium nie
-                                    // zdążył jeszcze zrasteryzować nowo odsłoniętego obszaru po
-                                    // powiększeniu View, przez co w Bitmapie pojawiają się stare/
-                                    // zduplikowane kafelki (np. nagłówek powtórzony niżej zamiast
-                                    // prawdziwej treści stopki). Druga klatka (post -> post)
-                                    // dodatkowo czeka na zakończenie bieżącego cyklu rysowania.
-                                    view.postDelayed({
-                                        if (!cont.isActive) return@postDelayed
-                                        view.post {
-                                            if (!cont.isActive) return@post
-                                            val bmp = Bitmap.createBitmap(renderWidthPx, totalHeightPx, Bitmap.Config.ARGB_8888)
-                                            val canvas = Canvas(bmp)
-                                            canvas.drawColor(Color.WHITE)
-                                            view.draw(canvas)
-                                            if (cont.isActive) cont.resume(bmp)
-                                        }
-                                    }, 350)
                                 }
                             }, 150)
                         }

@@ -186,6 +186,17 @@
   }
   .table-with-total table.items{ border:none; border-radius:0; margin-bottom:0; }
   .table-with-total table.items tbody tr:last-child td{ border-bottom:0.6pt solid var(--grid); }
+
+  /* --- table-frame: sama ramka bez paska sumy (używane w tabelach "Przed korektą" /
+     "Po korekcie"). table.items MA border w swoim bazowym stylu, ale border-collapse:collapse
+     + border-radius/overflow:hidden na samej <table> nie renderuje się niezawodnie w silniku
+     Chromium (WebView) — dlatego ramkę zawsze rysuje OPAKOWUJĄCY <div>, a border na <table>
+     wewnątrz jest wyzerowany, dokładnie jak w .table-with-total powyżej. */
+  .table-frame{
+    border:0.9pt solid var(--grid); border-radius:2mm; overflow:hidden; margin-bottom:6mm;
+  }
+  .table-frame table.items{ border:none; border-radius:0; margin-bottom:0; }
+  .table-frame table.items tbody tr:last-child td{ border-bottom:none; }
   .sum-row{
     display:flex; justify-content:space-between; align-items:center;
     padding:3mm 4mm; background:#FFFFFF;
@@ -305,18 +316,57 @@
   .bottom .scan{ font-size:8.6pt; color:var(--hint); margin-top:0.8mm; display:flex; align-items:center; justify-content:center; gap:2.5mm; }
   .scan-dash{ display:inline-block; width:6mm; height:0.6pt; background:var(--hint); }
 
-  /* --- compact-footer: dla 3-5 pozycji, żeby wszystko zmieściło się na 1 str. --- */
-  .compact-footer .status-payment-row{ margin-bottom:3.5mm; gap:4mm; }
-  .compact-footer .info-line{ margin-bottom:1.6mm; }
-  .compact-footer .status-box{ padding:2.6mm 3.2mm; }
-  .compact-footer .signatures{ margin-bottom:6mm; gap:6mm; }
-  .compact-footer .sig-line{ height:8mm; }
-  .compact-footer .bottom img.qr{ width:34mm; height:34mm; margin-bottom:2mm; }
+  /* --- .compact: dokument z niewieloma pozycjami (do 5) — ściśnięte odstępy/czcionki w
+     CAŁYM dokumencie (nie tylko w stopce jak dawniej), żeby zmieścić 2 tabele "Przed korektą" /
+     "Po korekcie" + przyczynę + deltę + stopkę na JEDNEJ stronie A4. Klasa jest doklejana do
+     .page, więc wszystkie poniższe reguły kaskadują przez potomków. --- */
+  .compact .header{ margin-bottom:6mm; }
+  .compact .doc-title{ font-size:19pt; }
+  .compact .doc-dates{ margin-top:1.5mm; font-size:9pt; }
+  .compact .parties{ margin-bottom:4mm; gap:4mm; }
+  .compact .party-box{ padding:3mm 4mm 4mm 4mm; }
+  .compact .party-name{ font-size:10.5pt; margin-bottom:0.8mm; }
+  .compact .party-line{ font-size:8.7pt; margin-bottom:0.6mm; }
+  .compact .party-note{ font-size:7.3pt; }
+  .compact .table-title{ font-size:9.5pt; margin:3mm 0 1.5mm 0; }
+  .compact table.items th{ font-size:8.2pt; padding:1.8mm 1.6mm; }
+  .compact table.items td{ font-size:8.6pt; padding:1.5mm 1.6mm; }
+  .compact .table-frame{ margin-bottom:3.5mm; }
+  .compact .reason-block{ margin-bottom:3mm; }
+  .compact .reason-title{ margin-bottom:1mm; }
+  .compact .delta-block{ margin-bottom:4mm; gap:4mm; }
+  .compact .delta-chip{ padding:2mm 3.2mm; font-size:8.7pt; }
+  .compact .status-payment-row{ margin-bottom:3.5mm; gap:4mm; }
+  .compact .info-line{ margin-bottom:1.6mm; }
+  .compact .status-box{ padding:2.6mm 3.2mm; }
+  .compact .signatures{ margin-bottom:6mm; gap:6mm; }
+  .compact .sig-line{ height:8mm; }
+  .compact .bottom img.qr{ width:34mm; height:34mm; margin-bottom:2mm; }
+
+  /* ===================== PAGE-FILLER (przenoszenie stopki na dół strony) =====================
+     Gdy dokument nie mieści się na 1 stronie, stopka (.footer-wrap) jest w całości przenoszona
+     na kolejną stronę (patrz InvoiceHtmlPdfGenerator.renderHtmlToPdf — logika "avoid-cut"). Ten
+     element wypełnia wtedy pustą przestrzeń NAD stopką na tamtej stronie, tak żeby stopka
+     zawsze "stała" przy samym dole strony (a nie zaraz pod resztą treści z dużą pustą resztą
+     strony poniżej). Wysokość jest ustawiana dynamicznie z Kotlina/JS (patrz renderHtmlToPdf) —
+     domyślnie 0/ukryty, więc nie wpływa na dokumenty mieszczące się na 1 stronie. Dekoracja w
+     środku nawiązuje do fal w nagłówku/stopce strony (te same obrazki, mniejsze i przezroczyste),
+     żeby pusty odstęp nie wyglądał na błąd renderowania. */
+  .page-filler{
+    display:none; height:0; overflow:hidden; position:relative;
+  }
+  .page-filler .filler-wave{
+    position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
+    width:150mm; max-width:100%; opacity:0.4; pointer-events:none;
+  }
+  .page-filler .filler-wave.filler-wave-2{
+    transform:translate(-50%,-50%) rotate(180deg); opacity:0.28;
+  }
 
 </style>
 </head>
 <body>
-<div class="page">
+<div class="page {{PAGE_COMPACT_CLASS}}">
 
   {{WAVE_TOP_IMG}}
   {{WAVE_BOTTOM_LEFT_IMG}}
@@ -361,8 +411,12 @@
     <!-- ===================== KOREKTA: PRZYCZYNA + DELTA ===================== -->
     {{CORRECTION_BLOCK_HTML}}
 
+    <!-- ===================== WYPEŁNIACZ (przypina stopkę do dołu strony, gdy ta ląduje na
+         kolejnej stronie) — wysokość ustawiana dynamicznie, patrz renderHtmlToPdf ===== -->
+    <div class="page-filler" id="page-filler">{{PAGE_FILLER_WAVES_HTML}}</div>
+
     <!-- ===================== FOOTER (nie rozrywać między stronami) ===================== -->
-    <div class="footer-wrap {{FOOTER_COMPACT_CLASS}}">
+    <div class="footer-wrap">
 
       <div class="status-payment-row">
         <div class="payment-info">
