@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="28" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-feature android:name="android.hardware.camera" android:required="false" />
+
+    <application
+        android:name=".FaApp"
+        android:allowBackup="true"
+        android:label="@string/app_name"
+        android:icon="@mipmap/ic_launcher"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:theme="@style/Theme.FA">
+
+        <!-- ЗАМЕНИТЬ на реальный AdMob App ID из консоли AdMob (Apps -> Ваше приложение -> App settings) -->
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-9218963926031039~6835956339" />
+
+        <activity android:name=".TermsActivity" android:exported="false" />
+        <activity android:name=".SettingsActivity" android:exported="false" />
+        <activity android:name=".SettingsProActivity" android:exported="false" />
+        <activity android:name=".SettingsBackupActivity" android:exported="false" />
+        <activity android:name=".SettingsLanguageActivity" android:exported="false" />
+        <activity android:name=".SettingsTaxActivity" android:exported="false" />
+        <activity android:name=".LimitsActivity" android:exported="false" />
+        <activity android:name=".NotificationsActivity" android:exported="false" />
+        <activity android:name=".AboutActivity" android:exported="false" />
+        <activity android:name=".PrivacyPolicyActivity" android:exported="false" />
+        <activity android:name=".SettingsSecurityActivity" android:exported="false" />
+        <activity android:name=".LockActivity" android:exported="false"
+            android:launchMode="singleTask" android:excludeFromRecents="true" />
+        <activity android:name=".PitDataActivity" android:exported="false" />
+        <activity android:name=".Pit36Activity" android:exported="false" />
+        <activity android:name=".AddEntryActivity" android:exported="false" />
+        <activity android:name=".AddInvoiceActivity" android:exported="false" />
+        <activity android:name=".AddInvoiceCorrectionActivity" android:exported="false" />
+        <activity android:name=".InvoiceHistoryActivity" android:exported="false" />
+        <activity android:name=".HistoryActivity" android:exported="false" />
+        <activity android:name=".InventoryActivity" android:exported="false" />
+        <activity android:name=".InventoryHistoryActivity" android:exported="false" />
+        <activity android:name=".AddEditProductActivity" android:exported="false" />
+        <activity android:name=".SelectProductsActivity" android:exported="false" />
+        <activity android:name=".MainActivity" android:exported="true"
+            android:launchMode="singleTask">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
+    </application>
+</manifest>
+
