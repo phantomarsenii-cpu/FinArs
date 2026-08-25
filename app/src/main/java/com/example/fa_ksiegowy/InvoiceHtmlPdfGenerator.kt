@@ -587,13 +587,16 @@ object InvoiceHtmlPdfGenerator {
      *
      *  MUSI być wywołane z wątku głównego (WebView) — dlatego przełączamy dispatcher tutaj. */
     /** Wynik pomiaru JS layoutu dokumentu: całkowita wysokość (document.body.scrollHeight) i
-     *  zakresy [top,bottom] każdego .footer-wrap — wszystko w CSS-px (NIE surowych px Bitmapy),
-     *  czyli niezależnie od gęstości ekranu urządzenia. */
-    private data class Measurement(val cssHeightPx: Float, val footersCss: List<Pair<Float, Float>>)
+     *  KOMPLETNA lista zakresów [top,bottom] treści, której NIE wolno przecinać cięciem strony
+     *  — .footer-wrap, karty SPRZEDAWCA/NABYWCA, blok przyczyny/delty korekty, pasek sumy, oraz
+     *  (najważniejsze) KAŻDY pojedynczy <tr> każdej tabeli pozycji, plus grupa
+     *  "tytuł+header+pierwszy wiersz" tabeli — patrz JS w renderHtmlToPdf(). Wszystko w CSS-px
+     *  (NIE surowych px Bitmapy), czyli niezależnie od gęstości ekranu urządzenia. */
+    private data class Measurement(val cssHeightPx: Float, val avoidRangesCss: List<Pair<Float, Float>>)
 
     private fun parseMeasurement(resultStr: String?, fallbackHeightCss: Float): Measurement {
         var cssHeight = fallbackHeightCss
-        var footers: List<Pair<Float, Float>> = emptyList()
+        var avoidRanges: List<Pair<Float, Float>> = emptyList()
         try {
             val clean = (resultStr ?: "").let {
                 var s = it.trim()
@@ -602,16 +605,17 @@ object InvoiceHtmlPdfGenerator {
             }
             val obj = org.json.JSONObject(clean)
             cssHeight = obj.optDouble("height", cssHeight.toDouble()).toFloat()
-            val arr = obj.optJSONArray("footers") ?: org.json.JSONArray()
-            footers = (0 until arr.length()).map { idx ->
+            val arr = obj.optJSONArray("avoidRanges") ?: org.json.JSONArray()
+            avoidRanges = (0 until arr.length()).map { idx ->
                 val pair = arr.getJSONArray(idx)
                 pair.getInt(0).toFloat() to pair.getInt(1).toFloat()
             }
         } catch (e: Exception) {
-            // Bezpieczny fallback — bez ochrony przed cięciem stopki / bez wypełniacza,
-            // ale przynajmniej dalej renderujemy (lepsze niż całkiem przerwać generowanie PDF).
+            // Bezpieczny fallback — bez ochrony przed cięciem stopki/wierszy tabeli i bez
+            // wypełniacza, ale przynajmniej dalej renderujemy (lepsze niż całkiem przerwać
+            // generowanie PDF).
         }
-        return Measurement(cssHeight, footers)
+        return Measurement(cssHeight, avoidRanges)
     }
 
 
@@ -693,50 +697,200 @@ object InvoiceHtmlPdfGenerator {
                                 // (przeglądarka robi synchroniczny "reflow" na żądanie).
                                 val js = """
                                     (function(){
-                                        function measure(){
-                                            var els = document.querySelectorAll('.footer-wrap');
-                                            var footers = [];
+                                        // =========================================================
+                                        // Krok 1: zbieranie "atomowych" bloków, których NIGDY nie
+                                        // wolno przeciąć cięciem strony (małe, samodzielne bloki —
+                                        // w przeciwieństwie do tabeli, te ZAWSZE w całości trafiają
+                                        // na jedną stronę, nigdy nie są rozbijane wewnętrznie).
+                                        // =========================================================
+                                        function rectOf(el){
+                                            var r = el.getBoundingClientRect();
+                                            return [r.top + window.scrollY, r.bottom + window.scrollY];
+                                        }
+
+                                        function collectAtomicBlocks(){
+                                            var sel = '.footer-wrap, .party-box, .reason-block, .delta-block, .sum-row, .totals-breakdown';
+                                            var els = document.querySelectorAll(sel);
+                                            var out = [];
                                             for (var i=0;i<els.length;i++){
-                                                var r = els[i].getBoundingClientRect();
-                                                footers.push([Math.round(r.top + window.scrollY), Math.round(r.bottom + window.scrollY)]);
+                                                out.push(rectOf(els[i]));
                                             }
-                                            return { height: document.body.scrollHeight, footers: footers };
+                                            return out;
+                                        }
+
+                                        // =========================================================
+                                        // Krok 2: dla KAŻDEJ tabeli pozycji (table.items) — zbiera
+                                        // grupę "tytuł+header+pierwszy wiersz" (jeden nierozdzielny
+                                        // blok — patrz wymóg 4/9 zadania) ORAZ każdy kolejny <tr>
+                                        // (indeks >=1) jako osobny, niezależny blok "nie przecinaj
+                                        // wewnątrz", który MOŻE być swobodnie rozdzielony od innych
+                                        // wierszy na kolejną stronę — to jest właśnie to, co pozwala
+                                        // dynamicznej liczbie pozycji normalnie rozkładać się na N
+                                        // stron, bez sztywnego limitu wierszy na stronę.
+                                        // =========================================================
+                                        function collectTables(){
+                                            var tables = document.querySelectorAll('table.items');
+                                            var out = [];
+                                            for (var t=0; t<tables.length; t++){
+                                                var table = tables[t];
+                                                var theadTr = table.querySelector('thead tr');
+                                                var tbody = table.querySelector('tbody');
+                                                if (!theadTr || !tbody) continue;
+                                                var dataRows = [];
+                                                for (var c=0; c<tbody.children.length; c++){
+                                                    var tr = tbody.children[c];
+                                                    if (tr.tagName === 'TR' && tr.className.indexOf('pdf-hdr-clone') === -1){
+                                                        dataRows.push(tr);
+                                                    }
+                                                }
+                                                if (dataRows.length === 0) continue;
+
+                                                var wrapper = table.closest('.table-with-total, .table-frame') || table;
+                                                var titleEl = wrapper.previousElementSibling;
+                                                if (!titleEl || titleEl.className.indexOf('table-title') === -1) titleEl = null;
+                                                var groupTopEl = titleEl || table;
+                                                var groupTop = rectOf(groupTopEl)[0];
+                                                var groupBottom = rectOf(dataRows[0])[1];
+
+                                                var rows = [];
+                                                for (var r=1; r<dataRows.length; r++){
+                                                    var rr = rectOf(dataRows[r]);
+                                                    rows.push({ el: dataRows[r], top: rr[0], bottom: rr[1] });
+                                                }
+                                                out.push({ theadTr: theadTr, groupTop: groupTop, groupBottom: groupBottom, rows: rows });
+                                            }
+                                            return out;
+                                        }
+
+                                        function buildRanges(tablesInfo, atomicBlocks){
+                                            var ranges = atomicBlocks.slice();
+                                            for (var t=0; t<tablesInfo.length; t++){
+                                                var ti = tablesInfo[t];
+                                                ranges.push([ti.groupTop, ti.groupBottom]);
+                                                for (var r=0; r<ti.rows.length; r++){
+                                                    ranges.push([ti.rows[r].top, ti.rows[r].bottom]);
+                                                }
+                                            }
+                                            return ranges;
+                                        }
+
+                                        // =========================================================
+                                        // Symulacja TEJ SAMEJ reguły "avoid-cut", którą stosuje
+                                        // finalne cięcie bitmapy na strony w Kotlinie (patrz pętla
+                                        // `while (top < totalHeight)` niżej w renderHtmlToPdf) —
+                                        // zwraca listę punktów początku KAŻDEJ strony (CSS-px).
+                                        // Gdy naturalna granica strony wypada wewnątrz chronionego
+                                        // zakresu, cofa granicę do NAJWCZEŚNIEJSZEGO początku
+                                        // zakresu, który by ją przeciął (obsługuje też zakresy
+                                        // zagnieżdżone/nachodzące na siebie).
+                                        // =========================================================
+                                        function simulateBreaks(totalHeight, ranges, pageHeight, topMargin){
+                                            var breaks = [0];
+                                            var top = 0, i = 0;
+                                            while (top < totalHeight && i < 1000){
+                                                var isFirst = (i === 0);
+                                                var avail = isFirst ? pageHeight : (pageHeight - topMargin);
+                                                var natural = Math.min(top + avail, totalHeight);
+                                                var bottom = natural;
+                                                var minStart = -1;
+                                                for (var k=0; k<ranges.length; k++){
+                                                    var a = ranges[k][0], b = ranges[k][1];
+                                                    if (a > top && a < bottom && b > bottom){
+                                                        if (minStart < 0 || a < minStart) minStart = a;
+                                                    }
+                                                }
+                                                if (minStart >= 0) bottom = minStart;
+                                                if (bottom <= top) bottom = natural; // zabezpieczenie przed zawieszeniem pętli
+                                                if (bottom >= totalHeight) break;
+                                                breaks.push(bottom);
+                                                top = bottom;
+                                                i++;
+                                            }
+                                            return breaks;
                                         }
 
                                         var pageHeight = $pageHeightCss;
                                         var topMargin = $topMarginCss;
                                         var minGap = $minGapFillerCss;
 
-                                        var m1 = measure();
-                                        var filler = document.getElementById('page-filler');
+                                        // =========================================================
+                                        // Krok 3: pętla o stałym punkcie (fixed-point) — dopóki
+                                        // symulowane granice stron wypadają na "wierszu ciągłości"
+                                        // (nie pierwszym wierszu) jakiejś tabeli, klonujemy PRAWDZIWY
+                                        // <thead><tr> tej tabeli (identyczny 1:1 z CSS/HTML — bez
+                                        // ręcznego rysowania na Canvas) i wstawiamy go do <tbody>
+                                        // TUŻ PRZED tym wierszem. To fizycznie przesuwa layout w dół,
+                                        // więc po każdej wstawce przeliczamy WSZYSTKO od nowa — aż do
+                                        // ustabilizowania (żaden kolejny nagłówek nie jest już
+                                        // potrzebny). Ograniczenie iteracji chroni przed
+                                        // (teoretyczną) nieskończoną pętlą.
+                                        // =========================================================
+                                        var changed = true, iter = 0;
+                                        while (changed && iter < 40){
+                                            changed = false;
+                                            iter++;
+                                            var totalHeight = document.body.scrollHeight;
+                                            var atomicBlocks = collectAtomicBlocks();
+                                            var tablesInfo = collectTables();
+                                            var ranges = buildRanges(tablesInfo, atomicBlocks);
+                                            var breaks = simulateBreaks(totalHeight, ranges, pageHeight, topMargin);
 
-                                        if (filler && m1.footers.length > 0) {
-                                            var footerTop = m1.footers[0][0];
-                                            var footerBottom = m1.footers[0][1];
+                                            for (var b=1; b<breaks.length; b++){
+                                                var Y = breaks[b];
+                                                for (var t=0; t<tablesInfo.length; t++){
+                                                    var ti = tablesInfo[t];
+                                                    for (var r=0; r<ti.rows.length; r++){
+                                                        var row = ti.rows[r];
+                                                        if (Math.abs(row.top - Y) < 1.0){
+                                                            var prevSibling = row.el.previousElementSibling;
+                                                            var already = prevSibling && prevSibling.className &&
+                                                                prevSibling.className.indexOf('pdf-hdr-clone') !== -1;
+                                                            if (!already){
+                                                                var clone = ti.theadTr.cloneNode(true);
+                                                                clone.className = (clone.className ? clone.className + ' ' : '') + 'pdf-hdr-clone';
+                                                                row.el.parentNode.insertBefore(clone, row.el);
+                                                                changed = true;
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+
+                                        // =========================================================
+                                        // Krok 4: layout tabel jest już stabilny (wszystkie potrzebne
+                                        // powtórzone nagłówki wstawione). Teraz — dokładnie jak w
+                                        // oryginalnym mechanizmie — decydujemy o ewentualnym
+                                        // wypełniaczu (#page-filler) NAD stopką, gdy ta ląduje na
+                                        // 2. lub kolejnej stronie, używając tych samych, finalnych
+                                        // zakresów ochronnych (więc uwzględnia też wiersze tabel).
+                                        // =========================================================
+                                        function measureFinal(){
+                                            var atomicBlocks = collectAtomicBlocks();
+                                            var tablesInfo = collectTables();
+                                            var ranges = buildRanges(tablesInfo, atomicBlocks);
+                                            return { height: document.body.scrollHeight, ranges: ranges };
+                                        }
+
+                                        var m1 = measureFinal();
+                                        var filler = document.getElementById('page-filler');
+                                        var footerEls = document.querySelectorAll('.footer-wrap');
+
+                                        if (filler && footerEls.length > 0) {
+                                            var fr = rectOf(footerEls[0]);
+                                            var footerTop = fr[0], footerBottom = fr[1];
                                             var footerHeight = footerBottom - footerTop;
 
                                             if (footerHeight > 0 && footerHeight < pageHeight) {
-                                                // Symuluje TĘ SAMĄ regułę "avoid-cut", którą stosuje
-                                                // finalne cięcie bitmapy na strony w Kotlinie (patrz
-                                                // pętla `while (top < totalHeight)` niżej) — żeby
-                                                // ustalić, na KTÓREJ stronie (0 = pierwsza) wyląduje
-                                                // stopka w NATURALNYM układzie (bez żadnej ingerencji).
-                                                var top = 0, total = m1.height, idx = -1, pageTop = 0;
-                                                var i = 0;
-                                                while (top < total && i < 500) {
-                                                    var isFirst = (i === 0);
-                                                    var avail = isFirst ? pageHeight : (pageHeight - topMargin);
-                                                    var bottom = Math.min(top + avail, total);
-                                                    if (top < footerTop && bottom > footerTop && bottom < footerBottom) {
-                                                        bottom = footerTop;
-                                                    }
-                                                    if (bottom <= top) bottom = Math.min(top + avail, total);
-                                                    if (footerTop >= top - 0.5 && footerTop < bottom + 0.5) {
-                                                        idx = i; pageTop = top;
+                                                var breaks1 = simulateBreaks(m1.height, m1.ranges, pageHeight, topMargin);
+                                                var idx = -1, pageTop = 0;
+                                                for (var p=0; p<breaks1.length; p++){
+                                                    var pStart = breaks1[p];
+                                                    var pEnd = (p+1 < breaks1.length) ? breaks1[p+1] : m1.height;
+                                                    if (footerTop >= pStart - 0.5 && footerTop < pEnd + 0.5){
+                                                        idx = p; pageTop = pStart;
                                                         break;
                                                     }
-                                                    top = bottom;
-                                                    i++;
                                                 }
 
                                                 // Stopka jest dosuwana do dołu strony TYLKO gdy ląduje
@@ -745,13 +899,6 @@ object InvoiceHtmlPdfGenerator {
                                                 // z ewentualnym marginesem na dole strony (to normalne,
                                                 // nie wymaga dekoracji ani dosuwania).
                                                 if (idx > 0) {
-                                                    // ~20mm marginesu bezpieczeństwa (w CSS-px) — ta
-                                                    // dekoracja jest czysto kosmetyczna, więc zawsze
-                                                    // wolimy zostawić trochę niewykorzystanej przestrzeni
-                                                    // niż zaryzykować (nawet przy drobnych rozbieżnościach
-                                                    // zaokrągleń między tym szacunkiem a finalnym cięciem
-                                                    // bitmapy w Kotlinie) "wypchnięcie" stopki na
-                                                    // niepotrzebną kolejną stronę.
                                                     var safety = 75;
                                                     var fullBottom = pageTop + (pageHeight - topMargin) - safety;
                                                     var gap = fullBottom - footerBottom;
@@ -763,15 +910,19 @@ object InvoiceHtmlPdfGenerator {
                                             }
                                         }
 
-                                        var m2 = measure();
-                                        return JSON.stringify(m2);
+                                        var m2 = measureFinal();
+                                        var roundedRanges = [];
+                                        for (var rr2=0; rr2<m2.ranges.length; rr2++){
+                                            roundedRanges.push([Math.round(m2.ranges[rr2][0]), Math.round(m2.ranges[rr2][1])]);
+                                        }
+                                        return JSON.stringify({ height: m2.height, avoidRanges: roundedRanges });
                                     })();
                                 """.trimIndent()
 
                                 view.evaluateJavascript(js) { resultStr ->
                                     if (!cont.isActive) return@evaluateJavascript
                                     val m = parseMeasurement(resultStr, pageHeightCss)
-                                    val avoidRangesLocal = m.footersCss.map { (a, b) -> (a * density).toInt() to (b * density).toInt() }
+                                    val avoidRangesLocal = m.avoidRangesCss.map { (a, b) -> (a * density).toInt() to (b * density).toInt() }
                                     avoidRangesResult = avoidRangesLocal
                                     val totalHeightPx = maxOf((m.cssHeightPx * density).toInt(), 1)
                                     view.measure(
@@ -841,14 +992,22 @@ object InvoiceHtmlPdfGenerator {
             while (top < totalHeight) {
                 val isFirstPage = (top == 0)
                 val availableHeightPx = if (isFirstPage) pageHeightPx else pageHeightPx - topMarginPx
-                var bottom = minOf(top + availableHeightPx, totalHeight)
+                val naturalBottom = minOf(top + availableHeightPx, totalHeight)
+                var bottom = naturalBottom
+                // Zamiast cofać się do PIERWSZEGO napotkanego zakresu (kolejność w liście była
+                // przypadkowa), bierzemy MINIMUM początków wszystkich zakresów, które
+                // przecinałyby naturalną granicę strony — to poprawnie obsługuje zakresy
+                // zagnieżdżone/nachodzące na siebie (np. grupa "tytuł+header+wiersz1" tabeli
+                // zawierająca w sobie też pojedyncze <tr>) i zawsze daje NAJWCZEŚNIEJSZĄ
+                // bezpieczną granicę przed jakąkolwiek chronioną treścią.
+                var minRangeStart = -1
                 for (range in avoidRanges) {
-                    if (top < range.first && bottom in (range.first + 1) until range.second) {
-                        bottom = range.first
-                        break
+                    if (range.first > top && range.first < bottom && range.second > bottom) {
+                        if (minRangeStart < 0 || range.first < minRangeStart) minRangeStart = range.first
                     }
                 }
-                if (bottom <= top) bottom = minOf(top + availableHeightPx, totalHeight)
+                if (minRangeStart >= 0) bottom = minRangeStart
+                if (bottom <= top) bottom = naturalBottom
 
                 val sliceHeight = bottom - top
                 val slice = Bitmap.createBitmap(fullBitmap, 0, top, renderWidthPx, sliceHeight)
