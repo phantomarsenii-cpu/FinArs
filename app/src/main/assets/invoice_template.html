@@ -88,7 +88,7 @@
   }
 
   /* --- wszystko poza falami leży nad tłem --- */
-  .content{ position:relative; z-index:1; display:flex; flex-direction:column; min-height:271mm; }
+  .content{ position:relative; z-index:1; }
 
   /* =========================== HEADER =========================== */
   .header{
@@ -255,7 +255,7 @@
   /* ======================= FOOTER (avoid split) ======================= */
   .footer-wrap{
     page-break-inside:avoid; break-inside:avoid;
-    margin-top:auto; /* przykleja stopkę do dołu strony przy krótkiej fakturze (jak w REFERENCE) */
+    margin-top:14mm; /* stały, naturalny odstęp — stopka NIE jest już rozciągana do dołu strony */
   }
 
   .status-payment-row{
@@ -352,15 +352,19 @@
      domyślnie 0/ukryty, więc nie wpływa na dokumenty mieszczące się na 1 stronie. Dekoracja w
      środku nawiązuje do fal w nagłówku/stopce strony (te same obrazki, mniejsze i przezroczyste),
      żeby pusty odstęp nie wyglądał na błąd renderowania. */
+  /* ===================== PAGE-FILLER (dekoracja pustej przestrzeni PRZED stopką, tylko gdy
+     stopka zostaje przeniesiona na kolejną stronę Z DUŻYM zapasem miejsca poniżej — patrz JS
+     pomiarowy w InvoiceHtmlPdfGenerator.renderHtmlToPdf) =====================
+     Wysokość ustawiana dynamicznie (0 = niewidoczny, nie wpływa na dokumenty mieszczące się
+     normalnie). background-image stretchuje się do DOWOLNEJ wysokości bez szwów (bez kaflowania),
+     a mask-image rozmywa górną i dolną krawędź do przezroczystości — dekoracja "wpływa" i
+     "zanika" płynnie, nie ma twardych krawędzi. */
   .page-filler{
-    display:none; height:0; overflow:hidden; position:relative;
-  }
-  .page-filler .filler-wave{
-    position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
-    width:150mm; max-width:100%; opacity:0.4; pointer-events:none;
-  }
-  .page-filler .filler-wave.filler-wave-2{
-    transform:translate(-50%,-50%) rotate(180deg); opacity:0.28;
+    display:none; height:0; overflow:hidden;
+    background-repeat:no-repeat; background-position:center; background-size:100% 100%;
+    opacity:0.32;
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 22%, #000 78%, transparent 100%);
+    mask-image: linear-gradient(to bottom, transparent 0%, #000 22%, #000 78%, transparent 100%);
   }
 
 </style>
@@ -413,7 +417,7 @@
 
     <!-- ===================== WYPEŁNIACZ (przypina stopkę do dołu strony, gdy ta ląduje na
          kolejnej stronie) — wysokość ustawiana dynamicznie, patrz renderHtmlToPdf ===== -->
-    <div class="page-filler" id="page-filler">{{PAGE_FILLER_WAVES_HTML}}</div>
+    <div class="page-filler" id="page-filler" style="{{PAGE_FILLER_BG_STYLE}}"></div>
 
     <!-- ===================== FOOTER (nie rozrywać między stronami) ===================== -->
     <div class="footer-wrap">
