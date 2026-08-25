@@ -638,9 +638,18 @@ object InvoiceHtmlPdfGenerator {
         webView.settings.textZoom = 100
         webView.setInitialScale(0) // 0 = auto, niech przeglądarka sama dopasuje wg meta viewport
 
+        // Update: WRAP_CONTENT jako wysokość startowa dawał Chromium bardzo mały surface na
+        // starcie, po czym musieliśmy go gwałtownie powiększać (measure/layout niżej) do pełnej
+        // wysokości dokumentu — a to WŁAŚNIE ten moment, w którym silnik renderujący w trybie
+        // software (LAYER_TYPE_SOFTWARE) potrafi zostawić "stare"/zduplikowane kafelki w
+        // Bitmapie (widoczne np. jako powtórzone wiersze tabeli albo osierocona pojedyncza
+        // linijka spod stopki). Start od razu z dużą, stałą wysokością (kilka stron A4) prawie
+        // zawsze eliminuje ten skok całkowicie dla typowych dokumentów.
+        val initialHeightPx = pageHeightPx * 4
+
         // Dołączamy off-screen (daleko poza ekranem), żeby user nic nie widział, ale WebView
         // miał prawdziwe okno/surface do renderowania.
-        val params = FrameLayout.LayoutParams(renderWidthPx, ViewGroup.LayoutParams.WRAP_CONTENT)
+        val params = FrameLayout.LayoutParams(renderWidthPx, initialHeightPx)
         webView.layoutParams = params
         webView.translationX = -100000f
         decor.addView(webView, params)
@@ -736,11 +745,14 @@ object InvoiceHtmlPdfGenerator {
                                                 // z ewentualnym marginesem na dole strony (to normalne,
                                                 // nie wymaga dekoracji ani dosuwania).
                                                 if (idx > 0) {
-                                                    // ~3mm marginesu bezpieczeństwa (w CSS-px), żeby
-                                                    // nigdy — nawet przy zaokrągleniach px w finalnym
-                                                    // cięciu bitmapy — nie "wypchnąć" stopki poza
-                                                    // faktyczną granicę tej strony na kolejną.
-                                                    var safety = 11;
+                                                    // ~20mm marginesu bezpieczeństwa (w CSS-px) — ta
+                                                    // dekoracja jest czysto kosmetyczna, więc zawsze
+                                                    // wolimy zostawić trochę niewykorzystanej przestrzeni
+                                                    // niż zaryzykować (nawet przy drobnych rozbieżnościach
+                                                    // zaokrągleń między tym szacunkiem a finalnym cięciem
+                                                    // bitmapy w Kotlinie) "wypchnięcie" stopki na
+                                                    // niepotrzebną kolejną stronę.
+                                                    var safety = 75;
                                                     var fullBottom = pageTop + (pageHeight - topMargin) - safety;
                                                     var gap = fullBottom - footerBottom;
                                                     if (gap > minGap) {
@@ -767,6 +779,7 @@ object InvoiceHtmlPdfGenerator {
                                         View.MeasureSpec.makeMeasureSpec(totalHeightPx, View.MeasureSpec.EXACTLY)
                                     )
                                     view.layout(0, 0, renderWidthPx, totalHeightPx)
+                                    view.invalidate()
                                     // KRYTYCZNE: bez tego opóźnienia view.draw(canvas) potrafi
                                     // złapać częściowo NIEOD-rysowaną klatkę — Chromium nie
                                     // zdążył jeszcze zrasteryzować nowo odsłoniętego obszaru po
@@ -776,6 +789,7 @@ object InvoiceHtmlPdfGenerator {
                                     // dodatkowo czeka na zakończenie bieżącego cyklu rysowania.
                                     view.postDelayed({
                                         if (!cont.isActive) return@postDelayed
+                                        view.invalidate()
                                         view.post {
                                             if (!cont.isActive) return@post
                                             val bmp = Bitmap.createBitmap(renderWidthPx, totalHeightPx, Bitmap.Config.ARGB_8888)
@@ -784,7 +798,7 @@ object InvoiceHtmlPdfGenerator {
                                             view.draw(canvas)
                                             if (cont.isActive) cont.resume(bmp)
                                         }
-                                    }, 350)
+                                    }, 500)
                                 }
                             }, 150)
                         }
