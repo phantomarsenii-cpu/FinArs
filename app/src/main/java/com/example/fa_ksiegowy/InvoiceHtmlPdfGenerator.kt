@@ -754,8 +754,24 @@ object InvoiceHtmlPdfGenerator {
 
                                                 var rows = [];
                                                 for (var r=1; r<dataRows.length; r++){
-                                                    var rr = rectOf(dataRows[r]);
-                                                    rows.push({ el: dataRows[r], top: rr[0], bottom: rr[1] });
+                                                    var rowEl = dataRows[r];
+                                                    var rr = rectOf(rowEl);
+                                                    // KRYTYCZNE (naprawa błędu przecinania powtórzonego
+                                                    // <thead>): jeśli przed tym wierszem stoi już wstawiony
+                                                    // klon nagłówka (pdf-hdr-clone), to klon i wiersz MUSZĄ
+                                                    // być traktowane jako JEDEN nierozdzielny zakres —
+                                                    // rangeTop liczymy od góry klonu, a nie od góry samego
+                                                    // wiersza. Bez tego klon nagłówka był całkowicie
+                                                    // niechroniony i naturalna (stała, niezależna od treści)
+                                                    // granica strony potrafiła wypaść dokładnie w jego
+                                                    // środku — dając rozcięty header widoczny na 2 stronach.
+                                                    var prevSibling = rowEl.previousElementSibling;
+                                                    var rangeTop = rr[0];
+                                                    if (prevSibling && prevSibling.className &&
+                                                        prevSibling.className.indexOf('pdf-hdr-clone') !== -1){
+                                                        rangeTop = rectOf(prevSibling)[0];
+                                                    }
+                                                    rows.push({ el: rowEl, top: rr[0], bottom: rr[1], rangeTop: rangeTop });
                                                 }
                                                 out.push({ theadTr: theadTr, groupTop: groupTop, groupBottom: groupBottom, rows: rows });
                                             }
@@ -768,7 +784,11 @@ object InvoiceHtmlPdfGenerator {
                                                 var ti = tablesInfo[t];
                                                 ranges.push([ti.groupTop, ti.groupBottom]);
                                                 for (var r=0; r<ti.rows.length; r++){
-                                                    ranges.push([ti.rows[r].top, ti.rows[r].bottom]);
+                                                    // rangeTop (nie zwykłe .top) — patrz komentarz w
+                                                    // collectTables(): obejmuje ewentualny powtórzony
+                                                    // <thead> stojący bezpośrednio przed tym wierszem, żeby
+                                                    // oba razem stanowiły jeden nierozdzielny blok.
+                                                    ranges.push([ti.rows[r].rangeTop, ti.rows[r].bottom]);
                                                 }
                                             }
                                             return ranges;
