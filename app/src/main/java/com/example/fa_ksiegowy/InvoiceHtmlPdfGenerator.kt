@@ -918,19 +918,20 @@ object InvoiceHtmlPdfGenerator {
                                                     else break;
                                                 }
 
-                                                // Stopka jest dosuwana do dołu strony TYLKO gdy ląduje
-                                                // na 2. lub kolejnej stronie (idx > 0) — dokument, który
-                                                // mieści się cały na stronie 1, kończy się naturalnie,
-                                                // z ewentualnym marginesem na dole strony (to normalne,
-                                                // nie wymaga dekoracji ani dosuwania).
-                                                if (idx > 0) {
-                                                    var safety = 75;
-                                                    var fullBottom = pageTop + (pageHeight - topMargin) - safety;
-                                                    var gap = fullBottom - footerBottom;
-                                                    if (gap > minGap) {
-                                                        filler.style.display = 'block';
-                                                        filler.style.height = Math.min(gap, pageHeight) + 'px';
-                                                    }
+                                                // Stopka jest ZAWSZE dosuwana do samego dołu strony, na
+                                                // której się znajduje (bez wyjątku dla strony 1. — użytkownik
+                                                // chce spójnego wyglądu niezależnie od tego, czy dokument
+                                                // mieści się na 1 stronie, czy przenosi się dalej).
+                                                var avail0 = (idx === 0) ? pageHeight : (pageHeight - topMargin);
+                                                var safety = 75;
+                                                var fullBottom = pageTop + avail0 - safety;
+                                                var gap = fullBottom - footerBottom;
+                                                // Bez progu "minGap" — dosuwamy nawet przy niewielkiej luce;
+                                                // próg > 2px to tylko zabezpieczenie przed szumem zaokrągleń
+                                                // (nie chcemy ustawiać stylu przy różnicy rzędu ułamka piksela).
+                                                if (gap > 2) {
+                                                    filler.style.display = 'block';
+                                                    filler.style.height = Math.min(gap, pageHeight) + 'px';
                                                 }
                                             }
                                         }
