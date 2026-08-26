@@ -698,6 +698,26 @@ object InvoiceHtmlPdfGenerator {
                                 val js = """
                                     (function(){
                                         // =========================================================
+                                        // KRYTYCZNE (naprawa "widma" fal w pustym miejscu strony):
+                                        // ten skrypt wielokrotnie zmienia całkowitą wysokość
+                                        // dokumentu w trakcie jednego przebiegu (wstawianie
+                                        // powtórzonych <thead>, zmiana wysokości #page-filler).
+                                        // Dekoracje .waves-top/.waves-bottom-left/.waves-bottom-right
+                                        // są position:absolute względem .page, więc ich pozycja
+                                        // "skacze" przy KAŻDEJ takiej zmianie wysokości. W trybie
+                                        // renderowania software (LAYER_TYPE_SOFTWARE) Chromium
+                                        // potrafi zostawić stary rastr takiej dekoracji z POŚREDNIEJ,
+                                        // nieostatecznej pozycji — widoczny jako fragment fali w
+                                        // pustym miejscu strony. Zamiast próbować to "wyczyścić" po
+                                        // fakcie, eliminujemy przyczynę u źródła: chowamy te
+                                        // dekoracje na czas WSZYSTKICH przeliczeń i pokazujemy
+                                        // dopiero na samym końcu, gdy pozycja jest już ostateczna —
+                                        // dzięki temu przeglądarka maluje je dokładnie RAZ, we
+                                        // właściwym miejscu, i nie ma czego zostawić jako "widmo".
+                                        var __waveEls = document.querySelectorAll('.waves-top, .waves-bottom-left, .waves-bottom-right');
+                                        for (var __w=0; __w<__waveEls.length; __w++){ __waveEls[__w].style.visibility = 'hidden'; }
+
+                                        // =========================================================
                                         // Krok 1: zbieranie "atomowych" bloków, których NIGDY nie
                                         // wolno przeciąć cięciem strony (małe, samodzielne bloki —
                                         // w przeciwieństwie do tabeli, te ZAWSZE w całości trafiają
@@ -709,11 +729,30 @@ object InvoiceHtmlPdfGenerator {
                                         }
 
                                         function collectAtomicBlocks(){
-                                            var sel = '.footer-info, .footer-bottom, .party-box, .reason-block, .delta-block, .sum-row, .totals-breakdown';
+                                            var sel = '.party-box, .reason-block, .delta-block, .sum-row, .totals-breakdown';
                                             var els = document.querySelectorAll(sel);
                                             var out = [];
                                             for (var i=0;i<els.length;i++){
                                                 out.push(rectOf(els[i]));
+                                            }
+                                            // KRYTYCZNE: .footer-info (status/VAT/podpisy) i .footer-bottom
+                                            // (QR + fale) są mierzone RAZEM jako JEDEN wspólny,
+                                            // nierozdzielny zakres — a nie dwa osobne. Bez tego QR mógł
+                                            // "odpaść" samotnie na kolejną stronę, podczas gdy .footer-info
+                                            // zostawało na poprzedniej — realne ryzyko, że taka niemal pusta
+                                            // strona z samym kodem QR zostanie pominięta przy druku, a
+                                            // faktura bez zeskanowanego QR straci sens. Teraz: albo CAŁY
+                                            // blok (status+podpisy+QR) mieści się razem na bieżącej stronie,
+                                            // albo w CAŁOŚCI przechodzi na kolejną — QR nigdy nie zostaje sam.
+                                            var fi = document.querySelector('.footer-info');
+                                            var fb = document.querySelector('.footer-bottom');
+                                            if (fi && fb){
+                                                var fiR = rectOf(fi), fbR = rectOf(fb);
+                                                out.push([fiR[0], fbR[1]]);
+                                            } else if (fi){
+                                                out.push(rectOf(fi));
+                                            } else if (fb){
+                                                out.push(rectOf(fb));
                                             }
                                             return out;
                                         }
@@ -939,6 +978,12 @@ object InvoiceHtmlPdfGenerator {
                                                 }
                                             }
                                         }
+
+                                        // Pozycja wszystkiego jest już ostateczna (żadnych dalszych
+                                        // mutacji wysokości nie będzie) — dopiero TERAZ pokazujemy
+                                        // dekoracje falowe z powrotem, żeby przeglądarka namalowała
+                                        // je RAZ, we właściwym miejscu, tuż przed przechwyceniem Bitmapy.
+                                        for (var __w2=0; __w2<__waveEls.length; __w2++){ __waveEls[__w2].style.visibility = ''; }
 
                                         var m2 = measureFinal();
                                         var roundedRanges = [];
