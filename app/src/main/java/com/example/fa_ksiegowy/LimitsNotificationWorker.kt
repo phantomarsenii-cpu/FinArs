@@ -166,7 +166,8 @@ class LimitsNotificationWorker(context: Context, params: WorkerParameters) : Cor
 
     companion object {
         private val SDF_DAY = java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.US)
-        const val CHANNEL_ID = "fa_limits_channel"
+        const val CHANNEL_ID = "fa_limits_channel_v2"
+        private const val LEGACY_CHANNEL_ID = "fa_limits_channel"
         private const val UNIQUE_WORK_NAME = "fa_limits_daily_check"
 
         /** Общая реализация повторяемого (до N раз/день) оповещения — используется
@@ -187,12 +188,21 @@ class LimitsNotificationWorker(context: Context, params: WorkerParameters) : Cor
         fun createChannel(context: Context) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 val mgr = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+                // Sprzątanie: usuwamy STARY kanał (utworzony wcześniej z IMPORTANCE_DEFAULT).
+                // System Android NIGDY nie podnosi ważności istniejącego kanału z poziomu kodu
+                // (to świadoma decyzja użytkownika w ustawieniach systemowych) — dlatego samo
+                // zmienienie IMPORTANCE_DEFAULT -> IMPORTANCE_HIGH poniżej nie zadziałałoby dla
+                // osób, które już mają zainstalowaną wcześniejszą wersję aplikacji. Usunięcie
+                // starego ID i użycie NOWEGO (patrz CHANNEL_ID niżej) gwarantuje, że WSZYSCY
+                // użytkownicy — nowi i ci po aktualizacji — dostają kanał z poprawną ważnością.
+                mgr.deleteNotificationChannel(LEGACY_CHANNEL_ID)
                 val channel = NotificationChannel(
                     CHANNEL_ID,
                     context.getString(R.string.notif_channel_name),
-                    NotificationManager.IMPORTANCE_DEFAULT
+                    NotificationManager.IMPORTANCE_HIGH // wysoka ważność = baner heads-up na górze ekranu
                 ).apply {
                     description = context.getString(R.string.notif_channel_description)
+                    enableVibration(true)
                 }
                 mgr.createNotificationChannel(channel)
             }
@@ -214,10 +224,13 @@ class LimitsNotificationWorker(context: Context, params: WorkerParameters) : Cor
                 if (!granted) return
             }
             val builder = NotificationCompat.Builder(context, CHANNEL_ID)
-                .setSmallIcon(android.R.drawable.ic_dialog_alert)
+                .setSmallIcon(R.drawable.ic_notification) // biały monochromatyczny sylwetka do paska stanu
+                .setLargeIcon(android.graphics.BitmapFactory.decodeResource(context.resources, R.drawable.logo)) // kolorowe logo FA w szufladzie powiadomień
                 .setContentTitle(title)
                 .setContentText(text)
                 .setStyle(NotificationCompat.BigTextStyle().bigText(text))
+                .setPriority(NotificationCompat.PRIORITY_HIGH) // Android 7.1 i niżej — bez kanałów
+                .setDefaults(NotificationCompat.DEFAULT_ALL) // dźwięk + wibracja wymagane, by baner wyskoczył
                 .setAutoCancel(true)
             // Тап по уведомлению должен открывать соответствующий экран приложения —
             // раньше при тапе ничего не происходило, так как contentIntent не задавался.
