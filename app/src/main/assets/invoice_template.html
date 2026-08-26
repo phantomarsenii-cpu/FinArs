@@ -252,10 +252,18 @@
   .delta-chip.positive b{ color:var(--green); }
   .delta-chip.negative b{ color:#CC3B30; }
 
-  /* ======================= FOOTER (avoid split) ======================= */
-  .footer-wrap{
+  /* ======================= FOOTER — DWA NIEZALEŻNE BLOKI =======================
+     Rozdzielone na życzenie: .footer-info (status płatności + podstawa VAT + podpisy)
+     zostaje ZARAZ PO tabeli/korekcie w naturalnym przepływie dokumentu — bez sztucznego
+     dosuwania. Tylko .footer-bottom (QR + fale dekoracyjne) jest tym, co ZAWSZE ląduje
+     na samym dole strony (patrz #page-filler między nimi, wysokość ustawiana w JS/Kotlin
+     w renderHtmlToPdf). Oba nadal są chronione jako pojedyncze, niepodzielne bloki. */
+  .footer-info{
     page-break-inside:avoid; break-inside:avoid;
-    margin-top:14mm; /* stały, naturalny odstęp — stopka NIE jest już rozciągana do dołu strony */
+    margin-top:14mm;
+  }
+  .footer-bottom{
+    page-break-inside:avoid; break-inside:avoid;
   }
 
   .status-payment-row{
@@ -305,15 +313,15 @@
   }
   .sig-caption{ font-size:7.8pt; color:var(--hint); margin-top:1.5mm; }
 
-  .bottom{
+  .footer-bottom{
     position:relative; text-align:center; padding-top:2mm;
   }
-  .bottom img.qr{
+  .footer-bottom img.qr{
     width:41mm; height:41mm; background:#FFFFFF; padding:1.5mm;
     display:block; margin:0 auto 3mm auto;
   }
-  .bottom .thanks{ font-size:10.5pt; font-weight:700; color:var(--text); }
-  .bottom .scan{ font-size:8.6pt; color:var(--hint); margin-top:0.8mm; display:flex; align-items:center; justify-content:center; gap:2.5mm; }
+  .footer-bottom .thanks{ font-size:10.5pt; font-weight:700; color:var(--text); }
+  .footer-bottom .scan{ font-size:8.6pt; color:var(--hint); margin-top:0.8mm; display:flex; align-items:center; justify-content:center; gap:2.5mm; }
   .scan-dash{ display:inline-block; width:6mm; height:0.6pt; background:var(--hint); }
 
   /* --- .compact: dokument z niewieloma pozycjami (do 5) — ściśnięte odstępy/czcionki w
@@ -341,10 +349,10 @@
   .compact .status-box{ padding:2.6mm 3.2mm; }
   .compact .signatures{ margin-bottom:6mm; gap:6mm; }
   .compact .sig-line{ height:8mm; }
-  .compact .bottom img.qr{ width:34mm; height:34mm; margin-bottom:2mm; }
+  .compact .footer-bottom img.qr{ width:34mm; height:34mm; margin-bottom:2mm; }
 
   /* ===================== PAGE-FILLER (przenoszenie stopki na dół strony) =====================
-     Gdy dokument nie mieści się na 1 stronie, stopka (.footer-wrap) jest w całości przenoszona
+     Gdy dokument nie mieści się na 1 stronie, stopka (.footer-info/.footer-bottom) jest w całości przenoszona
      na kolejną stronę (patrz InvoiceHtmlPdfGenerator.renderHtmlToPdf — logika "avoid-cut"). Ten
      element wypełnia wtedy pustą przestrzeń NAD stopką na tamtej stronie, tak żeby stopka
      zawsze "stała" przy samym dole strony (a nie zaraz pod resztą treści z dużą pustą resztą
@@ -405,12 +413,9 @@
     <!-- ===================== KOREKTA: PRZYCZYNA + DELTA ===================== -->
     {{CORRECTION_BLOCK_HTML}}
 
-    <!-- ===================== WYPEŁNIACZ (przypina stopkę do dołu strony, gdy ta ląduje na
-         kolejnej stronie) — wysokość ustawiana dynamicznie, patrz renderHtmlToPdf ===== -->
-    <div class="page-filler" id="page-filler" style="{{PAGE_FILLER_BG_STYLE}}"></div>
-
-    <!-- ===================== FOOTER (nie rozrywać między stronami) ===================== -->
-    <div class="footer-wrap">
+    <!-- ===================== FOOTER-INFO: status płatności + podstawa VAT + podpisy
+         (ZARAZ po tabeli, w naturalnym przepływie — bez dosuwania) ===================== -->
+    <div class="footer-info">
 
       <div class="status-payment-row">
         <div class="payment-info">
@@ -431,12 +436,18 @@
         </div>
       </div>
 
-      <div class="bottom">
-        {{QR_IMG_TAG}}
-        <div class="thanks">Dziękujemy za zaufanie!</div>
-        <div class="scan"><span class="scan-dash"></span>Zeskanuj i pobierz FinArs<span class="scan-dash"></span></div>
-      </div>
+    </div>
 
+    <!-- ===================== WYPEŁNIACZ (przypina TYLKO blok QR do dołu strony, gdy ten
+         ląduje na kolejnej stronie) — wysokość ustawiana dynamicznie, patrz renderHtmlToPdf ===== -->
+    <div class="page-filler" id="page-filler" style="{{PAGE_FILLER_BG_STYLE}}"></div>
+
+    <!-- ===================== FOOTER-BOTTOM: TYLKO QR + fale (zawsze na samym dole strony,
+         nie rozrywać) ===================== -->
+    <div class="footer-bottom">
+      {{QR_IMG_TAG}}
+      <div class="thanks">Dziękujemy za zaufanie!</div>
+      <div class="scan"><span class="scan-dash"></span>Zeskanuj i pobierz FinArs<span class="scan-dash"></span></div>
     </div>
 
   </div>

@@ -566,7 +566,7 @@ object InvoiceHtmlPdfGenerator {
      *  niemożliwe. Zamiast tego renderujemy WebView do jednego długiego Bitmapu (cała
      *  wysokość dokumentu), a następnie TNIEMY go ręcznie na strony A4 w Kotlinie —
      *  pilnując przez getBoundingClientRect(), żeby cięcie nie wypadło w środku bloku
-     *  .footer-wrap (to zastępuje CSS page-break-inside:avoid, którego przeglądarka i tak
+     *  .footer-info/.footer-bottom (to zastępuje CSS page-break-inside:avoid, którego przeglądarka i tak
      *  nie stosuje poza prawdziwym silnikiem druku).
      *
      *  WAŻNE (gęstość ekranu): WebView/Chromium liczy CSS-px względem gęstości ekranu
@@ -588,7 +588,7 @@ object InvoiceHtmlPdfGenerator {
      *  MUSI być wywołane z wątku głównego (WebView) — dlatego przełączamy dispatcher tutaj. */
     /** Wynik pomiaru JS layoutu dokumentu: całkowita wysokość (document.body.scrollHeight) i
      *  KOMPLETNA lista zakresów [top,bottom] treści, której NIE wolno przecinać cięciem strony
-     *  — .footer-wrap, karty SPRZEDAWCA/NABYWCA, blok przyczyny/delty korekty, pasek sumy, oraz
+     *  — .footer-info/.footer-bottom, karty SPRZEDAWCA/NABYWCA, blok przyczyny/delty korekty, pasek sumy, oraz
      *  (najważniejsze) KAŻDY pojedynczy <tr> każdej tabeli pozycji, plus grupa
      *  "tytuł+header+pierwszy wiersz" tabeli — patrz JS w renderHtmlToPdf(). Wszystko w CSS-px
      *  (NIE surowych px Bitmapy), czyli niezależnie od gęstości ekranu urządzenia. */
@@ -709,7 +709,7 @@ object InvoiceHtmlPdfGenerator {
                                         }
 
                                         function collectAtomicBlocks(){
-                                            var sel = '.footer-wrap, .party-box, .reason-block, .delta-block, .sum-row, .totals-breakdown';
+                                            var sel = '.footer-info, .footer-bottom, .party-box, .reason-block, .delta-block, .sum-row, .totals-breakdown';
                                             var els = document.querySelectorAll(sel);
                                             var out = [];
                                             for (var i=0;i<els.length;i++){
@@ -894,7 +894,11 @@ object InvoiceHtmlPdfGenerator {
 
                                         var m1 = measureFinal();
                                         var filler = document.getElementById('page-filler');
-                                        var footerEls = document.querySelectorAll('.footer-wrap');
+                                        // KRYTYCZNE (na życzenie): dosuwamy do dołu strony TYLKO blok
+                                        // .footer-bottom (QR + fale) — .footer-info (status płatności,
+                                        // podstawa VAT, podpisy) zostaje w naturalnym przepływie, zaraz
+                                        // po tabeli, bez żadnego sztucznego odsunięcia.
+                                        var footerEls = document.querySelectorAll('.footer-bottom');
 
                                         if (filler && footerEls.length > 0) {
                                             var fr = rectOf(footerEls[0]);
@@ -905,7 +909,7 @@ object InvoiceHtmlPdfGenerator {
                                                 var breaks1 = simulateBreaks(m1.height, m1.ranges, pageHeight, topMargin);
                                                 // KRYTYCZNE (naprawa błędu "stopka nie jest dosuwana do
                                                 // dołu strony"): footerTop niemal zawsze wypada DOKŁADNIE
-                                                // na granicy strony (bo to właśnie .footer-wrap — jako
+                                                // na granicy strony (bo to właśnie .footer-info/.footer-bottom — jako
                                                 // chroniony blok — spowodował to cięcie w simulateBreaks).
                                                 // Poprzednie porównanie z tolerancją "< pEnd + 0.5" przy
                                                 // ścisłej równości footerTop === pEnd błędnie przypisywało
@@ -951,6 +955,24 @@ object InvoiceHtmlPdfGenerator {
                                     val avoidRangesLocal = m.avoidRangesCss.map { (a, b) -> (a * density).toInt() to (b * density).toInt() }
                                     avoidRangesResult = avoidRangesLocal
                                     val totalHeightPx = maxOf((m.cssHeightPx * density).toInt(), 1)
+                                    // KRYTYCZNE ("kick" layoutu): skrypt JS powyżej wielokrotnie
+                                    // zmieniał całkowitą wysokość dokumentu w trakcie jednego
+                                    // przebiegu (wstawianie powtórzonych <thead>, zmiana wysokości
+                                    // #page-filler) — elementy z position:absolute;bottom:0 (fale
+                                    // dekoracyjne w rogach) "przeskakiwały" pozycję przy każdej
+                                    // takiej zmianie. W trybie LAYER_TYPE_SOFTWARE Chromium potrafi
+                                    // zostawić stary rastr takiego elementu z POŚREDNIEJ pozycji
+                                    // (duch/artefakt widoczny jako fragment fali w pustym miejscu
+                                    // strony). Wymuszamy pełne odrzucenie starych kafelków: najpierw
+                                    // zwijamy View do 1px wysokości i invalidate, DOPIERO potem
+                                    // rozwijamy do docelowej wysokości — to zawsze wymusza pełny
+                                    // re-rasteryzowany layout zamiast częściowej aktualizacji.
+                                    view.measure(
+                                        View.MeasureSpec.makeMeasureSpec(renderWidthPx, View.MeasureSpec.EXACTLY),
+                                        View.MeasureSpec.makeMeasureSpec(1, View.MeasureSpec.EXACTLY)
+                                    )
+                                    view.layout(0, 0, renderWidthPx, 1)
+                                    view.invalidate()
                                     view.measure(
                                         View.MeasureSpec.makeMeasureSpec(renderWidthPx, View.MeasureSpec.EXACTLY),
                                         View.MeasureSpec.makeMeasureSpec(totalHeightPx, View.MeasureSpec.EXACTLY)
@@ -991,7 +1013,7 @@ object InvoiceHtmlPdfGenerator {
             // Zabezpieczenie przed "widmową" prawie pustą ostatnią stroną: jeśli całkowita
             // wysokość dokumentu przekracza wielokrotność pageHeightPx tylko o drobny margines
             // (np. zaokrąglenia modelu pudełkowego CSS przy min-height:271mm), a w tym
-            // nadmiarze NIE ma żadnej treści chronionej przed cięciem (.footer-wrap), po prostu
+            // nadmiarze NIE ma żadnej treści chronionej przed cięciem (.footer-info/.footer-bottom), po prostu
             // przycinamy nadmiar zamiast tworzyć dodatkową, praktycznie pustą stronę.
             val rawTotalHeight = fullBitmap.height
             val pageCountFloor = rawTotalHeight / pageHeightPx
