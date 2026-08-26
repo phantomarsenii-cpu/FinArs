@@ -144,7 +144,7 @@ object InvoiceHtmlPdfGenerator {
             .replace("{{ITEMS_TABLES_HTML}}", itemsTableHtml)
             .replace("{{CORRECTION_BLOCK_HTML}}", "")
             .replace("{{PAGE_COMPACT_CLASS}}", pageCompactClass)
-            .replace("{{PAGE_FILLER_BG_STYLE}}", buildPageFillerBgStyle(context))
+            .replace("{{PAGE_FILLER_BG_STYLE}}", "") // filler jest teraz CZYSTO niewidocznym odstępem — bez tła
             .replace("{{PAYMENT_INFO_LINES_HTML}}", paymentLinesHtml.toString())
             .replace("{{LEGAL_VAT_BLOCK_HTML}}", legalVatHtml)
             .replace("{{STATUS_BOX_HTML}}", buildStatusBoxHtml(statusClass, statusIcon, statusText))
@@ -272,7 +272,7 @@ object InvoiceHtmlPdfGenerator {
             .replace("{{ITEMS_TABLES_HTML}}", tablesHtml.toString())
             .replace("{{CORRECTION_BLOCK_HTML}}", correctionBlockHtml)
             .replace("{{PAGE_COMPACT_CLASS}}", pageCompactClass)
-            .replace("{{PAGE_FILLER_BG_STYLE}}", buildPageFillerBgStyle(context))
+            .replace("{{PAGE_FILLER_BG_STYLE}}", "") // filler jest teraz CZYSTO niewidocznym odstępem — bez tła
             // Faktura korygująca nie ma statusu płatności/terminu w oryginalnym generatorze —
             // zostawiamy blok podstawy prawnej VAT, a status pokazujemy jako neutralny placeholder.
             // Update: faktura korygująca NIE pokazuje plakietki STATUS — nie ma tu statusu
@@ -525,14 +525,15 @@ object InvoiceHtmlPdfGenerator {
         null
     }?.let { android.util.Base64.encodeToString(it, android.util.Base64.NO_WRAP) }
 
-    /** Dekoracja wewnątrz .page-filler (patrz szablon HTML) — TEN SAM obrazek fal co w narożnikach
-     *  strony, ustawiony jako background-image (a nie <img>), żeby mógł się czysto rozciągnąć do
-     *  DOWOLNEJ wysokości ustawianej dynamicznie z JS (patrz renderHtmlToPdf) bez szwów/kaflowania.
-     *  Płynne pojawianie/zanikanie krawędzi zapewnia mask-image w CSS (.page-filler). */
-    private fun buildPageFillerBgStyle(context: Context): String {
-        val base64 = loadAssetBase64(context, "wave_top.png") ?: return ""
-        return "background-image:url('data:image/png;base64,$base64');"
-    }
+    /** USUNIĘTE: buildPageFillerBgStyle() — .page-filler nie ma już żadnego tła (patrz CSS
+     *  .page-filler w szablonie), więc nie ma sensu ładować/wstawiać obrazka fal do jego stylu.
+     *  To właśnie TA funkcja (zapomniana przy usuwaniu wizualnej dekoracji filler-a) była
+     *  prawdziwą przyczyną "widma" linii w pustym miejscu strony: mimo że CSS-klasa .page-filler
+     *  nie definiowała już background-image/opacity/mask, wywołanie tej funkcji nadal wstawiało
+     *  inline style="background-image:url(...)" na elemencie — a styl inline ZAWSZE nadpisuje
+     *  regułę z klasy CSS. Efekt: obrazek fal nadal się renderował, tylko już bez
+     *  background-size/no-repeat, czyli w domyślnym trybie kaflowania (repeat) — stąd
+     *  wyglądał jak porozrywane fragmenty linii zamiast płynnej fali. */
 
     private fun bitmapToBase64Png(bitmap: Bitmap): String {
         val stream = ByteArrayOutputStream()
