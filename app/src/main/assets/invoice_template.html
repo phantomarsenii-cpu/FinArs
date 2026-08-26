@@ -356,12 +356,15 @@
      stopka zostaje przeniesiona na kolejną stronę Z DUŻYM zapasem miejsca poniżej — patrz JS
      pomiarowy w InvoiceHtmlPdfGenerator.renderHtmlToPdf) =====================
      Wysokość ustawiana dynamicznie (0 = niewidoczny, nie wpływa na dokumenty mieszczące się
-     normalnie). background-image stretchuje się do DOWOLNEJ wysokości bez szwów (bez kaflowania),
-     a mask-image rozmywa górną i dolną krawędź do przezroczystości — dekoracja "wpływa" i
-     "zanika" płynnie, nie ma twardych krawędzi. */
+     normalnie). background-image POWTARZA SIĘ pionowo (repeat-y) z zachowaniem naturalnych
+     proporcji zamiast rozciągania do dowolnej wysokości — przy dużym zapasie miejsca
+     rozciągnięty do 100% 100% obrazek fal zamieniał się wizualnie w spłaszczoną, prawie płaską
+     kreskę (stąd wcześniejszy błąd "smugi" pod tabelą). Powtarzanie zachowuje wygląd fal
+     niezależnie od wysokości zapełnianej luki. mask-image rozmywa górną i dolną krawędź do
+     przezroczystości — dekoracja "wpływa" i "zanika" płynnie, nie ma twardych krawędzi. */
   .page-filler{
     display:none; height:0; overflow:hidden;
-    background-repeat:no-repeat; background-position:center; background-size:100% 100%;
+    background-repeat:repeat-y; background-position:center top; background-size:100% auto;
     opacity:0.32;
     -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 22%, #000 78%, transparent 100%);
     mask-image: linear-gradient(to bottom, transparent 0%, #000 22%, #000 78%, transparent 100%);

@@ -903,14 +903,19 @@ object InvoiceHtmlPdfGenerator {
 
                                             if (footerHeight > 0 && footerHeight < pageHeight) {
                                                 var breaks1 = simulateBreaks(m1.height, m1.ranges, pageHeight, topMargin);
+                                                // KRYTYCZNE (naprawa błędu "stopka nie jest dosuwana do
+                                                // dołu strony"): footerTop niemal zawsze wypada DOKŁADNIE
+                                                // na granicy strony (bo to właśnie .footer-wrap — jako
+                                                // chroniony blok — spowodował to cięcie w simulateBreaks).
+                                                // Poprzednie porównanie z tolerancją "< pEnd + 0.5" przy
+                                                // ścisłej równości footerTop === pEnd błędnie przypisywało
+                                                // stopkę do POPRZEDNIEJ strony (idx o 1 za mały) —
+                                                // "if (idx > 0)" wtedy fałszywie nie startował. Zamiast
+                                                // tego bierzemy jednoznacznie OSTATNIĄ granicę <= footerTop.
                                                 var idx = -1, pageTop = 0;
                                                 for (var p=0; p<breaks1.length; p++){
-                                                    var pStart = breaks1[p];
-                                                    var pEnd = (p+1 < breaks1.length) ? breaks1[p+1] : m1.height;
-                                                    if (footerTop >= pStart - 0.5 && footerTop < pEnd + 0.5){
-                                                        idx = p; pageTop = pStart;
-                                                        break;
-                                                    }
+                                                    if (breaks1[p] <= footerTop + 0.5) { idx = p; pageTop = breaks1[p]; }
+                                                    else break;
                                                 }
 
                                                 // Stopka jest dosuwana do dołu strony TYLKO gdy ląduje
