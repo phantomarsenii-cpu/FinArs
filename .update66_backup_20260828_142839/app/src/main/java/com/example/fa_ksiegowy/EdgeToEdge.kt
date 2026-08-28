@@ -1,14 +1,7 @@
 package com.example.fa_ksiegowy
 
 import android.app.Activity
-import android.content.Context
-import android.graphics.Canvas
 import android.graphics.Color
-import android.graphics.LinearGradient
-import android.graphics.Paint
-import android.graphics.PorterDuff
-import android.graphics.PorterDuffXfermode
-import android.graphics.Shader
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
@@ -23,41 +16,39 @@ import eightbitlab.com.blurview.BlurView
 
 /**
  * Prawdziwy pelny ekran (jak w Revolut): tresc rysuje sie az po fizyczne
- * krawedzie ekranu — POD pasek statusu i POD dolny pasek nawigacji — a to,
- * co tam wjezdza podczas scrollowania, PLYNNIE, bez zadnej widocznej linii,
- * rozmywa sie (BlurView + gradientowa maska alfa, patrz [FadeBlurStrip]).
- *
- * Update 66: poprzednia wersja dawala BlurView o stalej, twardej wysokosci
- * (dokladnie insets.top / insets.bottom) — granica miedzy "rozmyte" i
- * "ostre" byla widoczna jako linia. Teraz kazdy pasek jest:
- *  1) WYZSZY niz sam inset (tresc wjezdza w niego stopniowo podczas
- *     scrolla, zanim dotrze do prawdziwej krawedzi),
- *  2) zamaskowany gradientem alfa (w pelni rozmyty/widoczny dokladnie przy
- *     krawedzi ekranu, plynnie zanikajacy do zera w glab tresci) —
- *     zero twardej linii.
- * Dolny pasek jest dodatkowo znacznie wyzszy (BOTTOM_EXTRA_DP), bo ma
- * obejmowac tez obszar POD plywajacym paskiem nawigacji aplikacji (Start/
- * Magazyn/Raporty/Ustawienia), a nie tylko waski systemowy inset — user
- * chcial zeby rozmycie zaczynalo sie juz od gory tego paska.
+ * krawedzie ekranu — POD pasek statusu i POD dolny (gestowy/systemowy) pasek
+ * nawigacji — a to, co tam "wjezdza" podczas scrollowania, jest realnie
+ * rozmywane (BlurView, prawdziwy Gaussian blur), zamiast byc zwyczajnie
+ * zaslaniane jednolitym kolorem.
  *
  * Podpiete RAZ, centralnie, w BaseActivity.onContentChanged() — dziala wiec
- * automatycznie na kazdym ekranie w calej aplikacji. Warunek: root danego
- * layoutu (activity_*.xml / fragment_*.xml) opakowuje swoja tresc w
- * <eightbitlab.com.blurview.BlurTarget android:id="@+id/blur_target">.
+ * automatycznie na kazdym ekranie w calej aplikacji, bez zmian w kazdej
+ * Activity/Fragmencie z osobna. Warunek: root danego layoutu (activity_*.xml
+ * / fragment_*.xml) opakowuje swoja tresc w
+ * <eightbitlab.com.blurview.BlurTarget android:id="@+id/blur_target">
+ * (patrz dowolny activity_*.xml — ksztalt jest zawsze ten sam: BlurTarget
+ * zawiera [tlo AnimatedMeshBackgroundView, wlasciwa tresc, opcjonalnie
+ * <include bottom_nav_bar>]). Ekrany bez tego id (np. activity_lock.xml)
+ * i tak dostaja pelny ekran (transparentne paski systemowe), po prostu bez
+ * nakladki rozmycia.
+ *
+ * Co dokladnie sie dzieje dla kazdego takiego ekranu:
+ *  - tlo (AnimatedMeshBackgroundView) zostaje bez zmian — ma wypelniac caly
+ *    ekran, tez pod paskami systemowymi;
+ *  - wlasciwa tresc (bezposrednie rodzenstwo tla w BlurTarget) dostaje
+ *    dodatkowy padding gorny/dolny = wysokosc paska statusu/nawigacji, zeby
+ *    naglowek czy przyciski nie ladowaly sie doslownie pod zegarkiem/
+ *    przyciskami systemowymi;
+ *  - kontener plywajacego dolnego paska nawigacji aplikacji (ten z
+ *    ic_nav_home itd., rozpoznawany po tym, ze zawiera widok o id
+ *    nav_start) dostaje dodatkowy dolny margines, zeby "uniosl sie" ponad
+ *    gestowy pasek systemowy — dokladnie jak w Revolut. Dziala to zarowno
+ *    gdy ten kontener jest bezposrednio w BlurTarget (np. activity_history),
+ *    jak i gdy jest poza nim, obok fragment_containera (activity_main).
  */
 object EdgeToEdge {
 
-    private const val BLUR_RADIUS = 25f
-
-    /** Gorny pasek: ile razy wyzszy niz sam inset paska statusu — daje
-     * miejsce na plynne wygaszanie rozmycia zamiast twardej linii. */
-    private const val TOP_FADE_MULTIPLIER = 2.4f
-
-    /** Dolny pasek: stala dodatkowa wysokosc (w dp) doklejana do insetu
-     * systemowego, tak zeby strefa rozmycia siegala az pod gorna krawedz
-     * plywajacego paska nawigacji aplikacji (Start/Magazyn/...), a nie
-     * tylko pod sam systemowy gesture-bar. */
-    private const val BOTTOM_EXTRA_DP = 130f
+    private const val BLUR_RADIUS = 22f
 
     fun apply(activity: Activity) {
         val window = activity.window
@@ -82,8 +73,10 @@ object EdgeToEdge {
         ViewCompat.setOnApplyWindowInsetsListener(root, listener)
 
         // Fragmenty (Start/Magazyn/Raporty/Ustawienia) dokladaja swoje widoki
-        // PO tym, jak insets zostaly juz raz dostarczone — kazda kolejna
-        // zmiana w drzewie widokow musi wiec ponownie przejsc drzewo.
+        // PO tym, jak insets zostaly juz raz dostarczone do Activity — kazda
+        // kolejna zmiana w drzewie widokow (np. pokazanie nowego fragmentu)
+        // musi wiec ponownie przejsc drzewo, zeby ten nowy fragment tez
+        // dostal swoj pasek rozmycia i padding.
         root.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
                 latestInsets?.let { insets -> root.post { walkChildren(root, insets) } }
@@ -105,7 +98,7 @@ object EdgeToEdge {
                 }
                 child is ViewGroup && child.findViewById<View>(R.id.nav_start) != null -> {
                     // Plywajacy dolny pasek nawigacji aplikacji — podnies go
-                    // ponad systemowy pasek/gesty.
+                    // ponad systemowy pasek/gesty, nic wiecej tu nie trzeba robic.
                     bumpBottomMargin(child, bars.bottom)
                 }
                 else -> walkChildren(child, insets)
@@ -113,6 +106,9 @@ object EdgeToEdge {
         }
     }
 
+    /** Dziala na BEZPOSREDNICH dzieciach BlurTarget — ksztalt layoutu jest
+     * zawsze ten sam (patrz komentarz u gory pliku), wiec nie trzeba
+     * zgadywac typu widoku (ScrollView, RecyclerView, LinearLayout...). */
     private fun setupBlurTarget(target: BlurTarget, topInset: Int, bottomInset: Int) {
         for (i in 0 until target.childCount) {
             val child = target.getChildAt(i)
@@ -143,32 +139,31 @@ object EdgeToEdge {
         view.setTag(R.id.tag_edge_to_edge_margin_done, true)
     }
 
-    /** Dodaje dwa [FadeBlurStrip] (gora/dol) jako RODZENSTWO BlurTarget (tak
-     * wymaga biblioteka BlurView) — kolejne dzieci wspolnego rodzica (root
-     * layoutu ekranu), narysowane NAD BlurTarget. */
+    /** Dodaje dwa BlurView (gora/dol) jako RODZENSTWO BlurTarget (tak wymaga
+     * biblioteka) — czyli jako kolejne dzieci wspolnego rodzica (root
+     * layoutu ekranu), narysowane NAD BlurTarget. Kazdy ma wysokosc dokladnie
+     * insetu paska systemowego i rozmywa to, co w danym momencie scrolluje
+     * sie pod nim wewnatrz BlurTarget. */
     private fun addBlurStrips(target: BlurTarget, topInset: Int, bottomInset: Int) {
         val parent = target.parent as? ViewGroup ?: return
-        val density = target.resources.displayMetrics.density
-        val topHeight = (topInset * TOP_FADE_MULTIPLIER).toInt()
-        val bottomHeight = bottomInset + (BOTTOM_EXTRA_DP * density).toInt()
 
         if (target.getTag(R.id.tag_edge_to_edge_blur_done) == true) {
-            resizeStrip(parent, Gravity.TOP, topHeight)
-            resizeStrip(parent, Gravity.BOTTOM, bottomHeight)
+            resizeStrip(parent, Gravity.TOP, topInset)
+            resizeStrip(parent, Gravity.BOTTOM, bottomInset)
             return
         }
-        if (topInset > 0) parent.addView(buildBlurStrip(target, Gravity.TOP, topHeight))
-        if (bottomInset > 0) parent.addView(buildBlurStrip(target, Gravity.BOTTOM, bottomHeight))
+        if (topInset > 0) parent.addView(buildBlurStrip(target, Gravity.TOP, topInset))
+        if (bottomInset > 0) parent.addView(buildBlurStrip(target, Gravity.BOTTOM, bottomInset))
         target.setTag(R.id.tag_edge_to_edge_blur_done, true)
     }
 
-    private fun buildBlurStrip(target: BlurTarget, gravity: Int, height: Int): FadeBlurStrip {
-        val strip = FadeBlurStrip(target.context, fadeFromEdge = gravity)
+    private fun buildBlurStrip(target: BlurTarget, gravity: Int, height: Int): BlurView {
+        val strip = BlurView(target.context)
         strip.tag = stripTag(gravity)
         strip.layoutParams = FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, height).apply {
             this.gravity = gravity
         }
-        strip.blurView.setupWith(target).setBlurRadius(BLUR_RADIUS)
+        strip.setupWith(target).setBlurRadius(BLUR_RADIUS)
         return strip
     }
 
@@ -183,45 +178,4 @@ object EdgeToEdge {
 
     private fun stripTag(gravity: Int) =
         if (gravity == Gravity.TOP) "edge_to_edge_blur_top" else "edge_to_edge_blur_bottom"
-
-    /**
-     * Kontener na BlurView, ktory maskuje go pionowym gradientem alfa —
-     * pelne rozmycie dokladnie przy krawedzi ekranu (fadeFromEdge), plynnie
-     * zanikajace do zera w strone tresci. Dzieki temu nie ma zadnej
-     * widocznej linii miedzy "rozmyte" i "ostre" (jak w Revolut).
-     */
-    private class FadeBlurStrip(context: Context, private val fadeFromEdge: Int) : FrameLayout(context) {
-        val blurView = BlurView(context)
-
-        private val maskPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-            xfermode = PorterDuffXfermode(PorterDuff.Mode.DST_IN)
-        }
-
-        init {
-            setWillNotDraw(false)
-            addView(blurView, LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT))
-        }
-
-        override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
-            super.onSizeChanged(w, h, oldw, oldh)
-            if (w <= 0 || h <= 0) return
-            val (startColor, endColor) = if (fadeFromEdge == Gravity.TOP) {
-                Color.BLACK to Color.TRANSPARENT // gora nieprzezroczysta -> dol przezroczysty
-            } else {
-                Color.TRANSPARENT to Color.BLACK // gora przezroczysta -> dol nieprzezroczysty
-            }
-            maskPaint.shader = LinearGradient(
-                0f, 0f, 0f, h.toFloat(),
-                startColor, endColor,
-                Shader.TileMode.CLAMP
-            )
-        }
-
-        override fun dispatchDraw(canvas: Canvas) {
-            val save = canvas.saveLayer(0f, 0f, width.toFloat(), height.toFloat(), null)
-            super.dispatchDraw(canvas)
-            canvas.drawRect(0f, 0f, width.toFloat(), height.toFloat(), maskPaint)
-            canvas.restoreToCount(save)
-        }
-    }
 }

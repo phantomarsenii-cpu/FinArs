@@ -1,3 +1,43 @@
+#!/data/data/com.termux/files/usr/bin/bash
+# Update 66: poprawka plynnosci rozmycia (bez update_project-65 ten skrypt
+# nic nie zrobi — wymaga, zeby EdgeToEdge.kt juz istnial).
+#
+# Co poprawia (na podstawie zrzutow ekranu / feedbacku):
+#  1) Byla widoczna twarda linia na styku paska statusu i tresci — teraz
+#     pasek rozmycia jest WYZSZY niz sam inset i zamaskowany gradientem
+#     alfa (pelne rozmycie dokladnie przy krawedzi ekranu, plynny zanik do
+#     zera w strone tresci) — bez zadnej widocznej granicy, jak w Revolut.
+#  2) Dolny pasek rozmycia jest teraz znacznie wyzszy — siega az pod gorna
+#     krawedz plywajacego paska nawigacji aplikacji (Start/Magazyn/Raporty/
+#     Ustawienia), a nie tylko pod waski systemowy gesture-bar — tak jak
+#     zaznaczone czerwonymi liniami na zrzucie ekranu.
+#
+# Uruchamiac z korzenia repo, PO update_project-65, np.:
+#   cd ~/FA_ksiegowy
+#   bash update_project-66-smooth-blur-fade.sh
+
+set -e
+
+TS=$(date +%Y%m%d_%H%M%S)
+BACKUP_DIR=".update66_backup_${TS}"
+TARGET="app/src/main/java/com/example/fa_ksiegowy/EdgeToEdge.kt"
+
+echo "=== Update 66: plynne, bezszwowe rozmycie ==="
+echo ""
+
+if [ ! -f "$TARGET" ]; then
+  echo "BLAD: nie widze $TARGET"
+  echo "Najpierw zastosuj update_project-65-fullscreen-edge-to-edge-blur.sh"
+  exit 1
+fi
+
+mkdir -p "$BACKUP_DIR/$(dirname "$TARGET")"
+cp "$TARGET" "$BACKUP_DIR/$TARGET"
+echo "Kopia zapasowa: $BACKUP_DIR/$TARGET"
+echo ""
+
+echo "-> nadpisanie $TARGET"
+cat > "$TARGET" << 'FILEEOF'
 package com.example.fa_ksiegowy
 
 import android.app.Activity
@@ -225,3 +265,8 @@ object EdgeToEdge {
         }
     }
 }
+FILEEOF
+
+echo ""
+echo "=== Update 66 zastosowany. ==="
+echo "git add -A && git commit -m 'Update 66: smooth blur fade, no hard seam' && git push"
