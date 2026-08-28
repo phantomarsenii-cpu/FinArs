@@ -10,6 +10,9 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        // Update: BlurView (realne rozmycie tla pod paskiem statusu/nawigacji,
+        // patrz app/build.gradle i EdgeToEdge.kt) jest publikowany przez Jitpack.
+        maven { url 'https://jitpack.io' }
     }
 }
 rootProject.name = 'FA_ksiegowy'

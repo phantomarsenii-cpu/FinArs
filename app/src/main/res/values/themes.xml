@@ -8,8 +8,15 @@
         <item name="colorOnSecondary">@color/text_primary</item>
         <item name="colorAccent">@color/accent_blue_light</item>
         <item name="colorControlActivated">@color/accent_blue_light</item>
-        <item name="android:statusBarColor">@color/bg_top</item>
-        <item name="android:navigationBarColor">@color/nav_bar_bg</item>
+        <!-- Update: pelny ekran "jak w Revolut" — paski systemowe transparentne,
+             tresc rysuje sie az po fizyczne krawedzie ekranu (patrz
+             EdgeToEdge.kt / BaseActivity.onContentChanged, ktore ustawiaja
+             to samo programowo, zeby dzialalo tez na starszym Androidzie —
+             te dwa wpisy w motywie to tylko zabezpieczenie przed
+             mignieciem starego koloru w pierwszej klatce startu Activity). -->
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:windowLayoutInDisplayCutoutMode">shortEdges</item>
         <item name="android:windowBackground">@drawable/bg_gradient</item>
         <item name="android:textColorPrimary">@color/text_primary</item>
         <item name="android:textColorHint">@color/text_hint</item>

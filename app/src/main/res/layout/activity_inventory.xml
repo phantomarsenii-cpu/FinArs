@@ -2,6 +2,11 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+    <eightbitlab.com.blurview.BlurTarget
+        android:id="@+id/blur_target"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
 
     <com.example.fa_ksiegowy.AnimatedMeshBackgroundView
         android:layout_width="match_parent"
@@ -95,4 +100,7 @@
 
 </LinearLayout>
     </ScrollView>
+
+    </eightbitlab.com.blurview.BlurTarget>
+
 </FrameLayout>

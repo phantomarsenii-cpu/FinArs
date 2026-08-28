@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Pomocnicze id uzywane WYLACZNIE jako klucze View.setTag(id, ...) przez
+    EdgeToEdge.kt — zeby bezpiecznie odroznic "juz obsluzone" widoki od
+    nowych, bez kolizji z tagami innych bibliotek (np. BlurView), ktore
+    uzywaja jednoargumentowego setTag(Object).
+-->
+<resources>
+    <item name="tag_edge_to_edge_padding" type="id"/>
+    <item name="tag_edge_to_edge_margin_done" type="id"/>
+    <item name="tag_edge_to_edge_blur_done" type="id"/>
+</resources>

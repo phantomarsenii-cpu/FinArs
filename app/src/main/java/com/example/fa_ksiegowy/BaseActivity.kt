@@ -9,6 +9,17 @@ open class BaseActivity : AppCompatActivity() {
         super.attachBaseContext(LocaleHelper.applyLocale(newBase))
     }
 
+    // Update: pelny ekran "jak w Revolut" — tresc pod paskiem statusu i pod
+    // dolnym paskiem nawigacji systemowej, z realnym rozmyciem tego, co tam
+    // wjezdza (patrz EdgeToEdge.kt). onContentChanged() wywoluje sie
+    // automatycznie zaraz PO kazdym setContentView() — dzieki temu dziala to
+    // na KAZDYM ekranie apki (kazda Activity dziedziczy z BaseActivity),
+    // bez potrzeby wywolywania czegokolwiek recznie w kazdej z osobna.
+    override fun onContentChanged() {
+        super.onContentChanged()
+        EdgeToEdge.apply(this)
+    }
+
     // Ladny fade+scale zamiast domyslnego "slajdu" systemowego przy przejsciu
     // miedzy ekranami — dotyczy KAZDEGO startActivity() w calej aplikacji,
     // bo wszystkie ekrany dziedzicza z BaseActivity.

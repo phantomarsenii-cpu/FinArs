@@ -9,3 +9,4 @@
 .externalNativeBuild/
 .cxx/
 local.properties
+.update65_backup_*
