@@ -141,10 +141,16 @@ class MineFragment : Fragment() {
 
     /**
      * Скрытый вход для разработчика: удержание пальца на логотипе 10 секунд открывает
-     * диалог ввода кода. Никакой видимой кнопки/подсказки в UI нет — это сделано умышленно,
-     * чтобы обычный пользователь не наткнулся на неё случайно.
+     * диалог ввода кода, который выдаёт Pro без реальной покупки (см. BillingManager.
+     * tryUnlockWithDevCode). Работает ТОЛЬКО в debug-сборке (проверка applicationInfo.
+     * FLAG_DEBUGGABLE) — в релизной сборке, которая уходит в Google Play/Galaxy Store,
+     * этот жест не регистрируется вообще, так что скрытого способа получить Pro бесплатно
+     * в реальном APK не существует, даже если бы кто-то нашёл жест через декомпиляцию.
      */
     private fun setupHiddenDevCodeGesture() {
+        val isDebuggable = (requireContext().applicationInfo.flags and android.content.pm.ApplicationInfo.FLAG_DEBUGGABLE) != 0
+        if (!isDebuggable) return
+
         val handler = Handler(Looper.getMainLooper())
         val holdDurationMs = 10_000L
         var triggered = false
