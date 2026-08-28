@@ -26,14 +26,28 @@ jobs:
         with:
           gradle-version: '8.1.1'
 
+      - name: Decode release keystore
+        run: |
+          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > "$RUNNER_TEMP/release.keystore"
+
       - name: Build debug APK
         run: gradle assembleDebug
 
+      - name: Build signed release AAB
+        env:
+          KEYSTORE_PATH: ${{ runner.temp }}/release.keystore
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        run: ./gradlew bundleRelease
+
+      - name: Remove keystore file
+        if: always()
+        run: rm -f "$RUNNER_TEMP/release.keystore"
+
       # Numer wersji (1.0, 1.1, 1.2, ...) czytany jest przez Gradle z pliku
       # version.txt PRZED buildem. Tutaj, PO udanym buildzie, zwiekszamy ten
-      # licznik o 1 i commitujemy z powrotem do repo, zeby kolejny build mial
-      # kolejny numer. Push z domyslnym GITHUB_TOKEN nie odpala nowego
-      # workflow (GitHub celowo to blokuje), wiec nie ma ryzyka petli.
+      # licznik o 1 i commitujemy z powrotem do repo.
       - name: Bump build version number
         run: |
           CURRENT=$(cat version.txt)
@@ -45,8 +59,14 @@ jobs:
           git commit -m "ci: bump build version to 1.$NEXT [skip ci]"
           git push
 
-      - name: Upload APK
+      - name: Upload debug APK
         uses: actions/upload-artifact@v4
         with:
           name: FinArs-debug-apk
           path: app/build/outputs/apk/debug/FinArs.apk
+
+      - name: Upload release AAB
+        uses: actions/upload-artifact@v4
+        with:
+          name: FinArs-release-aab
+          path: app/build/outputs/bundle/release/*.aab
