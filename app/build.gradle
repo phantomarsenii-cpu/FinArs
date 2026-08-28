@@ -23,6 +23,20 @@ android {
             keyAlias "fa_ksiegowy_debug"
             keyPassword "fa_ksiegowy_debug"
         }
+        release {
+            // Значения приходят из переменных окружения, которые задаёт
+            // GitHub Actions (см. .github/workflows/build.yml, шаг "Build
+            // signed release AAB"). Локально, без этих переменных, release
+            // build type просто останется без подписи — это нормально,
+            // локально release не собирается и не публикуется.
+            def ksPath = System.getenv("KEYSTORE_PATH")
+            if (ksPath) {
+                storeFile file(ksPath)
+                storePassword System.getenv("KEYSTORE_PASSWORD")
+                keyAlias System.getenv("KEY_ALIAS")
+                keyPassword System.getenv("KEY_PASSWORD")
+            }
+        }
     }
 
     namespace "com.example.fa_ksiegowy"
@@ -39,6 +53,7 @@ android {
 
     buildTypes {
         release {
+            signingConfig signingConfigs.release
             minifyEnabled true
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
