@@ -5,6 +5,10 @@ on:
     branches: [ main ]
   workflow_dispatch:
 
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: false
+
 permissions:
   contents: write
 
@@ -47,7 +51,9 @@ jobs:
 
       # Numer wersji (1.0, 1.1, 1.2, ...) czytany jest przez Gradle z pliku
       # version.txt PRZED buildem. Tutaj, PO udanym buildzie, zwiekszamy ten
-      # licznik o 1 i commitujemy z powrotem do repo.
+      # licznik o 1 i commitujemy z powrotem do repo, zeby kolejny build mial
+      # kolejny numer. Push z domyslnym GITHUB_TOKEN nie odpala nowego
+      # workflow (GitHub celowo to blokuje), wiec nie ma ryzyka petli.
       - name: Bump build version number
         run: |
           CURRENT=$(cat version.txt)
@@ -57,6 +63,7 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add version.txt
           git commit -m "ci: bump build version to 1.$NEXT [skip ci]"
+          git pull --rebase origin main
           git push
 
       - name: Upload debug APK
