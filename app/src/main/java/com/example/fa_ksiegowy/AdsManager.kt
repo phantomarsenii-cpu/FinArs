@@ -28,11 +28,12 @@ import com.google.android.ump.UserMessagingPlatform
  * Создание AdView(activity) в коде и его addView() в контейнер полностью
  * убирает эту гонку и является официально рекомендуемым способом.
  *
- * ВРЕМЕННО (для диагностики): каждый шаг пишет свой статус в debugView —
- * маленькую серую строку под баннером на главном экране. Это позволяет
- * увидеть причину, по которой реклама не показывается, прямо на экране
- * телефона, без logcat/adb. Когда реклама заработает стабильно — эту
- * строку и вызовы setDebugStatus можно убрать.
+ * Диагностика (для отладки показа рекламы): каждый шаг пишет свой статус в
+ * debugView — маленькую серую строку под баннером. Работает ТОЛЬКО в debug-
+ * сборке (проверка applicationInfo.FLAG_DEBUGGABLE) — в релизной сборке,
+ * которая уходит в Google Play/Galaxy Store, ни Log.i, ни текст в debugView
+ * не пишутся, так что диагностический вывод не может попасть на экран
+ * обычного пользователя или в системный logcat.
  */
 object AdsManager {
 
@@ -40,7 +41,11 @@ object AdsManager {
     private const val TEST_BANNER_UNIT_ID = "ca-app-pub-3940256099942544/6300978111"
     private const val PROD_BANNER_UNIT_ID = "ca-app-pub-9218963926031039/9552844934"
 
-    private fun setDebugStatus(debugView: TextView?, text: String) {
+    private fun isDebuggable(context: android.content.Context): Boolean =
+        (context.applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE) != 0
+
+    private fun setDebugStatus(context: android.content.Context, debugView: TextView?, text: String) {
+        if (!isDebuggable(context)) return
         Log.i("AdsManager", "STATUS: $text")
         debugView?.text = "Ad status: $text"
     }
@@ -58,18 +63,18 @@ object AdsManager {
 
         if (BillingManager.isPro(activity)) {
             container.visibility = View.GONE
-            setDebugStatus(debugView, "hidden (Pro active)")
+            setDebugStatus(activity, debugView, "hidden (Pro active)")
             return adView
         }
 
-        setDebugStatus(debugView, "starting…")
+        setDebugStatus(activity, debugView, "starting…")
 
         try {
             adView.setAdSize(AdSize.BANNER)
 
             val isDebuggable = (activity.applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE) != 0
             adView.adUnitId = if (isDebuggable) TEST_BANNER_UNIT_ID else PROD_BANNER_UNIT_ID
-            setDebugStatus(debugView, "isDebuggable=$isDebuggable, unit=${adView.adUnitId}")
+            setDebugStatus(activity, debugView, "isDebuggable=$isDebuggable, unit=${adView.adUnitId}")
 
             if (isDebuggable) {
                 // Тестовый блок Google не требует согласия пользователя —
@@ -87,17 +92,17 @@ object AdsManager {
                 {
                     UserMessagingPlatform.loadAndShowConsentFormIfRequired(activity) { formError ->
                         if (formError != null) {
-                            setDebugStatus(debugView, "consent form error: ${formError.message}")
+                            setDebugStatus(activity, debugView, "consent form error: ${formError.message}")
                         }
                         if (consentInformation.canRequestAds()) {
                             initAndLoad(activity, container, adView, debugView)
                         } else {
-                            setDebugStatus(debugView, "blocked — canRequestAds()=false (нужно опубликовать Privacy & messaging в AdMob)")
+                            setDebugStatus(activity, debugView, "blocked — canRequestAds()=false (нужно опубликовать Privacy & messaging в AdMob)")
                         }
                     }
                 },
                 { requestError ->
-                    setDebugStatus(debugView, "consent info update error: ${requestError.message}")
+                    setDebugStatus(activity, debugView, "consent info update error: ${requestError.message}")
                 }
             )
 
@@ -107,32 +112,32 @@ object AdsManager {
         } catch (e: Exception) {
             // Ловим вообще любое исключение на этом пути, чтобы оно не терялось молча —
             // выводим текст ошибки прямо на экран.
-            setDebugStatus(debugView, "EXCEPTION: ${e.javaClass.simpleName}: ${e.message}")
+            setDebugStatus(activity, debugView, "EXCEPTION: ${e.javaClass.simpleName}: ${e.message}")
         }
 
         return adView
     }
 
     private fun initAndLoad(activity: Activity, container: ViewGroup, adView: AdView, debugView: TextView?) {
-        setDebugStatus(debugView, "initializing SDK…")
+        setDebugStatus(activity, debugView, "initializing SDK…")
         if (!sdkInitialized) {
             sdkInitialized = true
             MobileAds.initialize(activity) {
-                setDebugStatus(debugView, "SDK initialized, loading ad…")
+                setDebugStatus(activity, debugView, "SDK initialized, loading ad…")
             }
         }
         container.visibility = View.VISIBLE
         adView.adListener = object : AdListener() {
             override fun onAdLoaded() {
-                setDebugStatus(debugView, "loaded OK ✅")
+                setDebugStatus(activity, debugView, "loaded OK ✅")
             }
             override fun onAdFailedToLoad(error: LoadAdError) {
                 // errorCode 3 = ERROR_CODE_NO_FILL — самая частая причина для новых
                 // рекламных блоков: у Google пока нет рекламы для показа именно вам.
-                setDebugStatus(debugView, "FAILED code=${error.code} domain=${error.domain} msg=${error.message}")
+                setDebugStatus(activity, debugView, "FAILED code=${error.code} domain=${error.domain} msg=${error.message}")
             }
         }
-        setDebugStatus(debugView, "loadAd() called…")
+        setDebugStatus(activity, debugView, "loadAd() called…")
         adView.loadAd(AdRequest.Builder().build())
     }
 

@@ -32,6 +32,15 @@ import java.util.zip.ZipOutputStream
  */
 class SettingsBackupActivity : BaseActivity() {
 
+    companion object {
+        // Защита от Zip Bomb при восстановлении: даже маленький .zip не может
+        // "развернуться" в данные, способные забить память/диск устройства.
+        private const val MAX_BACKUP_ENTRIES = 20_000
+        private const val MAX_JSON_ENTRY_BYTES = 50L * 1024 * 1024        // 50 МБ на backup.json
+        private const val MAX_RECEIPT_ENTRY_BYTES = 25L * 1024 * 1024     // 25 МБ на один файл чека
+        private const val MAX_TOTAL_UNCOMPRESSED_BYTES = 500L * 1024 * 1024 // 500 МБ суммарно на весь архив
+    }
+
     private val dateForName = SimpleDateFormat("yyyyMMdd_HHmm", Locale.US)
     private val dateForDisplay = SimpleDateFormat("dd.MM.yyyy HH:mm", Locale.getDefault())
 
@@ -138,21 +147,47 @@ class SettingsBackupActivity : BaseActivity() {
                 val restoredReceiptPaths = HashMap<String, String>()
                 val receiptsDir = getExternalFilesDir(null)!!
                 var receiptCounter = 0
+                var entryCount = 0
+                var totalUncompressedBytes = 0L
 
                 contentResolver.openInputStream(uri)?.use { input ->
                     ZipInputStream(input).use { zis ->
                         var entry = zis.nextEntry
                         while (entry != null) {
+                            entryCount++
+                            if (entryCount > MAX_BACKUP_ENTRIES) {
+                                throw IllegalStateException(getString(R.string.backup_invalid_file))
+                            }
+                            // Защита от Zip Slip: запись всегда идёт под сгенерированным именем
+                            // (receipt_restored_...) в фиксированную папку — но на всякий случай
+                            // отбрасываем записи с подозрительными именами (../, абсолютные пути),
+                            // не полагаясь только на то, что имя из архива нигде не используется как путь.
+                            val safeName = entry.name
+                            if (safeName.contains("..") || safeName.startsWith("/")) {
+                                zis.closeEntry()
+                                entry = zis.nextEntry
+                                continue
+                            }
                             when {
-                                entry.name == "backup.json" -> {
-                                    jsonText = zis.readBytes().toString(Charsets.UTF_8)
+                                safeName == "backup.json" -> {
+                                    val bytes = readEntryLimited(zis, MAX_JSON_ENTRY_BYTES)
+                                    totalUncompressedBytes += bytes.size
+                                    if (totalUncompressedBytes > MAX_TOTAL_UNCOMPRESSED_BYTES) {
+                                        throw IllegalStateException(getString(R.string.backup_invalid_file))
+                                    }
+                                    jsonText = bytes.toString(Charsets.UTF_8)
                                 }
-                                entry.name.startsWith("receipts/") -> {
-                                    val originalName = entry.name.removePrefix("receipts/")
+                                safeName.startsWith("receipts/") -> {
+                                    val originalName = safeName.removePrefix("receipts/")
                                     val ext = originalName.substringAfterLast('.', "jpg")
                                     receiptCounter++
                                     val newFile = File(receiptsDir, "receipt_restored_${System.currentTimeMillis()}_$receiptCounter.$ext")
-                                    newFile.outputStream().use { fos -> zis.copyTo(fos) }
+                                    val written = copyEntryLimited(zis, newFile, MAX_RECEIPT_ENTRY_BYTES)
+                                    totalUncompressedBytes += written
+                                    if (totalUncompressedBytes > MAX_TOTAL_UNCOMPRESSED_BYTES) {
+                                        newFile.delete()
+                                        throw IllegalStateException(getString(R.string.backup_invalid_file))
+                                    }
                                     restoredReceiptPaths[originalName] = newFile.absolutePath
                                 }
                             }
@@ -194,6 +229,40 @@ class SettingsBackupActivity : BaseActivity() {
                 }
             }
         }
+    }
+
+    /** Читает текущую zip-запись в память, но не более [maxBytes] — если запись
+     *  оказывается больше (например, "раздутый" zip bomb), сразу бросает ошибку
+     *  вместо того чтобы вычитывать её целиком. */
+    private fun readEntryLimited(zis: ZipInputStream, maxBytes: Long): ByteArray {
+        val out = java.io.ByteArrayOutputStream()
+        val buffer = ByteArray(8 * 1024)
+        var total = 0L
+        while (true) {
+            val read = zis.read(buffer)
+            if (read < 0) break
+            total += read
+            if (total > maxBytes) throw IllegalStateException(getString(R.string.backup_invalid_file))
+            out.write(buffer, 0, read)
+        }
+        return out.toByteArray()
+    }
+
+    /** Копирует текущую zip-запись в файл, но не более [maxBytes]. Возвращает
+     *  число записанных байт. При превышении лимита останавливается и бросает ошибку. */
+    private fun copyEntryLimited(zis: ZipInputStream, destination: File, maxBytes: Long): Long {
+        val buffer = ByteArray(8 * 1024)
+        var total = 0L
+        destination.outputStream().use { fos ->
+            while (true) {
+                val read = zis.read(buffer)
+                if (read < 0) break
+                total += read
+                if (total > maxBytes) throw IllegalStateException(getString(R.string.backup_invalid_file))
+                fos.write(buffer, 0, read)
+            }
+        }
+        return total
     }
 
     private fun showLastBackupTime() {

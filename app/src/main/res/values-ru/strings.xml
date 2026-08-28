@@ -258,6 +258,8 @@
     <string name="lock_biometric_prompt_subtitle">Подтвердите отпечатком пальца или лицом</string>
     <string name="lock_use_pin">Ввести PIN</string>
     <string name="lock_biometric_unavailable">На этом устройстве не настроен отпечаток/лицо. Сначала добавьте его в настройках телефона.</string>
+    <string name="lock_locked_out_minutes">Слишком много попыток. Повторите через %1$d мин %2$d с</string>
+    <string name="lock_locked_out_seconds">Слишком много попыток. Повторите через %1$d с</string>
 
     <string name="security_hint">Защитите приложение PIN-кодом. Когда функция включена, FinArs будет спрашивать PIN каждый раз, когда вы возвращаетесь в приложение после его сворачивания. Также можно включить вход по отпечатку/лицу — это быстрый способ ввести тот же PIN.</string>
     <string name="security_pin_switch">Запрашивать PIN при открытии приложения</string>

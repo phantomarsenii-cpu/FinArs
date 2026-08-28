@@ -2,11 +2,23 @@ package com.example.fa_ksiegowy
 
 import android.content.Context
 import android.content.Intent
+import android.os.Bundle
+import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 
 open class BaseActivity : AppCompatActivity() {
     override fun attachBaseContext(newBase: Context) {
         super.attachBaseContext(LocaleHelper.applyLocale(newBase))
+    }
+
+    // Приложение показывает финансовые данные (баланс, PIN, документы) на КАЖДОМ
+    // экране — все они наследуются от BaseActivity, поэтому проще и надёжнее
+    // закрыть весь app целиком, чем помечать экраны по отдельности. FLAG_SECURE
+    // запрещает скриншоты/запись экрана и скрывает содержимое в списке недавних
+    // приложений (Recents), не влияя ни на что другое в работе приложения.
+    override fun onCreate(savedInstanceState: Bundle?) {
+        window.setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE)
+        super.onCreate(savedInstanceState)
     }
 
     // Update: pelny ekran "jak w Revolut" — tresc pod paskiem statusu i pod

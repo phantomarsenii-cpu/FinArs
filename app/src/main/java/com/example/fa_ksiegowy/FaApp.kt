@@ -18,10 +18,18 @@ import java.util.Locale
 
 /**
  * Application-класс: ставит глобальный обработчик необработанных исключений.
- * Сохраняет полный текст краша (стектрейс) в файл в папке "Загрузки"
- * (finars_crash_ГГГГММДД_ЧЧММСС.txt), чтобы его можно было прочитать через
- * Termux (cat /storage/emulated/0/Download/finars_crash_*.txt) — обычный
- * logcat не показывает логи чужого приложения без прав root.
+ *
+ * В DEBUG-сборке (adb install / Android Studio) сохраняет полный текст краша
+ * (стектрейс) в файл в папке "Загрузки" (finars_crash_ГГГГММДД_ЧЧММСС.txt),
+ * чтобы его можно было прочитать через Termux — удобно при разработке.
+ *
+ * В RELEASE-сборке (то, что уходит в Google Play / Galaxy Store) стектрейс
+ * НЕ пишется в публичную папку — детальная информация об ошибке (имена
+ * классов/методов, внутренняя структура приложения) не должна быть доступна
+ * произвольному приложению на устройстве пользователя. Вместо этого лог
+ * пишется только во внутреннее приватное хранилище приложения (доступное
+ * исключительно самому FinArs), просто как резерв на случай, если
+ * пользователь сам захочет прислать лог в поддержку.
  *
  * После записи лога вызывается стандартный обработчик системы — поведение
  * приложения при краше (закрытие) не меняется, только добавляется файл.
@@ -69,6 +77,15 @@ class FaApp : Application() {
             sw.toString()
         val fileName = "finars_crash_" +
             SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(Date()) + ".txt"
+
+        val isDebuggable = (context.applicationInfo.flags and android.content.pm.ApplicationInfo.FLAG_DEBUGGABLE) != 0
+        if (!isDebuggable) {
+            // Релиз: только приватное хранилище приложения — не видно ни другим
+            // приложениям, ни через файловый менеджер/Термукс без root.
+            val file = File(context.filesDir, fileName)
+            FileOutputStream(file).use { it.write(text.toByteArray()) }
+            return
+        }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             val values = ContentValues().apply {

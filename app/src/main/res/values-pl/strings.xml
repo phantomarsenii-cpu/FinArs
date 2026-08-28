@@ -258,6 +258,8 @@
     <string name="lock_biometric_prompt_subtitle">Potwierdź odciskiem palca lub twarzą</string>
     <string name="lock_use_pin">Użyj PIN-u</string>
     <string name="lock_biometric_unavailable">Na tym urządzeniu nie skonfigurowano odcisku palca/twarzy. Dodaj go najpierw w ustawieniach telefonu.</string>
+    <string name="lock_locked_out_minutes">Zbyt wiele prób. Spróbuj ponownie za %1$d min %2$d s</string>
+    <string name="lock_locked_out_seconds">Zbyt wiele prób. Spróbuj ponownie za %1$d s</string>
 
     <string name="security_hint">Zabezpiecz aplikację kodem PIN. Gdy funkcja jest włączona, FinArs poprosi o PIN za każdym razem, gdy wrócisz do aplikacji po jej opuszczeniu. Możesz też włączyć odblokowanie odciskiem palca/twarzą jako szybki skrót zamiast wpisywania tego samego PIN-u.</string>
     <string name="security_pin_switch">Wymagaj PIN-u przy otwieraniu aplikacji</string>

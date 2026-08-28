@@ -258,6 +258,8 @@
     <string name="lock_biometric_prompt_subtitle">Confirm your fingerprint or face</string>
     <string name="lock_use_pin">Use PIN</string>
     <string name="lock_biometric_unavailable">No fingerprint/face is set up on this device. Add one in your phone\'s settings first.</string>
+    <string name="lock_locked_out_minutes">Too many attempts. Try again in %1$d min %2$d s</string>
+    <string name="lock_locked_out_seconds">Too many attempts. Try again in %1$d s</string>
 
     <string name="security_hint">Protect the app with a PIN code. When enabled, FinArs will ask for the PIN every time you open it after leaving the app. You can also enable fingerprint/face unlock as a quick shortcut for the same PIN.</string>
     <string name="security_pin_switch">Require PIN to open the app</string>
