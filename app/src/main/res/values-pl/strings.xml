@@ -510,6 +510,7 @@
     <!-- Historia faktur -->
     <string name="invoice_history_title">Historia faktur</string>
     <string name="no_invoices">Nie wystawiono jeszcze żadnych faktur</string>
+    <string name="no_products">Brak produktów w magazynie. Dodaj produkt powyżej.</string>
 
 
     <!-- Etykiety PDF faktury -->

@@ -510,6 +510,7 @@
     <!-- Invoice history -->
     <string name="invoice_history_title">Invoice history</string>
     <string name="no_invoices">No invoices yet</string>
+    <string name="no_products">No products in stock yet. Add one above.</string>
 
 
     <!-- Invoice PDF labels -->

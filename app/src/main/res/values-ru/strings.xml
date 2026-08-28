@@ -510,6 +510,7 @@
     <!-- История счетов -->
     <string name="invoice_history_title">История счетов</string>
     <string name="no_invoices">Вы ещё не выставили ни одного счёта</string>
+    <string name="no_products">На складе пока нет товаров. Добавьте товар выше.</string>
 
 
     <!-- Метки PDF счёта -->
