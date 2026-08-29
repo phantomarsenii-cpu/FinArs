@@ -191,7 +191,8 @@
     <string name="paywall_per_month">/ month</string>
     <string name="paywall_trial_yearly">7 days free, then %1$s / year</string>
     <string name="paywall_trial_monthly">7 days free, then %1$s / month</string>
-    <string name="paywall_per_month_note">Only 8.33 zł / month</string>
+    <string name="paywall_per_month_note">Only %1$s / month</string>
+    <string name="paywall_price_monthly_equivalent_default">8.33 zł</string>
     <string name="paywall_cta">Try 7 days for 0 zł</string>
     <string name="paywall_footer_1">Free for the first 7 days.\nCancel anytime in your app store.</string>
     <string name="paywall_footer_1_store">Free for the first 7 days.\nCancel anytime in %1$s.</string>

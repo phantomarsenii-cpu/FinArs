@@ -74,7 +74,18 @@ object SubscriptionService {
     private const val PREFS_NAME = "settings"
     private const val KEY_IS_PRO_RC = "isProRevenueCat"
 
-    data class PlanInfo(val price: String, val trialDays: Int?)
+    /**
+     * amountMicros/currencyCode — «сырая» цена без форматирования (цена, которую Google Play /
+     * Galaxy Store реально показывают пользователю, УЖЕ с учётом локального налога/VAT).
+     * Нужны, чтобы посчитать эквивалент "в месяц" для годового плана в правильной валюте
+     * пользователя, а не полагаться на один захардкоженный курс/налог (см. Update-67).
+     */
+    data class PlanInfo(
+        val price: String,
+        val trialDays: Int?,
+        val amountMicros: Long,
+        val currencyCode: String
+    )
 
     private var initialized = false
     private var cachedOffering: Offering? = null
@@ -196,7 +207,12 @@ object SubscriptionService {
         val product = pkg.product
         val trialPhase = product.subscriptionOptions?.freeTrial?.freePhase
         val trialDays = trialPhase?.billingPeriod?.let { periodToDays(it) }
-        return PlanInfo(product.price.formatted, trialDays)
+        return PlanInfo(
+            price = product.price.formatted,
+            trialDays = trialDays,
+            amountMicros = product.price.amountMicros,
+            currencyCode = product.price.currencyCode
+        )
     }
 
     private fun periodToDays(period: Period): Int? = when (period.unit) {

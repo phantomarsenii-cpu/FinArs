@@ -12,6 +12,7 @@ import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.AdView
 import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.MobileAds
+import com.google.android.gms.ads.RequestConfiguration
 import com.google.android.ump.ConsentRequestParameters
 import com.google.android.ump.UserMessagingPlatform
 
@@ -40,6 +41,20 @@ object AdsManager {
     private var sdkInitialized = false
     private const val TEST_BANNER_UNIT_ID = "ca-app-pub-3940256099942544/6300978111"
     private const val PROD_BANNER_UNIT_ID = "ca-app-pub-9218963926031039/9552844934"
+
+    // ВАЖНО (fix Update-67): в релизной сборке (.aab) isDebuggable=false, поэтому баннер
+    // всегда грузится через БОЕВОЙ PROD_BANNER_UNIT_ID — даже на вашем устройстве,
+    // добавленном как тестовое в AdMob Dashboard. Без явного setTestDeviceIds() ниже SDK
+    // на устройстве об этом "тестовом" статусе ничего не знает, и для совсем нового
+    // боевого рекламного блока Google может первое время не отдавать заполнение (No Fill) —
+    // баннер будет выглядеть как "пропавший". Добавьте сюда хэшированный Device ID из
+    // logcat (adb logcat | grep -i "Ads" — там будет строка вида "Use RequestConfiguration.
+    // Builder...setTestDeviceIds(Arrays.asList("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"))"), чтобы
+    // запросы с этого устройства ГАРАНТИРОВАННО помечались как тестовые даже на боевом
+    // ad unit ID — это не влияет на реальных пользователей.
+    private val TEST_DEVICE_IDS = listOf<String>(
+        // "ВАШ_ХЭШИРОВАННЫЙ_DEVICE_ID_ИЗ_LOGCAT"
+    )
 
     private fun isDebuggable(context: android.content.Context): Boolean =
         (context.applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE) != 0
@@ -122,6 +137,11 @@ object AdsManager {
         setDebugStatus(activity, debugView, "initializing SDK…")
         if (!sdkInitialized) {
             sdkInitialized = true
+            if (TEST_DEVICE_IDS.isNotEmpty()) {
+                MobileAds.setRequestConfiguration(
+                    RequestConfiguration.Builder().setTestDeviceIds(TEST_DEVICE_IDS).build()
+                )
+            }
             MobileAds.initialize(activity) {
                 setDebugStatus(activity, debugView, "SDK initialized, loading ad…")
             }
