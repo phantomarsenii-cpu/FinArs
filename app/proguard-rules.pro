@@ -35,3 +35,19 @@
 # Kotlin coroutines / metadata
 -keepattributes *Annotation*, Signature, InnerClasses, EnclosingMethod, RuntimeVisibleAnnotations
 -dontwarn kotlinx.coroutines.**
+
+# log4j / bnd / osgi / findbugs — опциональные транзитивные зависимости Apache POI,
+# используются только в desktop/OSGi-окружениях и на Android никогда не вызываются.
+-dontwarn aQute.bnd.annotation.**
+-dontwarn edu.umd.cs.findbugs.annotations.**
+-dontwarn org.osgi.framework.**
+-dontwarn org.apache.logging.log4j.**
+-dontwarn java.awt.**
+
+# pdfbox-android — опциональный JPEG2000-кодек (gemalto), не используется без явного
+# добавления соответствующей нативной библиотеки.
+-dontwarn com.gemalto.jp2.**
+
+# play-services-ads ссылается на API из более новых версий Android SDK, которых нет
+# на текущем compileSdk; на рантайме код просто не выполнится на старых устройствах.
+-dontwarn android.media.LoudnessCodecController**
