@@ -76,8 +76,11 @@ jobs:
           name: FinArs-debug-apk
           path: app/build/outputs/apk/debug/FinArs.apk
 
+      - name: Rename release AAB
+        run: mv app/build/outputs/bundle/release/app-release.aab app/build/outputs/bundle/release/FinArs.aab
+
       - name: Upload release AAB
         uses: actions/upload-artifact@v4
         with:
           name: FinArs-release-aab
-          path: app/build/outputs/bundle/release/*.aab
+          path: app/build/outputs/bundle/release/FinArs.aab
