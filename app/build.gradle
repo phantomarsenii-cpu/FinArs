@@ -40,12 +40,12 @@ android {
     }
 
     namespace "com.example.fa_ksiegowy"
-    compileSdk 34
+    compileSdk 36
 
     defaultConfig {
         applicationId "com.finars.app"
         minSdk 26
-        targetSdk 34
+        targetSdk 36
         versionCode buildNumber + 1
         versionName "1.${buildDateStamp}"
         multiDexEnabled true
