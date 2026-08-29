@@ -66,6 +66,7 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add version.txt
           git commit -m "ci: bump build version to 1.$NEXT [skip ci]"
+          git checkout -- .
           git pull --rebase origin main
           git push
 
