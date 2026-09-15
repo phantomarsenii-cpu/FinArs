@@ -5,6 +5,10 @@ on:
     branches: [ main ]
   workflow_dispatch:
 
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: false
+
 permissions:
   contents: write
 
@@ -24,10 +28,29 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v3
         with:
-          gradle-version: '8.1.1'
+          gradle-version: '8.13'
+
+      - name: Decode release keystore
+        run: |
+          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > "$RUNNER_TEMP/release.keystore"
+
+      - name: Make gradlew executable
+        run: chmod +x gradlew
 
       - name: Build debug APK
-        run: gradle assembleDebug
+        run: ./gradlew assembleDebug
+
+      - name: Build signed release AAB
+        env:
+          KEYSTORE_PATH: ${{ runner.temp }}/release.keystore
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        run: ./gradlew bundleRelease
+
+      - name: Remove keystore file
+        if: always()
+        run: rm -f "$RUNNER_TEMP/release.keystore"
 
       # Numer wersji (1.0, 1.1, 1.2, ...) czytany jest przez Gradle z pliku
       # version.txt PRZED buildem. Tutaj, PO udanym buildzie, zwiekszamy ten
@@ -43,10 +66,21 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add version.txt
           git commit -m "ci: bump build version to 1.$NEXT [skip ci]"
+          git checkout -- .
+          git pull --rebase origin main
           git push
 
-      - name: Upload APK
+      - name: Upload debug APK
         uses: actions/upload-artifact@v4
         with:
           name: FinArs-debug-apk
           path: app/build/outputs/apk/debug/FinArs.apk
+
+      - name: Rename release AAB
+        run: mv app/build/outputs/bundle/release/app-release.aab app/build/outputs/bundle/release/FinArs.aab
+
+      - name: Upload release AAB
+        uses: actions/upload-artifact@v4
+        with:
+          name: FinArs-release-aab
+          path: app/build/outputs/bundle/release/FinArs.aab

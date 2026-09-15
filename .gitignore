@@ -10,3 +10,5 @@
 .cxx/
 local.properties
 .update65_backup_*
+release.keystore
+keystore_base64.txt
