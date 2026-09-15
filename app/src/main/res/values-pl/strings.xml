@@ -191,7 +191,8 @@
     <string name="paywall_per_month">/ miesiąc</string>
     <string name="paywall_trial_yearly">7 dni za 0 zł, potem %1$s / rok</string>
     <string name="paywall_trial_monthly">7 dni za 0 zł, potem %1$s / miesiąc</string>
-    <string name="paywall_per_month_note">Tylko 8,33 zł / miesiąc</string>
+    <string name="paywall_per_month_note">Tylko %1$s / miesiąc</string>
+    <string name="paywall_price_monthly_equivalent_default">8,33 zł</string>
     <string name="paywall_cta">Wypróbuj 7 dni za 0 zł</string>
     <string name="paywall_footer_1">Bez opłat przez pierwsze 7 dni.\nAnulujesz w dowolnym momencie w sklepie z aplikacjami.</string>
     <string name="paywall_footer_1_store">Bez opłat przez pierwsze 7 dni.\nAnulujesz w każdej chwili w %1$s.</string>
@@ -258,6 +259,8 @@
     <string name="lock_biometric_prompt_subtitle">Potwierdź odciskiem palca lub twarzą</string>
     <string name="lock_use_pin">Użyj PIN-u</string>
     <string name="lock_biometric_unavailable">Na tym urządzeniu nie skonfigurowano odcisku palca/twarzy. Dodaj go najpierw w ustawieniach telefonu.</string>
+    <string name="lock_locked_out_minutes">Zbyt wiele prób. Spróbuj ponownie za %1$d min %2$d s</string>
+    <string name="lock_locked_out_seconds">Zbyt wiele prób. Spróbuj ponownie za %1$d s</string>
 
     <string name="security_hint">Zabezpiecz aplikację kodem PIN. Gdy funkcja jest włączona, FinArs poprosi o PIN za każdym razem, gdy wrócisz do aplikacji po jej opuszczeniu. Możesz też włączyć odblokowanie odciskiem palca/twarzą jako szybki skrót zamiast wpisywania tego samego PIN-u.</string>
     <string name="security_pin_switch">Wymagaj PIN-u przy otwieraniu aplikacji</string>
@@ -508,6 +511,7 @@
     <!-- Historia faktur -->
     <string name="invoice_history_title">Historia faktur</string>
     <string name="no_invoices">Nie wystawiono jeszcze żadnych faktur</string>
+    <string name="no_products">Brak produktów w magazynie. Dodaj produkt powyżej.</string>
 
 
     <!-- Etykiety PDF faktury -->

@@ -109,9 +109,13 @@ class LimitsNotificationWorker(context: Context, params: WorkerParameters) : Cor
             }
 
             // 4) Напоминание об авансовом платеже — до 20 числа каждого месяца.
+            // Актуально ТОЛЬКО для зарегистрированной деятельности (JDG) — przy
+            // działalności nierejestrowanej нет obowiązku zaliczek na podatek, так
+            // что этим пользователям такое напоминание не нужно и только сбивает с
+            // толку (см. isRegisteredJdg в ActivityTypeHelper.kt).
             val cal = Calendar.getInstance()
             val day = cal.get(Calendar.DAY_OF_MONTH)
-            if (day in 15..20) {
+            if (limits.activityType.isRegisteredJdg && day in 15..20) {
                 notifyOnce(
                     prefs, "advance_${cal.get(Calendar.YEAR)}_${cal.get(Calendar.MONTH)}",
                     ctx.getString(R.string.notif_advance_title),

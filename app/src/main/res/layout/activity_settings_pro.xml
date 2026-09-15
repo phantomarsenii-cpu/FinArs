@@ -161,7 +161,7 @@
                     android:orientation="horizontal" android:gravity="center_vertical"
                     android:layout_marginTop="8dp">
                     <ImageView android:layout_width="14dp" android:layout_height="14dp" android:src="@drawable/ic_tag_small"/>
-                    <TextView
+                    <TextView android:id="@+id/tv_per_month_note"
                         android:layout_width="wrap_content" android:layout_height="wrap_content"
                         android:layout_marginStart="6dp" android:text="@string/paywall_per_month_note"
                         android:textColor="@color/accent_blue_light" android:textSize="13sp"/>

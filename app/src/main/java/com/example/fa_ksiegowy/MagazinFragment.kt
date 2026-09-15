@@ -77,6 +77,8 @@ class MagazinFragment : Fragment() {
             val all = AppDatabase.getInstance(requireContext().applicationContext).productDao().getAll()
             withContext(Dispatchers.Main) {
                 adapter.submitList(all)
+                requireView().findViewById<TextView>(R.id.tv_no_products).visibility =
+                    if (all.isEmpty()) View.VISIBLE else View.GONE
                 val low = all.filter { it.isLowStock }
                 val banner = requireView().findViewById<TextView>(R.id.tv_low_stock_banner)
                 if (low.isNotEmpty()) {

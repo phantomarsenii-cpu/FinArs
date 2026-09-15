@@ -287,11 +287,9 @@ class InvoiceHistoryActivity : BaseActivity() {
         }
     }
 
-    /** Удаляет запись korekty и её PDF-файл. Обратите внимание: если korekta была
-     *  применена к доходу (appliedToIncome), созданная Entry НЕ откатывается
-     *  автоматически — так же, как удаление обычной фактуры не откатывает Entry,
-     *  созданную при её выставлении (см. [confirmDelete]); при необходимости
-     *  соответствующий приход нужно удалить вручную на экране Historii/главном. */
+    /** Удаляет запись korekty, её PDF-файл и — если korekta была применена к доходу
+     *  (appliedToIncome) — связанный приход (Entry) в Historii, чтобы он не остался
+     *  висеть в балансе/лимите/налоге после удаления самой korekty. */
     private fun confirmDeleteCorrection(correction: InvoiceCorrection) {
         AlertDialog.Builder(this)
             .setTitle(getString(R.string.delete_correction_confirm_title))
@@ -299,6 +297,7 @@ class InvoiceHistoryActivity : BaseActivity() {
             .setPositiveButton(getString(R.string.delete_confirm_yes)) { _, _ ->
                 CoroutineScope(Dispatchers.IO).launch {
                     InvoiceFileStorage.deleteFile(applicationContext, correction.pdfFilePath)
+                    AppDatabase.getInstance(applicationContext).entryDao().deleteByInvoiceCorrectionId(correction.id)
                     AppDatabase.getInstance(applicationContext).invoiceCorrectionDao().delete(correction)
                     withContext(Dispatchers.Main) {
                         Toast.makeText(this@InvoiceHistoryActivity, getString(R.string.correction_deleted), Toast.LENGTH_SHORT).show()
@@ -376,6 +375,11 @@ class InvoiceHistoryActivity : BaseActivity() {
             .show()
     }
 
+    /** Удаляет фактуру, её PDF-файл и связанный с ней приход (Entry) в Historii —
+     *  тот самый, который был автоматически создан при выставлении этой фактуры
+     *  (см. AddInvoiceActivity). Раньше приход оставался в истории даже после
+     *  удаления фактуры и продолжал учитываться в балансе, лимите и расчёте
+     *  налога — теперь удаляются вместе. */
     private fun confirmDelete(invoice: Invoice) {
         AlertDialog.Builder(this)
             .setTitle(getString(R.string.delete_invoice_confirm_title))
@@ -383,6 +387,7 @@ class InvoiceHistoryActivity : BaseActivity() {
             .setPositiveButton(getString(R.string.delete_confirm_yes)) { _, _ ->
                 CoroutineScope(Dispatchers.IO).launch {
                     InvoiceFileStorage.deleteFile(applicationContext, invoice.pdfFilePath)
+                    AppDatabase.getInstance(applicationContext).entryDao().deleteByInvoiceId(invoice.id)
                     AppDatabase.getInstance(applicationContext).invoiceDao().delete(invoice)
                     withContext(Dispatchers.Main) {
                         Toast.makeText(this@InvoiceHistoryActivity, getString(R.string.invoice_deleted), Toast.LENGTH_SHORT).show()

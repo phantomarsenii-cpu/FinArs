@@ -191,7 +191,8 @@
     <string name="paywall_per_month">/ month</string>
     <string name="paywall_trial_yearly">7 days free, then %1$s / year</string>
     <string name="paywall_trial_monthly">7 days free, then %1$s / month</string>
-    <string name="paywall_per_month_note">Only 8.33 zł / month</string>
+    <string name="paywall_per_month_note">Only %1$s / month</string>
+    <string name="paywall_price_monthly_equivalent_default">8.33 zł</string>
     <string name="paywall_cta">Try 7 days for 0 zł</string>
     <string name="paywall_footer_1">Free for the first 7 days.\nCancel anytime in your app store.</string>
     <string name="paywall_footer_1_store">Free for the first 7 days.\nCancel anytime in %1$s.</string>
@@ -258,6 +259,8 @@
     <string name="lock_biometric_prompt_subtitle">Confirm your fingerprint or face</string>
     <string name="lock_use_pin">Use PIN</string>
     <string name="lock_biometric_unavailable">No fingerprint/face is set up on this device. Add one in your phone\'s settings first.</string>
+    <string name="lock_locked_out_minutes">Too many attempts. Try again in %1$d min %2$d s</string>
+    <string name="lock_locked_out_seconds">Too many attempts. Try again in %1$d s</string>
 
     <string name="security_hint">Protect the app with a PIN code. When enabled, FinArs will ask for the PIN every time you open it after leaving the app. You can also enable fingerprint/face unlock as a quick shortcut for the same PIN.</string>
     <string name="security_pin_switch">Require PIN to open the app</string>
@@ -508,6 +511,7 @@
     <!-- Invoice history -->
     <string name="invoice_history_title">Invoice history</string>
     <string name="no_invoices">No invoices yet</string>
+    <string name="no_products">No products in stock yet. Add one above.</string>
 
 
     <!-- Invoice PDF labels -->

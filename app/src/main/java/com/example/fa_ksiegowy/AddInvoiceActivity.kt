@@ -778,7 +778,8 @@ class AddInvoiceActivity : BaseActivity() {
                                 comment = getString(R.string.invoice_income_comment, invoiceNumber, itemNames),
                                 dateMillis = issueDateMillis,
                                 receiptPath = null,
-                                ryczaltCategory = category
+                                ryczaltCategory = category,
+                                invoiceId = invoiceId
                             )
                         )
                     }
@@ -790,7 +791,8 @@ class AddInvoiceActivity : BaseActivity() {
                             comment = getString(R.string.invoice_income_comment, invoiceNumber, serviceName),
                             dateMillis = issueDateMillis,
                             receiptPath = null,
-                            ryczaltCategory = null
+                            ryczaltCategory = null,
+                            invoiceId = invoiceId
                         )
                     )
                 }

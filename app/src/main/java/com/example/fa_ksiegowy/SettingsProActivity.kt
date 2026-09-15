@@ -10,6 +10,9 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import java.text.NumberFormat
+import java.util.Currency
+import java.util.Locale
 
 /**
  * Ekran "Wersja Pro" — pelnoekranowy paywall subskrypcji (miesiac/rok) przez
@@ -74,6 +77,27 @@ class SettingsProActivity : BaseActivity() {
     private fun getColorCompat(colorRes: Int): Int =
         androidx.core.content.ContextCompat.getColor(this, colorRes)
 
+    /**
+     * Считает реальный эквивалент "в месяц" для годового плана из ЦЕНЫ, которую фактически
+     * покажет магазин (amountMicros/currencyCode из RevenueCat) — она уже включает локальный
+     * налог (VAT/GST и т.п.), который Google Play/Galaxy Store добавляют поверх цены,
+     * заданной в консоли. Раньше это число было зашито строкой (8,33 zł) и не совпадало
+     * с реальной ценой после налога — см. Update-67.
+     */
+    private fun formatMonthlyEquivalent(yearly: SubscriptionService.PlanInfo): String? {
+        val yearlyAmount = yearly.amountMicros / 1_000_000.0
+        if (yearlyAmount <= 0.0) return null
+        val monthlyAmount = yearlyAmount / 12.0
+        return try {
+            val currency = Currency.getInstance(yearly.currencyCode)
+            val formatter = NumberFormat.getCurrencyInstance(Locale.getDefault())
+            formatter.currency = currency
+            formatter.format(monthlyAmount)
+        } catch (e: Exception) {
+            null
+        }
+    }
+
     /** Временный диагностический диалог — показывает ПОЛНЫЙ текст ошибки RevenueCat
      * (тост обрезает длинные сообщения, а нам важна именно underlyingErrorMessage). */
     private fun showFullError(title: String, message: String) {
@@ -132,11 +156,13 @@ class SettingsProActivity : BaseActivity() {
         val tvPriceMonthly = findViewById<TextView>(R.id.tv_price_monthly)
         val tvTrialYearly = findViewById<TextView>(R.id.tv_trial_yearly)
         val tvTrialMonthly = findViewById<TextView>(R.id.tv_trial_monthly)
+        val tvPerMonthNote = findViewById<TextView>(R.id.tv_per_month_note)
 
         // Domyslne ceny (te same co w prawdziwej konfiguracji Google Play) — widoczne
         // od razu, zanim doczyta sie prawdziwa cena z Billing.
         tvTrialYearly.text = getString(R.string.paywall_trial_yearly, getString(R.string.paywall_price_yearly_default))
         tvTrialMonthly.text = getString(R.string.paywall_trial_monthly, getString(R.string.paywall_price_monthly_default))
+        tvPerMonthNote.text = getString(R.string.paywall_per_month_note, getString(R.string.paywall_price_monthly_equivalent_default))
 
         refreshUi()
 
@@ -157,6 +183,9 @@ class SettingsProActivity : BaseActivity() {
                             if (yearly != null) {
                                 tvPriceYearly.text = yearly.price
                                 tvTrialYearly.text = getString(R.string.paywall_trial_yearly, yearly.price)
+                                formatMonthlyEquivalent(yearly)?.let { equivalent ->
+                                    tvPerMonthNote.text = getString(R.string.paywall_per_month_note, equivalent)
+                                }
                             }
                             if (monthly != null) {
                                 tvPriceMonthly.text = monthly.price

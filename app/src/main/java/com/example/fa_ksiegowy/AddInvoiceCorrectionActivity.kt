@@ -282,7 +282,7 @@ class AddInvoiceCorrectionActivity : BaseActivity() {
                 out.write(pdfBytes)
             }
 
-            db.invoiceCorrectionDao().insert(
+            val correctionId = db.invoiceCorrectionDao().insert(
                 InvoiceCorrection(
                     originalInvoiceId = originalInvoice.id,
                     originalInvoiceNumber = originalInvoice.invoiceNumber,
@@ -307,7 +307,8 @@ class AddInvoiceCorrectionActivity : BaseActivity() {
                             getString(R.string.correction_pdf_to_invoice) + " ${originalInvoice.invoiceNumber}",
                         dateMillis = issueDateMillis,
                         receiptPath = null,
-                        ryczaltCategory = null
+                        ryczaltCategory = null,
+                        invoiceCorrectionId = correctionId
                     )
                 )
             }

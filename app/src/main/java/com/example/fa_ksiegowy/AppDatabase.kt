@@ -10,7 +10,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase
 
 @Database(
     entities = [Entry::class, Invoice::class, RecurringEntry::class, Product::class, InvoiceItem::class, InventoryRecord::class, InventorySession::class, InvoiceCorrection::class, Contractor::class],
-    version = 13,
+    version = 14,
     exportSchema = false
 )
 @TypeConverters(Converters::class)
@@ -177,6 +177,20 @@ abstract class AppDatabase : RoomDatabase() {
             }
         }
 
+        /** v13 -> v14: у Entry появились invoiceId/invoiceCorrectionId — ссылка на
+         *  фактуру/корректу, которая автоматически создала этот приход. Нужно, чтобы
+         *  удаление фактуры/корректы из истории могло удалить и связанный с ней
+         *  приход (раньше он "зависал" в Historii и продолжал влиять на баланс/
+         *  налог даже после удаления самой фактуры). Обычная миграция — существующие
+         *  приходы просто получают NULL в обеих новых колонках (они не были созданы
+         *  автоматически из фактуры, так что это и есть правильное значение). */
+        private val MIGRATION_13_14 = object : Migration(13, 14) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                database.execSQL("ALTER TABLE entries ADD COLUMN invoiceId INTEGER")
+                database.execSQL("ALTER TABLE entries ADD COLUMN invoiceCorrectionId INTEGER")
+            }
+        }
+
         @Volatile private var INSTANCE: AppDatabase? = null
         fun getInstance(context: Context): AppDatabase {
             return INSTANCE ?: synchronized(this) {
@@ -184,7 +198,7 @@ abstract class AppDatabase : RoomDatabase() {
                     context.applicationContext,
                     AppDatabase::class.java,
                     "fa_ksiegowy.db"
-                ).addMigrations(MIGRATION_3_4, MIGRATION_4_5, MIGRATION_5_6, MIGRATION_6_7, MIGRATION_7_8, MIGRATION_8_9, MIGRATION_9_10, MIGRATION_10_11, MIGRATION_11_12, MIGRATION_12_13).fallbackToDestructiveMigration().build().also { INSTANCE = it }
+                ).addMigrations(MIGRATION_3_4, MIGRATION_4_5, MIGRATION_5_6, MIGRATION_6_7, MIGRATION_7_8, MIGRATION_8_9, MIGRATION_9_10, MIGRATION_10_11, MIGRATION_11_12, MIGRATION_12_13, MIGRATION_13_14).fallbackToDestructiveMigration().build().also { INSTANCE = it }
             }
         }
     }

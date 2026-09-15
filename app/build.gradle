@@ -23,15 +23,29 @@ android {
             keyAlias "fa_ksiegowy_debug"
             keyPassword "fa_ksiegowy_debug"
         }
+        release {
+            // Значения приходят из переменных окружения, которые задаёт
+            // GitHub Actions (см. .github/workflows/build.yml, шаг "Build
+            // signed release AAB"). Локально, без этих переменных, release
+            // build type просто останется без подписи — это нормально,
+            // локально release не собирается и не публикуется.
+            def ksPath = System.getenv("KEYSTORE_PATH")
+            if (ksPath) {
+                storeFile file(ksPath)
+                storePassword System.getenv("KEYSTORE_PASSWORD")
+                keyAlias System.getenv("KEY_ALIAS")
+                keyPassword System.getenv("KEY_PASSWORD")
+            }
+        }
     }
 
     namespace "com.example.fa_ksiegowy"
-    compileSdk 34
+    compileSdk 36
 
     defaultConfig {
         applicationId "com.finars.app"
         minSdk 26
-        targetSdk 34
+        targetSdk 36
         versionCode buildNumber + 1
         versionName "1.${buildDateStamp}"
         multiDexEnabled true
@@ -39,6 +53,7 @@ android {
 
     buildTypes {
         release {
+            signingConfig signingConfigs.release
             minifyEnabled true
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
@@ -93,7 +108,7 @@ dependencies {
     implementation "androidx.room:room-runtime:2.5.0"
     ksp "androidx.room:room-compiler:2.5.0"
     implementation "androidx.room:room-ktx:2.5.0"
-    implementation "org.apache.poi:poi-ooxml:5.2.3"
+    implementation "org.apache.poi:poi-ooxml:5.5.1"
     implementation "androidx.multidex:multidex:2.0.1"
     // Update: прямой com.android.billingclient:billing-ktx убран — реальный биллинг
     // теперь идёт через RevenueCat (см. SubscriptionService.kt), который тянет свой

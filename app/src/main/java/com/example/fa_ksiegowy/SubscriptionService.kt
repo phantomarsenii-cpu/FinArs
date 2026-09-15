@@ -74,7 +74,18 @@ object SubscriptionService {
     private const val PREFS_NAME = "settings"
     private const val KEY_IS_PRO_RC = "isProRevenueCat"
 
-    data class PlanInfo(val price: String, val trialDays: Int?)
+    /**
+     * amountMicros/currencyCode — «сырая» цена без форматирования (цена, которую Google Play /
+     * Galaxy Store реально показывают пользователю, УЖЕ с учётом локального налога/VAT).
+     * Нужны, чтобы посчитать эквивалент "в месяц" для годового плана в правильной валюте
+     * пользователя, а не полагаться на один захардкоженный курс/налог (см. Update-67).
+     */
+    data class PlanInfo(
+        val price: String,
+        val trialDays: Int?,
+        val amountMicros: Long,
+        val currencyCode: String
+    )
 
     private var initialized = false
     private var cachedOffering: Offering? = null
@@ -152,11 +163,53 @@ object SubscriptionService {
     }
 
     private fun applyCustomerInfo(context: Context, info: CustomerInfo) {
-        val isPro = info.entitlements[ENTITLEMENT_ID]?.isActive == true
+        val appContext = context.applicationContext
+        val wasPro = isProActiveFromRc(appContext)
+        val isProNow = info.entitlements[ENTITLEMENT_ID]?.isActive == true
+
+        if (wasPro && !isProNow) {
+            // A single flip from Pro -> not Pro is treated as suspect rather
+            // than committed immediately. Real-world case this fixes: an
+            // annual TEST subscription (compressed ~30 min renewal cycle)
+            // purchased minutes earlier — the very next CustomerInfo read
+            // (e.g. the plain getCustomerInfoWith() call in init(), fired on
+            // every app start) can still reflect a not-yet-fully-synced
+            // backend record and silently overwrite the correct cached
+            // "active" flag with false. Every screen except
+            // SettingsProActivity (whose onResume already does a real
+            // restorePurchasesWith resync) trusts that flag verbatim, so
+            // this used to lock Pro features app-wide until the user
+            // happened to open the Subscription screen. Do the same real
+            // resync here instead, centrally, before ever committing a
+            // downgrade — a genuine expiration still downgrades correctly,
+            // just after one confirmation round-trip.
+            Log.w(TAG, "Entitlement flipped Pro -> not Pro, resyncing with store before downgrading cache")
+            Purchases.sharedInstance.restorePurchasesWith(
+                onError = { error ->
+                    Log.w(TAG, "Confirm-resync failed (${error.message}); trusting original read")
+                    commitProStatus(appContext, isProNow)
+                },
+                onSuccess = { confirmedInfo ->
+                    val confirmedIsPro = confirmedInfo.entitlements[ENTITLEMENT_ID]?.isActive == true
+                    Log.i(TAG, "Confirm-resync result: isPro=$confirmedIsPro")
+                    commitProStatus(appContext, confirmedIsPro)
+                }
+            )
+            return
+        }
+
+        commitProStatus(appContext, isProNow)
+    }
+
+    private fun commitProStatus(context: Context, isPro: Boolean) {
         context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
             .edit().putBoolean(KEY_IS_PRO_RC, isPro).apply()
         proStatusListeners.forEach { it(isPro) }
     }
+
+    /** Raw cached RevenueCat flag only — used internally to detect a Pro -> not-Pro flip. */
+    private fun isProActiveFromRc(context: Context): Boolean =
+        context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE).getBoolean(KEY_IS_PRO_RC, false)
 
     /** Быстрая локальная проверка (кэш) — используйте её для скрытия/показа Pro-функций в UI. */
     fun isProActive(context: Context): Boolean =
@@ -196,7 +249,12 @@ object SubscriptionService {
         val product = pkg.product
         val trialPhase = product.subscriptionOptions?.freeTrial?.freePhase
         val trialDays = trialPhase?.billingPeriod?.let { periodToDays(it) }
-        return PlanInfo(product.price.formatted, trialDays)
+        return PlanInfo(
+            price = product.price.formatted,
+            trialDays = trialDays,
+            amountMicros = product.price.amountMicros,
+            currencyCode = product.price.currencyCode
+        )
     }
 
     private fun periodToDays(period: Period): Int? = when (period.unit) {

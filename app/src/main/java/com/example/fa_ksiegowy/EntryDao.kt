@@ -29,4 +29,18 @@ interface EntryDao {
     /** Полная очистка истории — используется кнопкой "Очистить все данные" в настройках. */
     @Query("DELETE FROM entries")
     suspend fun deleteAll()
+
+    /** Удаляет приход(ы), автоматически созданные при выставлении конкретной фактуры —
+     *  вызывается при удалении самой фактуры из истории (InvoiceHistoryActivity),
+     *  чтобы доход не "завис" в Historii и не продолжал учитываться в балансе/налоге.
+     *  Обычно одна фактура = один приход, но для JDG_RYCZALT со смешанными категориями
+     *  на одну фактуру может приходиться несколько приходов (по одному на категорию) —
+     *  поэтому удаление по invoiceId, а не по одиночному id. */
+    @Query("DELETE FROM entries WHERE invoiceId = :invoiceId")
+    suspend fun deleteByInvoiceId(invoiceId: Long)
+
+    /** То же самое, но для прихода, созданного корректой (см. AddInvoiceCorrectionActivity,
+     *  appliedToIncome) — вызывается при удалении korekty из истории. */
+    @Query("DELETE FROM entries WHERE invoiceCorrectionId = :invoiceCorrectionId")
+    suspend fun deleteByInvoiceCorrectionId(invoiceCorrectionId: Long)
 }

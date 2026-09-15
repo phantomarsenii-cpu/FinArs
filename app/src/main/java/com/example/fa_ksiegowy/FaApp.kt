@@ -18,10 +18,21 @@ import java.util.Locale
 
 /**
  * Application-класс: ставит глобальный обработчик необработанных исключений.
- * Сохраняет полный текст краша (стектрейс) в файл в папке "Загрузки"
+ *
+ * В DEBUG-сборке (adb install / Android Studio) сохраняет полный текст краша
+ * (стектрейс) в файл в скрытой подпапке "Загрузки/.finars_debug/"
  * (finars_crash_ГГГГММДД_ЧЧММСС.txt), чтобы его можно было прочитать через
- * Termux (cat /storage/emulated/0/Download/finars_crash_*.txt) — обычный
- * logcat не показывает логи чужого приложения без прав root.
+ * Termux (~/storage/downloads/.finars_debug/) — удобно при разработке, но
+ * файл не всплывает первым при обычном открытии папки "Загрузки" в
+ * файловом менеджере.
+ *
+ * В RELEASE-сборке (то, что уходит в Google Play / Galaxy Store) стектрейс
+ * НЕ пишется в публичную папку — детальная информация об ошибке (имена
+ * классов/методов, внутренняя структура приложения) не должна быть доступна
+ * произвольному приложению на устройстве пользователя. Вместо этого лог
+ * пишется только во внутреннее приватное хранилище приложения (доступное
+ * исключительно самому FinArs), просто как резерв на случай, если
+ * пользователь сам захочет прислать лог в поддержку.
  *
  * После записи лога вызывается стандартный обработчик системы — поведение
  * приложения при краше (закрытие) не меняется, только добавляется файл.
@@ -70,11 +81,20 @@ class FaApp : Application() {
         val fileName = "finars_crash_" +
             SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(Date()) + ".txt"
 
+        val isDebuggable = (context.applicationInfo.flags and android.content.pm.ApplicationInfo.FLAG_DEBUGGABLE) != 0
+        if (!isDebuggable) {
+            // Релиз: только приватное хранилище приложения — не видно ни другим
+            // приложениям, ни через файловый менеджер/Термукс без root.
+            val file = File(context.filesDir, fileName)
+            FileOutputStream(file).use { it.write(text.toByteArray()) }
+            return
+        }
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             val values = ContentValues().apply {
                 put(MediaStore.Downloads.DISPLAY_NAME, fileName)
                 put(MediaStore.Downloads.MIME_TYPE, "text/plain")
-                put(MediaStore.Downloads.RELATIVE_PATH, Environment.DIRECTORY_DOWNLOADS)
+                put(MediaStore.Downloads.RELATIVE_PATH, Environment.DIRECTORY_DOWNLOADS + "/.finars_debug")
             }
             val uri = context.contentResolver.insert(MediaStore.Downloads.EXTERNAL_CONTENT_URI, values)
             if (uri != null) {
@@ -82,7 +102,7 @@ class FaApp : Application() {
             }
         } else {
             @Suppress("DEPRECATION")
-            val downloads = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+            val downloads = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), ".finars_debug")
             downloads.mkdirs()
             val file = File(downloads, fileName)
             FileOutputStream(file).use { it.write(text.toByteArray()) }
