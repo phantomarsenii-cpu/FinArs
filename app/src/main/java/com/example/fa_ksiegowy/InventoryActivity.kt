@@ -68,6 +68,9 @@ class InventoryActivity : BaseActivity() {
                     .setOrientationLocked(true)
             )
         }
+        findViewById<Button>(R.id.btn_manual_inventory).setOnClickListener {
+            showManualFindDialog()
+        }
         loadProducts()
     }
 
@@ -136,16 +139,130 @@ class InventoryActivity : BaseActivity() {
         }
     }
 
+    /** Ручной поиск товара для инвентаризации — на случай, если штрихкод сменился
+     *  у производителя (или его просто нет/он не читается) и сканирование не находит
+     *  нужную позицию. Открывает диалог с полем поиска: список товаров склада живо
+     *  фильтруется по названию, штрихкоду или единице измерения по мере ввода.
+     *  Выбор строки открывает тот же диалог ввода количества, что и при сканировании
+     *  (см. showScanQuantityDialog), но БЕЗ авто-инкремента +1 — при ручном поиске
+     *  пользователь обычно сразу вписывает точное посчитанное число. */
+    private fun showManualFindDialog() {
+        val density = resources.displayMetrics.density
+
+        val root = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
+
+        val searchInput = EditText(this).apply {
+            hint = getString(R.string.inventory_manual_search_hint)
+            setHintTextColor(resources.getColor(R.color.text_hint, theme))
+            setTextColor(resources.getColor(R.color.text_primary, theme))
+            setBackgroundResource(R.drawable.input_field_bg)
+            val pad = (14 * density).toInt()
+            setPadding(pad, pad, pad, pad)
+            inputType = InputType.TYPE_CLASS_TEXT
+            maxLines = 1
+        }
+        root.addView(
+            searchInput,
+            LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+        )
+
+        val resultsContainer = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
+        val scroll = android.widget.ScrollView(this).apply { addView(resultsContainer) }
+        val scrollLp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, (280 * density).toInt())
+        scrollLp.topMargin = (12 * density).toInt()
+        root.addView(scroll, scrollLp)
+
+        val dialogRef = arrayOfNulls<android.app.Dialog>(1)
+
+        fun renderResults(query: String) {
+            resultsContainer.removeAllViews()
+            val q = query.trim()
+            val matches = if (q.isEmpty()) {
+                products
+            } else {
+                products.filter { p ->
+                    p.name.contains(q, ignoreCase = true) ||
+                        (p.barcode?.contains(q, ignoreCase = true) == true) ||
+                        p.unit.contains(q, ignoreCase = true)
+                }
+            }
+            if (matches.isEmpty()) {
+                val empty = TextView(this).apply {
+                    text = getString(R.string.inventory_manual_no_results)
+                    setTextColor(resources.getColor(R.color.text_secondary, theme))
+                    textSize = 13f
+                    val p = (10 * density).toInt()
+                    setPadding(p, p, p, p)
+                }
+                resultsContainer.addView(empty)
+                return
+            }
+            for (p in matches.take(50)) {
+                val row = Button(this).apply {
+                    text = "${p.name}\n${formatQty(counted[p.id] ?: p.quantity)} ${p.unit}"
+                    isAllCaps = false
+                    textSize = 13f
+                    minHeight = (52 * density).toInt()
+                    gravity = android.view.Gravity.START or android.view.Gravity.CENTER_VERTICAL
+                    setTextColor(resources.getColor(R.color.text_primary, theme))
+                    setBackgroundResource(R.drawable.input_field_bg)
+                    val pad = (12 * density).toInt()
+                    setPadding(pad, pad, pad, pad)
+                }
+                val lp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+                lp.topMargin = (8 * density).toInt()
+                row.setOnClickListener {
+                    dialogRef[0]?.dismiss()
+                    val et = etByProductId[p.id]
+                    if (et != null) {
+                        showScanQuantityDialog(p, et, suggestIncrement = false)
+                    }
+                }
+                resultsContainer.addView(row, lp)
+            }
+        }
+
+        searchInput.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                renderResults(s?.toString() ?: "")
+            }
+            override fun afterTextChanged(s: Editable?) {}
+        })
+
+        renderResults("")
+
+        val dialog = AppDialog.show(
+            context = this,
+            title = getString(R.string.inventory_manual_dialog_title),
+            contentView = root,
+            positiveText = getString(R.string.dialog_close),
+            onPositive = {},
+            cancelable = true
+        )
+        dialogRef[0] = dialog
+        dialog.setOnShowListener {
+            searchInput.requestFocus()
+            val imm = getSystemService(android.content.Context.INPUT_METHOD_SERVICE) as android.view.inputmethod.InputMethodManager
+            imm.showSoftInput(searchInput, android.view.inputmethod.InputMethodManager.SHOW_IMPLICIT)
+        }
+    }
+
     /** Небольшой диалог в стиле приложения (см. AppDialog), который появляется сразу
      *  после успешного скана штрихкода: позволяет вписать фактическое количество
      *  найденного товара, не листая список вручную. Поле предзаполнено следующим
      *  по счёту значением (+1 к уже введённому) — при сканировании штучного товара
      *  по одной единице достаточно просто подтвердить кнопкой "Zapisz"; если нужно
      *  вписать точное число (например, после взвешивания или пересчёта упаковки),
-     *  цифру легко стереть и ввести заново. */
-    private fun showScanQuantityDialog(product: Product, et: EditText) {
+     *  цифру легко стереть и ввести заново.
+     *
+     *  [suggestIncrement] управляет предзаполнением: true (скан) — current + 1,
+     *  false (найден через ручной поиск, см. showManualFindDialog) — просто
+     *  текущее введённое значение, так как при ручном поиске пользователь обычно
+     *  сразу вписывает точное посчитанное число, а не сканирует поштучно. */
+    private fun showScanQuantityDialog(product: Product, et: EditText, suggestIncrement: Boolean = true) {
         val current = counted[product.id] ?: product.quantity
-        val suggested = current + 1.0
+        val suggested = if (suggestIncrement) current + 1.0 else current
 
         val input = EditText(this)
         input.inputType = InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_DECIMAL

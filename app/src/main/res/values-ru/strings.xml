@@ -189,11 +189,12 @@
     <string name="paywall_price_monthly_default">11,99 zł</string>
     <string name="paywall_per_year">/ год</string>
     <string name="paywall_per_month">/ месяц</string>
-    <string name="paywall_trial_yearly">7 дней бесплатно, потом %1$s / год</string>
-    <string name="paywall_trial_monthly">7 дней бесплатно, потом %1$s / месяц</string>
+    <string name="paywall_trial_yearly">7 дней за %2$s, потом %1$s / год</string>
+    <string name="paywall_trial_monthly">7 дней за %2$s, потом %1$s / месяц</string>
     <string name="paywall_per_month_note">Всего %1$s / месяц</string>
     <string name="paywall_price_monthly_equivalent_default">8,33 zł</string>
-    <string name="paywall_cta">Попробовать 7 дней за 0 zł</string>
+    <string name="paywall_price_zero_default">0 zł</string>
+    <string name="paywall_cta">Попробовать 7 дней за %1$s</string>
     <string name="paywall_footer_1">Бесплатно первые 7 дней.\nОтмена в любой момент в магазине приложений.</string>
     <string name="paywall_footer_1_store">Бесплатно первые 7 дней.\nОтмена в любой момент в %1$s.</string>
     <string name="store_name_google_play">Google Play</string>
@@ -621,6 +622,10 @@
 
     <!-- Update 43: PDF-отчёт инвентаризации + история + сканирование штрихкода, починка разбора позиций чека -->
     <string name="inventory_scan_button">Сканировать товар</string>
+    <string name="inventory_manual_button">Ввести вручную</string>
+    <string name="inventory_manual_dialog_title">Найти товар</string>
+    <string name="inventory_manual_search_hint">Поиск по названию, коду, ед. изм…</string>
+    <string name="inventory_manual_no_results">Ничего не найдено</string>
     <string name="inventory_history_button">История инвентаризаций</string>
     <string name="inventory_scan_not_found">Товар с кодом %1$s не найден</string>
     <string name="inventory_scan_found">%1$s: %2$s</string>

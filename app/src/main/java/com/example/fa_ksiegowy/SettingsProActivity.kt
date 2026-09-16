@@ -25,6 +25,12 @@ class SettingsProActivity : BaseActivity() {
     /** Aktualnie wybrany plan w karcie wyboru — domyslnie roczny (najlepsza oferta). */
     private var selectedProductId: String = BillingManager.PRO_YEARLY_PRODUCT_ID
 
+    // Real currency codes from RevenueCat, filled in once querySubscriptionPlans
+    // returns. Null until then, so the CTA/trial "0" text falls back to the
+    // hardcoded Polish default (see updateZeroPriceTexts()).
+    private var yearlyCurrencyCode: String? = null
+    private var monthlyCurrencyCode: String? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings_pro)
@@ -78,6 +84,45 @@ class SettingsProActivity : BaseActivity() {
         androidx.core.content.ContextCompat.getColor(this, colorRes)
 
     /**
+     * "0" in whichever currency the currently SELECTED plan actually charges
+     * in (e.g. "0 zł" for PLN, "$0" for USD) — not a value hardcoded into the
+     * string resources, which used to always say "0 zł" even for buyers
+     * outside Poland. Falls back to "0 zł" while the real currency hasn't
+     * loaded from RevenueCat yet.
+     */
+    private fun zeroPriceText(): String {
+        val currencyCode = if (selectedProductId == BillingManager.PRO_YEARLY_PRODUCT_ID) {
+            yearlyCurrencyCode
+        } else {
+            monthlyCurrencyCode
+        }
+        return PriceFormatter.zero(currencyCode, fallback = getString(R.string.paywall_price_zero_default))
+    }
+
+    /** Refreshes every piece of copy that embeds the "0 <currency>" trial text
+     *  for the currently selected plan — call after the selection changes or
+     *  once real currency codes arrive from RevenueCat. */
+    private fun updateZeroPriceTexts() {
+        if (!BillingManager.isPro(this)) {
+            findViewById<TextView>(R.id.tv_cta).text = getString(R.string.paywall_cta, zeroPriceText())
+        }
+        val yearlyZero = PriceFormatter.zero(yearlyCurrencyCode, fallback = getString(R.string.paywall_price_zero_default))
+        val monthlyZero = PriceFormatter.zero(monthlyCurrencyCode, fallback = getString(R.string.paywall_price_zero_default))
+        val yearlyPrice = currentYearlyPriceText ?: getString(R.string.paywall_price_yearly_default)
+        val monthlyPrice = currentMonthlyPriceText ?: getString(R.string.paywall_price_monthly_default)
+        findViewById<TextView>(R.id.tv_trial_yearly).text =
+            getString(R.string.paywall_trial_yearly, yearlyPrice, yearlyZero)
+        findViewById<TextView>(R.id.tv_trial_monthly).text =
+            getString(R.string.paywall_trial_monthly, monthlyPrice, monthlyZero)
+    }
+
+    // Last real (or default) price strings shown for each plan, kept so
+    // updateZeroPriceTexts() can rebuild the trial sentence without needing
+    // a fresh RevenueCat round trip.
+    private var currentYearlyPriceText: String? = null
+    private var currentMonthlyPriceText: String? = null
+
+    /**
      * Считает реальный эквивалент "в месяц" для годового плана из ЦЕНЫ, которую фактически
      * покажет магазин (amountMicros/currencyCode из RevenueCat) — она уже включает локальный
      * налог (VAT/GST и т.п.), который Google Play/Galaxy Store добавляют поверх цены,
@@ -87,15 +132,26 @@ class SettingsProActivity : BaseActivity() {
     private fun formatMonthlyEquivalent(yearly: SubscriptionService.PlanInfo): String? {
         val yearlyAmount = yearly.amountMicros / 1_000_000.0
         if (yearlyAmount <= 0.0) return null
-        val monthlyAmount = yearlyAmount / 12.0
-        return try {
+        val monthlyMicros = (yearly.amountMicros / 12.0).toLong()
+        // Old fallback (Locale.getDefault()) kept only for currencies
+        // PriceFormatter doesn't know about, so nothing breaks for those.
+        val legacyFallback = try {
             val currency = Currency.getInstance(yearly.currencyCode)
-            val formatter = NumberFormat.getCurrencyInstance(Locale.getDefault())
-            formatter.currency = currency
-            formatter.format(monthlyAmount)
+            NumberFormat.getCurrencyInstance(Locale.getDefault()).apply { this.currency = currency }
+                .format(monthlyMicros / 1_000_000.0)
         } catch (e: Exception) {
-            null
+            return null
         }
+        // PriceFormatter resolves the symbol from the currency's OWN home
+        // locale (e.g. PLN -> pl_PL), not Locale.getDefault() — the device's
+        // UI language. That matters because Java falls back to the raw ISO
+        // code ("PLN") whenever the running locale has no localized symbol
+        // for that currency, e.g. a PLN price on a Russian-language device.
+        return PriceFormatter.format(
+            amountMicros = monthlyMicros,
+            currencyCode = yearly.currencyCode,
+            fallback = legacyFallback
+        )
     }
 
     /** Временный диагностический диалог — показывает ПОЛНЫЙ текст ошибки RevenueCat
@@ -133,7 +189,7 @@ class SettingsProActivity : BaseActivity() {
             cardMonthly.alpha = 1f
             btnCta.isEnabled = true
             btnCta.alpha = 1f
-            tvCta.text = getString(R.string.paywall_cta)
+            tvCta.text = getString(R.string.paywall_cta, zeroPriceText())
             applySelectionState()
         }
     }
@@ -149,6 +205,7 @@ class SettingsProActivity : BaseActivity() {
         cardMonthly.setBackgroundResource(if (!yearlySelected) R.drawable.card_plan_selected else R.drawable.card_plan_unselected)
         radioYearly.setImageResource(if (yearlySelected) R.drawable.ic_radio_selected else R.drawable.ic_radio_unselected)
         radioMonthly.setImageResource(if (!yearlySelected) R.drawable.ic_radio_selected else R.drawable.ic_radio_unselected)
+        updateZeroPriceTexts()
     }
 
     private fun setupProSection() {
@@ -160,11 +217,12 @@ class SettingsProActivity : BaseActivity() {
 
         // Domyslne ceny (te same co w prawdziwej konfiguracji Google Play) — widoczne
         // od razu, zanim doczyta sie prawdziwa cena z Billing.
-        tvTrialYearly.text = getString(R.string.paywall_trial_yearly, getString(R.string.paywall_price_yearly_default))
-        tvTrialMonthly.text = getString(R.string.paywall_trial_monthly, getString(R.string.paywall_price_monthly_default))
+        currentYearlyPriceText = getString(R.string.paywall_price_yearly_default)
+        currentMonthlyPriceText = getString(R.string.paywall_price_monthly_default)
         tvPerMonthNote.text = getString(R.string.paywall_per_month_note, getString(R.string.paywall_price_monthly_equivalent_default))
 
         refreshUi()
+        updateZeroPriceTexts()
 
         BillingManager.connect(this) { connected, errorMessage ->
             runOnUiThread {
@@ -181,16 +239,33 @@ class SettingsProActivity : BaseActivity() {
                     BillingManager.querySubscriptionPlans { monthly, yearly, plansError ->
                         runOnUiThread {
                             if (yearly != null) {
-                                tvPriceYearly.text = yearly.price
-                                tvTrialYearly.text = getString(R.string.paywall_trial_yearly, yearly.price)
+                                // Reformat with the currency's own home-locale
+                                // symbol (falls back to RevenueCat's own
+                                // .formatted string for currencies we don't
+                                // recognize) — see PriceFormatter for why.
+                                val yearlyPriceText = PriceFormatter.format(
+                                    amountMicros = yearly.amountMicros,
+                                    currencyCode = yearly.currencyCode,
+                                    fallback = yearly.price
+                                )
+                                tvPriceYearly.text = yearlyPriceText
+                                currentYearlyPriceText = yearlyPriceText
+                                yearlyCurrencyCode = yearly.currencyCode
                                 formatMonthlyEquivalent(yearly)?.let { equivalent ->
                                     tvPerMonthNote.text = getString(R.string.paywall_per_month_note, equivalent)
                                 }
                             }
                             if (monthly != null) {
-                                tvPriceMonthly.text = monthly.price
-                                tvTrialMonthly.text = getString(R.string.paywall_trial_monthly, monthly.price)
+                                val monthlyPriceText = PriceFormatter.format(
+                                    amountMicros = monthly.amountMicros,
+                                    currencyCode = monthly.currencyCode,
+                                    fallback = monthly.price
+                                )
+                                tvPriceMonthly.text = monthlyPriceText
+                                currentMonthlyPriceText = monthlyPriceText
+                                monthlyCurrencyCode = monthly.currencyCode
                             }
+                            updateZeroPriceTexts()
                             if (plansError != null) {
                                 showFullError("RC plans error", plansError)
                             }

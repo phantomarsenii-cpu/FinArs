@@ -189,11 +189,12 @@
     <string name="paywall_price_monthly_default">11,99 zł</string>
     <string name="paywall_per_year">/ rok</string>
     <string name="paywall_per_month">/ miesiąc</string>
-    <string name="paywall_trial_yearly">7 dni za 0 zł, potem %1$s / rok</string>
-    <string name="paywall_trial_monthly">7 dni za 0 zł, potem %1$s / miesiąc</string>
+    <string name="paywall_trial_yearly">7 dni za %2$s, potem %1$s / rok</string>
+    <string name="paywall_trial_monthly">7 dni za %2$s, potem %1$s / miesiąc</string>
     <string name="paywall_per_month_note">Tylko %1$s / miesiąc</string>
     <string name="paywall_price_monthly_equivalent_default">8,33 zł</string>
-    <string name="paywall_cta">Wypróbuj 7 dni za 0 zł</string>
+    <string name="paywall_price_zero_default">0 zł</string>
+    <string name="paywall_cta">Wypróbuj 7 dni za %1$s</string>
     <string name="paywall_footer_1">Bez opłat przez pierwsze 7 dni.\nAnulujesz w dowolnym momencie w sklepie z aplikacjami.</string>
     <string name="paywall_footer_1_store">Bez opłat przez pierwsze 7 dni.\nAnulujesz w każdej chwili w %1$s.</string>
     <string name="store_name_google_play">Google Play</string>
@@ -621,6 +622,10 @@
 
     <!-- Update 43: raport PDF inwentaryzacji + historia + skanowanie kodów, naprawa parsowania pozycji paragonu -->
     <string name="inventory_scan_button">Skanuj towar</string>
+    <string name="inventory_manual_button">Wpisz ręcznie</string>
+    <string name="inventory_manual_dialog_title">Znajdź towar</string>
+    <string name="inventory_manual_search_hint">Szukaj po nazwie, kodzie, jednostce…</string>
+    <string name="inventory_manual_no_results">Brak pasujących towarów</string>
     <string name="inventory_history_button">Historia inwentaryzacji</string>
     <string name="inventory_scan_not_found">Nie znaleziono produktu o kodzie %1$s</string>
     <string name="inventory_scan_found">%1$s: %2$s</string>

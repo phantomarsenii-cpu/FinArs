@@ -189,11 +189,12 @@
     <string name="paywall_price_monthly_default">11.99 zł</string>
     <string name="paywall_per_year">/ year</string>
     <string name="paywall_per_month">/ month</string>
-    <string name="paywall_trial_yearly">7 days free, then %1$s / year</string>
-    <string name="paywall_trial_monthly">7 days free, then %1$s / month</string>
+    <string name="paywall_trial_yearly">7 days for %2$s, then %1$s / year</string>
+    <string name="paywall_trial_monthly">7 days for %2$s, then %1$s / month</string>
     <string name="paywall_per_month_note">Only %1$s / month</string>
     <string name="paywall_price_monthly_equivalent_default">8.33 zł</string>
-    <string name="paywall_cta">Try 7 days for 0 zł</string>
+    <string name="paywall_price_zero_default">0 zł</string>
+    <string name="paywall_cta">Try 7 days for %1$s</string>
     <string name="paywall_footer_1">Free for the first 7 days.\nCancel anytime in your app store.</string>
     <string name="paywall_footer_1_store">Free for the first 7 days.\nCancel anytime in %1$s.</string>
     <string name="store_name_google_play">Google Play</string>
@@ -621,6 +622,10 @@
 
     <!-- Update 43: inventory PDF report + history + barcode scan, receipt item parsing fix -->
     <string name="inventory_scan_button">Scan product</string>
+    <string name="inventory_manual_button">Enter manually</string>
+    <string name="inventory_manual_dialog_title">Find a product</string>
+    <string name="inventory_manual_search_hint">Search by name, barcode, unit…</string>
+    <string name="inventory_manual_no_results">No matching products</string>
     <string name="inventory_history_button">Inventory history</string>
     <string name="inventory_scan_not_found">No product found for code %1$s</string>
     <string name="inventory_scan_found">%1$s: %2$s</string>
