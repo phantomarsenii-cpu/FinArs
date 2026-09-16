@@ -338,7 +338,8 @@
 
     <!-- Гейджи лимитов на главном экране -->
     <string name="limits_title">Лимиты</string>
-    <string name="limit_monthly_label">Незарегистрированная деятельность, этот месяц: %1$s / %2$s zł</string>
+    <string name="limit_monthly_label">Незарегистрированная деятельность, этот квартал: %1$s / %2$s zł</string>
+    <string name="limit_yearly_sum_info" formatted="false">Сумма за год (информационно): %1$s / %2$s zł</string>
     <string name="limit_bracket_label">Первый налоговый порог (120 000 zł/год): %1$s / %2$s zł</string>
     <string name="limit_bracket_label_tax_free">Необлагаемый минимум (0–30 000 zł/год): %1$s / %2$s zł</string>
     <string name="limit_bracket_label_rate12">Порог 12%% (30 000–120 000 zł/год): %1$s / %2$s zł</string>
@@ -348,7 +349,7 @@
     <string name="limit_bracket_title_tax_free">Необлагаемый минимум (0–30 000 zł/год)</string>
     <string name="limit_bracket_title_rate12">Порог 12% (30 000–120 000 zł/год)</string>
     <string name="limit_bracket_title_rate32">Порог 32% (свыше 120 000 zł/год)</string>
-    <string name="limit_exceeded_warning">Превышен лимит незарегистрированной деятельности! Вы обязаны зарегистрировать JDG в течение 7 дней.</string>
+    <string name="limit_exceeded_warning">Превышен квартальный лимит незарегистрированной деятельности! Вы обязаны зарегистрировать JDG в течение 7 дней.</string>
     <string name="limits_remaining">Осталось: %1$s zł</string>
     <string name="limits_limit_of">Лимит: %1$s zł</string>
     <string name="limits_about_title">О лимитах</string>
@@ -374,6 +375,11 @@
     <string name="reports_title">Отчёты</string>
     <string name="period_this_month">Этот месяц</string>
     <string name="period_this_year">Этот год</string>
+    <string name="period_this_quarter">Этот квартал</string>
+    <string name="report_ewidencja_pdf">Ewidencja sprzedaży (реестр продаж) PDF</string>
+    <string name="ewidencja_generating">Формируем реестр продаж…</string>
+    <string name="ewidencja_ready">Реестр продаж готов</string>
+    <string name="ewidencja_share_title">Поделиться реестром продаж</string>
     <string name="report_summary">Сводка</string>
     <string name="legend_income">Доход</string>
     <string name="legend_expense">Расходы</string>
@@ -416,11 +422,11 @@
     <string name="notif_channel_name">Лимиты и сроки</string>
     <string name="notif_channel_description">Оповещения о лимитах деятельности и налоговых сроках</string>
     <string name="notif_limit_exceeded_title">Превышен лимит незарегистрированной деятельности</string>
-    <string name="notif_limit_exceeded_text" formatted="false">Доход в этом месяце превышает 75% минимальной зарплаты. Зарегистрируйте JDG в течение 7 дней.</string>
-    <string name="notif_limit_95_title" formatted="false">Достигнуто 95% месячного лимита</string>
-    <string name="notif_limit_95_text">Вы очень близки к лимиту незарегистрированной деятельности за этот месяц.</string>
-    <string name="notif_limit_80_title" formatted="false">Достигнуто 80% месячного лимита</string>
-    <string name="notif_limit_80_text" formatted="false">Использовано 80% лимита незарегистрированной деятельности за этот месяц.</string>
+    <string name="notif_limit_exceeded_text" formatted="false">Доход за этот квартал превышает лимит 10 813,50 zł незарегистрированной деятельности. Зарегистрируйте JDG в течение 7 дней.</string>
+    <string name="notif_limit_95_title" formatted="false">Достигнуто 95% квартального лимита</string>
+    <string name="notif_limit_95_text">Вы очень близки к лимиту незарегистрированной деятельности за этот квартал.</string>
+    <string name="notif_limit_80_title" formatted="false">Достигнуто 80% квартального лимита</string>
+    <string name="notif_limit_80_text" formatted="false">Использовано 80% лимита незарегистрированной деятельности за этот квартал.</string>
     <string name="notif_bracket_title">Приближение к порогу 120 000 zł</string>
     <string name="notif_bracket_text" formatted="false">Годовая прибыль приближается к 120 000 zł — доход сверх этой суммы облагается по 32% вместо 12%.</string>
     <string name="notif_vat_title">Приближение к лимиту освобождения от VAT</string>

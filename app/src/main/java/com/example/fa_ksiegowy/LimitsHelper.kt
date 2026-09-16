@@ -7,9 +7,17 @@ import java.util.Calendar
  * Считает показатели лимитов, которые отображаются на главном экране
  * гейджами (progress bar) и проверяются фоновым воркером для уведомлений:
  *
- *  1) monthly      — доход текущего месяца vs 75% minimalnego wynagrodzenia
- *                     (актуально только для NIEZAREJESTROWANA — контроль
- *                     обязанности регистрации JDG).
+ *  1) quarterly    — Update (ustawa 2026): od 01.01.2026 miesięczny limit
+ *                     działalności nierejestrowanej (75% minimalnego wynagrodzenia)
+ *                     PRZESTAŁ obowiązywać — zastąpił go limit KWARTALNY
+ *                     10 813,50 zł (225% minimalnego wynagrodzenia, zob.
+ *                     QUARTERLY_LIMIT_2026). Przekroczenie limitu choćby w JEDNYM
+ *                     kwartale rodzi obowiązek zarejestrowania JDG. Aktualne
+ *                     tylko dla NIEZAREJESTROWANA.
+ *  1b) yearlyIncomeSum — suma przychodu od początku ROKU kalendarzowego — nie jest
+ *                     osobnym limitem ustawowym (10 813,50 × 4 = 43 254 zł to czysto
+ *                     matematyczna suma czterech kwartałów, informacyjna), pokazywana
+ *                     pod gejdżem kwartalnym jako "Suma roczna (informacyjnie)".
  *  2) bracket      — накопленный годовой dochód (przychód − koszty + otherIncome)
  *                     vs 120 000 zł (порог перехода с 12% на 32% по skali).
  *                     Используется ТОЛЬКО фоновым воркером уведомлений
@@ -24,10 +32,19 @@ import java.util.Calendar
  *                     названо (120 000 to DRUGI próg, nie pierwszy), и не
  *                     показывало пользователю, сколько осталось до 30 000 zł
  *                     kwoty wolnej (зголошение użytkownika, zrzuty ekranu).
+ *                     Эта шкала НЕ связана с лимитом kwartalnym выше — не менялась.
  *  4) vat          — накопленный годовой przychód (без вычета kosztów) vs
  *                     240 000 zł (лимит zwolnienia podmiotowego z VAT).
  */
 object LimitsHelper {
+
+    /** Kwartalny limit przychodu działalności nierejestrowanej obowiązujący od
+     *  01.01.2026 — 225% minimalnego wynagrodzenia (4 806 zł), ustalony ustawowo
+     *  jako stała kwota, w przeciwieństwie do starego limitu miesięcznego, który
+     *  aplikacja wyliczała z minimalnego wynagrodzenia (75%). Roczna suma poniżej
+     *  to WYŁĄCZNIE matematyczny iloczyn 4 kwartałów — nie osobny limit z ustawy. */
+    const val QUARTERLY_LIMIT_2026 = 10813.50
+    const val YEARLY_INFO_2026 = 43254.0
 
     data class LimitStatus(
         val current: Double,
@@ -60,20 +77,41 @@ object LimitsHelper {
     }
 
     data class AllLimits(
-        val monthly: LimitStatus,
+        val quarterly: LimitStatus,
+        val yearlyIncomeSum: Double,
         val bracket: LimitStatus,
         val bracketStage: BracketStageStatus,
         val vat: LimitStatus,
         val activityType: ActivityType
     )
 
-    private fun monthRange(now: Calendar): Pair<Long, Long> {
+    /** Границы bieżącego kwartału kalendarzowego: [начало 1-го дня квартала,
+     *  начало 1-го дня следующего квартала). Kwartały: Q1 sty-mar, Q2 kwi-cze,
+     *  Q3 lip-wrz, Q4 paź-gru — zgodnie z ustawą (kwartał kalendarzowy). */
+    fun quarterRange(now: Calendar): Pair<Long, Long> {
+        val quarterStartMonth = (now.get(Calendar.MONTH) / 3) * 3
         val start = (now.clone() as Calendar).apply {
+            set(Calendar.MONTH, quarterStartMonth)
             set(Calendar.DAY_OF_MONTH, 1)
             set(Calendar.HOUR_OF_DAY, 0); set(Calendar.MINUTE, 0); set(Calendar.SECOND, 0); set(Calendar.MILLISECOND, 0)
         }
-        val end = (start.clone() as Calendar).apply { add(Calendar.MONTH, 1) }
+        val end = (start.clone() as Calendar).apply { add(Calendar.MONTH, 3) }
         return start.timeInMillis to end.timeInMillis
+    }
+
+    /** Numer kwartału (1..4) dla danego kalendarza. */
+    fun quarterNumber(cal: Calendar): Int = cal.get(Calendar.MONTH) / 3 + 1
+
+    /** Czytelna etykieta kwartału do wyświetlenia pod gejdżem/w raporcie, np. "Q3 2026 (lip-wrz)". */
+    fun quarterLabel(cal: Calendar): String {
+        val q = quarterNumber(cal)
+        val months = when (q) {
+            1 -> "sty-mar"
+            2 -> "kwi-cze"
+            3 -> "lip-wrz"
+            else -> "paź-gru"
+        }
+        return "Q$q ${cal.get(Calendar.YEAR)} ($months)"
     }
 
     suspend fun compute(context: Context): AllLimits {
@@ -82,9 +120,8 @@ object LimitsHelper {
         val activityType = ActivityTypeHelper.get(prefs)
 
         val now = Calendar.getInstance()
-        val (monthStart, monthEndExclusive) = monthRange(now)
-        val monthEntries = db.entryDao().getBetween(monthStart, monthEndExclusive - 1)
-        val monthIncome = monthEntries.filter { it.isIncome }.sumOf { it.amount }
+        val (quarterStart, quarterEndExclusive) = quarterRange(now)
+        val quarterIncome = db.entryDao().getIncomeBetween(quarterStart, quarterEndExclusive - 1).sumOf { it.amount }
 
         val year = TaxHelper.currentYear()
         val (yearStart, yearEndExclusive) = TaxHelper.yearRange(year)
@@ -95,7 +132,7 @@ object LimitsHelper {
         val otherIncome = TaxHelper.getOtherIncome(prefs, year)
         val taxableBase = yearProfit + otherIncome
 
-        val monthlyLimit = ActivityTypeHelper.nierejestrowanaMonthlyLimit(prefs)
+        val quarterlyStatus = LimitStatus(quarterIncome, QUARTERLY_LIMIT_2026)
         val bracketStatus = LimitStatus(taxableBase, TaxHelper.SECOND_BRACKET_THRESHOLD)
 
         // Update: prawidłowa dwuetapowa skala — 0% do ANNUAL_LIMIT (30 000 zł),
@@ -119,9 +156,8 @@ object LimitsHelper {
         }
 
         val vatStatus = LimitStatus(yearIncome, VAT_EXEMPT_LIMIT)
-        val monthlyStatus = LimitStatus(monthIncome, monthlyLimit)
 
-        return AllLimits(monthlyStatus, bracketStatus, bracketStage, vatStatus, activityType)
+        return AllLimits(quarterlyStatus, yearIncome, bracketStatus, bracketStage, vatStatus, activityType)
     }
 
     /** Roczny limit zwolnienia podmiotowego z VAT (art. 113 ustawy o VAT), proporcjonalny w pierwszym roku. */

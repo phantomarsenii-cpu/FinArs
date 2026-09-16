@@ -35,14 +35,26 @@ class LimitsActivity : BaseActivity() {
             val limits = LimitsHelper.compute(this@LimitsActivity)
 
             findViewById<TextView>(R.id.tv_monthly_percent).text =
-                "${limits.monthly.percent.coerceAtMost(100)}%"
+                "${limits.quarterly.percent.coerceAtMost(100)}%"
             findViewById<TextView>(R.id.tv_monthly_amounts).text =
-                "${formatMoney(limits.monthly.current)} zł / ${formatMoney(limits.monthly.limit)} zł"
-            findViewById<ProgressBar>(R.id.pb_monthly).progress = limits.monthly.percent.coerceAtMost(100)
+                "${formatMoney(limits.quarterly.current)} zł / ${formatMoney(limits.quarterly.limit)} zł · " +
+                    LimitsHelper.quarterLabel(java.util.Calendar.getInstance())
+            val pbQuarterly = findViewById<ProgressBar>(R.id.pb_monthly)
+            pbQuarterly.progress = limits.quarterly.percent.coerceAtMost(100)
+            val quarterlyColorRes = when {
+                limits.quarterly.percent >= 100 -> R.color.badge_percent_red
+                limits.quarterly.percent >= 80 -> R.color.badge_percent_orange
+                else -> R.color.badge_percent_blue
+            }
+            val quarterlyColor = androidx.core.content.ContextCompat.getColor(this@LimitsActivity, quarterlyColorRes)
+            pbQuarterly.progressTintList = android.content.res.ColorStateList.valueOf(quarterlyColor)
+            findViewById<TextView>(R.id.tv_monthly_percent).setTextColor(quarterlyColor)
             findViewById<TextView>(R.id.tv_monthly_remaining).text =
-                getString(R.string.limits_remaining, formatMoney((limits.monthly.limit - limits.monthly.current).coerceAtLeast(0.0)))
+                getString(R.string.limits_remaining, formatMoney((limits.quarterly.limit - limits.quarterly.current).coerceAtLeast(0.0)))
             findViewById<TextView>(R.id.tv_monthly_limit).text =
-                getString(R.string.limits_limit_of, formatMoney(limits.monthly.limit))
+                getString(R.string.limits_limit_of, formatMoney(limits.quarterly.limit))
+            findViewById<TextView>(R.id.tv_yearly_sum).text =
+                getString(R.string.limit_yearly_sum_info, formatMoney(limits.yearlyIncomeSum), formatMoney(LimitsHelper.YEARLY_INFO_2026))
 
             val stage = limits.bracketStage
             findViewById<TextView>(R.id.tv_bracket_title).text = when (stage.stage) {

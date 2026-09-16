@@ -59,8 +59,127 @@ class ReportFragment : Fragment() {
             runIfPro { showCustomRangePicker() }
         }
         requireView().findViewById<View>(R.id.btn_period).setOnClickListener { showPeriodPicker() }
+        requireView().findViewById<Button>(R.id.btn_report_ewidencja).setOnClickListener { showEwidencjaPeriodPicker() }
         loadSummary()
         loadTrend()
+    }
+
+    /** Wybór okresu dla "Ewidencja sprzedaży PDF" — kwartał (domyślny, zgodny z limitem
+     *  10 813,50 zł), rok albo dowolny zakres dat (reużywa DatePickerDialog jak eksport xlsx). */
+    private fun showEwidencjaPeriodPicker() {
+        AppDialog.showOptionPicker(
+            context = requireContext(),
+            title = getString(R.string.select_period),
+            options = listOf(
+                "quarter" to getString(R.string.period_this_quarter),
+                "year" to getString(R.string.period_this_year),
+                "custom" to getString(R.string.custom_range)
+            )
+        ) { selected ->
+            when (selected) {
+                "quarter" -> generateEwidencjaForQuarter()
+                "year" -> generateEwidencjaForYear()
+                "custom" -> showEwidencjaCustomRangePicker()
+            }
+        }
+    }
+
+    private fun generateEwidencjaForQuarter() {
+        val now = Calendar.getInstance()
+        val (from, toExclusive) = LimitsHelper.quarterRange(now)
+        val now2 = System.currentTimeMillis()
+        generateEwidencja(from, minOf(now2, toExclusive - 1), LimitsHelper.quarterLabel(now))
+    }
+
+    private fun generateEwidencjaForYear() {
+        val year = TaxHelper.currentYear()
+        val (yearStart, yearEndExclusive) = TaxHelper.yearRange(year)
+        val now = System.currentTimeMillis()
+        generateEwidencja(yearStart, minOf(now, yearEndExclusive - 1), year.toString())
+    }
+
+    private fun showEwidencjaCustomRangePicker() {
+        val cal = Calendar.getInstance()
+        DatePickerDialog(
+            requireContext(),
+            { _, fromYear, fromMonth, fromDay ->
+                val fromCal = Calendar.getInstance()
+                fromCal.set(fromYear, fromMonth, fromDay, 0, 0, 0)
+                fromCal.set(Calendar.MILLISECOND, 0)
+                val fromMillis = fromCal.timeInMillis
+
+                DatePickerDialog(
+                    requireContext(),
+                    { _, toYear, toMonth, toDay ->
+                        val toCal = Calendar.getInstance()
+                        toCal.set(toYear, toMonth, toDay, 23, 59, 59)
+                        toCal.set(Calendar.MILLISECOND, 999)
+                        val toMillis = toCal.timeInMillis
+
+                        if (toMillis < fromMillis) {
+                            Toast.makeText(requireContext(), getString(R.string.custom_range_invalid), Toast.LENGTH_LONG).show()
+                            return@DatePickerDialog
+                        }
+                        val dateFmt = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
+                        val label = "${dateFmt.format(Date(fromMillis))} – ${dateFmt.format(Date(toMillis))}"
+                        generateEwidencja(fromMillis, toMillis, label)
+                    },
+                    cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH)
+                ).apply { setTitle(getString(R.string.to)) }.show()
+            },
+            cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH)
+        ).apply { setTitle(getString(R.string.from)) }.show()
+    }
+
+    /** Generuje Ewidencję sprzedaży PDF za [from, to] — KAŻDA sprzedaż to osobny wiersz
+     *  (bez grupowania po dniu), z sumą narastającą — zob. EwidencjaPdfGenerator. */
+    private fun generateEwidencja(from: Long, to: Long, periodLabel: String) {
+        setButtonsEnabled(false)
+        Toast.makeText(requireContext(), getString(R.string.ewidencja_generating), Toast.LENGTH_SHORT).show()
+        viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
+            try {
+                val incomeEntries = db.entryDao().getIncomeBetween(from, to)
+                if (incomeEntries.isEmpty()) {
+                    withContext(Dispatchers.Main) {
+                        Toast.makeText(requireContext(), getString(R.string.no_entries), Toast.LENGTH_LONG).show()
+                        setButtonsEnabled(true)
+                    }
+                    return@launch
+                }
+
+                var sum = 0.0
+                val rows = incomeEntries.mapIndexed { i, e ->
+                    sum += e.amount
+                    EwidencjaPdfGenerator.EwidencjaRow(i + 1, e.dateMillis, e.amount, sum, e.comment ?: "")
+                }
+
+                val reportsDir = File(requireContext().getExternalFilesDir(null), "reports")
+                reportsDir.mkdirs()
+                val pdfFile = File(reportsDir, FileNaming.reportFileName("EWIDENCJA", "pdf"))
+                EwidencjaPdfGenerator.generate(rows, periodLabel, pdfFile)
+
+                withContext(Dispatchers.Main) {
+                    setButtonsEnabled(true)
+                    sharePdf(pdfFile)
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    setButtonsEnabled(true)
+                    Toast.makeText(requireContext(), getString(R.string.report_error, e.message ?: ""), Toast.LENGTH_LONG).show()
+                }
+            }
+        }
+    }
+
+    private fun sharePdf(file: File) {
+        val uri = FileProvider.getUriForFile(requireContext(), "${requireContext().packageName}.fileprovider", file)
+        val intent = Intent(Intent.ACTION_SEND).apply {
+            type = "application/pdf"
+            putExtra(Intent.EXTRA_STREAM, uri)
+            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        }
+        Toast.makeText(requireContext(), getString(R.string.ewidencja_ready), Toast.LENGTH_SHORT).show()
+        startActivity(Intent.createChooser(intent, getString(R.string.ewidencja_share_title)))
     }
 
     private fun showPeriodPicker() {
@@ -490,6 +609,7 @@ class ReportFragment : Fragment() {
         requireView().findViewById<Button>(R.id.btn_report_month).isEnabled = enabled
         requireView().findViewById<Button>(R.id.btn_report_year).isEnabled = enabled
         requireView().findViewById<Button>(R.id.btn_report_custom).isEnabled = enabled
+        requireView().findViewById<Button>(R.id.btn_report_ewidencja).isEnabled = enabled
     }
 
     private fun shareFile(file: File) {

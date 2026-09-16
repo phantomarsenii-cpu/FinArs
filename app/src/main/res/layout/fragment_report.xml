@@ -238,6 +238,13 @@
 
         </LinearLayout>
 
+        <!-- Ewidencja sprzedaży (rejestr przychodów) PDF — osobny dokument od raportu xlsx powyżej,
+             potrzebny do pilnowania limitu kwartalnego 10 813,50 zł (zob. LimitsHelper). -->
+        <Button android:id="@+id/btn_report_ewidencja" android:layout_width="match_parent" android:layout_height="48dp"
+            android:text="@string/report_ewidencja_pdf" android:textAllCaps="false" android:textSize="12sp"
+            android:textColor="@color/text_primary" android:background="@drawable/btn_pill_outline"
+            android:layout_marginTop="10dp" android:minWidth="0dp"/>
+
     </LinearLayout>
     </ScrollView>
 

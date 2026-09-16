@@ -338,7 +338,8 @@
 
     <!-- Main screen limit gauges -->
     <string name="limits_title">Limits</string>
-    <string name="limit_monthly_label">Unregistered activity, this month: %1$s / %2$s zł</string>
+    <string name="limit_monthly_label">Unregistered activity, this quarter: %1$s / %2$s zł</string>
+    <string name="limit_yearly_sum_info" formatted="false">Year-to-date total (for information only): %1$s / %2$s zł</string>
     <string name="limit_bracket_label">First tax bracket (120,000 zł/year): %1$s / %2$s zł</string>
     <string name="limit_bracket_label_tax_free">Tax-free amount (0–30,000 zł/year): %1$s / %2$s zł</string>
     <string name="limit_bracket_label_rate12">12%% bracket (30,000–120,000 zł/year): %1$s / %2$s zł</string>
@@ -348,7 +349,7 @@
     <string name="limit_bracket_title_tax_free">Tax-free amount (0–30,000 zł/year)</string>
     <string name="limit_bracket_title_rate12">12% bracket (30,000–120,000 zł/year)</string>
     <string name="limit_bracket_title_rate32">32% bracket (above 120,000 zł/year)</string>
-    <string name="limit_exceeded_warning">You have exceeded the unregistered-activity limit! You must register a JDG within 7 days.</string>
+    <string name="limit_exceeded_warning">You have exceeded the unregistered-activity limit for this quarter! You must register a JDG within 7 days.</string>
     <string name="limits_remaining">Remaining: %1$s zł</string>
     <string name="limits_limit_of">Limit: %1$s zł</string>
     <string name="limits_about_title">About the limits</string>
@@ -374,6 +375,11 @@
     <string name="reports_title">Reports</string>
     <string name="period_this_month">This month</string>
     <string name="period_this_year">This year</string>
+    <string name="period_this_quarter">This quarter</string>
+    <string name="report_ewidencja_pdf">Sales register (Ewidencja) PDF</string>
+    <string name="ewidencja_generating">Generating sales register…</string>
+    <string name="ewidencja_ready">Sales register ready</string>
+    <string name="ewidencja_share_title">Share sales register</string>
     <string name="report_summary">Summary</string>
     <string name="legend_income">Income</string>
     <string name="legend_expense">Expenses</string>
@@ -416,11 +422,11 @@
     <string name="notif_channel_name">Limits and deadlines</string>
     <string name="notif_channel_description">Alerts about activity limits and tax deadlines</string>
     <string name="notif_limit_exceeded_title">Unregistered activity limit exceeded</string>
-    <string name="notif_limit_exceeded_text" formatted="false">Your income this month exceeds 75% of the minimum wage. You must register a JDG within 7 days.</string>
-    <string name="notif_limit_95_title" formatted="false">95% of the monthly limit reached</string>
-    <string name="notif_limit_95_text">You are very close to the unregistered-activity limit for this month.</string>
-    <string name="notif_limit_80_title" formatted="false">80% of the monthly limit reached</string>
-    <string name="notif_limit_80_text" formatted="false">You have used 80% of the unregistered-activity limit for this month.</string>
+    <string name="notif_limit_exceeded_text" formatted="false">Your income this quarter exceeds the 10,813.50 zł unregistered-activity limit. You must register a JDG within 7 days.</string>
+    <string name="notif_limit_95_title" formatted="false">95% of the quarterly limit reached</string>
+    <string name="notif_limit_95_text">You are very close to the unregistered-activity limit for this quarter.</string>
+    <string name="notif_limit_80_title" formatted="false">80% of the quarterly limit reached</string>
+    <string name="notif_limit_80_text" formatted="false">You have used 80% of the unregistered-activity limit for this quarter.</string>
     <string name="notif_bracket_title">Approaching the 120,000 zł threshold</string>
     <string name="notif_bracket_text" formatted="false">Your yearly profit is close to 120,000 zł — income above this is taxed at 32% instead of 12%.</string>
     <string name="notif_vat_title">Approaching the VAT exemption limit</string>

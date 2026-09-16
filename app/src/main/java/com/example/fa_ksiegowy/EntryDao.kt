@@ -26,6 +26,12 @@ interface EntryDao {
     @Query("SELECT * FROM entries WHERE dateMillis BETWEEN :from AND :to ORDER BY dateMillis ASC")
     suspend fun getBetween(from: Long, to: Long): List<Entry>
 
+    /** Только przychody (isIncome = 1) za dany okres, posortowane chronologicznie —
+     *  używane do liczenia limitu kwartalnego działalności nierejestrowanej (od 2026 r.,
+     *  zob. LimitsHelper) oraz do generowania Ewidencji sprzedaży PDF (EwidencjaPdfGenerator). */
+    @Query("SELECT * FROM entries WHERE isIncome = 1 AND dateMillis BETWEEN :from AND :to ORDER BY dateMillis ASC, id ASC")
+    suspend fun getIncomeBetween(from: Long, to: Long): List<Entry>
+
     /** Полная очистка истории — используется кнопкой "Очистить все данные" в настройках. */
     @Query("DELETE FROM entries")
     suspend fun deleteAll()

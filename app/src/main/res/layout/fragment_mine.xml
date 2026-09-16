@@ -255,6 +255,9 @@
                 </LinearLayout>
                 <ProgressBar android:id="@+id/pb_limit_monthly" style="?android:attr/progressBarStyleHorizontal"
                     android:layout_width="match_parent" android:layout_height="8dp" android:max="100"/>
+                <TextView android:id="@+id/tv_limit_yearly_sum" android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:textColor="@color/text_secondary" android:textSize="11sp"/>
             </LinearLayout>
 
             <LinearLayout android:id="@+id/layout_limit_bracket" android:layout_width="match_parent" android:layout_height="wrap_content"

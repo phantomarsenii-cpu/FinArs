@@ -38,9 +38,9 @@ class LimitsNotificationWorker(context: Context, params: WorkerParameters) : Cor
             val prefs = applicationContext.getSharedPreferences("settings", Context.MODE_PRIVATE)
             val today = SDF_DAY.format(java.util.Date())
 
-            // 1) Лимит działalności nierejestrowanej — 80% / 95% / превышение.
+            // 1) Kwartalny limit działalności nierejestrowanej (10 813,50 zł od 2026 r.) — 80% / 95% / превышение.
             if (limits.activityType == ActivityType.NIEZAREJESTROWANA) {
-                val m = limits.monthly
+                val m = limits.quarterly
                 when {
                     m.exceeded -> notifyOnce(
                         prefs, "n_exceeded_$today",

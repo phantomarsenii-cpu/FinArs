@@ -377,9 +377,25 @@ class MineFragment : Fragment() {
                 // Limit zwolnienia z VAT dotyczy wszystkich form działalności — widoczny zawsze.
 
                 requireView().findViewById<TextView>(R.id.tv_limit_monthly_label).text =
-                    "${formatMoney(limits.monthly.current)} zł / ${formatMoney(limits.monthly.limit)} zł"
-                requireView().findViewById<ProgressBar>(R.id.pb_limit_monthly).progress = limits.monthly.percent.coerceAtMost(100)
-                requireView().findViewById<TextView>(R.id.tv_limit_monthly_percent).text = "${limits.monthly.percent.coerceAtMost(100)}%"
+                    "${formatMoney(limits.quarterly.current)} zł / ${formatMoney(limits.quarterly.limit)} zł · " +
+                        LimitsHelper.quarterLabel(Calendar.getInstance())
+                val pbQuarterly = requireView().findViewById<ProgressBar>(R.id.pb_limit_monthly)
+                val tvQuarterlyPercent = requireView().findViewById<TextView>(R.id.tv_limit_monthly_percent)
+                pbQuarterly.progress = limits.quarterly.percent.coerceAtMost(100)
+                tvQuarterlyPercent.text = "${limits.quarterly.percent.coerceAtMost(100)}%"
+                // Kolor gejdżu limitu kwartalnego: <80% niebieski, 80-99% pomarańczowy,
+                // >=100% czerwony — im bliżej przekroczenia limitu 10 813,50 zł, tym
+                // bardziej alarmujący kolor (przekroczenie = obowiązek rejestracji JDG).
+                val quarterlyColorRes = when {
+                    limits.quarterly.percent >= 100 -> R.color.badge_percent_red
+                    limits.quarterly.percent >= 80 -> R.color.badge_percent_orange
+                    else -> R.color.badge_percent_blue
+                }
+                val quarterlyColor = androidx.core.content.ContextCompat.getColor(requireContext(), quarterlyColorRes)
+                pbQuarterly.progressTintList = android.content.res.ColorStateList.valueOf(quarterlyColor)
+                tvQuarterlyPercent.setTextColor(quarterlyColor)
+                requireView().findViewById<TextView>(R.id.tv_limit_yearly_sum).text =
+                    getString(R.string.limit_yearly_sum_info, formatMoney(limits.yearlyIncomeSum), formatMoney(LimitsHelper.YEARLY_INFO_2026))
 
                 // Update: dwuetapowa szkala progu podatkowego zamiast jednej mylącej
                 // "Pierwszy próg (120 000 zł)" — zob. LimitsHelper.BracketStageStatus.
@@ -402,7 +418,7 @@ class MineFragment : Fragment() {
                 requireView().findViewById<ProgressBar>(R.id.pb_limit_vat).progress = limits.vat.percent.coerceAtMost(100)
 
                 val warning = requireView().findViewById<TextView>(R.id.tv_limit_warning)
-                if (limits.activityType == ActivityType.NIEZAREJESTROWANA && limits.monthly.exceeded) {
+                if (limits.activityType == ActivityType.NIEZAREJESTROWANA && limits.quarterly.exceeded) {
                     warning.text = getString(R.string.limit_exceeded_warning)
                     warning.visibility = View.VISIBLE
                 } else {

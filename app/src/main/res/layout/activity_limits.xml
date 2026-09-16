@@ -128,6 +128,14 @@
                 android:textColor="@color/text_secondary"
                 android:textSize="13sp"/>
 
+            <TextView
+                android:id="@+id/tv_yearly_sum"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:textColor="@color/text_secondary"
+                android:textSize="12sp"/>
+
         </LinearLayout>
 
         <!-- ===================== Karta: Prog podatkowy ===================== -->

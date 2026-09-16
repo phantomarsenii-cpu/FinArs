@@ -338,7 +338,8 @@
 
     <!-- Wskaźniki limitów na ekranie głównym -->
     <string name="limits_title">Limity</string>
-    <string name="limit_monthly_label">Działalność nierejestrowana, ten miesiąc: %1$s / %2$s zł</string>
+    <string name="limit_monthly_label">Działalność nierejestrowana, ten kwartał: %1$s / %2$s zł</string>
+    <string name="limit_yearly_sum_info" formatted="false">Suma roczna (informacyjnie): %1$s / %2$s zł</string>
     <string name="limit_bracket_label">Pierwszy próg podatkowy (120 000 zł/rok): %1$s / %2$s zł</string>
     <string name="limit_bracket_label_tax_free">Kwota wolna od podatku (0–30 000 zł/rok): %1$s / %2$s zł</string>
     <string name="limit_bracket_label_rate12">Próg 12%% (30 000–120 000 zł/rok): %1$s / %2$s zł</string>
@@ -348,7 +349,7 @@
     <string name="limit_bracket_title_tax_free">Kwota wolna od podatku (0–30 000 zł/rok)</string>
     <string name="limit_bracket_title_rate12">Próg 12% (30 000–120 000 zł/rok)</string>
     <string name="limit_bracket_title_rate32">Próg 32% (powyżej 120 000 zł/rok)</string>
-    <string name="limit_exceeded_warning">Przekroczono limit działalności nierejestrowanej! Musisz zarejestrować JDG w ciągu 7 dni.</string>
+    <string name="limit_exceeded_warning">Przekroczono kwartalny limit działalności nierejestrowanej! Musisz zarejestrować JDG w ciągu 7 dni.</string>
     <string name="limits_remaining">Pozostało: %1$s zł</string>
     <string name="limits_limit_of">Limit: %1$s zł</string>
     <string name="limits_about_title">O limitach</string>
@@ -374,6 +375,11 @@
     <string name="reports_title">Raporty</string>
     <string name="period_this_month">Ten miesiąc</string>
     <string name="period_this_year">Ten rok</string>
+    <string name="period_this_quarter">Ten kwartał</string>
+    <string name="report_ewidencja_pdf">Ewidencja sprzedaży PDF</string>
+    <string name="ewidencja_generating">Generowanie ewidencji sprzedaży…</string>
+    <string name="ewidencja_ready">Ewidencja sprzedaży gotowa</string>
+    <string name="ewidencja_share_title">Udostępnij ewidencję sprzedaży</string>
     <string name="report_summary">Podsumowanie</string>
     <string name="legend_income">Przychód</string>
     <string name="legend_expense">Wydatki</string>
@@ -416,11 +422,11 @@
     <string name="notif_channel_name">Limity i terminy</string>
     <string name="notif_channel_description">Powiadomienia o limitach działalności i terminach podatkowych</string>
     <string name="notif_limit_exceeded_title">Przekroczono limit działalności nierejestrowanej</string>
-    <string name="notif_limit_exceeded_text" formatted="false">Przychód w tym miesiącu przekracza 75% minimalnego wynagrodzenia. Zarejestruj JDG w ciągu 7 dni.</string>
-    <string name="notif_limit_95_title" formatted="false">Osiągnięto 95% limitu miesięcznego</string>
-    <string name="notif_limit_95_text">Jesteś bardzo blisko limitu działalności nierejestrowanej na ten miesiąc.</string>
-    <string name="notif_limit_80_title" formatted="false">Osiągnięto 80% limitu miesięcznego</string>
-    <string name="notif_limit_80_text" formatted="false">Wykorzystano 80% limitu działalności nierejestrowanej na ten miesiąc.</string>
+    <string name="notif_limit_exceeded_text" formatted="false">Przychód w tym kwartale przekracza limit 10 813,50 zł działalności nierejestrowanej. Zarejestruj JDG w ciągu 7 dni.</string>
+    <string name="notif_limit_95_title" formatted="false">Osiągnięto 95% limitu kwartalnego</string>
+    <string name="notif_limit_95_text">Jesteś bardzo blisko limitu działalności nierejestrowanej na ten kwartał.</string>
+    <string name="notif_limit_80_title" formatted="false">Osiągnięto 80% limitu kwartalnego</string>
+    <string name="notif_limit_80_text" formatted="false">Wykorzystano 80% limitu działalności nierejestrowanej na ten kwartał.</string>
     <string name="notif_bracket_title">Zbliżasz się do progu 120 000 zł</string>
     <string name="notif_bracket_text" formatted="false">Roczny dochód zbliża się do 120 000 zł — nadwyżka będzie opodatkowana stawką 32% zamiast 12%.</string>
     <string name="notif_vat_title">Zbliżasz się do limitu zwolnienia z VAT</string>
