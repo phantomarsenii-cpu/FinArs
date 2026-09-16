@@ -19,11 +19,16 @@ import kotlinx.coroutines.withContext
  *  1) Тип деятельности (niezarejestrowana / JDG: skala, liniowy, ryczałt) —
  *     от него зависит применяемый лимит и то, какая декларация актуальна
  *     (PIT-36 / PIT-36L / PIT-28), см. ActivityTypeHelper.
- *  2) Минимальное вознаграждение (minimalne wynagrodzenie) и месячный лимит 75% —
- *     ЭТО АКТУАЛЬНО ТОЛЬКО ДЛЯ NIEZAREJESTROWANA (лимит přychodu, при превышении
- *     которого возникает обязанность зарегистрировать JDG). Для любого из трёх
- *     вариантов Zarejestrowana JDG (skala/liniowy/ryczałt) этот блок скрыт — у
- *     зарегистрированной деятельности такого месячного лимита просто нет.
+ *  2) Limit kwartalny działalności nierejestrowanej (od 01.01.2026, stała kwota
+ *     10 813,50 zł — zob. LimitsHelper.QUARTERLY_LIMIT_2026) — ЭТО АКТУАЛЬНО ТОЛЬКО
+ *     ДЛЯ NIEZAREJESTROWANA (лимит přychodu, при превышении которого возникает
+ *     обязанность зарегистрировать JDG в течение 7 дней). Показывается тремя
+ *     информационными карточками (см. R.id.layout_min_wage в разметке — старое
+ *     название сохранено, чтобы не трогать видимость блока в коде). Для любого из
+ *     трёх вариантов Zarejestrowana JDG (skala/liniowy/ryczałt) этот блок скрыт — у
+ *     зарегистрированной деятельности такого лимита просто нет. Старый лимит был
+ *     МЕСЯЧНЫМ и зависел от вручную вводимого minimalne wynagrodzenie (75% от него) —
+ *     это полностью убрано вместе с полем ввода и предпросмотром.
  *  3) Ставки ryczałtu больше НЕ настраиваются здесь одной общей цифрой — теперь
  *     категория (и, соответственно, ставка 3%/5,5%/8,5%/12%/14%/17%) выбирается
  *     для каждой операции дохода отдельно — см. AddEntryActivity (доход) и
@@ -55,7 +60,6 @@ class SettingsTaxActivity : BaseActivity() {
         }
 
         setupActivityType()
-        setupMinWage()
         setupVatCompliance()
         setupKasaCompliance()
         setupPushFrequency()
@@ -65,18 +69,6 @@ class SettingsTaxActivity : BaseActivity() {
         findViewById<Button>(R.id.btn_save_other_income).setOnClickListener {
             val v = etOtherIncome.text.toString().toDoubleOrNull() ?: 0.0
             TaxHelper.setOtherIncome(prefs, year, v)
-
-            // Minimalne wynagrodzenie учитывается только для niezarejestrowana —
-            // для JDG блок скрыт (см. updateNierejestrowanaFieldsVisibility), поле
-            // может быть невидимым, тогда его значение не сохраняем.
-            val minWageField = findViewById<EditText>(R.id.et_min_wage)
-            if (minWageField.visibility == View.VISIBLE) {
-                val minWage = minWageField.text.toString().toDoubleOrNull()
-                if (minWage != null && minWage > 0.0) {
-                    ActivityTypeHelper.setMinWage(prefs, minWage)
-                    updateMonthlyLimitPreview()
-                }
-            }
 
             // Отметить, что тип деятельности выбран
             prefs.edit()
@@ -116,37 +108,15 @@ class SettingsTaxActivity : BaseActivity() {
         }
     }
 
-    /** Блок "Minimalne wynagrodzenie / Monthly limit (75%)" нужен только для
-     *  niezarejestrowana — для любого из трёх Zarejestrowana JDG (skala/liniowy/
-     *  ryczałt) такого лимита не существует, поэтому блок полностью скрывается.
+    /** Блок с тремя карточками "Limit kwartalny" нужен только для niezarejestrowana —
+     *  для любого из трёх Zarejestrowana JDG (skala/liniowy/ryczałt) такого лимита не
+     *  существует, поэтому блок полностью скрывается.
      *  Подсказка про перенос ставки ryczałtu показывается, только если выбран ryczałt. */
     private fun updateNierejestrowanaFieldsVisibility(type: ActivityType) {
         val visible = type == ActivityType.NIEZAREJESTROWANA
         findViewById<View>(R.id.layout_min_wage).visibility = if (visible) View.VISIBLE else View.GONE
         findViewById<View>(R.id.layout_ryczalt_rate_hint).visibility =
             if (type == ActivityType.JDG_RYCZALT) View.VISIBLE else View.GONE
-    }
-
-    private fun setupMinWage() {
-        val etMinWage = findViewById<EditText>(R.id.et_min_wage)
-        try {
-            etMinWage.setText(
-                String.format("%.2f", ActivityTypeHelper.getMinWage(prefs))
-            )
-        } catch (e: Exception) {
-            etMinWage.setText("0.00")
-        }
-        updateMonthlyLimitPreview()
-    }
-
-    private fun updateMonthlyLimitPreview() {
-        val tvPreview = findViewById<TextView>(R.id.tv_monthly_limit_preview)
-        try {
-            val limit = ActivityTypeHelper.nierejestrowanaMonthlyLimit(prefs)
-            tvPreview.text = String.format("Monthly limit (75%%): %.2f zł", limit)
-        } catch (e: Exception) {
-            tvPreview.text = "Monthly limit: could not calculate"
-        }
     }
 
     override fun onResume() {

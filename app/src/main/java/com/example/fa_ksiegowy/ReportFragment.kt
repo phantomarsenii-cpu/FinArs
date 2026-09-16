@@ -156,7 +156,8 @@ class ReportFragment : Fragment() {
                 val reportsDir = File(requireContext().getExternalFilesDir(null), "reports")
                 reportsDir.mkdirs()
                 val pdfFile = File(reportsDir, FileNaming.reportFileName("EWIDENCJA", "pdf"))
-                EwidencjaPdfGenerator.generate(rows, periodLabel, pdfFile)
+                val sellerName = InvoiceSellerDataStore.load(requireContext()).name
+                EwidencjaPdfGenerator.generate(rows, periodLabel, pdfFile, sellerName)
 
                 withContext(Dispatchers.Main) {
                     setButtonsEnabled(true)

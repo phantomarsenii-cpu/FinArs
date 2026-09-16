@@ -34,12 +34,12 @@ class LimitsActivity : BaseActivity() {
         lifecycleScope.launch {
             val limits = LimitsHelper.compute(this@LimitsActivity)
 
-            findViewById<TextView>(R.id.tv_monthly_percent).text =
+            findViewById<TextView>(R.id.tv_quarterly_percent).text =
                 "${limits.quarterly.percent.coerceAtMost(100)}%"
-            findViewById<TextView>(R.id.tv_monthly_amounts).text =
+            findViewById<TextView>(R.id.tv_quarterly_amounts).text =
                 "${formatMoney(limits.quarterly.current)} zł / ${formatMoney(limits.quarterly.limit)} zł · " +
                     LimitsHelper.quarterLabel(java.util.Calendar.getInstance())
-            val pbQuarterly = findViewById<ProgressBar>(R.id.pb_monthly)
+            val pbQuarterly = findViewById<ProgressBar>(R.id.pb_quarterly)
             pbQuarterly.progress = limits.quarterly.percent.coerceAtMost(100)
             val quarterlyColorRes = when {
                 limits.quarterly.percent >= 100 -> R.color.badge_percent_red
@@ -48,10 +48,10 @@ class LimitsActivity : BaseActivity() {
             }
             val quarterlyColor = androidx.core.content.ContextCompat.getColor(this@LimitsActivity, quarterlyColorRes)
             pbQuarterly.progressTintList = android.content.res.ColorStateList.valueOf(quarterlyColor)
-            findViewById<TextView>(R.id.tv_monthly_percent).setTextColor(quarterlyColor)
-            findViewById<TextView>(R.id.tv_monthly_remaining).text =
+            findViewById<TextView>(R.id.tv_quarterly_percent).setTextColor(quarterlyColor)
+            findViewById<TextView>(R.id.tv_quarterly_remaining).text =
                 getString(R.string.limits_remaining, formatMoney((limits.quarterly.limit - limits.quarterly.current).coerceAtLeast(0.0)))
-            findViewById<TextView>(R.id.tv_monthly_limit).text =
+            findViewById<TextView>(R.id.tv_quarterly_limit).text =
                 getString(R.string.limits_limit_of, formatMoney(limits.quarterly.limit))
             findViewById<TextView>(R.id.tv_yearly_sum).text =
                 getString(R.string.limit_yearly_sum_info, formatMoney(limits.yearlyIncomeSum), formatMoney(LimitsHelper.YEARLY_INFO_2026))

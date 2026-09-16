@@ -208,7 +208,7 @@ object Pit36PdfGenerator {
         canvas.drawText(badgeText, MARGIN + CONTENT_WIDTH - badgeW + 8f, y + 11.5f, badgeTextPaint)
         y += 24f
 
-        canvas.drawText("FA Księgowy — dane pomocnicze do ${result.activityType.formCode} za ${result.year} r.", MARGIN, y, titlePaint)
+        canvas.drawText("FinArs — dane pomocnicze do ${result.activityType.formCode} za ${result.year} r.", MARGIN, y, titlePaint)
         y += 14f
         canvas.drawText("Wygenerowano: ${dateFmt.format(Date())} · dokument pomocniczy, nie jest oficjalnym formularzem", MARGIN, y, subPaint)
         y += 10f
@@ -346,7 +346,7 @@ object Pit36PdfGenerator {
         canvas.drawLine(MARGIN, y, MARGIN + CONTENT_WIDTH, y, dashedPaint)
         y += 10f
         val disclaimerLines = wrap(
-            "Aplikacja FA Księgowy ma charakter pomocniczy i nie stanowi oficjalnej porady księgowej ani podatkowej. W razie wątpliwości skonsultuj się z doradcą podatkowym lub urzędem skarbowym.",
+            "Aplikacja FinArs ma charakter pomocniczy i nie stanowi oficjalnej porady księgowej ani podatkowej. W razie wątpliwości skonsultuj się z doradcą podatkowym lub urzędem skarbowym.",
             disclaimerPaint, CONTENT_WIDTH
         )
         for (l in disclaimerLines) {

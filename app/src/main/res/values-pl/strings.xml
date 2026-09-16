@@ -333,8 +333,12 @@
     <string name="activity_type_jdg_ryczalt">Zarejestrowana JDG — ryczałt (PIT-28)</string>
     <string name="ryczalt_rate_moved_title">Stawka ryczałtu według kategorii</string>
     <string name="ryczalt_rate_moved_hint">Każdy przychód i każda pozycja faktury ma swoją kategorię — towar, produkcja, usługi, usługi IT, usługi medyczne, wolny zawód. Stawka podatku dobierana jest automatycznie na podstawie wybranej kategorii.</string>
-    <string name="min_wage_label">Minimalne wynagrodzenie miesięczne (zł) — do obliczenia limitu działalności nierejestrowanej</string>
-    <string name="monthly_limit_preview" formatted="false">Limit miesięczny (75%): %1$,.2f zł</string>
+    <string name="quarterly_limit_title">Limit kwartalny 2026</string>
+    <string name="quarterly_limit_desc">Dla działalności nierejestrowanej limit wynosi 75% minimalnego wynagrodzenia. W 2026 r. minimalne wynagrodzenie to 4806 zł, więc limit kwartalny to 10 813,50 zł (3 x 3604,50 zł). Limit rozliczany kwartalnie: Q1 (sty-mar), Q2 (kwi-cze), Q3 (lip-wrz), Q4 (paź-gru).</string>
+    <string name="quarterly_after_title">Co po przekroczeniu limitu?</string>
+    <string name="quarterly_after_desc">Jeśli w danym kwartale przekroczysz 10 813,50 zł, musisz zarejestrować JDG w ciągu 7 dni.</string>
+    <string name="quarterly_how_title">Jak liczymy w FinArs?</string>
+    <string name="quarterly_how_desc">FinArs sumuje przychody w bieżącym kwartale. Wskaźnik: Wykorzystano X / 10 813,50 zł. Powiadomienia przy 80%, 95%, 100%.</string>
 
     <!-- Wskaźniki limitów na ekranie głównym -->
     <string name="limits_title">Limity</string>

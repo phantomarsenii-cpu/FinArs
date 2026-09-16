@@ -79,7 +79,7 @@
                 </FrameLayout>
 
                 <TextView
-                    android:id="@+id/tv_monthly_title"
+                    android:id="@+id/tv_quarterly_title"
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="wrap_content"
@@ -90,7 +90,7 @@
                     android:textStyle="bold"/>
 
                 <TextView
-                    android:id="@+id/tv_monthly_percent"
+                    android:id="@+id/tv_quarterly_percent"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
@@ -101,19 +101,19 @@
             </LinearLayout>
 
             <TextView
-                android:id="@+id/tv_monthly_amounts"
+                android:id="@+id/tv_quarterly_amounts"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="@color/text_secondary"
                 android:textSize="13sp"
                 android:layout_marginBottom="8dp"/>
 
-            <ProgressBar android:id="@+id/pb_monthly" style="?android:attr/progressBarStyleHorizontal"
+            <ProgressBar android:id="@+id/pb_quarterly" style="?android:attr/progressBarStyleHorizontal"
                 android:layout_width="match_parent" android:layout_height="8dp" android:max="100"
                 android:layout_marginBottom="14dp"/>
 
             <TextView
-                android:id="@+id/tv_monthly_remaining"
+                android:id="@+id/tv_quarterly_remaining"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="@color/text_primary"
@@ -122,7 +122,7 @@
                 android:layout_marginBottom="2dp"/>
 
             <TextView
-                android:id="@+id/tv_monthly_limit"
+                android:id="@+id/tv_quarterly_limit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="@color/text_secondary"

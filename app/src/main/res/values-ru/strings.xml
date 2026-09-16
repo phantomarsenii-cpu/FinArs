@@ -333,8 +333,12 @@
     <string name="activity_type_jdg_ryczalt">Зарегистрированное ИП (JDG) — ryczałt (PIT-28)</string>
     <string name="ryczalt_rate_moved_title">Ставка ryczałtu по категориям</string>
     <string name="ryczalt_rate_moved_hint">У каждого дохода и каждой позиции фактуры есть своя категория — товар, продукция, услуги, IT-услуги, медицинские услуги, свободная профессия. Ставка налога подбирается автоматически на основе выбранной категории.</string>
-    <string name="min_wage_label">Минимальная месячная зарплата (zł) — для расчёта лимита незарегистрированной деятельности</string>
-    <string name="monthly_limit_preview" formatted="false">Месячный лимит (75%): %1$.2f zł</string>
+    <string name="quarterly_limit_title">Квартальный лимит 2026</string>
+    <string name="quarterly_limit_desc">Для незарегистрированной деятельности лимит составляет 75% минимальной зарплаты. В 2026 году минимальная зарплата — 4806 zł, поэтому квартальный лимит — 10 813,50 zł (3 × 3604,50 zł). Лимит считается поквартально: Q1 (янв-мар), Q2 (апр-июн), Q3 (июл-сен), Q4 (окт-дек).</string>
+    <string name="quarterly_after_title">Что после превышения лимита?</string>
+    <string name="quarterly_after_desc">Если в квартале вы превысите 10 813,50 zł, нужно зарегистрировать JDG в течение 7 дней.</string>
+    <string name="quarterly_how_title">Как считает FinArs?</string>
+    <string name="quarterly_how_desc">FinArs суммирует доходы за текущий квартал. Показатель: Использовано X / 10 813,50 zł. Уведомления при 80%, 95%, 100%.</string>
 
     <!-- Гейджи лимитов на главном экране -->
     <string name="limits_title">Лимиты</string>

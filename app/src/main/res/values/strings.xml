@@ -333,8 +333,12 @@
     <string name="activity_type_jdg_ryczalt">Registered JDG — lump-sum tax (PIT-28)</string>
     <string name="ryczalt_rate_moved_title">Ryczałt rate by category</string>
     <string name="ryczalt_rate_moved_hint">Each income and each invoice item has its own category — goods, production, services, IT, medical, freelance. The tax rate is applied automatically based on the category chosen.</string>
-    <string name="min_wage_label">Minimum monthly wage (zł) — used to calculate the unregistered-activity limit</string>
-    <string name="monthly_limit_preview" formatted="false">Monthly limit (75%): %1$,.2f zł</string>
+    <string name="quarterly_limit_title">Quarterly limit 2026</string>
+    <string name="quarterly_limit_desc">For unregistered business activity, the limit is 75% of the minimum wage. In 2026 the minimum wage is 4,806 zł, so the quarterly limit is 10,813.50 zł (3 × 3,604.50 zł). The limit is settled quarterly: Q1 (Jan–Mar), Q2 (Apr–Jun), Q3 (Jul–Sep), Q4 (Oct–Dec).</string>
+    <string name="quarterly_after_title">What happens after exceeding the limit?</string>
+    <string name="quarterly_after_desc">If you exceed 10,813.50 zł in a given quarter, you must register a sole proprietorship (JDG) within 7 days.</string>
+    <string name="quarterly_how_title">How does FinArs calculate it?</string>
+    <string name="quarterly_how_desc">FinArs sums up income for the current quarter. Indicator: Used X / 10,813.50 zł. Notifications at 80%, 95%, 100%.</string>
 
     <!-- Main screen limit gauges -->
     <string name="limits_title">Limits</string>

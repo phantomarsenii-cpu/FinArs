@@ -3,7 +3,6 @@ package com.example.fa_ksiegowy
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
-import android.graphics.RectF
 import android.graphics.Typeface
 import android.graphics.pdf.PdfDocument
 import java.io.File
@@ -40,6 +39,14 @@ object EwidencjaPdfGenerator {
     private const val MARGIN = 40f
     private val CONTENT_WIDTH = PAGE_WIDTH - 2 * MARGIN
 
+    // Szerokości kolumn tabeli w punktach — dobrane tak, żeby 5 kolumn zmieściło się
+    // w CONTENT_WIDTH (515f) na A4 bez zawijania nagłówków. Opis dostaje resztę.
+    private const val COL_LP = 40f
+    private const val COL_DATA = 90f
+    private const val COL_WARTOSC = 100f
+    private const val COL_NARASTAJACO = 100f
+    private val COL_OPIS = CONTENT_WIDTH - COL_LP - COL_DATA - COL_WARTOSC - COL_NARASTAJACO
+
     // Ta sama paleta co w Pit36PdfGenerator — spójny wygląd dokumentów w aplikacji.
     private const val COLOR_NAVY = 0xFF12162E.toInt()
     private const val COLOR_NAVY_SOFT = 0xFF1F2547.toInt()
@@ -49,10 +56,11 @@ object EwidencjaPdfGenerator {
     private const val COLOR_MUTED = 0xFF6B7280.toInt()
     private const val COLOR_HEADER_BG = 0xFFEEF2FB.toInt()
     private const val COLOR_TOTAL_BG = 0xFFEAF1FE.toInt()
+    private const val COLOR_LIMIT_WARN = 0xFFD32F2F.toInt()
 
     private data class Col(
         val text: String,
-        val weight: Float,
+        val width: Float,
         val paint: Paint,
         val alignRight: Boolean = false
     )
@@ -61,8 +69,11 @@ object EwidencjaPdfGenerator {
      * @param rows wiersze ewidencji (patrz mapowanie w ReportFragment: kolejne sprzedaże
      *             z narastającą sumą).
      * @param periodLabel podpis okresu w nagłówku, np. "Q3 2026 (lip-wrz)" albo "2026".
+     * @param sellerFullName imię i nazwisko sprzedawcy do nagłówka dokumentu (z
+     *             InvoiceSellerDataStore) — jeśli puste, drukowana jest linia kropkowana
+     *             do uzupełnienia ręcznego.
      */
-    fun generate(rows: List<EwidencjaRow>, periodLabel: String, file: File) {
+    fun generate(rows: List<EwidencjaRow>, periodLabel: String, file: File, sellerFullName: String = "") {
         val document = PdfDocument()
         var pageNumber = 1
         var page = document.startPage(PdfDocument.PageInfo.Builder(PAGE_WIDTH, PAGE_HEIGHT, pageNumber).create())
@@ -71,6 +82,7 @@ object EwidencjaPdfGenerator {
 
         val titlePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply { color = COLOR_NAVY; textSize = 16f; typeface = Typeface.DEFAULT_BOLD }
         val subPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply { color = COLOR_MUTED; textSize = 9f }
+        val nameLinePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply { color = COLOR_NAVY; textSize = 9.5f }
         val sectionPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply { color = Color.WHITE; textSize = 10.5f; typeface = Typeface.DEFAULT_BOLD }
         val labelPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply { color = COLOR_MUTED; textSize = 9.5f }
         val valuePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply { color = COLOR_NAVY; textSize = 9.5f }
@@ -78,14 +90,14 @@ object EwidencjaPdfGenerator {
         val totalLabelPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply { color = COLOR_NAVY; textSize = 9.5f; typeface = Typeface.DEFAULT_BOLD }
         val totalValuePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply { color = COLOR_ACCENT; textSize = 10.5f; typeface = Typeface.DEFAULT_BOLD }
         val disclaimerPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply { color = COLOR_MUTED; textSize = 8f }
-        val badgeTextPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply { color = Color.WHITE; textSize = 9f; typeface = Typeface.DEFAULT_BOLD }
+        val limitOkPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply { color = COLOR_NAVY; textSize = 9.5f }
+        val limitWarnPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply { color = COLOR_LIMIT_WARN; textSize = 9.5f; typeface = Typeface.DEFAULT_BOLD }
 
         val borderPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply { color = COLOR_LINE; style = Paint.Style.STROKE; strokeWidth = 0.8f }
         val zebraFill = Paint().apply { color = COLOR_ZEBRA; style = Paint.Style.FILL }
         val headerFill = Paint().apply { color = COLOR_HEADER_BG; style = Paint.Style.FILL }
         val totalFill = Paint().apply { color = COLOR_TOTAL_BG; style = Paint.Style.FILL }
         val sectionFill = Paint().apply { color = COLOR_NAVY_SOFT; style = Paint.Style.FILL }
-        val badgeFill = Paint(Paint.ANTI_ALIAS_FLAG).apply { color = COLOR_ACCENT; style = Paint.Style.FILL }
 
         fun newPageIfNeeded(needed: Float) {
             if (y + needed > PAGE_HEIGHT - MARGIN) {
@@ -119,7 +131,7 @@ object EwidencjaPdfGenerator {
         val lineH = 11f
 
         fun tableRow(cols: List<Col>, bg: Paint? = null) {
-            val widths = cols.map { CONTENT_WIDTH * it.weight }
+            val widths = cols.map { it.width }
             val wrapped = cols.mapIndexed { i, c -> wrap(c.text, c.paint, widths[i] - 2 * cellPad) }
             val maxLines = wrapped.maxOf { it.size }.coerceAtLeast(1)
             val rowH = maxLines * lineH + 2 * cellPad
@@ -167,27 +179,24 @@ object EwidencjaPdfGenerator {
         val dateFmt = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
         val genFmt = SimpleDateFormat("dd.MM.yyyy HH:mm", Locale.getDefault())
 
-        // ---- Nagłówek dokumentu ----
-        val badgeText = "Ewidencja sprzedaży"
-        val badgeW = badgeTextPaint.measureText(badgeText) + 16f
-        canvas.drawRoundRect(RectF(MARGIN + CONTENT_WIDTH - badgeW, y, MARGIN + CONTENT_WIDTH, y + 16f), 3f, 3f, badgeFill)
-        canvas.drawText(badgeText, MARGIN + CONTENT_WIDTH - badgeW + 8f, y + 11.5f, badgeTextPaint)
-        y += 24f
-
-        canvas.drawText("FA Księgowy — Ewidencja sprzedaży za okres: $periodLabel", MARGIN, y, titlePaint)
-        y += 14f
-        canvas.drawText("Wygenerowano: ${genFmt.format(Date())} · dokument pomocniczy, nie jest oficjalnym formularzem", MARGIN, y, subPaint)
-        y += 10f
+        // ---- Nagłówek dokumentu (bez odznaki — wcześniej nachodziła na tytuł) ----
+        canvas.drawText("FinArs — Ewidencja sprzedaży za okres: $periodLabel", MARGIN, y + 12f, titlePaint)
+        y += 16f
+        val nameText = "Imię i nazwisko: " + sellerFullName.ifBlank { "..........................." }
+        canvas.drawText(nameText, MARGIN, y + 8.5f, nameLinePaint)
+        y += 13f
+        canvas.drawText("Wygenerowano: ${genFmt.format(Date())} · dokument pomocniczy, nie jest oficjalnym formularzem", MARGIN, y + 7f, subPaint)
+        y += 12f
 
         // ---- Tabela operacji ----
         sectionHeader("Wykaz sprzedaży")
         tableRow(
             listOf(
-                Col("Lp", 0.08f, headerCellPaint),
-                Col("Data", 0.17f, headerCellPaint),
-                Col("Wartość", 0.22f, headerCellPaint, alignRight = true),
-                Col("Narastająco", 0.25f, headerCellPaint, alignRight = true),
-                Col("Opis", 0.28f, headerCellPaint)
+                Col("Lp", COL_LP, headerCellPaint),
+                Col("Data", COL_DATA, headerCellPaint),
+                Col("Wartość", COL_WARTOSC, headerCellPaint, alignRight = true),
+                Col("Narastająco", COL_NARASTAJACO, headerCellPaint, alignRight = true),
+                Col("Opis", COL_OPIS, headerCellPaint)
             ),
             bg = headerFill
         )
@@ -195,11 +204,11 @@ object EwidencjaPdfGenerator {
         rows.forEachIndexed { idx, r ->
             tableRow(
                 listOf(
-                    Col(r.lp.toString(), 0.08f, valuePaint),
-                    Col(dateFmt.format(Date(r.dataMillis)), 0.17f, valuePaint),
-                    Col(money(r.wartosc), 0.22f, valuePaint, alignRight = true),
-                    Col(money(r.narastajaco), 0.25f, valuePaint, alignRight = true),
-                    Col(r.opis, 0.28f, labelPaint)
+                    Col(r.lp.toString(), COL_LP, valuePaint),
+                    Col(dateFmt.format(Date(r.dataMillis)), COL_DATA, valuePaint),
+                    Col(money(r.wartosc), COL_WARTOSC, valuePaint, alignRight = true),
+                    Col(money(r.narastajaco), COL_NARASTAJACO, valuePaint, alignRight = true),
+                    Col(r.opis, COL_OPIS, labelPaint)
                 ),
                 bg = if (idx % 2 == 1) zebraFill else null
             )
@@ -208,11 +217,24 @@ object EwidencjaPdfGenerator {
         val total = rows.sumOf { it.wartosc }
         tableRow(
             listOf(
-                Col("Razem", 0.52f, totalLabelPaint),
-                Col(money(total), 0.48f, totalValuePaint, alignRight = true)
+                Col("Razem", COL_LP + COL_DATA + COL_WARTOSC, totalLabelPaint),
+                Col(money(total), COL_NARASTAJACO + COL_OPIS, totalValuePaint, alignRight = true)
             ),
             bg = totalFill
         )
+
+        // ---- Blok limitu kwartalnego (pod "Razem") ----
+        val quarterLimit = LimitsHelper.QUARTERLY_LIMIT_2026
+        val remaining = (quarterLimit - total).coerceAtLeast(0.0)
+        val usedRatio = if (quarterLimit > 0) total / quarterLimit else 0.0
+        val limitPaint = if (usedRatio > 0.95) limitWarnPaint else limitOkPaint
+        newPageIfNeeded(14f)
+        y += 4f
+        canvas.drawText(
+            "Limit kwartalny: ${money(quarterLimit)}  ·  Wykorzystano: ${money(total)}  ·  Pozostało: ${money(remaining)}",
+            MARGIN, y + 9f, limitPaint
+        )
+        y += 14f
 
         // ---- Disclaimer ----
         newPageIfNeeded(28f)
