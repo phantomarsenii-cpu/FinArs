@@ -327,7 +327,7 @@
     <string name="activity_type_title">Activity type</string>
     <string name="activity_type_hint">Choose how you operate — this decides which limit applies and which annual form you should file.</string>
     <string name="activity_type_niezarejestrowana">Unregistered activity (bez rejestracji JDG)</string>
-    <string name="activity_type_niezarejestrowana_desc" formatted="false">Income must stay under 75% of the minimum wage per month. If exceeded, you must register a JDG within 7 days. Filed via PIT-36, tax scale.</string>
+    <string name="activity_type_niezarejestrowana_desc" formatted="false">Income must stay under the quarterly limit of 10,813.50 zł. If exceeded, you must register a JDG within 7 days. Filed via PIT-36, tax scale.</string>
     <string name="activity_type_jdg_skala" formatted="false">Registered JDG — tax scale 12% / 32% (PIT-36)</string>
     <string name="activity_type_jdg_liniowy" formatted="false">Registered JDG — flat tax 19% (PIT-36L)</string>
     <string name="activity_type_jdg_ryczalt">Registered JDG — lump-sum tax (PIT-28)</string>

@@ -92,42 +92,44 @@
 
     <!-- Limit kwartalny (od 01.01.2026 zastąpił stary limit miesięczny 75%) — actualne
          TYLKO dla niezarejestrowana, dla любого Zarejestrowana JDG blok ukryty целиком.
-         Kwota jest teraz stałą ustawową (LimitsHelper.QUARTERLY_LIMIT_2026), nie zależy
-         już od ręcznie wpisywanego minimalnego wynagrodzenia — stąd trzy karty informacyjne
-         zamiast edytowalnego pola. -->
+         Update: wcześniej trzy zawsze-rozwinięte karty zajmowały zbyt dużo miejsca na
+         ekranie — teraz to JEDNA karta z nagłówkiem (klik = rozwiń/zwiń, zob.
+         layout_quarterly_details w SettingsTaxActivity.kt), całość tekstu pod spodem. -->
     <LinearLayout android:id="@+id/layout_min_wage" android:layout_width="match_parent" android:layout_height="wrap_content"
-        android:orientation="vertical" android:layout_marginBottom="16dp">
+        android:orientation="vertical" android:background="@drawable/card_bg" android:layout_marginBottom="16dp">
 
-        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:orientation="vertical" android:background="@drawable/card_bg" android:padding="14dp"
-            android:layout_marginBottom="10dp">
-            <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+        <LinearLayout android:id="@+id/row_quarterly_info" android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="horizontal" android:gravity="center_vertical" android:padding="14dp"
+            android:clickable="true" android:focusable="true" android:background="?attr/selectableItemBackground">
+            <TextView android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content"
                 android:text="@string/quarterly_limit_title" android:textSize="15sp" android:textStyle="bold"
-                android:textColor="@color/text_primary" android:layout_marginBottom="6dp"/>
+                android:textColor="@color/text_primary"/>
+            <ImageView android:id="@+id/iv_quarterly_chevron" android:layout_width="20dp" android:layout_height="20dp"
+                android:layout_marginStart="8dp" android:src="@drawable/ic_chevron_down"/>
+        </LinearLayout>
+
+        <LinearLayout android:id="@+id/layout_quarterly_details" android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="vertical" android:visibility="gone"
+            android:paddingStart="14dp" android:paddingEnd="14dp" android:paddingBottom="14dp">
+
             <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
                 android:text="@string/quarterly_limit_desc" android:textSize="12.5sp"
-                android:textColor="@color/text_secondary"/>
-        </LinearLayout>
+                android:textColor="@color/text_secondary" android:layout_marginBottom="12dp"/>
 
-        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:orientation="vertical" android:background="@drawable/card_bg" android:padding="14dp"
-            android:layout_marginBottom="10dp">
             <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:text="@string/quarterly_after_title" android:textSize="15sp" android:textStyle="bold"
-                android:textColor="@color/text_primary" android:layout_marginBottom="6dp"/>
+                android:text="@string/quarterly_after_title" android:textSize="13.5sp" android:textStyle="bold"
+                android:textColor="@color/text_primary" android:layout_marginBottom="4dp"/>
             <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
                 android:text="@string/quarterly_after_desc" android:textSize="12.5sp"
-                android:textColor="@color/text_secondary"/>
-        </LinearLayout>
+                android:textColor="@color/text_secondary" android:layout_marginBottom="12dp"/>
 
-        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:orientation="vertical" android:background="@drawable/card_bg" android:padding="14dp">
             <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:text="@string/quarterly_how_title" android:textSize="15sp" android:textStyle="bold"
-                android:textColor="@color/text_primary" android:layout_marginBottom="6dp"/>
+                android:text="@string/quarterly_how_title" android:textSize="13.5sp" android:textStyle="bold"
+                android:textColor="@color/text_primary" android:layout_marginBottom="4dp"/>
             <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
                 android:text="@string/quarterly_how_desc" android:textSize="12.5sp"
                 android:textColor="@color/text_secondary"/>
+
         </LinearLayout>
     </LinearLayout>
 

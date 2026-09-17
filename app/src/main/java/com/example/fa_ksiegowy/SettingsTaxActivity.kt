@@ -60,6 +60,7 @@ class SettingsTaxActivity : BaseActivity() {
         }
 
         setupActivityType()
+        setupQuarterlyInfoToggle()
         setupVatCompliance()
         setupKasaCompliance()
         setupPushFrequency()
@@ -76,6 +77,20 @@ class SettingsTaxActivity : BaseActivity() {
                 .apply()
 
             Toast.makeText(this, getString(R.string.saved), Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    /** Karta "Limit kwartalny 2026" — zamiast trzech zawsze-rozwiniętych bloków tekstu
+     *  (zajmowały za dużo miejsca na ekranie) jest teraz jeden nagłówek, kliknięcie
+     *  rozwija/zwija cały opis (zasady limitu, co po przekroczeniu, jak liczy FinArs). */
+    private fun setupQuarterlyInfoToggle() {
+        val row = findViewById<android.view.View>(R.id.row_quarterly_info)
+        val details = findViewById<android.view.View>(R.id.layout_quarterly_details)
+        val chevron = findViewById<android.widget.ImageView>(R.id.iv_quarterly_chevron)
+        row.setOnClickListener {
+            val expanding = details.visibility != android.view.View.VISIBLE
+            details.visibility = if (expanding) android.view.View.VISIBLE else android.view.View.GONE
+            chevron.animate().rotation(if (expanding) 180f else 0f).setDuration(150).start()
         }
     }
 
