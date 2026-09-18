@@ -1,7 +1,6 @@
 package com.example.fa_ksiegowy
 
 import android.app.DatePickerDialog
-import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -46,7 +45,6 @@ class AddInvoiceActivity : BaseActivity() {
         private const val MAX_ITEMS = 20
     }
 
-    private var isPhysicalPerson: Boolean = true
     private var paymentMethod: PaymentMethod = PaymentMethod.CASH
     private var serviceDateMillis: Long = System.currentTimeMillis()
     private var paymentDateMillis: Long = System.currentTimeMillis()
@@ -121,11 +119,6 @@ class AddInvoiceActivity : BaseActivity() {
         }
         findViewById<Button>(R.id.btn_due_date).setOnClickListener { showDueDatePicker() }
         updateDueDateButton()
-
-        findViewById<Switch>(R.id.sw_physical_person).setOnCheckedChangeListener { _, checked ->
-            isPhysicalPerson = checked
-            findViewById<EditText>(R.id.et_buyer_nip).visibility = if (checked) View.GONE else View.VISIBLE
-        }
 
         findViewById<Button>(R.id.btn_select_contractor).setOnClickListener {
             selectContractorLauncher.launch(Intent(this, SelectContractorActivity::class.java))
@@ -397,9 +390,6 @@ class AddInvoiceActivity : BaseActivity() {
             val c = AppDatabase.getInstance(applicationContext).contractorDao().getById(contractorId)
             withContext(Dispatchers.Main) {
                 if (c == null) return@withContext
-                isPhysicalPerson = c.isPhysicalPerson
-                findViewById<Switch>(R.id.sw_physical_person).isChecked = c.isPhysicalPerson
-                findViewById<EditText>(R.id.et_buyer_nip).visibility = if (c.isPhysicalPerson) View.GONE else View.VISIBLE
                 findViewById<EditText>(R.id.et_buyer_name).setText(c.name)
                 findViewById<EditText>(R.id.et_buyer_nip).setText(c.nip ?: "")
                 findViewById<EditText>(R.id.et_buyer_street).setText(c.street)
@@ -419,6 +409,9 @@ class AddInvoiceActivity : BaseActivity() {
         val buyerStreet = findViewById<EditText>(R.id.et_buyer_street).text.toString().trim()
         val buyerPostal = findViewById<EditText>(R.id.et_buyer_postal).text.toString().trim()
         val buyerCity = findViewById<EditText>(R.id.et_buyer_city).text.toString().trim()
+        // Update: nie ma już przełącznika "osoba fizyczna" — status wynika
+        // teraz wprost z tego, czy pole NIP/PESEL zostało wypełnione.
+        val isPhysicalPerson = buyerNip.isBlank()
 
         if (buyerName.isBlank()) {
             Toast.makeText(this, getString(R.string.invoice_fill_required_fields), Toast.LENGTH_SHORT).show()
@@ -620,6 +613,9 @@ class AddInvoiceActivity : BaseActivity() {
         val buyerStreet = findViewById<EditText>(R.id.et_buyer_street).text.toString().trim()
         val buyerPostal = findViewById<EditText>(R.id.et_buyer_postal).text.toString().trim()
         val buyerCity = findViewById<EditText>(R.id.et_buyer_city).text.toString().trim()
+        // Update: nie ma już przełącznika "osoba fizyczna" — status wynika
+        // teraz wprost z tego, czy pole NIP/PESEL zostało wypełnione.
+        val isPhysicalPerson = buyerNip.isBlank()
 
         val lines = collectItemRows()
 
@@ -852,9 +848,13 @@ class AddInvoiceActivity : BaseActivity() {
     }
 
     private fun openInvoicesFolder() {
+        // Update: łapiemy nie tylko ActivityNotFoundException, ale każdy wyjątek —
+        // część menedżerów plików (np. niektóre wersje One UI) rzuca zamiast tego
+        // SecurityException albo inny wyjątek przy tym intencie, co wcześniej
+        // powodowało crash całej aplikacji zamiast pokazania komunikatu.
         try {
             startActivity(InvoiceFileStorage.openFolderIntent())
-        } catch (e: ActivityNotFoundException) {
+        } catch (e: Exception) {
             Toast.makeText(this, getString(R.string.open_folder_error, InvoiceFileStorage.displayFolderPath), Toast.LENGTH_LONG).show()
         }
     }

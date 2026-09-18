@@ -17,9 +17,10 @@ import java.util.Date
  * только при отмеченном чекбоксе). После принятия флаг сохраняется
  * НАВСЕГДА (KEY_TERMS_ACCEPTED) и отозвать его из приложения нельзя.
  * 
- * После принятия Terms проверяется, выбран ли пользователем тип деятельности.
- * Если нет (is_tax_type_selected == false), направляется на SettingsTaxActivity
- * для обязательного выбора, иначе на MainActivity.
+ * После принятия Terms пользователь od razu trafia do MainActivity — ekran
+ * wyboru typu działalności (SettingsTaxActivity) nie jest już wymuszany przy
+ * pierwszym uruchomieniu (domyślny typ to NIEZAREJESTROWANA, zob.
+ * ActivityTypeHelper), dostęp do niego zostaje tylko z Ustawień.
  *
  * Режим "просмотр" (readOnly = true) — вызывается из Настроек:
  * чекбокс и кнопка принятия скрыты, внизу показана плашка со статусом
@@ -87,17 +88,13 @@ class TermsActivity : BaseActivity() {
                     .putBoolean(KEY_TERMS_ACCEPTED, true)
                     .putLong(KEY_TERMS_ACCEPTED_TIMESTAMP, System.currentTimeMillis())
                     .apply()
-                
-                // Проверить, выбран ли тип деятельности
-                val isTaxTypeSelected = prefs.getBoolean("is_tax_type_selected", false)
-                val nextIntent = if (!isTaxTypeSelected) {
-                    // Обязательный выбор типа деятельности
-                    Intent(this, SettingsTaxActivity::class.java)
-                } else {
-                    // Переход на главную страницу
-                    Intent(this, MainActivity::class.java)
-                }
-                startActivity(nextIntent)
+
+                // Update: ekran "Podatki i limity" nie pojawia się już po pierwszym
+                // uruchomieniu — aplikacja obsługuje teraz wyłącznie działalność
+                // nierejestrowaną (ActivityTypeHelper.get() i tak domyślnie zwraca
+                // NIEZAREJESTROWANA, gdy nic nie wybrano). Ekran zostaje dostępny
+                // tylko z poziomu Ustawień.
+                startActivity(Intent(this, MainActivity::class.java))
                 finish()
             }
 

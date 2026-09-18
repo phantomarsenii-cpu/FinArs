@@ -74,7 +74,11 @@ object InvoiceHtmlPdfGenerator {
         vatRate: VatRate? = null,
         isReceipt: Boolean = false
     ): ByteArray {
-        val isVatPayer = seller.nip.isNotBlank()
+        // Update: aplikacja obsluguje teraz wylacznie dzialalnosc nierejestrowana -
+        // sprzedawca nigdy nie jest podatnikiem VAT, niezaleznie od tego, czy wpisano
+        // NIP/PESEL. Tytul dokumentu to zawsze bez sufiksu VAT, a blok zwolnienia z VAT
+        // pojawia sie zawsze.
+        val isVatPayer = false
         val dateFmt = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
         val numberFmt = SimpleDateFormat("MM/yyyy", Locale.US)
 
@@ -183,7 +187,11 @@ object InvoiceHtmlPdfGenerator {
         // faktur z 0-1 pozycją.
         correctedItems: Map<Int, Double> = emptyMap()
     ): ByteArray {
-        val isVatPayer = seller.nip.isNotBlank()
+        // Update: aplikacja obsluguje teraz wylacznie dzialalnosc nierejestrowana -
+        // sprzedawca nigdy nie jest podatnikiem VAT, niezaleznie od tego, czy wpisano
+        // NIP/PESEL. Tytul dokumentu to zawsze bez sufiksu VAT, a blok zwolnienia z VAT
+        // pojawia sie zawsze.
+        val isVatPayer = false
         val dateFmt = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
         val numberFmt = SimpleDateFormat("MM/yyyy", Locale.US)
 
@@ -301,7 +309,11 @@ object InvoiceHtmlPdfGenerator {
         if (address.isNotBlank()) sb.append("<div class=\"party-line\">${esc(address)}</div>")
         if (seller.nip.isNotBlank()) sb.append("<div class=\"party-line\">${esc(context.getString(R.string.invoice_pdf_nip))}: ${esc(seller.nip)}</div>")
         if (seller.bankAccount.isNotBlank()) sb.append("<div class=\"party-line\">${esc(context.getString(R.string.invoice_pdf_bank_account))}: ${esc(seller.bankAccount)}</div>")
-        if (!isVatPayer) sb.append("<div class=\"party-note\">${esc(context.getString(R.string.invoice_pdf_seller_nierejestrowana_note))}</div>")
+        // Update: sprzedawca jest teraz zawsze osobą fizyczną prowadzącą działalność
+        // nierejestrowaną — notatka pojawia się zawsze, niezależnie od tego, czy
+        // wypełniono pole NIP/PESEL (isVatPayer zostaje tylko dla tytułu dokumentu
+        // i bloku zwolnienia z VAT, patrz generate()/generateCorrection()).
+        sb.append("<div class=\"party-note\">${esc(context.getString(R.string.invoice_pdf_seller_nierejestrowana_note))}</div>")
         return sb.toString()
     }
 
@@ -316,11 +328,13 @@ object InvoiceHtmlPdfGenerator {
             listOf(buyerPostalCode, buyerCity).filter { it.isNotBlank() }.joinToString(" ").ifBlank { null }
         ).joinToString(", ")
         if (address.isNotBlank()) sb.append("<div class=\"party-line\">${esc(address)}</div>")
-        if (!isPhysicalPerson && !buyerNip.isNullOrBlank()) {
+        // Update: nabywca jest teraz zawsze osobą fizyczną — notatka pojawia się
+        // zawsze, a numer NIP/PESEL (jeśli wpisany) pokazuje się dodatkowo obok niej,
+        // a nie zamiast niej (isPhysicalPerson przestał tu cokolwiek wykluczać).
+        if (!buyerNip.isNullOrBlank()) {
             sb.append("<div class=\"party-line\">${esc(context.getString(R.string.invoice_pdf_nip))}: ${esc(buyerNip)}</div>")
-        } else {
-            sb.append("<div class=\"party-note\">${esc(context.getString(R.string.invoice_pdf_buyer_private))}</div>")
         }
+        sb.append("<div class=\"party-note\">${esc(context.getString(R.string.invoice_pdf_buyer_private))}</div>")
         return sb.toString()
     }
 

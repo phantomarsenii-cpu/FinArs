@@ -66,6 +66,13 @@
         <item name="android:stateListAnimator">@animator/btn_press_scale</item>
         <item name="android:foreground">?attr/selectableItemBackground</item>
         <item name="android:textAllCaps">false</item>
+        <!-- Update: domyślny breakStrategy="high_quality" potrafi przenosić
+             POJEDYNCZE SŁOWO na kolejną linię z myślnikiem (dzieląc je na pół),
+             szczególnie przy tekstach rosyjskich/polskich na wąskich przyciskach.
+             "simple" + wyłączona hyphenationFrequency zawijają tekst tylko na
+             granicach całych słów, nigdy w środku słowa. -->
+        <item name="android:breakStrategy">simple</item>
+        <item name="android:hyphenationFrequency">none</item>
     </style>
 
     <style name="Widget.FA.Switch" parent="android:Widget.Material.CompoundButton.Switch">

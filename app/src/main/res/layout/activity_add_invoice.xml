@@ -139,29 +139,8 @@
             android:textSize="13sp"
             android:textColor="@color/text_primary"/>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:layout_marginBottom="14dp">
-            <Switch
-                android:id="@+id/sw_physical_person"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:checked="true"/>
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginStart="10dp"
-                android:text="@string/buyer_physical_person_switch"
-                android:textColor="@color/text_primary"
-                android:textSize="14sp"/>
-        </LinearLayout>
-
         <EditText android:id="@+id/et_buyer_name" style="@style/InvoiceInput" android:hint="@string/buyer_name" android:inputType="textPersonName"/>
-        <EditText android:id="@+id/et_buyer_nip" style="@style/InvoiceInput" android:hint="@string/buyer_nip" android:inputType="number" android:visibility="gone"/>
+        <EditText android:id="@+id/et_buyer_nip" style="@style/InvoiceInput" android:hint="@string/buyer_nip" android:inputType="number"/>
         <EditText android:id="@+id/et_buyer_street" style="@style/InvoiceInput" android:hint="@string/buyer_address_street" android:inputType="textPostalAddress"/>
 
         <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:weightSum="2" android:baselineAligned="false">

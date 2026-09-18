@@ -132,7 +132,7 @@
 
     <string name="about_section_invoices_title">🧾 Faktury i rachunki (Pro)</string>
     <string-array name="about_bullets_invoices">
-        <item>Wystawianie faktur/rachunków dla osób fizycznych i firm z generowaniem PDF</item>
+        <item>Wystawianie faktur/rachunków dla osób fizycznych z generowaniem PDF</item>
         <item>Statusy: Zapłacona / Oczekuje na zapłatę / Zaległa, plus przypomnienia o terminie płatności</item>
         <item>Kontrola rocznego limitu gotówki (20 000 zł) dla sprzedaży osobom fizycznym</item>
         <item>Historia faktur z wyszukiwaniem i filtrami</item>
@@ -444,7 +444,7 @@
     <string name="notif_pit_deadline_title">Przypomnienie o rocznym zeznaniu podatkowym</string>
     <string name="notif_pit_deadline_text">Roczne zeznania podatkowe składa się od 15 lutego do 30 kwietnia.</string>
     <string name="terms_title">Regulamin</string>
-    <string name="terms_full_text">Regulamin i wyłączenie odpowiedzialności (Terms of Service &amp; Legal Disclaimer)\n\nKlikając „Akceptuję”, potwierdzasz, że przeczytałeś/aś, zrozumiałeś/aś i w pełni akceptujesz warunki niniejszego regulaminu. Jeśli się nie zgadzasz, nie masz prawa korzystać z aplikacji FinArs.\n\n1. Wyłączenie usług księgowych i prawnych\n— Aplikacja FinArs jest wyłącznie narzędziem (kalkulatorem i organizerem danych).\n— Aplikacja, jej twórcy i właściciele NIE są akredytowanym biurem rachunkowym, doradcą podatkowym ani kancelarią prawną.\n— Wszystkie obliczenia i automatyczne generowanie deklaracji (PIT-36, PIT-36L, PIT-28) mają charakter wyłącznie informacyjny.\n\n2. Odpowiedzialność za dane\nUżytkownik ponosi pełną odpowiedzialność za poprawność wprowadzanych danych, weryfikację obliczeń i formularzy PDF przed złożeniem do urzędu skarbowego oraz za terminowość rozliczeń.\n\n3. Ograniczenie odpowiedzialności\nAplikacja jest dostarczana „tak jak jest”, bez żadnych gwarancji. Twórca nie odpowiada za kary, zaległości podatkowe, błędy algorytmów ani utratę danych na urządzeniu.\n\n4. Zmiany w przepisach\nPrzepisy podatkowe RP ulegają zmianom — zalecana jest weryfikacja na podatki.gov.pl lub u licencjonowanego księgowego.\n\n5. Poufność danych\nWszystkie dane i pliki PDF są przechowywane lokalnie na urządzeniu użytkownika.\n\n6. Prawo właściwe\nZastosowanie ma prawo Rzeczypospolitej Polskiej.\n\n7. Wycofanie zgody\nRegulamin akceptowany jest jednorazowo przy pierwszym uruchomieniu. Brak zgody oznacza obowiązek zaprzestania korzystania z aplikacji i jej usunięcia.</string>
+    <string name="terms_full_text">Regulamin i wyłączenie odpowiedzialności (Terms of Service &amp; Legal Disclaimer)\n\nKlikając „Akceptuję”, potwierdzasz, że przeczytałeś/aś, zrozumiałeś/aś i w pełni akceptujesz warunki niniejszego regulaminu. Jeśli się nie zgadzasz, nie masz prawa korzystać z aplikacji FinArs.\n\n1. Wyłączenie usług księgowych i prawnych\n— Aplikacja FinArs jest wyłącznie narzędziem (kalkulatorem i organizerem danych).\n— Aplikacja, jej twórcy i właściciele NIE są akredytowanym biurem rachunkowym, doradcą podatkowym ani kancelarią prawną.\n— Wszystkie obliczenia i automatyczne generowanie deklaracji (PIT-36) mają charakter wyłącznie informacyjny.\n\n2. Odpowiedzialność za dane\nUżytkownik ponosi pełną odpowiedzialność za poprawność wprowadzanych danych, weryfikację obliczeń i formularzy PDF przed złożeniem do urzędu skarbowego oraz za terminowość rozliczeń.\n\n3. Ograniczenie odpowiedzialności\nAplikacja jest dostarczana „tak jak jest”, bez żadnych gwarancji. Twórca nie odpowiada za kary, zaległości podatkowe, błędy algorytmów ani utratę danych na urządzeniu.\n\n4. Zmiany w przepisach\nPrzepisy podatkowe RP ulegają zmianom — zalecana jest weryfikacja na podatki.gov.pl lub u licencjonowanego księgowego.\n\n5. Poufność danych\nWszystkie dane i pliki PDF są przechowywane lokalnie na urządzeniu użytkownika.\n\n6. Prawo właściwe\nZastosowanie ma prawo Rzeczypospolitej Polskiej.\n\n7. Wycofanie zgody\nRegulamin akceptowany jest jednorazowo przy pierwszym uruchomieniu. Brak zgody oznacza obowiązek zaprzestania korzystania z aplikacji i jej usunięcia.</string>
     <string name="terms_checkbox_label">Przeczytałem/am i akceptuję regulamin</string>
     <string name="terms_accept_button">Akceptuję i kontynuuję</string>
     <string name="terms_status_accepted">Status: Regulamin zaakceptowano (%1$s)</string>
@@ -456,15 +456,15 @@
     <string name="nav_invoices">Faktury</string>
     <string name="invoice_form_title">Nowa faktura / rachunek</string>
     <string name="invoice_seller_section">Sprzedawca (Twoje dane)</string>
-    <string name="seller_name">Imię i nazwisko / nazwa firmy</string>
+    <string name="seller_name">Imię i nazwisko / Pseudonim lub marka</string>
     <string name="seller_nip">NIP (zostaw puste, jeśli brak)</string>
     <string name="seller_address_street">Ulica i numer</string>
     <string name="seller_address_postal">Kod pocztowy</string>
     <string name="seller_address_city">Miasto</string>
     <string name="invoice_buyer_section">Nabywca</string>
     <string name="buyer_physical_person_switch">Osoba fizyczna (bez NIP)</string>
-    <string name="buyer_name">Imię i nazwisko / nazwa firmy</string>
-    <string name="buyer_nip">NIP nabywcy</string>
+    <string name="buyer_name">Imię i nazwisko / Pseudonim lub marka</string>
+    <string name="buyer_nip">Pesel (opcjonalnie)</string>
     <string name="buyer_address_street">Ulica i numer</string>
     <string name="buyer_address_postal">Kod pocztowy</string>
     <string name="buyer_address_city">Miasto</string>
@@ -551,7 +551,7 @@
     <string name="invoice_pdf_vat_breakdown_label">W tym</string>
     <string name="invoice_pdf_receipt_label">Faktura wystawiona do paragonu fiskalnego</string>
     <string name="invoice_pdf_paid_stamp">ZAPŁACONO</string>
-    <string name="upload_logo_button">Wgraj logo firmy</string>
+    <string name="upload_logo_button">Wgraj logo</string>
     <string name="logo_uploaded_toast">Logo zapisane</string>
     <string name="logo_upload_error">Nie udało się wgrać logo</string>
     <string name="invoice_pdf_payment_date">Data zapłaty</string>
