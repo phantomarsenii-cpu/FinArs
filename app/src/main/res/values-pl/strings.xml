@@ -457,7 +457,7 @@
     <string name="invoice_form_title">Nowa faktura / rachunek</string>
     <string name="invoice_seller_section">Sprzedawca (Twoje dane)</string>
     <string name="seller_name">Imię i nazwisko / Pseudonim lub marka</string>
-    <string name="seller_nip">NIP (zostaw puste, jeśli brak)</string>
+    <string name="seller_nip">Pesel (opcjonalnie)</string>
     <string name="seller_address_street">Ulica i numer</string>
     <string name="seller_address_postal">Kod pocztowy</string>
     <string name="seller_address_city">Miasto</string>
@@ -501,6 +501,7 @@
     <string name="share_invoice_button">Udostępnij</string>
     <string name="open_invoices_folder_button">Otwórz folder z fakturami</string>
     <string name="open_folder_error">Nie udało się otworzyć folderu. Pliki są zapisane w %1$s</string>
+    <string name="open_folder_fallback_hint">Otwarto folder Documents — przejdź do FinArs/Invoices, tam są wszystkie wystawione faktury</string>
     <string name="invoice_fill_required_fields">Uzupełnij dane nabywcy, usługę i kwotę</string>
     <string name="invoice_blocked_toast">Wystawianie faktur zablokowane — najpierw potwierdź status VAT/kasy fiskalnej w Ustawieniach</string>
     <string name="invoice_is_receipt_label">Faktura jest wystawiana do paragonu</string>
@@ -532,7 +533,7 @@
     <string name="invoice_pdf_sale_date">Data sprzedaży</string>
     <string name="invoice_pdf_seller">Sprzedawca</string>
     <string name="invoice_pdf_buyer">Nabywca</string>
-    <string name="invoice_pdf_nip">NIP</string>
+    <string name="invoice_pdf_nip">PESEL</string>
     <string name="invoice_pdf_bank_account">Konto</string>
     <string name="invoice_pdf_buyer_private">Osoba fizyczna nieprowadząca działalności gospodarczej (bez NIP).</string>
     <string name="invoice_pdf_table_lp">Lp</string>

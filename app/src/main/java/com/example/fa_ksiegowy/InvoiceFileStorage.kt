@@ -115,6 +115,50 @@ object InvoiceFileStorage {
         }
     }
 
+    /**
+     * Update: wcześniej otwierało się bezpośrednio i bez problemów — dopiero coś
+     * (np. aktualizacja systemu albo domyślnego menedżera plików na urządzeniu)
+     * zaczęło rzucać wyjątkiem przy generycznym ACTION_VIEW (patrz [openFolderIntent]).
+     * Zamiast od razu spadać na katalog nadrzędny, próbujemy NAJPIERW ten sam,
+     * dokładny folder, ale skierowany JAWNIE (setPackage) do kilku najpopularniejszych
+     * menedżerów plików — generyczne rozwiązywanie intencji czasem trafia w
+     * aplikację, która wcale nie obsługuje folderów (stąd wyjątek), mimo że
+     * zainstalowany jest też menedżer plików, który by go poprawnie otworzył.
+     * Zwraca listę kandydatów w kolejności prób — wywołujący idzie po kolei i
+     * zatrzymuje się na pierwszym udanym startActivity.
+     */
+    fun openFolderIntentCandidates(): List<Intent> {
+        val base = openFolderIntent()
+        val explicitPackages = listOf(
+            "com.google.android.apps.nbu.files", // Files by Google / stock AOSP
+            "com.android.documentsui",
+            "com.sec.android.app.myfiles",        // Samsung My Files
+            "com.coloros.filemanager",             // Oppo/Realme/OnePlus (ColorOS)
+            "com.vivo.filemanager",
+            "com.mi.android.globalFileexplorer",   // Xiaomi (global)
+            "com.android.fileexplorer",            // Xiaomi (China ROM)
+            "com.huawei.hidisk"
+        )
+        val explicit = explicitPackages.map { pkg -> Intent(base).setPackage(pkg) }
+        return listOf(base) + explicit
+    }
+
+    /**
+     * Fallback dla [openFolderIntentCandidates] — jeśli NIC z powyższego się nie
+     * uda, otwieramy katalog nadrzędny Documents ("primary:Documents", bez
+     * podfolderu) — katalog główny provider'a jest zarejestrowany praktycznie
+     * zawsze, nawet gdy konkretny podfolder z jakiegoś powodu nie działa.
+     * Użytkownik ląduje o jeden poziom wyżej i wchodzi w FinArs/Invoices ręcznie.
+     */
+    fun openDocumentsRootIntent(): Intent {
+        val docId = "primary:${Environment.DIRECTORY_DOCUMENTS}"
+        val folderUri = DocumentsContract.buildDocumentUri("com.android.externalstorage.documents", docId)
+        return Intent(Intent.ACTION_VIEW).apply {
+            setDataAndType(folderUri, DocumentsContract.Document.MIME_TYPE_DIR)
+            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_ACTIVITY_NEW_TASK)
+        }
+    }
+
     val displayFolderPath: String get() = "Documents/$RELATIVE_FOLDER"
 
     /**

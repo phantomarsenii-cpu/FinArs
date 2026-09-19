@@ -457,7 +457,7 @@
     <string name="invoice_form_title">Новый счёт / рахунек</string>
     <string name="invoice_seller_section">Продавец (ваши данные)</string>
     <string name="seller_name">Имя и Фамилия / Псевдоним или бренд</string>
-    <string name="seller_nip">NIP (оставьте пустым, если нет)</string>
+    <string name="seller_nip">Pesel (не обязательно)</string>
     <string name="seller_address_street">Улица и номер</string>
     <string name="seller_address_postal">Почтовый индекс</string>
     <string name="seller_address_city">Город</string>
@@ -501,6 +501,7 @@
     <string name="share_invoice_button">Отправить</string>
     <string name="open_invoices_folder_button">Открыть папку со счетами</string>
     <string name="open_folder_error">Не удалось открыть папку. Файлы сохранены в %1$s</string>
+    <string name="open_folder_fallback_hint">Открыта папка Documents — перейдите в FinArs/Invoices, там все выставленные счета</string>
     <string name="invoice_fill_required_fields">Заполните данные покупателя, услугу и сумму</string>
     <string name="invoice_blocked_toast">Выставление фактур заблокировано — сначала подтвердите статус VAT/кассы в Настройках</string>
     <string name="invoice_is_receipt_label">Фактура выставляется к чеку (paragon)</string>
@@ -532,7 +533,7 @@
     <string name="invoice_pdf_sale_date">Дата продажи</string>
     <string name="invoice_pdf_seller">Продавец</string>
     <string name="invoice_pdf_buyer">Покупатель</string>
-    <string name="invoice_pdf_nip">NIP</string>
+    <string name="invoice_pdf_nip">PESEL</string>
     <string name="invoice_pdf_bank_account">Счёт</string>
     <string name="invoice_pdf_buyer_private">Физическое лицо без предпринимательской деятельности (без NIP).</string>
     <string name="invoice_pdf_table_lp">№</string>

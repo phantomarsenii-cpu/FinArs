@@ -848,13 +848,24 @@ class AddInvoiceActivity : BaseActivity() {
     }
 
     private fun openInvoicesFolder() {
-        // Update: łapiemy nie tylko ActivityNotFoundException, ale każdy wyjątek —
-        // część menedżerów plików (np. niektóre wersje One UI) rzuca zamiast tego
-        // SecurityException albo inny wyjątek przy tym intencie, co wcześniej
-        // powodowało crash całej aplikacji zamiast pokazania komunikatu.
+        // Update: раньше был один вариант intent'а — теперь пробуем по очереди сначала
+        // ТОЧНУЮ папку FinArs/Invoices (обычный intent, затем явно через несколько
+        // самых частых файловых менеджеров — generyczne rozwiązywanie czasem trafia w
+        // aplikację, która nie obsługuje folderów, mimo że jest zainstalowana inna,
+        // która by zadziałała), и только если совсем ничего не сработало — открываем
+        // родительскую папку Documents с подсказкой, и в крайнем случае — тост с путём.
+        for (intent in InvoiceFileStorage.openFolderIntentCandidates()) {
+            try {
+                startActivity(intent)
+                return
+            } catch (e: Exception) {
+                // пробуем следующий вариант
+            }
+        }
         try {
-            startActivity(InvoiceFileStorage.openFolderIntent())
-        } catch (e: Exception) {
+            startActivity(InvoiceFileStorage.openDocumentsRootIntent())
+            Toast.makeText(this, getString(R.string.open_folder_fallback_hint), Toast.LENGTH_LONG).show()
+        } catch (e2: Exception) {
             Toast.makeText(this, getString(R.string.open_folder_error, InvoiceFileStorage.displayFolderPath), Toast.LENGTH_LONG).show()
         }
     }

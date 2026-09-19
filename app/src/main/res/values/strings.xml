@@ -457,7 +457,7 @@
     <string name="invoice_form_title">New invoice / receipt</string>
     <string name="invoice_seller_section">Seller (your details)</string>
     <string name="seller_name">First and last name / Alias or brand</string>
-    <string name="seller_nip">NIP (leave empty if none)</string>
+    <string name="seller_nip">PESEL (optional)</string>
     <string name="seller_address_street">Street and number</string>
     <string name="seller_address_postal">Postal code</string>
     <string name="seller_address_city">City</string>
@@ -501,6 +501,7 @@
     <string name="share_invoice_button">Share</string>
     <string name="open_invoices_folder_button">Open invoices folder</string>
     <string name="open_folder_error">Could not open the folder. Files are saved in %1$s</string>
+    <string name="open_folder_fallback_hint">Opened the Documents folder — go to FinArs/Invoices, all issued invoices are there</string>
     <string name="invoice_fill_required_fields">Please fill in the buyer, item and amount</string>
     <string name="invoice_blocked_toast">Invoicing is blocked — confirm your VAT/cash-register status in Settings first</string>
     <string name="invoice_is_receipt_label">This invoice is issued for a receipt (paragon)</string>
@@ -532,7 +533,7 @@
     <string name="invoice_pdf_sale_date">Sale date</string>
     <string name="invoice_pdf_seller">Seller</string>
     <string name="invoice_pdf_buyer">Buyer</string>
-    <string name="invoice_pdf_nip">Tax ID (NIP)</string>
+    <string name="invoice_pdf_nip">PESEL</string>
     <string name="invoice_pdf_bank_account">Bank account</string>
     <string name="invoice_pdf_buyer_private">Private individual (no Tax ID).</string>
     <string name="invoice_pdf_table_lp">No.</string>

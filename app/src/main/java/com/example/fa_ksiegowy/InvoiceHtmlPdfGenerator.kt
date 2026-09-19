@@ -50,6 +50,20 @@ object InvoiceHtmlPdfGenerator {
     // dokladnie jak w prawdziwej fakturze VAT z wieloma stawkami na jednym dokumencie.
     private data class Row(val name: String, val qty: Double, val unitPrice: Double, val vatRate: VatRate? = null)
 
+    /**
+     * Update: faktura/rachunek musi być zawsze po polsku, niezależnie od tego, jaki
+     * język ma ustawiony interfejs aplikacji (RU/EN/...) — to oficjalny dokument
+     * rozliczeniowy w Polsce. Zwraca Context z zasobami wymuszonymi na "pl", używany
+     * WYŁĄCZNIE do pobierania tekstów przez getString() w tym pliku; oryginalny
+     * `context` (z prawdziwym językiem urządzenia) jest nadal używany do assets,
+     * WebView i rozpoznawania Activity, gdzie język nie ma znaczenia.
+     */
+    private fun polishContext(context: Context): Context {
+        val config = android.content.res.Configuration(context.resources.configuration)
+        config.setLocale(Locale("pl"))
+        return context.createConfigurationContext(config)
+    }
+
     // ============================= PUBLICZNE API =============================
 
     suspend fun generate(
@@ -79,6 +93,10 @@ object InvoiceHtmlPdfGenerator {
         // NIP/PESEL. Tytul dokumentu to zawsze bez sufiksu VAT, a blok zwolnienia z VAT
         // pojawia sie zawsze.
         val isVatPayer = false
+        // Update: cały tekst faktury musi być zawsze po polsku, niezależnie od języka
+        // interfejsu aplikacji — `pl` służy WYŁĄCZNIE do pobierania tekstów, `context`
+        // (prawdziwy język urządzenia) zostaje dla assets/WebView poniżej.
+        val pl = polishContext(context)
         val dateFmt = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
         val numberFmt = SimpleDateFormat("MM/yyyy", Locale.US)
 
@@ -94,40 +112,40 @@ object InvoiceHtmlPdfGenerator {
 
         val formattedNumber = "$invoiceNumber/${numberFmt.format(Date(issueDateMillis))}"
         val vatSuffix = if (isVatPayer) " VAT" else ""
-        val docKind = context.getString(R.string.invoice_pdf_faktura)
+        val docKind = pl.getString(R.string.invoice_pdf_faktura)
         val docTitle = "$docKind$vatSuffix $formattedNumber"
 
-        val datesHtml = "<div>${context.getString(R.string.invoice_pdf_issue_date)}: ${dateFmt.format(Date(issueDateMillis))}</div>" +
-            "<div>${context.getString(R.string.invoice_pdf_sale_date)}: ${dateFmt.format(Date(serviceDateMillis))}</div>"
+        val datesHtml = "<div>${pl.getString(R.string.invoice_pdf_issue_date)}: ${dateFmt.format(Date(issueDateMillis))}</div>" +
+            "<div>${pl.getString(R.string.invoice_pdf_sale_date)}: ${dateFmt.format(Date(serviceDateMillis))}</div>"
 
-        val sellerHtml = buildSellerBody(context, seller, isVatPayer)
-        val buyerHtml = buildBuyerBody(context, buyerName, buyerNip, buyerStreet, buyerPostalCode, buyerCity, isPhysicalPerson)
+        val sellerHtml = buildSellerBody(pl, seller, isVatPayer)
+        val buyerHtml = buildBuyerBody(pl, buyerName, buyerNip, buyerStreet, buyerPostalCode, buyerCity, isPhysicalPerson)
 
         val itemsTableHtml = "<div class=\"table-with-total\">" +
-            buildItemsTable(context, null, rows) +
-            buildSumRow(context, netTotal, vatTotal, rows.any { it.vatRate != null }) +
+            buildItemsTable(pl, null, rows) +
+            buildSumRow(pl, netTotal, vatTotal, rows.any { it.vatRate != null }) +
             "</div>"
 
         val receiptBadge = if (isReceipt)
-            "<div style=\"color:#1230A8;font-weight:700;font-size:8.5pt;margin-bottom:3mm;\">&#9679; ${esc(context.getString(R.string.invoice_pdf_receipt_label))}</div>"
+            "<div style=\"color:#1230A8;font-weight:700;font-size:8.5pt;margin-bottom:3mm;\">&#9679; ${esc(pl.getString(R.string.invoice_pdf_receipt_label))}</div>"
         else ""
 
         val paymentLinesHtml = StringBuilder()
         paymentLinesHtml.append(receiptBadge)
         if (invoiceStatus == InvoiceStatus.PAID) {
-            paymentLinesHtml.append(infoLine(CALENDAR_ICON, "${context.getString(R.string.invoice_pdf_payment_date)}: ${dateFmt.format(Date(paymentDateMillis))}"))
-            paymentLinesHtml.append(infoLine(null, context.getString(paymentMethod.paidLabelResId)))
+            paymentLinesHtml.append(infoLine(CALENDAR_ICON, "${pl.getString(R.string.invoice_pdf_payment_date)}: ${dateFmt.format(Date(paymentDateMillis))}"))
+            paymentLinesHtml.append(infoLine(null, pl.getString(paymentMethod.paidLabelResId)))
         } else {
             val due = dueDateMillis ?: paymentDateMillis
-            paymentLinesHtml.append(infoLine(CALENDAR_ICON, "${context.getString(R.string.invoice_due_date_label)}: ${dateFmt.format(Date(due))}"))
-            paymentLinesHtml.append(infoLine(null, "${context.getString(R.string.payment_method_label)}: ${context.getString(paymentMethod.labelResId)}"))
+            paymentLinesHtml.append(infoLine(CALENDAR_ICON, "${pl.getString(R.string.invoice_due_date_label)}: ${dateFmt.format(Date(due))}"))
+            paymentLinesHtml.append(infoLine(null, "${pl.getString(R.string.payment_method_label)}: ${pl.getString(paymentMethod.labelResId)}"))
         }
 
-        val legalVatHtml = if (!isVatPayer) buildLegalVatBlock(context) else ""
+        val legalVatHtml = if (!isVatPayer) buildLegalVatBlock(pl) else ""
 
         val statusClass = if (invoiceStatus == InvoiceStatus.PAID) "status-paid" else "status-pending"
         val statusText = if (invoiceStatus == InvoiceStatus.PAID)
-            context.getString(R.string.invoice_pdf_paid_stamp) else context.getString(R.string.invoice_pdf_pending_stamp)
+            pl.getString(R.string.invoice_pdf_paid_stamp) else pl.getString(R.string.invoice_pdf_pending_stamp)
         val statusIcon = if (invoiceStatus == InvoiceStatus.PAID) CHECK_ICON else CLOCK_ICON
 
         // Update 4 (техтребование): компактный документ для 1-5 позиций, чтобы уместилось на 1 страницу.
@@ -152,10 +170,10 @@ object InvoiceHtmlPdfGenerator {
             .replace("{{PAYMENT_INFO_LINES_HTML}}", paymentLinesHtml.toString())
             .replace("{{LEGAL_VAT_BLOCK_HTML}}", legalVatHtml)
             .replace("{{STATUS_BOX_HTML}}", buildStatusBoxHtml(statusClass, statusIcon, statusText))
-            .replace("{{SIGN_ISSUED_LABEL}}", esc(context.getString(R.string.invoice_pdf_signature_issued_by)))
-            .replace("{{SIGN_ISSUED_CAPTION}}", esc(context.getString(R.string.invoice_pdf_signature_issued_by_caption)))
-            .replace("{{SIGN_RECEIVED_LABEL}}", esc(context.getString(R.string.invoice_pdf_signature_received_by)))
-            .replace("{{SIGN_RECEIVED_CAPTION}}", esc(context.getString(R.string.invoice_pdf_signature_received_by_caption)))
+            .replace("{{SIGN_ISSUED_LABEL}}", esc(pl.getString(R.string.invoice_pdf_signature_issued_by)))
+            .replace("{{SIGN_ISSUED_CAPTION}}", esc(pl.getString(R.string.invoice_pdf_signature_issued_by_caption)))
+            .replace("{{SIGN_RECEIVED_LABEL}}", esc(pl.getString(R.string.invoice_pdf_signature_received_by)))
+            .replace("{{SIGN_RECEIVED_CAPTION}}", esc(pl.getString(R.string.invoice_pdf_signature_received_by_caption)))
             .replace("{{QR_IMG_TAG}}", buildQrImgTag(context))
 
         return renderHtmlToPdf(context, html)
@@ -192,24 +210,27 @@ object InvoiceHtmlPdfGenerator {
         // NIP/PESEL. Tytul dokumentu to zawsze bez sufiksu VAT, a blok zwolnienia z VAT
         // pojawia sie zawsze.
         val isVatPayer = false
+        // Update: cały tekst faktury korygującej musi być zawsze po polsku, niezależnie
+        // od języka interfejsu — jak w generate() powyżej.
+        val pl = polishContext(context)
         val dateFmt = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
         val numberFmt = SimpleDateFormat("MM/yyyy", Locale.US)
 
         val formattedNumber = "$correctionNumber/${numberFmt.format(Date(issueDateMillis))}"
         val originalFormattedNumber = "$originalInvoiceNumber/${numberFmt.format(Date(originalIssueDateMillis))}"
-        val docTitle = "${context.getString(R.string.correction_pdf_title)} $formattedNumber"
-        val subtitle = "<div class=\"doc-subtitle\">${esc(context.getString(R.string.correction_pdf_to_invoice))} $originalFormattedNumber</div>"
-        val datesHtml = "<b>${context.getString(R.string.invoice_pdf_issue_date)}:</b> ${dateFmt.format(Date(issueDateMillis))}"
+        val docTitle = "${pl.getString(R.string.correction_pdf_title)} $formattedNumber"
+        val subtitle = "<div class=\"doc-subtitle\">${esc(pl.getString(R.string.correction_pdf_to_invoice))} $originalFormattedNumber</div>"
+        val datesHtml = "<b>${pl.getString(R.string.invoice_pdf_issue_date)}:</b> ${dateFmt.format(Date(issueDateMillis))}"
 
-        val sellerHtml = buildSellerBody(context, seller, isVatPayer)
-        val buyerHtml = buildBuyerBody(context, buyerName, buyerNip, buyerStreet, buyerPostalCode, buyerCity, buyerNip.isNullOrBlank())
+        val sellerHtml = buildSellerBody(pl, seller, isVatPayer)
+        val buyerHtml = buildBuyerBody(pl, buyerName, buyerNip, buyerStreet, buyerPostalCode, buyerCity, buyerNip.isNullOrBlank())
 
         // "Przed korektą" to zawsze oryginalne pozycje bez zmian. "Po korekcie": jeśli
         // wybrano co najmniej jedną pozycję (correctedItems niepuste) — zmieniają się TYLKO
         // zaznaczone pozycje (każda wg swojej własnej nowej wartości), reszta zostaje
         // identyczna; w przeciwnym razie (korekta całej faktury, 0-1 pozycji) — stare
         // zachowanie: proporcjonalne przeskalowanie.
-        val fallbackLabel = "${context.getString(R.string.correction_pdf_to_invoice)} $originalFormattedNumber"
+        val fallbackLabel = "${pl.getString(R.string.correction_pdf_to_invoice)} $originalFormattedNumber"
         // Update 63: stawka VAT KAZDEJ pozycji (item.vatRate) nie zmienia sie przy korekcie —
         // korekta zmienia tylko kwote, dlatego before/after rows dziedziczy te sama stawke
         // co oryginalna pozycja.
@@ -237,10 +258,10 @@ object InvoiceHtmlPdfGenerator {
         }
 
         val tablesHtml = StringBuilder()
-        tablesHtml.append("<div class=\"table-title\">${esc(context.getString(R.string.correction_pdf_before_table_title))}</div>")
-        tablesHtml.append("<div class=\"table-frame\">").append(buildItemsTable(context, null, beforeRows)).append("</div>")
-        tablesHtml.append("<div class=\"table-title\">${esc(context.getString(R.string.correction_pdf_after_table_title))}</div>")
-        tablesHtml.append("<div class=\"table-frame\">").append(buildItemsTable(context, null, afterRows)).append("</div>")
+        tablesHtml.append("<div class=\"table-title\">${esc(pl.getString(R.string.correction_pdf_before_table_title))}</div>")
+        tablesHtml.append("<div class=\"table-frame\">").append(buildItemsTable(pl, null, beforeRows)).append("</div>")
+        tablesHtml.append("<div class=\"table-title\">${esc(pl.getString(R.string.correction_pdf_after_table_title))}</div>")
+        tablesHtml.append("<div class=\"table-frame\">").append(buildItemsTable(pl, null, afterRows)).append("</div>")
 
         val delta = correctedAmount - originalAmount
         val deltaSign = if (delta >= 0) "+" else ""
@@ -248,17 +269,17 @@ object InvoiceHtmlPdfGenerator {
         val moneyFmt: (Double) -> String = { String.format(Locale.US, "%,.2f", it).replace(",", " ").replace(".", ",") + " zł" }
         val correctionBlockHtml = """
             <div class="reason-block">
-              <div class="reason-title">${esc(context.getString(R.string.correction_pdf_reason_label))}</div>
+              <div class="reason-title">${esc(pl.getString(R.string.correction_pdf_reason_label))}</div>
               <div class="reason-text">${esc(reason.ifBlank { "—" })}</div>
             </div>
             <div class="delta-block">
-              <div class="delta-chip">${esc(context.getString(R.string.correction_pdf_before_label))}<b>${moneyFmt(originalAmount)}</b></div>
-              <div class="delta-chip">${esc(context.getString(R.string.correction_pdf_after_label))}<b>${moneyFmt(correctedAmount)}</b></div>
-              <div class="delta-chip $deltaClass">${esc(context.getString(R.string.correction_pdf_delta_label))}<b>$deltaSign${moneyFmt(delta)}</b></div>
+              <div class="delta-chip">${esc(pl.getString(R.string.correction_pdf_before_label))}<b>${moneyFmt(originalAmount)}</b></div>
+              <div class="delta-chip">${esc(pl.getString(R.string.correction_pdf_after_label))}<b>${moneyFmt(correctedAmount)}</b></div>
+              <div class="delta-chip $deltaClass">${esc(pl.getString(R.string.correction_pdf_delta_label))}<b>$deltaSign${moneyFmt(delta)}</b></div>
             </div>
         """.trimIndent()
 
-        val legalVatHtml = if (!isVatPayer) buildLegalVatBlock(context) else ""
+        val legalVatHtml = if (!isVatPayer) buildLegalVatBlock(pl) else ""
         // Update: próg "kompaktowego" dokumentu liczony wg liczby POZYCJI (nie sumy wierszy
         // obu tabel, co wcześniej podwajało licznik) — do 5 pozycji = "niewiele", zgodnie z
         // oczekiwaniem, że korekta z max. 5 pozycjami zawsze mieści się na 1 stronie.
@@ -288,10 +309,10 @@ object InvoiceHtmlPdfGenerator {
             .replace("{{PAYMENT_INFO_LINES_HTML}}", "")
             .replace("{{LEGAL_VAT_BLOCK_HTML}}", legalVatHtml)
             .replace("{{STATUS_BOX_HTML}}", "")
-            .replace("{{SIGN_ISSUED_LABEL}}", esc(context.getString(R.string.invoice_pdf_signature_issued_by)))
-            .replace("{{SIGN_ISSUED_CAPTION}}", esc(context.getString(R.string.invoice_pdf_signature_issued_by_caption)))
-            .replace("{{SIGN_RECEIVED_LABEL}}", esc(context.getString(R.string.invoice_pdf_signature_received_by)))
-            .replace("{{SIGN_RECEIVED_CAPTION}}", esc(context.getString(R.string.invoice_pdf_signature_received_by_caption)))
+            .replace("{{SIGN_ISSUED_LABEL}}", esc(pl.getString(R.string.invoice_pdf_signature_issued_by)))
+            .replace("{{SIGN_ISSUED_CAPTION}}", esc(pl.getString(R.string.invoice_pdf_signature_issued_by_caption)))
+            .replace("{{SIGN_RECEIVED_LABEL}}", esc(pl.getString(R.string.invoice_pdf_signature_received_by)))
+            .replace("{{SIGN_RECEIVED_CAPTION}}", esc(pl.getString(R.string.invoice_pdf_signature_received_by_caption)))
             .replace("{{QR_IMG_TAG}}", buildQrImgTag(context))
 
         return renderHtmlToPdf(context, html)

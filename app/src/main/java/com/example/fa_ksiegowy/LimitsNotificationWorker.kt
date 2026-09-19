@@ -259,15 +259,19 @@ class LimitsNotificationWorker(context: Context, params: WorkerParameters) : Cor
             }
         }
 
-        /** Планирует проверку лимитов/сроков. Интервал — 1 час (не 24), потому что
-         *  критические оповещения (превышен лимит VAT/kasy) теперь могут повторяться
-         *  до N раз в день (см. notifyRepeatableStatic, частота задаётся пользователем
-         *  в Ustawieniach) — при проверке раз в сутки повторы были бы невозможны.
-         *  Обычные мягкие предупреждения (notifyOnce) по-прежнему показываются не
-         *  чаще одного раза в день независимо от того, как часто отрабатывает воркер. */
+        /** Planuje sprawdzanie limitów/terminów. Interwał 15 minut (minimum dopuszczalne
+         *  dla PeriodicWorkRequest w Androidzie) — nie 1 godzina jak wcześniej.
+         *  Update: przy interwale 1h worker fizycznie mógł wysłać maks. ~24
+         *  powiadomienia/dzień, niezależnie od częstotliwości ustawionej przez
+         *  użytkownika (do 50/dzień, zob. notifyRepeatableStatic/VatComplianceHelper) —
+         *  realny limit był dużo niższy niż to, co user mógł ustawić w Ustawieniach,
+         *  więc przy wysokiej częstotliwości powiadomienia prawie się nie pojawiały.
+         *  15 minut = do ~96 sprawdzeń/dzień, z zapasem pokrywa maks. częstotliwość
+         *  50/dzień. Zwykłe miękkie ostrzeżenia (notifyOnce) nadal pokazują się
+         *  maks. raz dziennie, niezależnie od tego, jak często odpala się worker. */
         fun schedule(context: Context) {
             createChannel(context)
-            val request = PeriodicWorkRequestBuilder<LimitsNotificationWorker>(1, TimeUnit.HOURS).build()
+            val request = PeriodicWorkRequestBuilder<LimitsNotificationWorker>(15, TimeUnit.MINUTES).build()
             WorkManager.getInstance(context).enqueueUniquePeriodicWork(
                 UNIQUE_WORK_NAME,
                 ExistingPeriodicWorkPolicy.UPDATE,
