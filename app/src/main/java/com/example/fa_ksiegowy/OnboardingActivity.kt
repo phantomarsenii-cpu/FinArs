@@ -41,6 +41,20 @@ class OnboardingActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        // Update: предохранитель. Если что-либо в настройке этого экрана
+        // (инфляция layout, ViewPager2, TabLayoutMediator) бросит исключение
+        // на каком-то устройстве/версии Android — приложение НЕ должно уходить
+        // в бесконечный цикл падений при каждом запуске (см. BaseActivity —
+        // онбординг показывается до входа в MainActivity на любом экране).
+        // Вместо краша — тихо пропускаем онбординг и открываем обычный вход.
+        try {
+            setupOnboarding()
+        } catch (t: Throwable) {
+            finishOnboarding()
+        }
+    }
+
+    private fun setupOnboarding() {
         setContentView(R.layout.activity_onboarding)
 
         pages = listOf(
