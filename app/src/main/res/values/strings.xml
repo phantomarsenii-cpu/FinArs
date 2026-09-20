@@ -765,17 +765,4 @@
 
     <!-- Update: explain why screenshots are blocked (shown once per app session) -->
     <string name="screenshot_blocked_hint">Screenshots are disabled on this screen to protect your financial data</string>
-
-    <!-- Update: onboarding (4 swipeable cards, shown once) -->
-    <string name="onboarding_skip">Skip</string>
-    <string name="onboarding_next">Next</string>
-    <string name="onboarding_get_started">Get started</string>
-    <string name="onboarding_title_welcome">Welcome to FinArs</string>
-    <string name="onboarding_desc_welcome">Track your income and expenses, generate invoices and keep your unregistered activity within the legal limits — all in one app.</string>
-    <string name="onboarding_title_entries">Income &amp; expenses</string>
-    <string name="onboarding_desc_entries">Add a transaction in a few taps. FinArs tracks your balance, income and expenses automatically on the dashboard.</string>
-    <string name="onboarding_title_receipts">Scan receipts</string>
-    <string name="onboarding_desc_receipts">Attach a photo of a receipt to any entry, or let the built-in scanner read the amount for you.</string>
-    <string name="onboarding_title_tax">Tax made simple</string>
-    <string name="onboarding_desc_tax">Keep an eye on your quarterly and yearly limits, and generate a helper PDF for your PIT-36 declaration.</string>
 </resources>

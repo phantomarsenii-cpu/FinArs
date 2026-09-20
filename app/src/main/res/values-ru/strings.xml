@@ -757,17 +757,4 @@
 
     <!-- Update: explain why screenshots are blocked (shown once per app session) -->
     <string name="screenshot_blocked_hint">На этом экране запрещены скриншоты для защиты ваших финансовых данных</string>
-
-    <!-- Update: onboarding (4 swipeable cards, shown once) -->
-    <string name="onboarding_skip">Пропустить</string>
-    <string name="onboarding_next">Далее</string>
-    <string name="onboarding_get_started">Начать</string>
-    <string name="onboarding_title_welcome">Добро пожаловать в FinArs</string>
-    <string name="onboarding_desc_welcome">Ведите учёт доходов и расходов, выставляйте счета и следите за лимитами незарегистрированной деятельности — всё в одном приложении.</string>
-    <string name="onboarding_title_entries">Доходы и расходы</string>
-    <string name="onboarding_desc_entries">Добавляйте операции в пару касаний. FinArs автоматически считает баланс, доходы и расходы на главном экране.</string>
-    <string name="onboarding_title_receipts">Сканируйте чеки</string>
-    <string name="onboarding_desc_receipts">Прикрепите фото чека к любой записи или дайте встроенному сканеру самому распознать сумму.</string>
-    <string name="onboarding_title_tax">Налоги без хлопот</string>
-    <string name="onboarding_desc_tax">Следите за квартальными и годовыми лимитами и сформируйте вспомогательный PDF для декларации PIT-36.</string>
 </resources>

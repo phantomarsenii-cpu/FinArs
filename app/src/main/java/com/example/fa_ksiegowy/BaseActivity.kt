@@ -76,13 +76,6 @@ open class BaseActivity : AppCompatActivity() {
      *  (кроме самого TermsActivity, чтобы не зациклиться). */
     override fun onResume() {
         super.onResume()
-        // Update: реальная причина краш-цикла — пока сам TermsActivity ещё
-        // не принят пользователем, гейт ниже (Lock/Onboarding) всё равно
-        // срабатывал поверх него, потому что проверял только "this !is
-        // TermsActivity", а не сам факт принятия условий. В итоге
-        // TermsActivity запускал OnboardingActivity, тот видел непринятые
-        // условия и запускал TermsActivity обратно — бесконечный пинг-понг
-        // между двумя экранами сразу после первого запуска/очистки данных.
         if (!TermsActivity.isAccepted(this)) {
             if (this !is TermsActivity) {
                 startActivity(Intent(this, TermsActivity::class.java))
@@ -91,15 +84,6 @@ open class BaseActivity : AppCompatActivity() {
         }
         if (this !is LockActivity && AppLockState.isLocked) {
             startActivity(Intent(this, LockActivity::class.java))
-            return
-        }
-        // Короткий онбординг (4 карточки) сразу после условий/разблокировки —
-        // показывается один раз, включая уже существующих пользователей,
-        // которые ещё не видели его в предыдущей версии. Идёт после
-        // LockActivity, чтобы не показывать содержимое поверх заблокированного
-        // приложения — и только когда условия уже точно приняты (см. выше).
-        if (this !is OnboardingActivity && !OnboardingActivity.isCompleted(this)) {
-            startActivity(Intent(this, OnboardingActivity::class.java))
         }
     }
 }

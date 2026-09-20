@@ -757,17 +757,4 @@
 
     <!-- Update: explain why screenshots are blocked (shown once per app session) -->
     <string name="screenshot_blocked_hint">Zrzuty ekranu są wyłączone na tym ekranie, aby chronić Twoje dane finansowe</string>
-
-    <!-- Update: onboarding (4 swipeable cards, shown once) -->
-    <string name="onboarding_skip">Pomiń</string>
-    <string name="onboarding_next">Dalej</string>
-    <string name="onboarding_get_started">Zaczynajmy</string>
-    <string name="onboarding_title_welcome">Witaj w FinArs</string>
-    <string name="onboarding_desc_welcome">Śledź przychody i wydatki, wystawiaj faktury i pilnuj limitów działalności nierejestrowanej — wszystko w jednej aplikacji.</string>
-    <string name="onboarding_title_entries">Przychody i wydatki</string>
-    <string name="onboarding_desc_entries">Dodaj transakcję w kilka dotknięć. FinArs automatycznie śledzi Twój bilans, przychody i wydatki na pulpicie.</string>
-    <string name="onboarding_title_receipts">Skanuj paragony</string>
-    <string name="onboarding_desc_receipts">Dołącz zdjęcie paragonu do dowolnego wpisu albo pozwól wbudowanemu skanerowi odczytać kwotę za Ciebie.</string>
-    <string name="onboarding_title_tax">Podatki bez stresu</string>
-    <string name="onboarding_desc_tax">Miej oko na limity kwartalne i roczne oraz wygeneruj pomocniczy PDF do deklaracji PIT-36.</string>
 </resources>
