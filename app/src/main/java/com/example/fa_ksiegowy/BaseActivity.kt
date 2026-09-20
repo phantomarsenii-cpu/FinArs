@@ -2,8 +2,10 @@ package com.example.fa_ksiegowy
 
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.WindowManager
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 
 open class BaseActivity : AppCompatActivity() {
@@ -19,6 +21,20 @@ open class BaseActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         window.setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE)
         super.onCreate(savedInstanceState)
+        maybeExplainScreenshotBlock()
+    }
+
+    // Update: пользователи не понимали, почему скриншот "не получается" —
+    // FLAG_SECURE просто ничего не даёт сделать, без единого объяснения.
+    // Показываем короткий тост один раз за всё время использования приложения
+    // (флаг в SharedPreferences), чтобы не надоедать при каждом открытии экрана.
+    private fun maybeExplainScreenshotBlock() {
+        val prefs: SharedPreferences = getSharedPreferences("settings", Context.MODE_PRIVATE)
+        val key = "screenshot_hint_shown"
+        if (!prefs.getBoolean(key, false)) {
+            prefs.edit().putBoolean(key, true).apply()
+            Toast.makeText(this, getString(R.string.screenshot_blocked_hint), Toast.LENGTH_LONG).show()
+        }
     }
 
     // Update: pelny ekran "jak w Revolut" — tresc pod paskiem statusu i pod
@@ -66,6 +82,14 @@ open class BaseActivity : AppCompatActivity() {
         }
         if (this !is LockActivity && AppLockState.isLocked) {
             startActivity(Intent(this, LockActivity::class.java))
+            return
+        }
+        // Update: короткий онбординг (4 карточки) сразу после условий/разблокировки —
+        // показывается один раз, включая уже существующих пользователей, которые
+        // ещё не видели его в предыдущей версии. Идёт после LockActivity, чтобы
+        // не показывать содержимое поверх заблокированного приложения.
+        if (this !is OnboardingActivity && !OnboardingActivity.isCompleted(this)) {
+            startActivity(Intent(this, OnboardingActivity::class.java))
         }
     }
 }

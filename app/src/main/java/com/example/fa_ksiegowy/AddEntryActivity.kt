@@ -91,7 +91,7 @@ class AddEntryActivity : BaseActivity() {
             ocrPhotoFile = file
             runOcr()
         } catch (e: Exception) {
-            Toast.makeText(this, "Ошибка при загрузке чека: ${e.message}", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, getString(R.string.receipt_load_error, e.message), Toast.LENGTH_LONG).show()
         }
     }
 
@@ -104,7 +104,7 @@ class AddEntryActivity : BaseActivity() {
             try {
                 val input = contentResolver.openInputStream(uri)
                 if (input == null) {
-                    Toast.makeText(this, "Не удалось открыть файл", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, getString(R.string.file_open_error), Toast.LENGTH_SHORT).show()
                     return@registerForActivityResult
                 }
                 // Временное имя: окончательное стандартизированное имя
@@ -115,9 +115,9 @@ class AddEntryActivity : BaseActivity() {
                 input.close()
                 selectedImagePath = out.absolutePath
                 findViewById<TextView>(R.id.tv_attach_label).text = getString(R.string.attach_receipt) + " ✓"
-                Toast.makeText(this, "Чек добавлен", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.receipt_added_toast), Toast.LENGTH_SHORT).show()
             } catch (e: Exception) {
-                Toast.makeText(this, "Ошибка при добавлении чека: ${e.message}", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, getString(R.string.receipt_add_error, e.message), Toast.LENGTH_LONG).show()
             }
         }
 
@@ -149,7 +149,7 @@ class AddEntryActivity : BaseActivity() {
                 val entry = AppDatabase.getInstance(applicationContext).entryDao().getById(entryId)
                 withContext(Dispatchers.Main) {
                     if (entry == null) {
-                        Toast.makeText(this@AddEntryActivity, "Запись не найдена", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@AddEntryActivity, getString(R.string.entry_not_found_toast), Toast.LENGTH_SHORT).show()
                         finish()
                         return@withContext
                     }
@@ -177,7 +177,7 @@ class AddEntryActivity : BaseActivity() {
         findViewById<Button>(R.id.btn_save).setOnClickListener {
             val amt = findViewById<EditText>(R.id.et_amount).text.toString().toDoubleOrNull()
             if (amt == null || amt <= 0.0) {
-                Toast.makeText(this, "Введите корректную сумму", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.amount_invalid_toast), Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
             if (currentIsIncome && activityType == ActivityType.JDG_RYCZALT && selectedRyczaltCategory == null) {

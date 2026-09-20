@@ -21,6 +21,7 @@
             android:value="ca-app-pub-9218963926031039~6835956339" />
 
         <activity android:name=".TermsActivity" android:exported="false" />
+        <activity android:name=".OnboardingActivity" android:exported="false" />
         <activity android:name=".SettingsProActivity" android:exported="false" />
         <activity android:name=".SettingsBackupActivity" android:exported="false" />
         <activity android:name=".SettingsLanguageActivity" android:exported="false" />
