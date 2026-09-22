@@ -40,12 +40,15 @@
 
             <Button android:id="@+id/btn_lang_en" android:layout_width="match_parent" android:layout_height="52dp"
                 android:text="English" android:textAllCaps="false" android:textColor="@color/text_primary"
-                android:background="@drawable/btn_pill_primary" android:layout_margin="6dp"/>
+                android:background="@drawable/btn_pill_outline" android:layout_margin="6dp"/>
             <Button android:id="@+id/btn_lang_ru" android:layout_width="match_parent" android:layout_height="52dp"
                 android:text="Русский" android:textAllCaps="false" android:textColor="@color/text_primary"
                 android:background="@drawable/btn_pill_outline" android:layout_margin="6dp"/>
             <Button android:id="@+id/btn_lang_pl" android:layout_width="match_parent" android:layout_height="52dp"
                 android:text="Polski" android:textAllCaps="false" android:textColor="@color/text_primary"
+                android:background="@drawable/btn_pill_outline" android:layout_margin="6dp"/>
+            <Button android:id="@+id/btn_lang_uk" android:layout_width="match_parent" android:layout_height="52dp"
+                android:text="Українська" android:textAllCaps="false" android:textColor="@color/text_primary"
                 android:background="@drawable/btn_pill_outline" android:layout_margin="6dp"/>
 
         </LinearLayout>

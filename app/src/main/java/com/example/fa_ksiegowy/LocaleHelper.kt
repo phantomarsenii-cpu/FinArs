@@ -6,7 +6,7 @@ import java.util.Locale
 object LocaleHelper {
     private const val PREFS_NAME = "settings"
     private const val KEY_LANG = "appLang"
-    private val SUPPORTED = setOf("ru", "pl", "en")
+    private val SUPPORTED = setOf("ru", "pl", "en", "uk")
 
     fun applyLocale(context: Context): Context {
         val lang = getOrInitLanguage(context)
@@ -17,6 +17,11 @@ object LocaleHelper {
         val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
         prefs.edit().putString(KEY_LANG, code).apply()
     }
+
+    /** Текущий язык приложения — сохранённый выбор пользователя, а если его ещё
+     *  нет (самый первый запуск), тот же язык, что определит и сохранит applyLocale:
+     *  системный, если он поддерживается, иначе английский. */
+    fun getLanguage(context: Context): String = getOrInitLanguage(context)
 
     private fun getOrInitLanguage(context: Context): String {
         val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)

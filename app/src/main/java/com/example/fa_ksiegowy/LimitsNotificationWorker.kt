@@ -192,6 +192,10 @@ class LimitsNotificationWorker(context: Context, params: WorkerParameters) : Cor
         fun createChannel(context: Context) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 val mgr = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+                // Название и описание канала — тоже текст, который видит пользователь
+                // (Настройки Android -> Приложения -> FinArs -> Уведомления), поэтому
+                // должны идти на языке, выбранном В ПРИЛОЖЕНИИ, а не на системном.
+                val ctx = LocaleHelper.applyLocale(context)
                 // Sprzątanie: usuwamy STARY kanał (utworzony wcześniej z IMPORTANCE_DEFAULT).
                 // System Android NIGDY nie podnosi ważności istniejącego kanału z poziomu kodu
                 // (to świadoma decyzja użytkownika w ustawieniach systemowych) — dlatego samo
@@ -202,10 +206,10 @@ class LimitsNotificationWorker(context: Context, params: WorkerParameters) : Cor
                 mgr.deleteNotificationChannel(LEGACY_CHANNEL_ID)
                 val channel = NotificationChannel(
                     CHANNEL_ID,
-                    context.getString(R.string.notif_channel_name),
+                    ctx.getString(R.string.notif_channel_name),
                     NotificationManager.IMPORTANCE_HIGH // wysoka ważność = baner heads-up na górze ekranu
                 ).apply {
-                    description = context.getString(R.string.notif_channel_description)
+                    description = ctx.getString(R.string.notif_channel_description)
                     enableVibration(true)
                 }
                 mgr.createNotificationChannel(channel)

@@ -150,7 +150,7 @@
         <item>App lock with PIN code and fingerprint / face unlock</item>
         <item>Backup and restore your data (Pro)</item>
         <item>Modern dark interface</item>
-        <item>Available in Polish, Russian and English</item>
+        <item>Available in Polish, Russian, English and Ukrainian</item>
         <item>All financial data is stored locally on your device</item>
     </string-array>
     <string name="dialog_close">Close</string>

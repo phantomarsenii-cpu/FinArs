@@ -150,7 +150,7 @@
         <item>Blokada aplikacji kodem PIN oraz odciskiem palca / twarzą</item>
         <item>Kopia zapasowa i przywracanie danych (Pro)</item>
         <item>Nowoczesny ciemny interfejs</item>
-        <item>Dostępne w języku polskim, rosyjskim i angielskim</item>
+        <item>Dostępne w języku polskim, rosyjskim, angielskim i ukraińskim</item>
         <item>Wszystkie dane finansowe są przechowywane lokalnie na urządzeniu</item>
     </string-array>
     <string name="dialog_close">Zamknij</string>

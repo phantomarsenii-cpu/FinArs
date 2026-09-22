@@ -1,0 +1,760 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">FinArs</string>
+    <string name="app_subtitle">FinArs</string>
+    <string name="add_income">Додати дохід</string>
+    <string name="add_expense">Додати витрату</string>
+    <string name="add_entry">Додати +</string>
+    <string name="balance">Баланс</string>
+    <string name="enter_amount">Сума</string>
+    <string name="enter_comment">Коментар</string>
+    <string name="entry_date_label">Дата операції</string>
+    <string name="attach_receipt">Прикріпити чек</string>
+    <string name="save">Зберегти</string>
+    <string name="settings">Налаштування</string>
+    <string name="tax_percent">Відсоток податку</string>
+    <string name="other_income_label">Інші доходи (%1$d)</string>
+    <string name="tax_scale_title">Податок розраховується автоматично</string>
+    <string name="tax_scale_description" formatted="false">0% до 30 000 zł/рік · 12% із суми від 30 000 до 120 000 zł · 32% із суми понад 120 000 zł. Ставка застосовується лише до частини понад кожен поріг, а не до всієї суми.</string>
+    <string name="other_income_title">Інші доходи</string>
+    <string name="other_income_hint">Ваш загальний оподатковуваний дохід за цей рік з інших джерел (робота, інша діяльність тощо). Враховується разом із доходом із цього застосунку під час перевірки річного неоподатковуваного ліміту в 30 000 zł.</string>
+    <string name="saved">Збережено</string>
+    <string name="auto_tax_button">Розрахувати автоматично</string>
+    <string name="auto_tax_result" formatted="false">Пропонована ставка: %1$.1f% (за шкалою PIT: 12% до 120 000 zł/рік, 32% понад). Перед збереженням можна змінити вручну.</string>
+    <string name="export_report">Експорт звіту</string>
+    <string name="generate_report">Згенерувати звіт</string>
+    <string name="select_period">Оберіть період</string>
+    <string name="month">Місяць</string>
+    <string name="year">Рік</string>
+    <string name="custom_range">Довільний період</string>
+    <string name="from">Від</string>
+    <string name="to">До</string>
+    <string name="no_entries">Немає записів</string>
+    <string name="search_no_results">Нічого не знайдено</string>
+    <string name="history_search_hint">Пошук за коментарем або сумою</string>
+    <string name="invoice_search_hint">Пошук за номером, клієнтом або сумою</string>
+    <string name="filter_date_range">Діапазон дат</string>
+    <string name="filter_clear">Скинути фільтри</string>
+
+    <string name="statistics">Статистика</string>
+    <string name="stat_income">Дохід</string>
+    <string name="stat_expense">Витрата</string>
+    <string name="stat_profit">Прибуток (до податку)</string>
+    <string name="stat_tax_format" formatted="false">Податок (%1$.1f%)</string>
+
+    <string name="report_col_date">Дата</string>
+    <string name="report_col_income">Дохід</string>
+    <string name="report_col_expense">Витрата</string>
+    <string name="report_col_tax_percent" formatted="false">Податок %</string>
+    <string name="report_col_tax_amount">Сума податку</string>
+    <string name="report_col_comment">Коментар</string>
+    <string name="report_sheet_name">Звіт</string>
+    <string name="report_title_month">Звіт — Місяць</string>
+    <string name="report_title_year">Звіт — Рік</string>
+    <string name="report_title_custom">Звіт — Довільний період</string>
+    <string name="custom_range_invalid">Дата закінчення повинна бути пізніше дати початку</string>
+    <string name="report_total_income">Разом дохід</string>
+    <string name="report_total_expense">Разом витрата</string>
+    <string name="report_total_profit">Разом прибуток</string>
+    <string name="report_total_tax">Разом податок</string>
+    <string name="report_total_net_profit">Чистий прибуток (після податку)</string>
+    <string name="report_generating">Формування звіту…</string>
+    <string name="report_ready">Звіт готовий</string>
+    <string name="report_share_title">Поділитися звітом</string>
+    <string name="report_error">Не вдалося сформувати звіт: %1$s</string>
+    <string name="about_app">Про застосунок</string>
+    <string name="about_version_label">Версія %1$s</string>
+    <string name="settings_menu_privacy">Політика конфіденційності</string>
+    <string name="about_email">finars2026@gmail.com</string>
+
+    <string name="privacy_updated_label">Останнє оновлення: 11 серпня 2026</string>
+    <string name="privacy_intro">Ми поважаємо вашу приватність. FinArs розроблено з максимальною увагою до безпеки даних — більшість інформації зберігається виключно на вашому пристрої.</string>
+
+    <string name="privacy_section1_title">1. Контролер даних</string>
+    <string name="privacy_section1_body">Контролером застосунку є розробник FinArs. З питань приватності та обробки даних звертайтесь: finars2026@gmail.com.</string>
+
+    <string name="privacy_section2_title">2. Які дані ми обробляємо і де їх зберігаємо</string>
+    <string name="privacy_section2_intro">Усі ваші ключові фінансові та бізнес-дані зберігаються ВИКЛЮЧНО ЛОКАЛЬНО на вашому пристрої. У нас немає власних серверів, і ми не збираємо цю інформацію.</string>
+    <string-array name="privacy_section2_bullets">
+        <item>Фінансові дані та операції: суми, дати, категорії, коментарі та дані рахунків (включно з назвою контрагента та податковим номером) ніколи не покидають ваш телефон.</item>
+        <item>Складські залишки: дані про товари та інвентаризацію зберігаються лише в локальній базі даних застосунку.</item>
+        <item>Фото чеків, прикріплені вручну до операцій: зберігаються виключно на вашому пристрої, ніколи не завантажуються в хмару.</item>
+        <item>Безпека (PIN / біометрія): PIN зберігається в хешованому вигляді в захищеному сховищі пристрою і ніколи нікуди не передається.</item>
+    </string-array>
+
+    <string name="privacy_section3_title">3. Сторонні сервіси</string>
+    <string name="privacy_section3_intro">Застосунок використовує довірені зовнішні сервіси для обробки платежів і реклами:</string>
+    <string-array name="privacy_section3_bullets">
+        <item>Google Play Billing — обробляє покупку та перевірку підписки FinArs Pro. Ми ніколи не бачимо дані вашої платіжної картки (оплату обробляє Google).</item>
+        <item>RevenueCat — після публікації застосунку керуватиме статусом підписки Pro (активна / завершена / пробний період), обробляючи анонімний ідентифікатор користувача та статус покупки для надання доступу Pro на всіх ваших пристроях.</item>
+        <item>Google AdMob — показує рекламу користувачам без активної підписки Pro. AdMob може збирати анонімний рекламний ідентифікатор і діагностичні дані для показу реклами (відповідно до згоди GDPR, зібраної через форму згоди UMP від Google). Політика конфіденційності Google: policies.google.com/privacy</item>
+    </string-array>
+
+    <string name="privacy_section4_title">4. Необхідні дозволи застосунку</string>
+    <string name="privacy_section4_intro">Застосунок запитує лише ті дозволи, які потрібні для його роботи:</string>
+    <string-array name="privacy_section4_bullets">
+        <item>Камера — потрібна лише для сканування штрих-кодів на складі та фотографування чеків.</item>
+        <item>Сповіщення — потрібні для нагадувань про терміни оплати рахунків і перевищені ліміти (наприклад, незареєстрованої діяльності).</item>
+        <item>Сховище — потрібне на старіших версіях Android для збереження резервних копій та експорту звітів (наприклад, PDF / CSV).</item>
+        <item>Доступ до інтернету — потрібен лише для модулів реклами та оплати, описаних вище; не використовується для завантаження ваших фінансових даних.</item>
+    </string-array>
+
+    <string name="privacy_section5_title">5. Керування даними та ваші права</string>
+    <string name="privacy_section5_body">Оскільки ваші дані зберігаються на вашому телефоні, ви завжди повністю контролюєте їх: ви можете будь-коли очистити всі дані в застосунку (Налаштування -> Резервна копія -> Очистити дані) або просто видалити застосунок. Ви самі вирішуєте, де і коли експортувати файл резервної копії.</string>
+
+    <string name="privacy_section6_title">6. Діти</string>
+    <string name="privacy_section6_body">Застосунок не орієнтований на осіб молодших 16 років і свідомо не збирає жодних даних від дітей.</string>
+
+    <string name="privacy_section7_title">7. Зміни до цієї Політики конфіденційності</string>
+    <string name="privacy_section7_body">Ми залишаємо за собою право оновлювати цю Політику конфіденційності. Будь-яка зміна буде опублікована тут із новою датою оновлення.</string>
+
+    <string name="privacy_section8_title">8. Контакти</string>
+    <string name="privacy_section8_body">Якщо у вас є питання щодо приватності або роботи застосунку, звертайтесь: finars2026@gmail.com</string>
+
+    <string name="about_intro">FinArs — це комплексний застосунок для управління фінансами незареєстрованої діяльності. Відстежуйте доходи та витрати, контролюйте ліміти, автоматично розраховуйте податки, виставляйте рахунки, керуйте складом і формуйте готові звіти та податкові декларації — все в одному місці, з повною історією операцій і сповіщеннями завжди під рукою.</string>
+    <string name="about_subscription_note">⭐ Підписка Pro: місячний або річний план, 7 днів безкоштовно, скасування в будь-який час.</string>
+
+    <string name="about_section_finance_title">📊 Фінанси та податки</string>
+    <string-array name="about_bullets_finance">
+        <item>Облік доходів і витрат із прикріпленими чеками та кольоровими категоріями</item>
+        <item>Автоматичний розрахунок прибутку та податку (шкала 12%/32%)</item>
+        <item>Регулярні операції (оренда, підписки), що створюються автоматично щомісяця</item>
+        <item>Контроль ліміту незареєстрованої діяльності (поріг 120 000 zł)</item>
+        <item>Історія сповіщень про наближення та перевищення лімітів, нагадування про рахунки тощо</item>
+    </string-array>
+
+    <string name="about_section_warehouse_title">📦 Склад</string>
+    <string-array name="about_bullets_warehouse">
+        <item>Каталог товарів зі скануванням штрих-кодів, залишками та сповіщеннями про низький запас</item>
+        <item>Сесії інвентаризації з історією</item>
+        <item>Товари можна додавати прямо в рахунки</item>
+    </string-array>
+
+    <string name="about_section_invoices_title">🧾 Рахунки та чеки (Pro)</string>
+    <string-array name="about_bullets_invoices">
+        <item>Виставлення рахунків/чеків фізичним особам із генерацією PDF</item>
+        <item>Статуси: Оплачено / Очікує / Прострочено, плюс нагадування про терміни оплати</item>
+        <item>Контроль річного ліміту готівкових продажів фізособам у 20 000 zł</item>
+        <item>Історія рахунків із пошуком і фільтрами</item>
+    </string-array>
+
+    <string name="about_section_reports_title">📄 Звіти та податкові декларації</string>
+    <string-array name="about_bullets_reports">
+        <item>Зведення доходів/витрат і графік тренду за 6 місяців</item>
+        <item>Експорт місячного звіту (безкоштовно), річного та за довільний період (Pro) в Excel із чеками</item>
+        <item>Формування декларацій PIT-36 — допоміжний PDF і заповнення офіційної форми (Pro)</item>
+    </string-array>
+
+    <string name="about_section_security_title">🔒 Безпека та зручність</string>
+    <string-array name="about_bullets_security">
+        <item>Блокування застосунку PIN-кодом та розблокування за відбитком пальця / обличчям</item>
+        <item>Резервне копіювання та відновлення даних (Pro)</item>
+        <item>Сучасний темний інтерфейс</item>
+        <item>Доступний польською, російською, англійською та українською мовами</item>
+        <item>Усі фінансові дані зберігаються локально на вашому пристрої</item>
+    </string-array>
+    <string name="dialog_close">Закрити</string>
+    <string name="dialog_write">Написати</string>
+    <string name="pro_status_locked">Pro заблоковано. Розблокуйте, щоб отримати річні/довільні звіти Excel, резервне копіювання й відновлення та прибрати рекламу.</string>
+    <string name="pro_status_active">Pro розблоковано. Дякуємо за підтримку!</string>
+    <string name="pro_unlock_button">Розблокувати Pro</string>
+    <string name="pro_unlock_button_price">Розблокувати Pro — %1$s</string>
+    <string name="pro_trial_hint">7 днів безкоштовно, потім оплата автоматично. Скасування в будь-який час.</string>
+    <string name="pro_plan_monthly">Місячний план</string>
+    <string name="pro_plan_yearly">Річний план (найвигідніше)</string>
+    <string name="pro_plan_monthly_price">Місячний — %1$s / місяць</string>
+    <string name="pro_plan_yearly_price">Річний — %1$s / рік</string>
+    <string name="pro_loading">Завантаження ціни…</string>
+    <string name="pro_feature_locked_title">Функція Pro</string>
+    <string name="pro_feature_locked_message">Річні та довільні звіти — це функція Pro. Розблокуйте Pro в Налаштуваннях, щоб їх використовувати.</string>
+    <string name="pro_feature_locked_go_settings">Перейти в Налаштування</string>
+    <string name="invoice_pro_locked_message">Виставлення рахунків — це функція Pro. Розблокуйте Pro в Налаштуваннях, щоб її використовувати.</string>
+    <string name="backup_pro_locked_message">Резервне копіювання та відновлення — це функція Pro. Розблокуйте Pro, щоб зберігати дані у файлі резервної копії.</string>
+    <string name="pro_purchase_error">Не вдалося почати покупку. Перевірте з\'єднання та спробуйте ще раз.</string>
+    <string name="pro_info_title">Версія Pro</string>
+    <string name="pro_info_message">Pro відкриває:\n\n\u2022 Виставлення рахунків і чеків (PDF)\n\u2022 Річний звіт Excel\n\u2022 Звіт Excel за довільний період\n\u2022 Формування декларації PIT-36\n\u2022 Резервне копіювання й відновлення\n\u2022 Без реклами</string>
+    <string name="pro_info_continue">Перейти до покупки</string>
+    <string name="paywall_header_white">Розблокувати</string>
+    <string name="paywall_header_blue">FinArs Pro</string>
+    <string name="paywall_subtitle">Отримайте повний контроль над своїми фінансами\nі працюйте без обмежень.</string>
+    <string name="paywall_feature_1">Виставлення рахунків і чеків (PDF)</string>
+    <string name="paywall_feature_2">Формування декларації PIT-36</string>
+    <string name="paywall_feature_3">Річні та довільні звіти Excel</string>
+    <string name="paywall_feature_4">Локальна резервна копія даних</string>
+    <string name="paywall_feature_5">Без реклами</string>
+    <string name="paywall_badge">НАЙПОПУЛЯРНІШЕ • ЗАОЩАДЬТЕ 30%</string>
+    <string name="paywall_plan_yearly_title">Річний план</string>
+    <string name="paywall_plan_monthly_title">Місячний план</string>
+    <string name="paywall_price_yearly_default">99.99 zł</string>
+    <string name="paywall_price_monthly_default">11.99 zł</string>
+    <string name="paywall_per_year">/ рік</string>
+    <string name="paywall_per_month">/ місяць</string>
+    <string name="paywall_trial_yearly">7 днів за %2$s, потім %1$s / рік</string>
+    <string name="paywall_trial_monthly">7 днів за %2$s, потім %1$s / місяць</string>
+    <string name="paywall_per_month_note">Лише %1$s / місяць</string>
+    <string name="paywall_price_monthly_equivalent_default">8.33 zł</string>
+    <string name="paywall_price_zero_default">0 zł</string>
+    <string name="paywall_cta">Спробувати 7 днів за %1$s</string>
+    <string name="paywall_footer_1">Безкоштовно перші 7 днів.\nСкасування в будь-який час у вашому магазині застосунків.</string>
+    <string name="paywall_footer_1_store">Безкоштовно перші 7 днів.\nСкасування в будь-який час у %1$s.</string>
+    <string name="store_name_google_play">Google Play</string>
+    <string name="store_name_galaxy_store">Galaxy Store</string>
+    <string name="paywall_data_safe">Ваші дані в безпеці</string>
+    <string name="paywall_footer_2">Оплата почнеться через 7 днів.\nВи можете скасувати будь-коли.</string>
+    <string name="paywall_restore_purchases">Відновити покупки</string>
+    <string name="paywall_restore_success">Покупки відновлено — Pro активовано</string>
+    <string name="paywall_restore_nothing_found">Активних покупок не знайдено</string>
+    <string name="enter_code_button">Є код?</string>
+    <string name="enter_code_title">Введіть код</string>
+    <string name="enter_code_hint">Код</string>
+    <string name="enter_code_apply">Застосувати</string>
+    <string name="enter_code_wrong">Невірний код</string>
+    <string name="enter_code_success">Pro розблоковано</string>
+    <string name="transaction_history">Історія операцій</string>
+    <string name="stat_net_profit">Чистий прибуток (після податку)</string>
+    <string name="type_income">Дохід</string>
+    <string name="type_expense">Витрата</string>
+    <string name="edit_income_title">Редагувати дохід</string>
+    <string name="edit_expense_title">Редагувати витрату</string>
+    <string name="delete_entry">Видалити</string>
+    <string name="delete_confirm_title">Видалити запис?</string>
+    <string name="delete_confirm_message">Цей запис буде видалено назавжди. Цю дію неможливо скасувати.</string>
+    <string name="delete_confirm_yes">Видалити</string>
+    <string name="entry_updated">Оновлено</string>
+    <string name="entry_deleted">Видалено</string>
+    <string name="clear_all_button">Очистити всі дані</string>
+    <string name="clear_all_confirm_title">Ви впевнені?</string>
+    <string name="clear_all_confirm_message">Усі записи доходів і витрат буде видалено назавжди. Цю дію неможливо скасувати.</string>
+    <string name="clear_all_confirm_yes">Видалити все</string>
+    <string name="clear_all_done">Усі дані видалено</string>
+
+    <string name="settings_menu_tax">Податки та ліміти</string>
+    <string name="settings_menu_language">Мова</string>
+    <string name="settings_menu_backup">Резервна копія (Pro)</string>
+    <string name="settings_menu_pro">Версія Pro</string>
+
+    <string name="backup_hint">Збережіть резервну копію ваших записів доходів/витрат — включно із сумами, датами, коментарями та прикріпленими фото чеків — у файл. У діалозі збереження можна обрати пам\'ять телефону або Google Drive (якщо застосунок Drive встановлено). Зберігайте цей файл у надійному місці: це єдиний спосіб відновити дані, якщо ви втратите телефон або перевстановите застосунок.</string>
+    <string name="backup_in_progress">Виконується…</string>
+    <string name="backup_create">Створити резервну копію</string>
+    <string name="backup_restore">Відновити з резервної копії</string>
+    <string name="backup_success">Резервну копію збережено (%1$d записів)</string>
+    <string name="backup_error">Помилка: %1$s</string>
+    <string name="backup_restore_confirm_title">Відновити з резервної копії?</string>
+    <string name="backup_restore_confirm_message">Записи з файлу резервної копії буде додано до вже наявних на цьому пристрої (наявні записи не видаляються й не перезаписуються). Якщо потрібне чисте відновлення, спочатку скористайтеся "Очистити всі дані", а потім відновіть.</string>
+    <string name="backup_invalid_file">Це не схоже на дійсний файл резервної копії FinArs</string>
+    <string name="backup_restored">Відновлено %1$d записів</string>
+    <string name="backup_never">Остання резервна копія: ніколи</string>
+    <string name="backup_last_time">Остання резервна копія: %1$s</string>
+
+    <string name="settings_menu_security">Безпека (PIN / відбиток пальця)</string>
+    <string name="settings_menu_pit36">Сформувати PIT (Pro)</string>
+    <string name="pit36_pro_locked_message">Формування PIT-36 — це функція Pro. Розблокуйте Pro в Налаштуваннях, щоб її використовувати.</string>
+
+    <string name="lock_title">FinArs заблоковано</string>
+    <string name="lock_subtitle">Введіть PIN, щоб продовжити</string>
+    <string name="lock_pin_hint">PIN</string>
+    <string name="lock_wrong_pin">Невірний PIN, спробуйте ще раз</string>
+    <string name="lock_unlock_button">Розблокувати</string>
+    <string name="lock_biometric_button">Використати відбиток пальця / обличчя</string>
+    <string name="lock_biometric_prompt_title">Розблокувати FinArs</string>
+    <string name="lock_biometric_prompt_subtitle">Підтвердьте відбиток пальця або обличчя</string>
+    <string name="lock_use_pin">Використати PIN</string>
+    <string name="lock_biometric_unavailable">На цьому пристрої не налаштовано відбиток пальця/обличчя. Спочатку додайте його в налаштуваннях телефону.</string>
+    <string name="lock_locked_out_minutes">Забагато спроб. Спробуйте знову через %1$d хв %2$d с</string>
+    <string name="lock_locked_out_seconds">Забагато спроб. Спробуйте знову через %1$d с</string>
+
+    <string name="security_hint">Захистіть застосунок PIN-кодом. Якщо увімкнено, FinArs проситиме PIN щоразу після повернення із фону. Також можна увімкнути розблокування за відбитком пальця/обличчям як швидку альтернативу тому самому PIN.</string>
+    <string name="security_pin_switch">Вимагати PIN для відкриття застосунку</string>
+    <string name="security_change_pin">Змінити PIN</string>
+    <string name="security_biometric_switch">Розблокування відбитком пальця / обличчям</string>
+    <string name="security_set_pin_title">Встановити PIN</string>
+    <string name="security_set_pin_message">Оберіть PIN із 4–6 цифр</string>
+    <string name="security_continue">Продовжити</string>
+    <string name="security_pin_length_error">PIN має містити 4–6 цифр</string>
+    <string name="security_confirm_pin_title">Підтвердьте PIN</string>
+    <string name="security_pin_saved">PIN збережено</string>
+    <string name="security_pin_mismatch">PIN не збігаються, спробуйте ще раз</string>
+    <string name="security_disable_pin_title">Введіть поточний PIN</string>
+    <string name="security_enter_current_pin">Введіть поточний PIN, щоб продовжити</string>
+    <string name="security_pin_disabled">Захист PIN вимкнено</string>
+
+    <string name="pit_data_title">Особисті дані для податкової декларації</string>
+    <string name="pit_data_hint">Використовуються лише для заповнення допоміжного звіту PIT (PIT-36 / PIT-36L / PIT-28 — залежно від типу вашої діяльності). Усе залишається на вашому пристрої.</string>
+    <string name="pit_first_name">Ім\'я</string>
+    <string name="pit_last_name">Прізвище</string>
+    <string name="pit_pesel">PESEL (необов\'язково)</string>
+    <string name="pit_street">Вулиця</string>
+    <string name="pit_house_number">Номер будинку</string>
+    <string name="pit_apartment_number">Номер квартири (необов\'язково)</string>
+    <string name="pit_voivodeship">Воєводство</string>
+    <string name="pit_county">Повіт (powiat)</string>
+    <string name="pit_commune">Гміна (gmina)</string>
+    <string name="pit_postal_code">Поштовий індекс</string>
+    <string name="pit_city">Місто</string>
+    <string name="pit_tax_office">Податкова служба (urząd skarbowy)</string>
+    <string name="pit_reliefs_title">Пільги та відрахування (необов\'язково)</string>
+    <string name="pit_children_count">Кількість дітей (ulga na dzieci)</string>
+    <string name="pit_internet_relief">Пільга на інтернет — витрачена сума</string>
+    <string name="pit_ikze">Внески IKZE</string>
+    <string name="pit_donations">Пожертви (darowizny)</string>
+    <string name="pit_joint_spouse">Подати спільно з подружжям</string>
+    <string name="pit_spouse_data_title">Особисті дані подружжя</string>
+    <string name="pit_spouse_id_hint">NIP/PESEL подружжя</string>
+    <string name="pit_spouse_first_name_hint">Ім\'я подружжя</string>
+    <string name="pit_spouse_last_name_hint">Прізвище подружжя</string>
+    <string name="pit_spouse_birth_date_hint">Дата народження (ДД.ММ.РРРР)</string>
+    <string name="pit_spouse_income_hint">Дохід подружжя (необов\'язково)</string>
+    <string name="pit_data_required_error">Спочатку заповніть ім\'я, прізвище та податкову службу</string>
+
+    <string name="pit36_hint">Оберіть повний календарний рік, перевірте свої особисті дані, потім згенеруйте допоміжний PDF із цифрами та підказками для заповнення офіційної форми на podatki.gov.pl (Twój e-PIT) або на папері.</string>
+    <string name="pit_row_przychod">Przychód (дохід)</string>
+    <string name="pit_row_koszty">Koszty (витрати)</string>
+    <string name="pit_row_dochod">Dochód (прибуток)</string>
+    <string name="pit_row_tax">Орієнтовний податок</string>
+    <string name="pit_data_status_missing">Особисті дані ще не заповнено — це потрібно зробити перед формуванням звіту.</string>
+    <string name="pit_data_status_ready">Особисті дані готові: %1$s</string>
+    <string name="pit_edit_data_button">Редагувати особисті дані</string>
+    <string name="pit36_generate_button">Сформувати допоміжний PDF</string>
+    <string name="pit36_disclaimer">Цей звіт має лише інформаційний характер і не є офіційною формою, e-Deklaracja чи податковою консультацією. Завжди перевіряйте цифри перед поданням декларації.</string>
+    <string name="pit36_calculating">Триває розрахунок, зачекайте…</string>
+    <string name="pit36_generated">PDF-звіт сформовано</string>
+    <string name="pit36_generate_official_button">Заповнити офіційну форму (шаблон 2025)</string>
+    <string name="pit36_official_hint">Заповнює реальну урядову PDF-форму %1$s(32)/2025: ваші дані, адресу та рядок доходів/витрат від бізнесу. Перед поданням вам все одно потрібно самостійно додати інші джерела доходу та відрахування — див. застереження нижче.</string>
+    <string name="pit36_official_unsupported">Офіційна форма для заповнення доступна лише для PIT-36 (skala). Ваша поточна форма — %1$s — скористайтеся замість цього "Сформувати допоміжний PDF".</string>
+    <string name="pit36_official_generated">Офіційну форму PIT-36 заповнено. Будь ласка, перегляньте розділи E–K і додайте інші доходи/відрахування перед поданням.</string>
+
+    <!-- Тип діяльності / правила реєстрації -->
+    <string name="activity_type_title">Тип діяльності</string>
+    <string name="activity_type_hint">Оберіть спосіб роботи — це визначає, який ліміт застосовується і яку річну форму потрібно подавати.</string>
+    <string name="activity_type_niezarejestrowana">Незареєстрована діяльність (без реєстрації JDG)</string>
+    <string name="activity_type_niezarejestrowana_desc" formatted="false">Дохід має залишатися нижче квартального ліміту в 10 813,50 zł. У разі перевищення потрібно зареєструвати JDG протягом 7 днів. Подається через PIT-36, за податковою шкалою.</string>
+    <string name="activity_type_jdg_skala" formatted="false">Зареєстрована JDG — податкова шкала 12% / 32% (PIT-36)</string>
+    <string name="activity_type_jdg_liniowy" formatted="false">Зареєстрована JDG — єдиний податок 19% (PIT-36L)</string>
+    <string name="activity_type_jdg_ryczalt">Зареєстрована JDG — паушальний податок (PIT-28)</string>
+    <string name="ryczalt_rate_moved_title">Ставка ryczałt за категорією</string>
+    <string name="ryczalt_rate_moved_hint">Кожен дохід і кожна позиція рахунку мають свою категорію — товари, виробництво, послуги, ІТ, медицина, вільна професія. Податкова ставка застосовується автоматично на основі обраної категорії.</string>
+    <string name="quarterly_limit_title">Квартальний ліміт 2026</string>
+    <string name="quarterly_limit_desc">Для незареєстрованої діяльності ліміт становить 75% мінімальної зарплати. У 2026 році мінімальна зарплата — 4 806 zł, тож квартальний ліміт — 10 813,50 zł (3 × 3 604,50 zł). Ліміт розраховується щоквартально: I кв. (січ–бер), II кв. (кві–чер), III кв. (лип–вер), IV кв. (жов–гру).</string>
+    <string name="quarterly_after_title">Що відбувається після перевищення ліміту?</string>
+    <string name="quarterly_after_desc">Якщо ви перевищите 10 813,50 zł у певному кварталі, потрібно зареєструвати ФОП (JDG) протягом 7 днів.</string>
+    <string name="quarterly_how_title">Як FinArs це розраховує?</string>
+    <string name="quarterly_how_desc">FinArs підсумовує дохід за поточний квартал. Індикатор: Використано X / 10 813,50 zł. Сповіщення при 80%, 95%, 100%.</string>
+
+    <!-- Гейджі лімітів на головному екрані -->
+    <string name="limits_title">Ліміти</string>
+    <string name="limit_monthly_label">Незареєстрована діяльність, цей квартал: %1$s / %2$s zł</string>
+    <string name="limit_yearly_sum_info" formatted="false">Сума з початку року (лише для довідки): %1$s / %2$s zł</string>
+    <string name="limit_bracket_label">Перший податковий поріг (120 000 zł/рік): %1$s / %2$s zł</string>
+    <string name="limit_bracket_label_tax_free">Неоподатковувана сума (0–30 000 zł/рік): %1$s / %2$s zł</string>
+    <string name="limit_bracket_label_rate12">Ставка 12%% (30 000–120 000 zł/рік): %1$s / %2$s zł</string>
+    <string name="limit_bracket_label_rate32">Перевищено поріг 120 000 zł — надлишок %1$s zł оподатковується за ставкою 32%%</string>
+    <string name="limit_vat_label">Звільнення від ПДВ (240 000 zł/рік): %1$s / %2$s zł</string>
+    <string name="limit_bracket_title">Податковий поріг (120 000 zł/рік)</string>
+    <string name="limit_bracket_title_tax_free">Неоподатковувана сума (0–30 000 zł/рік)</string>
+    <string name="limit_bracket_title_rate12">Ставка 12% (30 000–120 000 zł/рік)</string>
+    <string name="limit_bracket_title_rate32">Ставка 32% (понад 120 000 zł/рік)</string>
+    <string name="limit_exceeded_warning">Ви перевищили ліміт незареєстрованої діяльності за цей квартал! Потрібно зареєструвати JDG протягом 7 днів.</string>
+    <string name="limits_remaining">Залишилось: %1$s zł</string>
+    <string name="limits_limit_of">Ліміт: %1$s zł</string>
+    <string name="limits_about_title">Про ліміти</string>
+    <string name="limits_about_desc">Перевищення ліміту незареєстрованої діяльності може вимагати реєстрації бізнесу та зміни форми оподаткування.</string>
+    <string name="back">Назад</string>
+    <string name="category_sale">Продаж</string>
+    <string name="category_invoice">Рахунок</string>
+    <string name="category_materials">Закупівля матеріалів</string>
+    <string name="category_fuel">Паливо</string>
+    <string name="category_transport">Транспортна послуга</string>
+    <string name="category_other">Інше</string>
+    <string name="category_label">Категорія</string>
+    <string name="category_choose">Оберіть категорію</string>
+    <string name="tx_all">Усі</string>
+    <string name="tx_income">Доходи</string>
+    <string name="tx_expense">Витрати</string>
+    <string name="add_comment_hint">Додати коментар</string>
+    <string name="add_entry_title">Додати</string>
+    <string name="edit_entry_title">Редагувати</string>
+    <string name="tab_invoice">Рахунок</string>
+    <string name="attach_receipt_row">Додати чек / фото</string>
+    <string name="no_value_chosen">Не задано</string>
+    <string name="reports_title">Звіти</string>
+    <string name="period_this_month">Цей місяць</string>
+    <string name="period_this_year">Цей рік</string>
+    <string name="period_this_quarter">Цей квартал</string>
+    <string name="report_ewidencja_pdf">PDF реєстру продажів (Ewidencja)</string>
+    <string name="ewidencja_generating">Формування реєстру продажів…</string>
+    <string name="ewidencja_ready">Реєстр продажів готовий</string>
+    <string name="ewidencja_share_title">Поділитися реєстром продажів</string>
+    <string name="report_summary">Зведення</string>
+    <string name="legend_income">Дохід</string>
+    <string name="legend_expense">Витрати</string>
+    <string name="legend_tax">Податок</string>
+    <string name="legend_tax_pct">Податок (%1$d%%)</string>
+    <string name="trend_title">Тренд (6 місяців)</string>
+    <string name="report_export_section">Експорт звіту</string>
+    <string name="summary_total">Разом</string>
+    <string name="settings_menu_appearance">Зовнішній вигляд</string>
+    <string name="appearance_dark_only_message">Наразі темна тема — єдиний доступний вигляд.</string>
+    <string name="notifications_title">Сповіщення</string>
+    <string name="notifications_clear_all">Очистити все</string>
+    <string name="notifications_empty">Поки немає сповіщень</string>
+    <string name="edit_limits">Редагувати</string>
+    <string name="recent_transactions_title">Останні операції</string>
+    <string name="view_all">Переглянути всі</string>
+    <string name="no_recent_transactions">Поки немає операцій</string>
+    <string name="monthly_summary_title">Місячне зведення</string>
+    <string name="balance_vs_prev_month">порівняно з попереднім місяцем</string>
+    <string name="stat_tax_short">Податок</string>
+
+    <!-- Динамічна підпис податку -->
+    <string name="tax_label_zero" formatted="false">Податок (0% — неоподатковувана сума)</string>
+    <string name="tax_label_12" formatted="false">Податок (12%)</string>
+    <string name="tax_label_32" formatted="false">Податок (ставка 32%)</string>
+    <string name="tax_label_progressive" formatted="false">Податок (прогресивна шкала 12% / 32%)</string>
+    <string name="tax_label_liniowy" formatted="false">Податок (єдиний 19%)</string>
+    <string name="tax_label_ryczalt">Податок (паушальний, від доходу)</string>
+    <string name="pit_form_applicable">Застосовна декларація: %1$s</string>
+
+    <!-- Таблиця історії -->
+    <string name="history_col_receipt">Чек</string>
+    <string name="history_col_amount">Сума</string>
+
+    <!-- Колонки звіту -->
+    <string name="report_col_receipt">Чек</string>
+    <string name="report_receipt_yes">Так</string>
+
+    <!-- Сповіщення -->
+    <string name="notif_channel_name">Ліміти та терміни</string>
+    <string name="notif_channel_description">Сповіщення про ліміти діяльності та податкові терміни</string>
+    <string name="notif_limit_exceeded_title">Перевищено ліміт незареєстрованої діяльності</string>
+    <string name="notif_limit_exceeded_text" formatted="false">Ваш дохід за цей квартал перевищує ліміт незареєстрованої діяльності 10 813,50 zł. Потрібно зареєструвати JDG протягом 7 днів.</string>
+    <string name="notif_limit_95_title" formatted="false">Досягнуто 95% квартального ліміту</string>
+    <string name="notif_limit_95_text">Ви дуже близько до ліміту незареєстрованої діяльності за цей квартал.</string>
+    <string name="notif_limit_80_title" formatted="false">Досягнуто 80% квартального ліміту</string>
+    <string name="notif_limit_80_text" formatted="false">Ви використали 80% ліміту незареєстрованої діяльності за цей квартал.</string>
+    <string name="notif_bracket_title">Наближення до порогу 120 000 zł</string>
+    <string name="notif_bracket_text" formatted="false">Ваш річний прибуток наближається до 120 000 zł — дохід понад цю суму оподатковується за ставкою 32% замість 12%.</string>
+    <string name="notif_vat_title">Наближення до ліміту звільнення від ПДВ</string>
+    <string name="notif_vat_text">Ваш річний дохід наближається до 240 000 zł — порогу звільнення від ПДВ.</string>
+    <string name="notif_vat_exceeded_critical_title">Перевищено ліміт ПДВ</string>
+    <string name="notif_vat_exceeded_critical_text" formatted="false">Ви перевищили ліміт звільнення від ПДВ у 240 000 zł. Подайте форму VAT-R протягом 7 днів і підтвердьте реєстрацію в Налаштуваннях — до того часу виставлення рахунків заблоковано.</string>
+    <string name="notif_kasa_exceeded_title">Може знадобитися фіскальний касовий апарат</string>
+    <string name="notif_kasa_exceeded_text" formatted="false">Ви перевищили річний ліміт готівкових продажів фізособам у 20 000 zł. Підтвердьте в Налаштуваннях, щойно матимете kasa fiskalna — до того часу виставлення рахунків заблоковано.</string>
+    <string name="notif_advance_title">Нагадування про авансовий платіж податку</string>
+    <string name="notif_advance_text">Авансові платежі податку потрібно сплатити до 20 числа місяця.</string>
+    <string name="notif_pit_deadline_title">Нагадування про річну податкову декларацію</string>
+    <string name="notif_pit_deadline_text">Річні податкові декларації подаються з 15 лютого по 30 квітня.</string>
+    <string name="terms_title">Умови використання</string>
+    <string name="terms_full_text">Умови використання та юридичне застереження\n\nНатискаючи «Прийняти», ви підтверджуєте, що прочитали, зрозуміли та повністю погоджуєтесь із цими умовами. Якщо ви не погоджуєтесь, ви не можете використовувати застосунок FinArs.\n\n1. Не бухгалтерські та не юридичні послуги\nFinArs є лише інструментом (автоматизованим калькулятором та організатором записів). Ні застосунок, ні його розробники не є акредитованою бухгалтерською фірмою, податковим консультантом чи юридичною конторою. Усі розрахунки та автоматично згенеровані декларації (PIT-36) мають виключно інформаційний характер.\n\n2. Ваша відповідальність\nВи несете повну відповідальність за точність введених даних, а також за перевірку розрахунків і PDF-форм перед поданням їх до податкових органів, і за дотримання термінів подання.\n\n3. Обмеження відповідальності\nЗастосунок надається «як є», без гарантій. Розробник не несе відповідальності за штрафи, коригування податків, помилки алгоритму чи втрату даних на вашому пристрої.\n\n4. Зміни законодавства\nПольське податкове законодавство регулярно змінюється; перевіряйте результати на podatki.gov.pl або в ліцензованого бухгалтера.\n\n5. Конфіденційність даних\nУсі дані та згенеровані PDF зберігаються лише локально на вашому пристрої.\n\n6. Застосовне право\nЗастосовується законодавство Республіки Польща.\n\n7. Відкликання\nЦі умови приймаються один раз, під час першого запуску. Якщо ви більше не погоджуєтесь, ви повинні припинити використання застосунку та видалити його.</string>
+    <string name="terms_checkbox_label">Я прочитав(ла) та приймаю Умови використання</string>
+    <string name="terms_accept_button">Прийняти та продовжити</string>
+    <string name="terms_status_accepted">Статус: Умови прийнято (%1$s)</string>
+    <string name="terms_status_unknown">Статус: Умови прийнято</string>
+    <string name="settings_menu_terms">Умови використання</string>
+
+
+    <!-- Рахунки / Faktury -->
+    <string name="nav_invoices">Рахунки</string>
+    <string name="invoice_form_title">Новий рахунок / чек</string>
+    <string name="invoice_seller_section">Продавець (ваші дані)</string>
+    <string name="seller_name">Ім\'я та прізвище / Псевдонім чи бренд</string>
+    <string name="seller_nip">PESEL (необов\'язково)</string>
+    <string name="seller_address_street">Вулиця та номер</string>
+    <string name="seller_address_postal">Поштовий індекс</string>
+    <string name="seller_address_city">Місто</string>
+    <string name="invoice_buyer_section">Покупець</string>
+    <string name="buyer_physical_person_switch">Фізична особа (без NIP)</string>
+    <string name="buyer_name">Ім\'я та прізвище / Псевдонім чи бренд</string>
+    <string name="buyer_nip">PESEL (необов\'язково)</string>
+    <string name="buyer_address_street">Вулиця та номер</string>
+    <string name="buyer_address_postal">Поштовий індекс</string>
+    <string name="buyer_address_city">Місто</string>
+    <string name="select_contractor_button">Обрати контрагента</string>
+    <string name="save_contractor_button">Зберегти покупця</string>
+    <string name="select_contractor_title">Обрати контрагента</string>
+    <string name="contractors_empty">Поки немає збережених контрагентів. Заповніть дані покупця та натисніть "Зберегти покупця".</string>
+    <string name="save_contractor_confirm_title">Зберегти покупця</string>
+    <string name="save_contractor_confirm_message">Зберегти "%1$s" як контрагента для майбутніх рахунків?</string>
+    <string name="contractor_saved">Контрагента збережено</string>
+    <string name="delete_contractor_confirm_title">Видалити контрагента?</string>
+    <string name="delete_contractor_confirm_message">Видалити "%1$s" зі збережених контрагентів?</string>
+    <string name="contractor_deleted">Контрагента видалено</string>
+    <string name="invoice_service_section">Товар / послуга</string>
+    <string name="service_name">Назва послуги чи товару</string>
+    <string name="service_amount">Сума брутто (PLN)</string>
+    <string name="payment_date_label">Дата оплати</string>
+    <string name="service_date_label">Дата послуги / продажу</string>
+    <string name="payment_method_label">Спосіб оплати</string>
+    <string name="payment_method_cash">Готівка</string>
+    <string name="payment_method_transfer">Переказ</string>
+    <string name="payment_method_blik">BLIK</string>
+    <string name="payment_paid_cash">Оплачено готівкою</string>
+    <string name="payment_paid_transfer">Оплачено банківським переказом</string>
+    <string name="payment_paid_blik">Оплачено через BLIK</string>
+    <string name="cash_limit_title">Готівкові продажі фізособам цього року</string>
+    <string name="cash_limit_label">%1$s / %2$s PLN</string>
+    <string name="cash_limit_warning">Ви наближаєтесь до річного ліміту готівкових продажів фізособам без фіскального касового апарата.</string>
+    <string name="cash_limit_exceeded_warning">Ви перевищили річний ліміт готівкових продажів фізособам у 20 000 PLN — тепер може знадобитися фіскальний касовий апарат (kasa fiskalna).</string>
+    <string name="generate_invoice_button">Згенерувати PDF</string>
+    <string name="invoice_generated_toast">Рахунок збережено: %1$s</string>
+    <string name="invoice_error_toast">Не вдалося згенерувати рахунок: %1$s</string>
+    <string name="open_pdf_button">Відкрити PDF</string>
+    <string name="share_invoice_button">Поділитися</string>
+    <string name="open_invoices_folder_button">Відкрити папку рахунків</string>
+    <string name="open_folder_error">Не вдалося відкрити папку. Файли збережено в %1$s</string>
+    <string name="open_folder_fallback_hint">Відкрито папку "Документи" — перейдіть у FinArs/Invoices, там усі виставлені рахунки</string>
+    <string name="invoice_fill_required_fields">Заповніть, будь ласка, покупця, товар і суму</string>
+    <string name="invoice_blocked_toast">Виставлення рахунків заблоковано — спочатку підтвердьте статус ПДВ/касового апарата в Налаштуваннях</string>
+    <string name="invoice_is_receipt_label">Цей рахунок виставлено на чек (paragon)</string>
+    <string name="vat_rate_choose">Оберіть ставку ПДВ</string>
+    <string name="vat_rate_selected" formatted="false">Ставка ПДВ: %1$s</string>
+    <string name="vat_rate_picker_title">Ставка ПДВ</string>
+    <string name="vat_rate_required_error">Оберіть ставку ПДВ для цього рахунку</string>
+    <string name="vat_rate_required_per_item_error">Оберіть ставку ПДВ для кожної позиції</string>
+    <string name="vat_rate_per_item_info">ПДВ тепер зареєстровано — оберіть ставку ПДВ для кожної позиції нижче</string>
+    <string name="vat_rate_23">23% (стандартна)</string>
+    <string name="vat_rate_8">8% (знижена)</string>
+    <string name="vat_rate_5">5% (мінімальна)</string>
+    <string name="vat_rate_0">0% (експорт/WDT)</string>
+    <string name="vat_rate_zw">zw (звільнено)</string>
+    <string name="vat_rate_np">np (не підлягає оподаткуванню)</string>
+    <string name="vat_limit_block_message" formatted="false">Ви перевищили ліміт звільнення від ПДВ у 240 000 zł. Підтвердьте реєстрацію VAT-R у Налаштування → Податки, щоб продовжити виставляти рахунки.</string>
+    <string name="kasa_limit_block_message" formatted="false">Ви перевищили річний ліміт готівкових продажів фізособам у 20 000 zł. Підтвердьте наявність kasa fiskalna у Налаштування → Податки, щоб продовжити виставляти рахунки.</string>
+
+    <!-- Історія рахунків -->
+    <string name="invoice_history_title">Історія рахунків</string>
+    <string name="no_invoices">Поки немає рахунків</string>
+    <string name="no_products">На складі поки немає товарів. Додайте товар вище.</string>
+
+
+    <!-- Мітки PDF рахунку -->
+    <string name="invoice_pdf_faktura">РАХУНОК</string>
+    <string name="invoice_pdf_rachunek">ЧЕК</string>
+    <string name="invoice_pdf_issue_date">Дата виставлення</string>
+    <string name="invoice_pdf_sale_date">Дата продажу</string>
+    <string name="invoice_pdf_seller">Продавець</string>
+    <string name="invoice_pdf_buyer">Покупець</string>
+    <string name="invoice_pdf_nip">PESEL</string>
+    <string name="invoice_pdf_bank_account">Банківський рахунок</string>
+    <string name="invoice_pdf_buyer_private">Фізична особа (без податкового номера).</string>
+    <string name="invoice_pdf_table_lp">№</string>
+    <string name="invoice_pdf_table_name">Товар / послуга</string>
+    <string name="invoice_pdf_table_unit">Од.</string>
+    <string name="invoice_pdf_table_qty">К-сть</string>
+    <string name="invoice_pdf_table_price">Ціна</string>
+    <string name="invoice_pdf_table_total">Разом</string>
+    <string name="invoice_pdf_unit_piece">шт</string>
+    <string name="invoice_pdf_sum_label">Разом</string>
+    <string name="invoice_pdf_table_price_netto">Ціна нетто</string>
+    <string name="invoice_pdf_table_netto">Сума нетто</string>
+    <string name="invoice_pdf_table_vat_rate">Ставка ПДВ</string>
+    <string name="invoice_pdf_table_vat_amount">Сума ПДВ</string>
+    <string name="invoice_pdf_table_brutto">Сума брутто</string>
+    <string name="invoice_pdf_vat_breakdown_label">У тому числі</string>
+    <string name="invoice_pdf_receipt_label">Рахунок виставлено на фіскальний чек (paragon)</string>
+    <string name="invoice_pdf_paid_stamp">ОПЛАЧЕНО</string>
+    <string name="upload_logo_button">Завантажити логотип</string>
+    <string name="logo_uploaded_toast">Логотип збережено</string>
+    <string name="logo_upload_error">Не вдалося завантажити логотип</string>
+    <string name="invoice_pdf_payment_date">Дата оплати</string>
+    <string name="invoice_pdf_footer">Документ згенеровано в застосунку FinArs. Це не офіційна бухгалтерська чи податкова консультація — у разі сумнівів зверніться до податкового консультанта.</string>
+    <string name="seller_bank_account">Банківський рахунок (необов\'язково)</string>
+    <string name="delete_invoice_confirm_title">Видалити рахунок?</string>
+    <string name="delete_invoice_confirm_message">Запис рахунку та його PDF-файл буде видалено назавжди. Цю дію неможливо скасувати.</string>
+    <string name="invoice_deleted">Рахунок видалено</string>
+
+    <string name="invoice_status_paid">Оплачено</string>
+    <string name="invoice_status_pending">Очікує</string>
+    <string name="invoice_status_overdue">Прострочено</string>
+    <string name="invoice_paid_switch_label">Оплачено</string>
+    <string name="invoice_due_date_label">Термін оплати</string>
+    <string name="notif_invoice_overdue_title">Прострочений рахунок</string>
+    <string name="notif_invoice_overdue_text">Рахунок №%2$d на суму %1$s прострочено.</string>
+    <string name="notif_invoice_due_soon_title">Незабаром термін оплати</string>
+    <string name="notif_invoice_due_soon_text">Термін оплати рахунку №%2$d на суму %1$s настає протягом 3 днів.</string>
+    <string name="recurring_switch_label">Повторювати щомісяця</string>
+    <string name="chart_title">Доходи та витрати за останні 6 місяців</string>
+    <string name="invoice_status_filter_all">Усі</string>
+
+    <string name="invoice_pdf_pending_stamp">ОЧІКУЄ ОПЛАТИ</string>
+
+    <!-- Update 41: тип діяльності, склад, штрихкоди, OCR чеків -->
+    <string name="settings_menu_business">Тип продажів (товари/послуги)</string>
+    <string name="business_kind_title">Тип продажів (товари/послуги)</string>
+    <string name="business_kind_description">Оберіть варіант, що найкраще відповідає вашій діяльності. Вибір "Продажі" або "Змішаний" додає кнопку "Склад" (Magazyn) на головному екрані для обліку запасів.</string>
+    <string name="business_kind_sales">Продажі</string>
+    <string name="business_kind_services">Послуги</string>
+    <string name="business_kind_mixed">Змішаний (продажі та послуги)</string>
+    <string name="nav_magazin">Склад</string>
+    <string name="magazin_title">Склад</string>
+    <string name="magazin_empty">Поки немає товарів. Додайте вручну або відскануйте штрих-код.</string>
+    <string name="add_product_manually">Додати вручну</string>
+    <string name="scan_barcode">Сканувати штрих-код</string>
+    <string name="scan_short">Сканувати</string>
+    <string name="scan_barcode_prompt">Наведіть камеру на штрих-код</string>
+    <string name="looking_up_product">Пошук товару…</string>
+    <string name="product_name">Назва товару</string>
+    <string name="product_barcode">Штрих-код (необов\'язково)</string>
+    <string name="product_quantity">Кількість на складі</string>
+    <string name="product_unit">Одиниця (напр., шт, кг)</string>
+    <string name="product_low_stock">Поріг низького запасу</string>
+    <string name="product_price">Закупівельна ціна</string>
+    <string name="product_price_sell">Ціна продажу</string>
+    <string name="product_margin">Націнка %</string>
+    <string name="product_margin_hint" formatted="false">Введіть ціну продажу напряму або введіть % націнки, щоб розрахувати її автоматично від закупівельної ціни (наприклад, 60 = закупівельна ціна +60%).</string>
+    <string name="gallery_scan_receipt_button">Сканувати чек із галереї</string>
+    <string name="product_saved">Товар збережено</string>
+    <string name="low_stock_banner">%1$d товар(ів) закінчується</string>
+    <string name="notif_low_stock_title">Запас закінчується</string>
+    <string name="notif_low_stock_text">%1$s: залишилось лише %2$s %3$s</string>
+    <string name="add_from_warehouse">Додати товари зі складу</string>
+    <string name="select_products_title">Оберіть товари</string>
+    <string name="in_stock_suffix">на складі</string>
+    <string name="select_at_least_one_product">Оберіть хоча б один товар</string>
+    <string name="scan_receipt_button">Сканувати чек (автозаповнення)</string>
+    <string name="receipt_scan_processing">Розпізнавання чека…</string>
+    <string name="receipt_scan_done">Чек розпізнано, перевірте поля</string>
+    <string name="receipt_scan_no_text">Не вдалося розпізнати чек, введіть дані вручну</string>
+
+    <!-- Update 41 fix 6 -->
+    <string name="invoice_mark_paid_confirm_title">Позначити як оплачено?</string>
+    <string name="invoice_mark_paid_confirm_message">Це встановить статус рахунку "оплачено" сьогоднішньою датою та оновить збережений PDF-файл відповідно до нового статусу.</string>
+    <string name="invoice_marked_paid_toast">Рахунок позначено як оплачений</string>
+    <string name="invoice_marked_paid_pdf_warning">Статус оновлено, але не вдалося перегенерувати PDF-файл</string>
+
+    <!-- Update 42: інвентаризація складу + покращене сканування чеків -->
+    <string name="start_inventory">Провести інвентаризацію</string>
+    <string name="inventory_title">Інвентаризація складу</string>
+    <string name="inventory_hint">Перевірте фактичну кількість кожного товару. Оновляться лише змінені позиції.</string>
+    <string name="inventory_current_stock">У системі: %1$s %2$s</string>
+    <string name="inventory_save">Зберегти інвентаризацію</string>
+    <string name="inventory_no_changes">Розбіжностей не знайдено, нічого не змінено</string>
+    <string name="inventory_saved_title">Інвентаризацію збережено</string>
+    <string name="inventory_diff_line">%1$s: %2$s → %3$s (%4$s)</string>
+
+    <!-- Update 43: PDF-звіт інвентаризації + історія + сканування штрихкоду, виправлення розбору позицій чека -->
+    <string name="inventory_scan_button">Сканувати товар</string>
+    <string name="inventory_manual_button">Ввести вручну</string>
+    <string name="inventory_manual_dialog_title">Знайти товар</string>
+    <string name="inventory_manual_search_hint">Пошук за назвою, штрих-кодом, одиницею…</string>
+    <string name="inventory_manual_no_results">Відповідних товарів не знайдено</string>
+    <string name="inventory_history_button">Історія інвентаризацій</string>
+    <string name="inventory_scan_not_found">Товар за кодом %1$s не знайдено</string>
+    <string name="inventory_scan_found">%1$s: %2$s</string>
+    <string name="inventory_history_title">Історія інвентаризацій</string>
+    <string name="inventory_history_empty">Поки немає інвентаризацій</string>
+    <string name="inventory_session_number">Інвентаризація №%1$s</string>
+    <string name="inventory_session_meta">%1$s позицій · змінено: %2$s</string>
+    <string name="inventory_session_meta_sell">Втрачений/додатковий дохід: %1$s</string>
+    <string name="inventory_pdf_title">Звіт інвентаризації №%1$s</string>
+    <string name="inventory_pdf_date">Дата</string>
+    <string name="inventory_pdf_col_product">Товар</string>
+    <string name="inventory_pdf_col_unit">Одиниця</string>
+    <string name="inventory_pdf_col_before">До</string>
+    <string name="inventory_pdf_col_after">Після</string>
+    <string name="inventory_pdf_col_diff">Різниця</string>
+    <string name="inventory_pdf_col_diff_value">Різниця вартості</string>
+    <string name="inventory_pdf_col_diff_value_sell">Втрачений дохід</string>
+    <string name="inventory_pdf_total_products">Всього перевірено позицій</string>
+    <string name="inventory_pdf_total_changed">Змінено позицій</string>
+    <string name="inventory_pdf_total_diff_value">Загальна різниця вартості</string>
+    <string name="inventory_pdf_total_diff_value_sell">Загальний втрачений/додатковий дохід (за ціною продажу)</string>
+
+    <!-- Категорії ryczałt: ставка застосовується по кожній операції, а не однією загальною настройкою -->
+    <string name="ryczalt_cat_3">3% — товари (towar)</string>
+    <string name="ryczalt_cat_5_5">5,5% — виробництво / вироблена продукція</string>
+    <string name="ryczalt_cat_8_5">8,5% — послуги</string>
+    <string name="ryczalt_cat_12">12% — ІТ-послуги</string>
+    <string name="ryczalt_cat_14">14% — медичні послуги</string>
+    <string name="ryczalt_cat_17">17% — вільна професія</string>
+    <string name="ryczalt_category_picker_title">Категорія ryczałt</string>
+    <string name="ryczalt_category_choose">Оберіть категорію ryczałt ▾</string>
+    <string name="ryczalt_category_selected">Категорія: %1$s</string>
+    <string name="ryczalt_category_required_error">Оберіть категорію ryczałt для кожної позиції</string>
+    <string name="income_ryczalt_category_required_error">Оберіть категорію ryczałt для цього доходу</string>
+
+    <!-- Відповідність ПДВ / касового апарата (Налаштування → Податки) -->
+    <string name="vat_compliance_title">Реєстрація ПДВ</string>
+    <string name="vat_compliance_hint" formatted="false">Ви перевищили річний ліміт звільнення від ПДВ у 240 000 zł. Потрібно подати форму VAT-R протягом 7 днів із дня перевищення ліміту та почати нараховувати ПДВ на операцію, що спричинила перевищення. Підтвердіть нижче, щойно зареєструєтесь — виставлення рахунків заблоковано до того часу.</string>
+    <string name="cb_vat_registered_label">Підтверджую, що зареєструвався(лася) як платник ПДВ (подав(ла) VAT-R)</string>
+    <string name="cb_vat_registered_confirmed_label">Підтверджено: зареєстровано як платника ПДВ</string>
+    <string name="kasa_compliance_title">Фіскальний касовий апарат (kasa fiskalna)</string>
+    <string name="kasa_compliance_hint">Ви перевищили річний ліміт готівкових продажів фізособам у 20 000 zł. Тепер може знадобитися фіскальний касовий апарат. Підтвердіть нижче, щойно він у вас з\'явиться — виставлення рахунків заблоковано до того часу.</string>
+    <string name="kasa_compliance_hint_registered">Ваш бізнес зареєстровано (JDG), тож у вас може вже бути фіскальний касовий апарат із самого початку. Якщо так, підтвердіть це нижче — це відкриє опцію "виставлено на чек" під час заповнення рахунків.</string>
+    <string name="cb_kasa_label">Підтверджую, що маю фіскальний касовий апарат (kasa fiskalna)</string>
+    <string name="cb_kasa_confirmed_label">Підтверджено: фіскальний касовий апарат використовується</string>
+    <string name="vat_confirm_dialog_title">Підтвердити реєстрацію ПДВ</string>
+    <string name="vat_confirm_dialog_message">Це підтверджує, що ви подали VAT-R і тепер є платником ПДВ. Цю дію неможливо скасувати в застосунку. Продовжити?</string>
+    <string name="kasa_confirm_dialog_title">Підтвердити фіскальний касовий апарат</string>
+    <string name="kasa_confirm_dialog_message">Це підтверджує, що у вас є фіскальний касовий апарат (kasa fiskalna). Цю дію неможливо скасувати в застосунку. Продовжити?</string>
+    <string name="confirm_yes">Так, підтвердити</string>
+    <string name="confirm_cancel">Скасувати</string>
+
+    <!-- Частота push-сповіщень (Налаштування → Податки) -->
+    <string name="push_frequency_title">Частота push-сповіщень</string>
+    <string name="push_frequency_hint">Скільки разів на день ви можете отримувати сповіщення про перевищені ліміти та прострочені рахунки (1–50).</string>
+    <string name="push_frequency_saved">Частоту сповіщень збережено</string>
+    <string name="push_frequency_invalid">Введіть число від 1 до 50</string>
+    <string name="income_ryczalt_category_label">Категорія ryczałt для цього доходу</string>
+
+    <!-- Кілька позицій у рахунку -->
+    <string name="invoice_item_number_label">Позиція %1$d</string>
+    <string name="add_invoice_item_row">+ Додати позицію</string>
+    <string name="invoice_items_limit_reached">Можна додати до %1$d позицій у рахунку</string>
+    <string name="invoice_item_min_required">У рахунку має бути щонайменше одна позиція</string>
+    <string name="invoice_total_label">Разом: %1$s zł</string>
+    <string name="item_qty_hint">К-сть</string>
+    <string name="invoice_income_comment">Рахунок №%1$d — %2$s</string>
+
+    <!-- Update: модуль коригування (Faktura korygująca) -->
+    <string name="invoice_history_korekta_button">↺</string>
+    <string name="correction_title">Коригувальний рахунок</string>
+    <string name="correction_original_invoice_label">Оригінальний документ: №%1$d, %2$s</string>
+    <string name="correction_original_amount_label">Оригінальна сума</string>
+    <string name="correction_corrected_amount_hint">Скоригована сума (zł)</string>
+    <string name="correction_item_picker_hint">Позиції для коригування</string>
+    <string name="correction_pick_items_button">Обрати позиції</string>
+    <string name="correction_pick_items_dialog_title">Оберіть позиції для коригування</string>
+    <string name="correction_pick_items_confirm">Застосувати</string>
+    <string name="correction_no_items_selected_hint">Позиції ще не обрано</string>
+    <string name="correction_no_items_selected_error">Оберіть хоча б одну позицію для коригування</string>
+    <string name="correction_reason_hint">Причина коригування</string>
+    <string name="correction_apply_to_income_label">Застосувати різницю до доходу (Przychód)</string>
+    <string name="correction_save_button">Видати коригування</string>
+    <string name="correction_zero_delta_error">Скоригована сума збігається з оригінальною — коригувати нічого</string>
+    <string name="correction_reason_required_error">Будь ласка, вкажіть причину коригування</string>
+    <string name="correction_saved_toast">Коригувальний рахунок видано</string>
+    <string name="correction_pdf_title">КОРИГУВАЛЬНИЙ РАХУНОК</string>
+    <string name="correction_pdf_to_invoice">Коригування до рахунку</string>
+    <string name="correction_pdf_reason_label">Причина коригування</string>
+    <string name="correction_pdf_before_label">Сума до коригування</string>
+    <string name="correction_pdf_after_label">Сума після коригування</string>
+    <string name="correction_pdf_delta_label">Різниця</string>
+    <!-- Update: таблиця позицій у коригувальному PDF + поля підпису на обох документах -->
+    <string name="correction_pdf_before_table_title">До коригування</string>
+    <string name="correction_pdf_after_table_title">Після коригування</string>
+    <string name="invoice_pdf_signature_issued_by">Видав(ла):</string>
+    <string name="invoice_pdf_signature_received_by">Отримав(ла):</string>
+    <string name="invoice_pdf_signature_issued_by_caption">Підпис особи, уповноваженої видавати</string>
+    <string name="invoice_pdf_signature_received_by_caption">Підпис особи, уповноваженої отримувати</string>
+    <!-- Update: коригування тепер теж відображаються в Історії рахунків -->
+    <string name="correction_history_row_title">Коригування №%1$d → рахунок №%2$d</string>
+    <string name="correction_history_row_title_solo">Коригування №%1$d</string>
+    <string name="delete_correction_confirm_title">Видалити коригування?</string>
+    <string name="delete_correction_confirm_message">Запис коригування та його PDF-файл буде видалено назавжди. Цю дію неможливо скасувати. Запис доходу, створений цим коригуванням (якщо є), автоматично скасовано не буде.</string>
+    <string name="correction_deleted">Коригування видалено</string>
+    <string name="nav_start">Головна</string>
+    <string name="nav_transactions">Операції</string>
+    <string name="nav_reports">Звіти</string>
+    <string name="nav_settings">Налаштування</string>
+
+    <!-- Update: локалізовані тости в AddEntryActivity.kt (раніше були жорстко задані російською) -->
+    <string name="receipt_load_error">Помилка завантаження чека: %1$s</string>
+    <string name="file_open_error">Не вдалося відкрити файл</string>
+    <string name="receipt_added_toast">Чек додано</string>
+    <string name="receipt_add_error">Помилка додавання чека: %1$s</string>
+    <string name="entry_not_found_toast">Запис не знайдено</string>
+    <string name="amount_invalid_toast">Введіть коректну суму</string>
+
+    <!-- Update: пояснення, чому заблоковано скриншоти (показується раз за сесію застосунку) -->
+    <string name="screenshot_blocked_hint">Скриншоти вимкнено на цьому екрані для захисту ваших фінансових даних</string>
+</resources>
