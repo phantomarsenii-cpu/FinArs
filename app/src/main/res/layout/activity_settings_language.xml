@@ -35,23 +35,62 @@
                 android:textColor="@color/text_primary" android:textSize="18sp" android:textStyle="bold"/>
         </FrameLayout>
 
-        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:orientation="vertical" android:background="@drawable/card_bg" android:padding="8dp">
-
-            <Button android:id="@+id/btn_lang_en" android:layout_width="match_parent" android:layout_height="52dp"
-                android:text="English" android:textAllCaps="false" android:textColor="@color/text_primary"
-                android:background="@drawable/btn_pill_outline" android:layout_margin="6dp"/>
-            <Button android:id="@+id/btn_lang_ru" android:layout_width="match_parent" android:layout_height="52dp"
-                android:text="Русский" android:textAllCaps="false" android:textColor="@color/text_primary"
-                android:background="@drawable/btn_pill_outline" android:layout_margin="6dp"/>
-            <Button android:id="@+id/btn_lang_pl" android:layout_width="match_parent" android:layout_height="52dp"
-                android:text="Polski" android:textAllCaps="false" android:textColor="@color/text_primary"
-                android:background="@drawable/btn_pill_outline" android:layout_margin="6dp"/>
-            <Button android:id="@+id/btn_lang_uk" android:layout_width="match_parent" android:layout_height="52dp"
-                android:text="Українська" android:textAllCaps="false" android:textColor="@color/text_primary"
-                android:background="@drawable/btn_pill_outline" android:layout_margin="6dp"/>
-
+        <!-- Update: 4 отдельные карточки вместо одного общего блока со строками —
+             каждый язык своя маленькая плашка (card_bg), с отступом между ними.
+             Точка-индикатор (ic_radio_selected/unselected) в конце плашки. Тап
+             только переставляет точку (см. SettingsLanguageActivity.selectPending);
+             реальное применение языка — по кнопке "Сохранить" ниже. -->
+        <LinearLayout android:id="@+id/row_lang_en" android:layout_width="match_parent" android:layout_height="56dp"
+            android:orientation="horizontal" android:gravity="center_vertical"
+            android:paddingStart="16dp" android:paddingEnd="16dp"
+            android:background="@drawable/card_bg"
+            android:clickable="true" android:focusable="true">
+            <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1"
+                android:text="English" android:textColor="@color/text_primary" android:textSize="15sp"/>
+            <ImageView android:id="@+id/radio_lang_en" android:layout_width="22dp" android:layout_height="22dp"
+                android:src="@drawable/ic_radio_unselected"/>
         </LinearLayout>
+
+        <LinearLayout android:id="@+id/row_lang_ru" android:layout_width="match_parent" android:layout_height="56dp"
+            android:orientation="horizontal" android:gravity="center_vertical"
+            android:paddingStart="16dp" android:paddingEnd="16dp"
+            android:background="@drawable/card_bg"
+            android:layout_marginTop="10dp"
+            android:clickable="true" android:focusable="true">
+            <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1"
+                android:text="Русский" android:textColor="@color/text_primary" android:textSize="15sp"/>
+            <ImageView android:id="@+id/radio_lang_ru" android:layout_width="22dp" android:layout_height="22dp"
+                android:src="@drawable/ic_radio_unselected"/>
+        </LinearLayout>
+
+        <LinearLayout android:id="@+id/row_lang_pl" android:layout_width="match_parent" android:layout_height="56dp"
+            android:orientation="horizontal" android:gravity="center_vertical"
+            android:paddingStart="16dp" android:paddingEnd="16dp"
+            android:background="@drawable/card_bg"
+            android:layout_marginTop="10dp"
+            android:clickable="true" android:focusable="true">
+            <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1"
+                android:text="Polski" android:textColor="@color/text_primary" android:textSize="15sp"/>
+            <ImageView android:id="@+id/radio_lang_pl" android:layout_width="22dp" android:layout_height="22dp"
+                android:src="@drawable/ic_radio_unselected"/>
+        </LinearLayout>
+
+        <LinearLayout android:id="@+id/row_lang_uk" android:layout_width="match_parent" android:layout_height="56dp"
+            android:orientation="horizontal" android:gravity="center_vertical"
+            android:paddingStart="16dp" android:paddingEnd="16dp"
+            android:background="@drawable/card_bg"
+            android:layout_marginTop="10dp"
+            android:clickable="true" android:focusable="true">
+            <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1"
+                android:text="Українська" android:textColor="@color/text_primary" android:textSize="15sp"/>
+            <ImageView android:id="@+id/radio_lang_uk" android:layout_width="22dp" android:layout_height="22dp"
+                android:src="@drawable/ic_radio_unselected"/>
+        </LinearLayout>
+
+        <Button android:id="@+id/btn_save_language" android:layout_width="match_parent" android:layout_height="52dp"
+            android:text="@string/save" android:textAllCaps="false" android:textColor="@color/text_primary"
+            android:textStyle="bold" android:background="@drawable/btn_pill_cta"
+            android:layout_marginTop="20dp"/>
 
     </LinearLayout>
     </ScrollView>
