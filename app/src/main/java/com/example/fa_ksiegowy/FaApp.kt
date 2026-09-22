@@ -41,6 +41,9 @@ class FaApp : Application() {
 
     override fun onCreate() {
         super.onCreate()
+        // Синхронизируем официальный механизм AndroidX для языка приложения с нашим
+        // сохранённым выбором — см. комментарий в LocaleHelper.setLanguage().
+        LocaleHelper.syncAppCompatDelegate(this)
         // Инициализация RevenueCat: определяет магазин установки (Google Play / Galaxy
         // Store / прочее) и конфигурирует Purchases SDK соответствующим ключом.
         // См. SubscriptionService.kt и StoreDetector.kt.
