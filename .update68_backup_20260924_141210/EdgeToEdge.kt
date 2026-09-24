@@ -59,16 +59,6 @@ object EdgeToEdge {
      * tylko pod sam systemowy gesture-bar. */
     private const val BOTTOM_EXTRA_DP = 130f
 
-    /** Update 68: dolny pasek — mocniejsze rozmycie niz gora, zeby napisy pod
-     * systemowymi przyciskami nawigacji nie mylily sie z ikonami przyciskow. */
-    private const val BOTTOM_BLUR_RADIUS = 45f
-
-    /** Strefa PELNEGO rozmycia: inset systemowy + tyle dp nad nim. */
-    private const val BOTTOM_SOLID_EXTRA_DP = 20f
-
-    /** Ciemny ton (kolor tla aplikacji, ~70%) kladziony na rozmycie u dolu. */
-    private val BOTTOM_TINT = Color.argb(0xB3, 0x08, 0x0C, 0x20)
-
     fun apply(activity: Activity) {
         val window = activity.window
         WindowCompat.setDecorFitsSystemWindows(window, false)
@@ -161,35 +151,29 @@ object EdgeToEdge {
         val density = target.resources.displayMetrics.density
         val topHeight = (topInset * TOP_FADE_MULTIPLIER).toInt()
         val bottomHeight = bottomInset + (BOTTOM_EXTRA_DP * density).toInt()
-        val bottomSolid = bottomInset + (BOTTOM_SOLID_EXTRA_DP * density).toInt()
 
         if (target.getTag(R.id.tag_edge_to_edge_blur_done) == true) {
-            resizeStrip(parent, Gravity.TOP, topHeight, 0)
-            resizeStrip(parent, Gravity.BOTTOM, bottomHeight, bottomSolid)
+            resizeStrip(parent, Gravity.TOP, topHeight)
+            resizeStrip(parent, Gravity.BOTTOM, bottomHeight)
             return
         }
-        if (topInset > 0) parent.addView(buildBlurStrip(target, Gravity.TOP, topHeight, 0))
-        if (bottomInset > 0) parent.addView(buildBlurStrip(target, Gravity.BOTTOM, bottomHeight, bottomSolid))
+        if (topInset > 0) parent.addView(buildBlurStrip(target, Gravity.TOP, topHeight))
+        if (bottomInset > 0) parent.addView(buildBlurStrip(target, Gravity.BOTTOM, bottomHeight))
         target.setTag(R.id.tag_edge_to_edge_blur_done, true)
     }
 
-    private fun buildBlurStrip(target: BlurTarget, gravity: Int, height: Int, solidPx: Int): FadeBlurStrip {
+    private fun buildBlurStrip(target: BlurTarget, gravity: Int, height: Int): FadeBlurStrip {
         val strip = FadeBlurStrip(target.context, fadeFromEdge = gravity)
-        val isBottom = gravity == Gravity.BOTTOM
-        strip.solidPx = solidPx
-        strip.tintColor = if (isBottom) BOTTOM_TINT else Color.TRANSPARENT
         strip.tag = stripTag(gravity)
         strip.layoutParams = FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, height).apply {
             this.gravity = gravity
         }
-        strip.blurView.setupWith(target)
-            .setBlurRadius(if (isBottom) BOTTOM_BLUR_RADIUS else BLUR_RADIUS)
+        strip.blurView.setupWith(target).setBlurRadius(BLUR_RADIUS)
         return strip
     }
 
-    private fun resizeStrip(parent: ViewGroup, gravity: Int, height: Int, solidPx: Int) {
+    private fun resizeStrip(parent: ViewGroup, gravity: Int, height: Int) {
         val strip = parent.findViewWithTag<View>(stripTag(gravity)) ?: return
-        (strip as? FadeBlurStrip)?.solidPx = solidPx
         val lp = strip.layoutParams ?: return
         if (lp.height != height) {
             lp.height = height
@@ -213,15 +197,6 @@ object EdgeToEdge {
             xfermode = PorterDuffXfermode(PorterDuff.Mode.DST_IN)
         }
 
-        /** Wysokosc (px) od krawedzi ekranu, w ktorej rozmycie jest w 100% nieprzezroczyste. */
-        var solidPx: Int = 0
-            set(value) {
-                if (field != value) { field = value; rebuildMask() }
-            }
-
-        /** Ciemny ton kladziony na rozmycie (przed maska). */
-        var tintColor: Int = Color.TRANSPARENT
-
         init {
             setWillNotDraw(false)
             addView(blurView, LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT))
@@ -229,37 +204,22 @@ object EdgeToEdge {
 
         override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
             super.onSizeChanged(w, h, oldw, oldh)
-            rebuildMask()
-        }
-
-        private fun rebuildMask() {
-            val h = height
-            if (width <= 0 || h <= 0) return
-            maskPaint.shader = if (fadeFromEdge == Gravity.TOP) {
-                // gora nieprzezroczysta -> dol przezroczysty
-                LinearGradient(
-                    0f, 0f, 0f, h.toFloat(),
-                    Color.BLACK, Color.TRANSPARENT,
-                    Shader.TileMode.CLAMP
-                )
+            if (w <= 0 || h <= 0) return
+            val (startColor, endColor) = if (fadeFromEdge == Gravity.TOP) {
+                Color.BLACK to Color.TRANSPARENT // gora nieprzezroczysta -> dol przezroczysty
             } else {
-                // gora przezroczysta -> plynnie -> 100% w strefie solidPx przy dolnej krawedzi
-                val solid = solidPx.coerceIn(0, h - 1)
-                val frac = (h - solid).toFloat() / h
-                LinearGradient(
-                    0f, 0f, 0f, h.toFloat(),
-                    intArrayOf(Color.TRANSPARENT, Color.BLACK, Color.BLACK),
-                    floatArrayOf(0f, frac, 1f),
-                    Shader.TileMode.CLAMP
-                )
+                Color.TRANSPARENT to Color.BLACK // gora przezroczysta -> dol nieprzezroczysty
             }
-            invalidate()
+            maskPaint.shader = LinearGradient(
+                0f, 0f, 0f, h.toFloat(),
+                startColor, endColor,
+                Shader.TileMode.CLAMP
+            )
         }
 
         override fun dispatchDraw(canvas: Canvas) {
             val save = canvas.saveLayer(0f, 0f, width.toFloat(), height.toFloat(), null)
             super.dispatchDraw(canvas)
-            if (Color.alpha(tintColor) > 0) canvas.drawColor(tintColor)
             canvas.drawRect(0f, 0f, width.toFloat(), height.toFloat(), maskPaint)
             canvas.restoreToCount(save)
         }
