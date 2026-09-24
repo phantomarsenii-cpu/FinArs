@@ -48,11 +48,6 @@ jobs:
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
         run: ./gradlew bundleRelease
 
-      - name: Check native libs in AAB (16 KB)
-        run: |
-          echo "=== .so in AAB ==="
-          unzip -l app/build/outputs/bundle/release/app-release.aab | grep "\.so" || echo "no native libs"
-
       - name: Remove keystore file
         if: always()
         run: rm -f "$RUNNER_TEMP/release.keystore"

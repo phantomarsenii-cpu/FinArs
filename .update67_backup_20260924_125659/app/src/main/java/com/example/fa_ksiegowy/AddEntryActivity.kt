@@ -29,6 +29,11 @@ import java.util.Locale
  * поля предзаполняются, появляется кнопка удаления, а сохранение обновляет запись
  * вместо создания новой. Без "entryId" работает как раньше — создание новой записи.
  *
+ * Update: сканирование чека (распознавание суммы/даты/позиций по фото, ML Kit OCR —
+ * "Skanuj paragon" и "Skanuj paragon z galerii") возвращено — работает офлайн, на
+ * устройстве, поверх обычного прикрепления фото чека (btn_attach), доступно только
+ * для расходов (см. updateTypeToggleUi/runOcr).
+ *
  * Для приходов, когда в настройках выбрана форма ActivityType.JDG_RYCZALT,
  * появляется обязательный выбор категории ryczałtu (см. RyczaltCategory) — ставка
  * (3%/5,5%/8,5%/12%/14%/17%) теперь привязана к конкретной операции, а не к одной
@@ -59,6 +64,35 @@ class AddEntryActivity : BaseActivity() {
     private var selectedCategoryLabel: String? = null
     private val activityType: ActivityType by lazy {
         ActivityTypeHelper.get(getSharedPreferences("settings", MODE_PRIVATE))
+    }
+
+    // Update: фото для распознавания чека (ML Kit OCR) — пишется в полном разрешении
+    // через системную камеру (FileProvider), затем прогоняется через ReceiptOcrHelper.
+    private var ocrPhotoFile: File? = null
+
+    private val takeOcrPhoto = registerForActivityResult(ActivityResultContracts.TakePicture()) { success ->
+        if (success) runOcr()
+    }
+
+    // Сканирование чека по фото ИЗ ГАЛЕРЕИ (в отличие от btn_attach, который просто
+    // прикладывает файл без распознавания) — копируем выбранную картинку во временный
+    // файл и прогоняем через тот же runOcr(), что и снимок с камеры.
+    private val pickOcrImage = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+        if (uri == null) return@registerForActivityResult
+        try {
+            val input = contentResolver.openInputStream(uri)
+            if (input == null) {
+                Toast.makeText(this, getString(R.string.receipt_scan_no_text), Toast.LENGTH_SHORT).show()
+                return@registerForActivityResult
+            }
+            val file = File(getExternalFilesDir(null), "ocr_tmp_${System.currentTimeMillis()}.jpg")
+            FileOutputStream(file).use { fos -> input.copyTo(fos) }
+            input.close()
+            ocrPhotoFile = file
+            runOcr()
+        } catch (e: Exception) {
+            Toast.makeText(this, getString(R.string.receipt_load_error, e.message), Toast.LENGTH_LONG).show()
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -369,6 +403,83 @@ class AddEntryActivity : BaseActivity() {
     /** Без лишних нулей для целых сумм (100, а не 100.0), но с сохранением копеек, если они есть. */
     private fun formatAmount(v: Double): String =
         if (v == v.toLong().toDouble()) v.toLong().toString() else v.toString()
+
+    /** Запускает системную камеру для фото чека и сохраняет полноразмерный файл через FileProvider. */
+    private fun launchReceiptScan() {
+        val file = File(getExternalFilesDir(null), "ocr_tmp_${System.currentTimeMillis()}.jpg")
+        ocrPhotoFile = file
+        val uri = FileProvider.getUriForFile(this, "$packageName.fileprovider", file)
+        takeOcrPhoto.launch(uri)
+    }
+
+    /** Прогоняет сделанное фото через ML Kit и подставляет распознанные сумму/дату/продавца. */
+    private fun runOcr() {
+        val file = ocrPhotoFile ?: return
+        Toast.makeText(this, getString(R.string.receipt_scan_processing), Toast.LENGTH_SHORT).show()
+        CoroutineScope(Dispatchers.IO).launch {
+            val bmp = try {
+                BitmapFactory.decodeFile(file.absolutePath)
+            } catch (e: Exception) {
+                null
+            }
+            if (bmp == null) {
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(this@AddEntryActivity, getString(R.string.receipt_scan_no_text), Toast.LENGTH_SHORT).show()
+                }
+                return@launch
+            }
+            val result = try {
+                ReceiptOcrHelper.recognize(bmp)
+            } catch (e: Exception) {
+                null
+            }
+            withContext(Dispatchers.Main) {
+                if (result == null) {
+                    Toast.makeText(this@AddEntryActivity, getString(R.string.receipt_scan_no_text), Toast.LENGTH_LONG).show()
+                    return@withContext
+                }
+                if (result.amount != null) {
+                    findViewById<EditText>(R.id.et_amount).setText(formatAmount(result.amount))
+                }
+                if (result.dateMillis != null) {
+                    selectedDateMillis = result.dateMillis
+                    updateDateButtonText()
+                }
+                // Комментарий заполняем позициями покупки с чека (название + цена
+                // каждого товара/услуги), а не просто именем продавца — это то, ради
+                // чего вообще нужно сканирование, чтобы не вводить список вручную.
+                // Не трогаем поле, если пользователь уже что-то в него вписал.
+                if (result.items.isNotEmpty() || !result.sellerName.isNullOrBlank()) {
+                    val commentField = findViewById<EditText>(R.id.et_comment)
+                    if (commentField.text.toString().isBlank()) {
+                        commentField.setText(buildReceiptComment(result))
+                    }
+                }
+                selectedImagePath = file.absolutePath
+                findViewById<TextView>(R.id.tv_attach_label).text = getString(R.string.attach_receipt) + " ✓"
+                if (result.amount == null && result.dateMillis == null) {
+                    Toast.makeText(this@AddEntryActivity, getString(R.string.receipt_scan_no_text), Toast.LENGTH_LONG).show()
+                } else {
+                    Toast.makeText(this@AddEntryActivity, getString(R.string.receipt_scan_done), Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
+
+    private fun buildReceiptComment(result: ReceiptOcrResult): String {
+        if (result.items.isNotEmpty()) {
+            val builder = StringBuilder()
+            for (item in result.items) {
+                builder.append("• ").append(item.name)
+                if (item.price != null) {
+                    builder.append(" — ").append(formatAmount(item.price)).append(" zł")
+                }
+                builder.append("\n")
+            }
+            return builder.toString().trim()
+        }
+        return result.sellerName?.trim().orEmpty()
+    }
 
     /** Открывает системный DatePickerDialog, предзаполненный текущей выбранной датой. */
     private fun showDatePicker() {

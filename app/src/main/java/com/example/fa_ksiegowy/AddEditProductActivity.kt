@@ -37,7 +37,7 @@ class AddEditProductActivity : BaseActivity() {
         intent.getStringExtra("prefillName")?.let { findViewById<EditText>(R.id.et_name).setText(it) }
 
         findViewById<Button>(R.id.btn_scan_barcode_form).setOnClickListener {
-            scanLauncher.launch(ScanOptions().setBeepEnabled(true).setOrientationLocked(true))
+            scanLauncher.launch(ScanOptions().setBeepEnabled(true).setOrientationLocked(false))
         }
         findViewById<Button>(R.id.btn_save_product).setOnClickListener { save() }
         findViewById<Button>(R.id.btn_delete_product).setOnClickListener { confirmDelete() }

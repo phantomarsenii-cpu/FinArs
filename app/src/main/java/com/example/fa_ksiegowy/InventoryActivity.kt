@@ -65,7 +65,7 @@ class InventoryActivity : BaseActivity() {
                     .setDesiredBarcodeFormats(ScanOptions.ALL_CODE_TYPES)
                     .setPrompt(getString(R.string.scan_barcode_prompt))
                     .setBeepEnabled(true)
-                    .setOrientationLocked(true)
+                    .setOrientationLocked(false)
             )
         }
         findViewById<Button>(R.id.btn_manual_inventory).setOnClickListener {

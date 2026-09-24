@@ -59,7 +59,7 @@ class MagazinFragment : Fragment() {
                     .setDesiredBarcodeFormats(ScanOptions.ALL_CODE_TYPES)
                     .setPrompt(getString(R.string.scan_barcode_prompt))
                     .setBeepEnabled(true)
-                    .setOrientationLocked(true)
+                    .setOrientationLocked(false)
             )
         }
         requireView().findViewById<Button>(R.id.btn_inventory).setOnClickListener {
