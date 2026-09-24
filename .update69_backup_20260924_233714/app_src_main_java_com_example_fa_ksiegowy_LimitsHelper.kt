@@ -86,8 +86,8 @@ object LimitsHelper {
     )
 
     /** Границы bieżącego kwartału kalendarzowego: [начало 1-го дня квартала,
-     *  начало 1-го дня следующего квартала). Kwartały: K1 sty-mar, K2 kwi-cze,
-     *  K3 lip-wrz, K4 paź-gru — zgodnie z ustawą (kwartał kalendarzowy). */
+     *  начало 1-го дня следующего квартала). Kwartały: Q1 sty-mar, Q2 kwi-cze,
+     *  Q3 lip-wrz, Q4 paź-gru — zgodnie z ustawą (kwartał kalendarzowy). */
     fun quarterRange(now: Calendar): Pair<Long, Long> {
         val quarterStartMonth = (now.get(Calendar.MONTH) / 3) * 3
         val start = (now.clone() as Calendar).apply {
@@ -102,8 +102,8 @@ object LimitsHelper {
     /** Numer kwartału (1..4) dla danego kalendarza. */
     fun quarterNumber(cal: Calendar): Int = cal.get(Calendar.MONTH) / 3 + 1
 
-    /** Czytelna etykieta kwartału do wyświetlenia pod gejdżem/w raporcie, np. "K3 2026 (lip-wrz)". */
-    fun quarterLabel(cal: Calendar, full: Boolean = false): String {
+    /** Czytelna etykieta kwartału do wyświetlenia pod gejdżem/w raporcie, np. "Q3 2026 (lip-wrz)". */
+    fun quarterLabel(cal: Calendar): String {
         val q = quarterNumber(cal)
         val months = when (q) {
             1 -> "sty-mar"
@@ -111,10 +111,7 @@ object LimitsHelper {
             3 -> "lip-wrz"
             else -> "paź-gru"
         }
-        // full = true -> pelne "Kwartał 3 2026 (lip-wrz)" (dokument PDF);
-        // full = false -> krotko "K3 2026 (lip-wrz)" (ekrany aplikacji).
-        val prefix = if (full) "Kwartał $q" else "K$q"
-        return "$prefix ${cal.get(Calendar.YEAR)} ($months)"
+        return "Q$q ${cal.get(Calendar.YEAR)} ($months)"
     }
 
     suspend fun compute(context: Context): AllLimits {

@@ -68,7 +68,7 @@ object EwidencjaPdfGenerator {
     /**
      * @param rows wiersze ewidencji (patrz mapowanie w ReportFragment: kolejne sprzedaże
      *             z narastającą sumą).
-     * @param periodLabel podpis okresu w nagłówku, np. "Kwartał 3 2026 (lip-wrz)" albo "2026".
+     * @param periodLabel podpis okresu w nagłówku, np. "Q3 2026 (lip-wrz)" albo "2026".
      * @param sellerFullName imię i nazwisko sprzedawcy do nagłówka dokumentu (z
      *             InvoiceSellerDataStore) — jeśli puste, drukowana jest linia kropkowana
      *             do uzupełnienia ręcznego.

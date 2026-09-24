@@ -64,21 +64,19 @@ class ReportFragment : Fragment() {
         loadTrend()
     }
 
-    /** Wybór okresu dla "Ewidencja sprzedaży PDF" — miesiąc, kwartał (domyślny, zgodny z limitem
+    /** Wybór okresu dla "Ewidencja sprzedaży PDF" — kwartał (domyślny, zgodny z limitem
      *  10 813,50 zł), rok albo dowolny zakres dat (reużywa DatePickerDialog jak eksport xlsx). */
     private fun showEwidencjaPeriodPicker() {
         AppDialog.showOptionPicker(
             context = requireContext(),
             title = getString(R.string.select_period),
             options = listOf(
-                "month" to getString(R.string.period_this_month),
                 "quarter" to getString(R.string.period_this_quarter),
                 "year" to getString(R.string.period_this_year),
                 "custom" to getString(R.string.custom_range)
             )
         ) { selected ->
             when (selected) {
-                "month" -> generateEwidencjaForMonth()
                 "quarter" -> generateEwidencjaForQuarter()
                 "year" -> generateEwidencjaForYear()
                 "custom" -> showEwidencjaCustomRangePicker()
@@ -86,23 +84,11 @@ class ReportFragment : Fragment() {
         }
     }
 
-    /** Ewidencja za bieżący miesiąc kalendarzowy (od 1. dnia do teraz). */
-    private fun generateEwidencjaForMonth() {
-        val start = Calendar.getInstance().apply {
-            set(Calendar.DAY_OF_MONTH, 1)
-            set(Calendar.HOUR_OF_DAY, 0); set(Calendar.MINUTE, 0); set(Calendar.SECOND, 0); set(Calendar.MILLISECOND, 0)
-        }
-        val endExclusive = (start.clone() as Calendar).apply { add(Calendar.MONTH, 1) }.timeInMillis
-        val label = SimpleDateFormat("LLLL yyyy", Locale("pl")).format(start.time)
-            .replaceFirstChar { it.uppercase() }
-        generateEwidencja(start.timeInMillis, minOf(System.currentTimeMillis(), endExclusive - 1), label)
-    }
-
     private fun generateEwidencjaForQuarter() {
         val now = Calendar.getInstance()
         val (from, toExclusive) = LimitsHelper.quarterRange(now)
         val now2 = System.currentTimeMillis()
-        generateEwidencja(from, minOf(now2, toExclusive - 1), LimitsHelper.quarterLabel(now, full = true))
+        generateEwidencja(from, minOf(now2, toExclusive - 1), LimitsHelper.quarterLabel(now))
     }
 
     private fun generateEwidencjaForYear() {
