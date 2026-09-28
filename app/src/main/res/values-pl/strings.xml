@@ -65,51 +65,85 @@
     <string name="about_app">O aplikacji</string>
     <string name="about_version_label">Wersja %1$s</string>
     <string name="settings_menu_privacy">Polityka prywatności</string>
-    <string name="about_email">finars2026@gmail.com</string>
+    <string name="about_email">apstudiomobile@gmail.com</string>
 
-    <string name="privacy_updated_label">Ostatnia aktualizacja: 11 sierpnia 2026 r.</string>
-    <string name="privacy_intro">Szanujemy Twoją prywatność. Aplikacja FinArs została zaprojektowana z myślą o maksymalnym bezpieczeństwie Twoich danych — większość informacji przechowywana jest wyłącznie na Twoim urządzeniu.</string>
+    <string name="privacy_updated_label">Ostatnia aktualizacja: 28 września 2026 r.</string>
+    <string name="privacy_intro">Szanujemy Twoją prywatność. Aplikacja FinArs została zaprojektowana tak, aby dane finansowe i biznesowe były przechowywane lokalnie na Twoim urządzeniu. Aplikacja nie posiada własnego serwera do przechowywania danych finansowych użytkowników.</string>
 
-    <string name="privacy_section1_title">1. Administrator danych osobowych</string>
-    <string name="privacy_section1_body">Administratorem aplikacji jest twórca FinArs. W sprawach związanych z ochroną prywatności i przetwarzaniem danych możesz skontaktować się pod adresem e-mail: finars2026@gmail.com.</string>
+    <string name="privacy_section1_title">1. Administrator danych</string>
+    <string name="privacy_section1_body">Administratorem danych osobowych jest Arsenii Panicev, niezależny twórca działający w ramach projektu AP STUDIO. W sprawach prywatności i przetwarzania danych możesz skontaktować się pod adresem e-mail: apstudiomobile@gmail.com.</string>
 
-    <string name="privacy_section2_title">2. Jakie dane przetwarzamy i gdzie je przechowujemy?</string>
-    <string name="privacy_section2_intro">Wszystkie Twoje kluczowe dane finansowe i biznesowe są przechowywane WYŁĄCZNIE LOKALNIE w pamięci Twojego urządzenia. Nie posiadamy własnych serwerów i nie zbieramy tych informacji.</string>
+    <string name="privacy_section2_title">2. Dane przechowywane lokalnie</string>
+    <string name="privacy_section2_intro">Kluczowe dane finansowe i biznesowe są przechowywane WYŁĄCZNIE LOKALNIE na Twoim urządzeniu i nie są przesyłane na serwery administratora. Nie prowadzimy własnej chmurowej bazy tych danych.</string>
     <string-array name="privacy_section2_bullets">
-        <item>Dane finansowe i transakcje: kwoty, daty, kategorie, komentarze oraz numery i dane faktur (w tym dane kontrahentów i NIP) nie opuszczają Twojego telefonu.</item>
-        <item>Stan magazynowy: dane o produktach i inwentaryzacji są zapisywane wyłącznie w lokalnej bazie danych aplikacji.</item>
-        <item>Zdjęcia paragonów dołączane ręcznie do transakcji: przechowywane wyłącznie lokalnie na Twoim urządzeniu, nigdy nie są wysyłane do chmury.</item>
-        <item>Zabezpieczenia (PIN / biometria): kod PIN jest przechowywany w postaci zaszyfrowanej w bezpiecznym magazynie danych urządzenia i nigdy nie jest nigdzie przesyłany.</item>
+        <item>Przychody i wydatki: kwoty, daty, kategorie i opisy transakcji.</item>
+        <item>Faktury i kontrahenci, w tym numery NIP.</item>
+        <item>Produkty, stany magazynowe i inwentaryzacja.</item>
+        <item>Zdjęcia paragonów dodane do transakcji oraz lokalnie tworzone raporty.</item>
+        <item>Kopie zapasowe i eksporty są zapisywane w miejscu wybranym przez Ciebie; aplikacja nie korzysta z automatycznej kopii zapasowej systemu Android.</item>
     </string-array>
 
-    <string name="privacy_section3_title">3. Usługi zewnętrzne (podmioty trzecie)</string>
-    <string name="privacy_section3_intro">Aplikacja korzysta z zaufanych usług zewnętrznych do obsługi płatności i reklam:</string>
-    <string-array name="privacy_section3_bullets">
-        <item>Google Play Billing — obsługuje proces zakupu i weryfikacji subskrypcji FinArs Pro. Nie mamy dostępu do danych Twojej karty płatniczej (płatność obsługuje Google).</item>
-        <item>RevenueCat — po publikacji aplikacji będzie zarządzać statusem subskrypcji Pro (aktywna / wygasła / okres próbny), przetwarzając anonimowy identyfikator użytkownika i status zakupu, aby przyznać dostęp do funkcji Pro na wszystkich Twoich urządzeniach.</item>
-        <item>Google AdMob — wyświetla reklamy użytkownikom bez aktywnej subskrypcji Pro. AdMob może zbierać anonimowy identyfikator reklamowy oraz dane diagnostyczne w celu serwowania reklam (zgodnie z wyrażoną zgodą RODO/GDPR za pośrednictwem formularza zgody Google UMP). Polityka prywatności Google: policies.google.com/privacy</item>
-    </string-array>
+    <string name="privacy_section3_title">3. Kod PIN i biometria</string>
+    <string name="privacy_section3_body">Jeśli używasz kodu PIN, nie jest on przechowywany w postaci jawnej — na urządzeniu zapisywany jest wyłącznie jego skrót kryptograficzny (hash) z losową solą. PIN ani jego skrót nie są nigdzie przesyłane. Dane biometryczne (odcisk palca, twarz) nie są pobierane ani przechowywane przez FinArs — uwierzytelnianie realizuje system Android, a aplikacja otrzymuje tylko wynik weryfikacji.</string>
 
-    <string name="privacy_section4_title">4. Wymagane uprawnienia aplikacji</string>
-    <string name="privacy_section4_intro">Aplikacja prosi tylko o uprawnienia niezbędne do jej prawidłowego działania:</string>
+    <string name="privacy_section4_title">4. Usługi zewnętrzne</string>
+    <string name="privacy_section4_intro">Aplikacja korzysta z usług zewnętrznych do obsługi płatności, subskrypcji, reklam oraz wyszukiwania nazw produktów:</string>
     <string-array name="privacy_section4_bullets">
-        <item>Aparat — wymagany wyłącznie do skanowania kodów kreskowych w magazynie oraz robienia zdjęć paragonów.</item>
-        <item>Powiadomienia — wymagane do przypominania o terminach płatności faktur oraz przekroczeniu limitów (np. działalności nierejestrowanej).</item>
-        <item>Pamięć — wymagana na starszych wersjach systemu Android do zapisywania kopii zapasowych oraz eksportu raportów (np. PDF / CSV).</item>
-        <item>Dostęp do internetu — wymagany wyłącznie przez opisane wyżej moduły reklam i płatności; nie jest wykorzystywany do przesyłania Twoich danych finansowych.</item>
+        <item>Google Play Billing — obsługuje zakup subskrypcji FinArs Pro. Nie mamy dostępu do danych Twojej karty płatniczej. Polityka: policies.google.com/privacy</item>
+        <item>RevenueCat — zarządza statusem subskrypcji Pro (aktywna, wygasła, okres próbny). Przetwarza anonimowy identyfikator użytkownika, informacje techniczne o urządzeniu (np. adres IP) i dane zakupu. Nie otrzymuje Twoich danych finansowych z aplikacji. Polityka: revenuecat.com/privacy</item>
+        <item>Google AdMob i Google UMP — reklamy dla użytkowników bez Pro. AdMob może przetwarzać identyfikator reklamowy, adres IP i dane diagnostyczne, zgodnie ze zgodą wyrażoną w formularzu UMP. Polityka: policies.google.com/privacy</item>
+        <item>Open Food Facts — po zeskanowaniu kodu kreskowego w magazynie aplikacja może zapytać tę otwartą bazę o nazwę produktu. Wysyłany jest wyłącznie numer kodu (serwis technicznie otrzymuje też adres IP). Jeśli produktu nie znajdzie, wpiszesz nazwę ręcznie. Polityka: world.openfoodfacts.org/privacy</item>
     </string-array>
 
-    <string name="privacy_section5_title">5. Zarządzanie danymi i Twoje prawa</string>
-    <string name="privacy_section5_body">Ponieważ Twoje dane znajdują się na Twoim telefonie, masz nad nimi pełną kontrolę: możesz w dowolnym momencie wyczyścić wszystkie dane w aplikacji (Ustawienia -> Kopia zapasowa -> Wyczyść dane) lub po prostu odinstalować aplikację. Samodzielnie decydujesz, gdzie i kiedy eksportujesz plik kopii zapasowej.</string>
+    <string name="privacy_section5_title">5. Dane przekazywane usługom zewnętrznym</string>
+    <string name="privacy_section5_body">Usługom reklamowym ani systemowi płatności nie przekazujemy przychodów, wydatków, danych faktur i kontrahentów, numerów NIP, danych produktów, stanów magazynowych ani zdjęć paragonów. Jedyną informacją związaną z magazynem, która opuszcza urządzenie, jest numer zeskanowanego kodu kreskowego wysyłany do Open Food Facts. Pozostałe dane zostają na urządzeniu, chyba że sam je wyeksportujesz lub udostępnisz.</string>
 
-    <string name="privacy_section6_title">6. Dzieci</string>
-    <string name="privacy_section6_body">Aplikacja nie jest skierowana do osób poniżej 16 roku życia i nie zbiera świadomie żadnych danych od dzieci.</string>
+    <string name="privacy_section6_title">6. Podstawy prawne przetwarzania</string>
+    <string name="privacy_section6_intro">W zakresie, w jakim przetwarzamy dane osobowe, opieramy się na następujących podstawach (RODO):</string>
+    <string-array name="privacy_section6_bullets">
+        <item>Obsługa subskrypcji Pro — art. 6 ust. 1 lit. b (wykonanie umowy).</item>
+        <item>Reklamy i identyfikator reklamowy — art. 6 ust. 1 lit. a (zgoda zbierana przez Google UMP).</item>
+        <item>Wyszukiwanie nazwy produktu po kodzie kreskowym — art. 6 ust. 1 lit. b (funkcja wywołana przez Ciebie).</item>
+        <item>Kontakt e-mail, bezpieczeństwo i dochodzenie roszczeń — art. 6 ust. 1 lit. f (prawnie uzasadniony interes).</item>
+    </string-array>
 
-    <string name="privacy_section7_title">7. Zmiany w Polityce Prywatności</string>
-    <string name="privacy_section7_body">Zastrzegamy sobie prawo do aktualizacji niniejszej Polityki Prywatności. Każda zmiana zostanie opublikowana w tym miejscu wraz z nową datą aktualizacji.</string>
+    <string name="privacy_section7_title">7. Przekazywanie danych poza EOG</string>
+    <string name="privacy_section7_body">Google i RevenueCat mogą przetwarzać dane poza Europejskim Obszarem Gospodarczym, w tym w Stanach Zjednoczonych, na podstawie mechanizmów przewidzianych w RODO (np. decyzji o odpowiednim stopniu ochrony lub standardowych klauzul umownych). Lokalnie przechowywane dane finansowe i biznesowe nie są przekazywane poza EOG.</string>
 
-    <string name="privacy_section8_title">8. Kontakt</string>
-    <string name="privacy_section8_body">W razie jakichkolwiek pytań dotyczących prywatności lub działania aplikacji, skontaktuj się z nami: finars2026@gmail.com</string>
+    <string name="privacy_section8_title">8. Uprawnienia aplikacji</string>
+    <string name="privacy_section8_intro">Aplikacja prosi tylko o uprawnienia niezbędne do jej działania:</string>
+    <string-array name="privacy_section8_bullets">
+        <item>Aparat — wyłącznie do skanowania kodów kreskowych w magazynie i robienia zdjęć paragonów.</item>
+        <item>Powiadomienia — przypomnienia o terminach płatności faktur i przekroczeniu limitów.</item>
+        <item>Pamięć — na starszych wersjach Androida do zapisu kopii zapasowych i eksportu raportów (PDF / CSV).</item>
+        <item>Internet — wyłącznie dla subskrypcji, reklam i wyszukiwania produktów po kodzie kreskowym; nie służy do wysyłania Twoich danych finansowych.</item>
+    </string-array>
+
+    <string name="privacy_section9_title">9. Przechowywanie i usuwanie danych</string>
+    <string name="privacy_section9_body">Dane lokalne pozostają na urządzeniu do momentu ich usunięcia — możesz w dowolnym momencie wyczyścić wszystkie dane w aplikacji (Ustawienia -> Kopia zapasowa -> Wyczyść dane) lub odinstalować aplikację. Samodzielnie decydujesz, gdzie i kiedy eksportujesz plik kopii zapasowej. Wiadomości wysłane na adres e-mail administratora przechowujemy przez czas niezbędny do obsługi zgłoszenia oraz, w razie potrzeby, do dochodzenia lub obrony przed roszczeniami. Dane u zewnętrznych dostawców podlegają ich zasadom przechowywania i usuwania.</string>
+
+    <string name="privacy_section10_title">10. Twoje prawa</string>
+    <string name="privacy_section10_intro">Dane lokalne możesz samodzielnie usunąć w aplikacji lub w ustawieniach urządzenia. W zakresie, w jakim ma zastosowanie RODO, możesz mieć prawo do:</string>
+    <string-array name="privacy_section10_bullets">
+        <item>dostępu do danych, ich sprostowania i usunięcia;</item>
+        <item>ograniczenia przetwarzania;</item>
+        <item>sprzeciwu wobec przetwarzania;</item>
+        <item>przenoszenia danych, jeśli ma zastosowanie;</item>
+        <item>wycofania zgody w dowolnym momencie (bez wpływu na zgodność z prawem wcześniejszego przetwarzania);</item>
+        <item>wniesienia skargi do Prezesa Urzędu Ochrony Danych Osobowych (UODO).</item>
+    </string-array>
+
+    <string name="privacy_section11_title">11. Dzieci</string>
+    <string name="privacy_section11_body">Aplikacja nie jest skierowana do osób poniżej 16 roku życia i nie zbiera świadomie danych od dzieci.</string>
+
+    <string name="privacy_section12_title">12. Bezpieczeństwo</string>
+    <string name="privacy_section12_body">Stosujemy rozsądne środki techniczne i organizacyjne w celu ochrony danych. Żaden sposób przechowywania danych ani transmisji przez Internet nie gwarantuje jednak absolutnego bezpieczeństwa.</string>
+
+    <string name="privacy_section13_title">13. Zmiany w Polityce prywatności</string>
+    <string name="privacy_section13_body">Polityka może być okresowo aktualizowana, np. w razie zmian w funkcjach aplikacji, usługach zewnętrznych lub przepisach. Aktualna wersja zawsze jest publikowana w tym miejscu wraz z datą aktualizacji.</string>
+
+    <string name="privacy_section14_title">14. Kontakt</string>
+    <string name="privacy_section14_body">W razie pytań dotyczących prywatności lub działania aplikacji skontaktuj się z nami: apstudiomobile@gmail.com</string>
 
     <string name="about_intro">FinArs to kompleksowa aplikacja do zarządzania finansami działalności nierejestrowanej. Śledź przychody i wydatki, kontroluj limity, automatycznie licz podatki, wystawiaj faktury, zarządzaj magazynem i generuj gotowe raporty oraz deklaracje PIT — wszystko w jednym miejscu, z pełną historią operacji i powiadomień zawsze pod ręką.</string>
     <string name="about_subscription_note">⭐ Subskrypcja Pro: plan miesięczny lub roczny, 7 dni za darmo, anulowanie w każdej chwili.</string>
@@ -198,7 +232,6 @@
     <string name="paywall_footer_1">Bez opłat przez pierwsze 7 dni.\nAnulujesz w dowolnym momencie w sklepie z aplikacjami.</string>
     <string name="paywall_footer_1_store">Bez opłat przez pierwsze 7 dni.\nAnulujesz w każdej chwili w %1$s.</string>
     <string name="store_name_google_play">Google Play</string>
-    <string name="store_name_galaxy_store">Galaxy Store</string>
     <string name="paywall_data_safe">Twoje dane są bezpieczne</string>
     <string name="paywall_footer_2">Płatność rozpocznie się po 7 dniach.\nMożesz anulować w dowolnym momencie.</string>
     <string name="paywall_restore_purchases">Przywróć zakupy</string>

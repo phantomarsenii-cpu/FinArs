@@ -6,7 +6,7 @@ import java.util.Locale
 /**
  * Formats subscription prices using each currency's own conventional
  * symbol/placement (e.g. PLN -> "zł" after the number), instead of relying
- * on Play/Galaxy Billing's own formatted string or on [Locale.getDefault]
+ * on Google Play Billing's own formatted string or on [Locale.getDefault]
  * (the device's UI language).
  *
  * Both of those sources format the price using the *device's UI locale*,
@@ -64,7 +64,7 @@ object PriceFormatter {
     /**
      * Formats a real price. [amountMicros] and [currencyCode] come straight
      * from RevenueCat's [com.revenuecat.purchases.models.Price]. Falls back
-     * to [fallback] (normally Play's/Galaxy's own `.formatted` string) for
+     * to [fallback] (normally Play's own `.formatted` string) for
      * any currency we don't have a home locale for, so nothing breaks for
      * currencies outside the curated list above.
      */

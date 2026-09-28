@@ -6,7 +6,6 @@ package com.example.fa_ksiegowy
  */
 enum class StoreSource {
     GOOGLE_PLAY,
-    GALAXY_STORE,
     /** Установлено вручную (adb install, сторонний файловый менеджер и т.п.) — например при разработке через Termux. */
     OTHER
 }

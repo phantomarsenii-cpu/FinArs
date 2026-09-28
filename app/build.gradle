@@ -119,14 +119,9 @@ dependencies {
     implementation "androidx.work:work-runtime-ktx:2.9.0"
     implementation "com.tom-roush:pdfbox-android:2.0.27.0"
 
-    // RevenueCat: единый Pro-доступ (Monthly/Yearly) поверх Google Play Billing И
-    // Samsung IAP (Galaxy Store) — см. SubscriptionService.kt / StoreDetector.kt.
-    // "purchases" по умолчанию поддерживает Google Play; "purchases-store-galaxy"
-    // добавляет поддержку Samsung Galaxy Store (используется runtime-конфигурацией
-    // GalaxyConfiguration, выбирается автоматически в зависимости от того, откуда
-    // установлено приложение — см. StoreDetector.kt).
+    // RevenueCat: единый Pro-доступ (Monthly/Yearly) поверх Google Play Billing —
+    // см. SubscriptionService.kt / StoreDetector.kt.
     implementation "com.revenuecat.purchases:purchases:10.15.1"
-    implementation "com.revenuecat.purchases:purchases-store-galaxy:10.15.1"
 
 
     // Update 41: сканирование штрихкодов для склада (ZXing, без OpenCV)

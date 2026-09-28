@@ -9,12 +9,11 @@ import java.security.MessageDigest
  * (isPro/connect/restorePurchases/querySubscriptionPlans/launchPurchase), которые уже
  * вызываются из MainActivity/MineFragment/ReportFragment/SettingsFragment, SettingsProActivity и
  * AdsManager. Экраны, которые пользуются BillingManager, менять не пришлось — реальный
- * биллинг теперь идёт через RevenueCat (Google Play Billing ИЛИ Samsung IAP — в
- * зависимости от того, откуда установлено приложение, см. StoreDetector.kt), а не
+ * биллинг теперь идёт через RevenueCat (Google Play Billing, см. StoreDetector.kt), а не
  * напрямую через com.android.billingclient.
  *
  * Update: миграция с прямого Google Play BillingClient на RevenueCat, с поддержкой
- * единого Pro-доступа для Google Play и Samsung Galaxy Store.
+ * единого Pro-доступа через Google Play.
  */
 object BillingManager {
 
@@ -92,8 +91,7 @@ object BillingManager {
 
     /**
      * Запускает окно оплаты для выбранного плана (месяц/год). RevenueCat сам определяет,
-     * через какой магазин проводить покупку — тот, из которого установлено приложение
-     * (Google Play или Samsung Galaxy Store), см. StoreDetector/SubscriptionService.
+     * через какой магазин проводить покупку (Google Play), см. StoreDetector/SubscriptionService.
      *
      * @param onResult success=true, если покупка прошла и Pro активирован; errorMessage
      * заполнен при реальной ошибке (не при отмене пользователем — тогда userCancelled=true

@@ -65,51 +65,85 @@
     <string name="about_app">About the app</string>
     <string name="about_version_label">Version %1$s</string>
     <string name="settings_menu_privacy">Privacy Policy</string>
-    <string name="about_email">finars2026@gmail.com</string>
+    <string name="about_email">apstudiomobile@gmail.com</string>
 
-    <string name="privacy_updated_label">Last updated: August 11, 2026</string>
-    <string name="privacy_intro">We respect your privacy. FinArs was designed with maximum data security in mind — most information is stored exclusively on your device.</string>
+    <string name="privacy_updated_label">Last updated: September 28, 2026</string>
+    <string name="privacy_intro">We respect your privacy. FinArs is designed so that your financial and business data stays on your device. The app has no server of its own for storing users’ financial data.</string>
 
     <string name="privacy_section1_title">1. Data controller</string>
-    <string name="privacy_section1_body">The controller of the app is the creator of FinArs. For questions about privacy and data processing, contact: finars2026@gmail.com.</string>
+    <string name="privacy_section1_body">The controller of personal data is Arsenii Panicev, an independent developer operating under the AP STUDIO project. For questions about privacy and data processing, contact: apstudiomobile@gmail.com.</string>
 
-    <string name="privacy_section2_title">2. What data we process and where we store it</string>
-    <string name="privacy_section2_intro">All your key financial and business data is stored EXCLUSIVELY LOCALLY on your device. We do not have our own servers and do not collect this information.</string>
+    <string name="privacy_section2_title">2. Data stored locally</string>
+    <string name="privacy_section2_intro">Your key financial and business data is stored EXCLUSIVELY LOCALLY on your device and is not sent to the controller’s servers. We do not run our own cloud database for this data.</string>
     <string-array name="privacy_section2_bullets">
-        <item>Financial data and transactions: amounts, dates, categories, comments, and invoice details (including counterparty name and tax ID) never leave your phone.</item>
-        <item>Warehouse stock: product and stocktaking data is saved only in the app\'s local database.</item>
-        <item>Receipt photos attached manually to transactions: stored exclusively on your device, never uploaded to the cloud.</item>
-        <item>Security (PIN / biometrics): the PIN is stored in hashed form in the device\'s secure storage and is never transmitted anywhere.</item>
+        <item>Income and expenses: amounts, dates, categories and descriptions of transactions.</item>
+        <item>Invoices and counterparties, including tax IDs (NIP).</item>
+        <item>Products, stock levels and stocktaking.</item>
+        <item>Receipt photos attached to transactions and locally created reports.</item>
+        <item>Backups and exports are saved where you choose; the app does not use Android automatic backup.</item>
     </string-array>
 
-    <string name="privacy_section3_title">3. Third-party services</string>
-    <string name="privacy_section3_intro">The app uses trusted external services to handle payments and ads:</string>
-    <string-array name="privacy_section3_bullets">
-        <item>Google Play Billing — handles the purchase and verification of the FinArs Pro subscription. We never see your payment card details (payment is handled by Google).</item>
-        <item>RevenueCat — once the app is published, will manage the Pro subscription status (active / expired / trial), processing an anonymous user identifier and purchase status to grant Pro access across your devices.</item>
-        <item>Google AdMob — shows ads to users without an active Pro subscription. AdMob may collect an anonymous advertising ID and diagnostic data to serve ads (subject to GDPR consent collected via Google\'s UMP consent form). Google\'s privacy policy: policies.google.com/privacy</item>
-    </string-array>
+    <string name="privacy_section3_title">3. PIN and biometrics</string>
+    <string name="privacy_section3_body">If you use a PIN, it is not stored in plain text — only a cryptographic hash of it, with a random salt, is saved on the device. The PIN and its hash are never sent anywhere. FinArs does not collect or store biometric data (fingerprint, face) — Android performs the authentication and the app only receives the result.</string>
 
-    <string name="privacy_section4_title">4. Required app permissions</string>
-    <string name="privacy_section4_intro">The app only requests the permissions necessary for it to work:</string>
+    <string name="privacy_section4_title">4. Third-party services</string>
+    <string name="privacy_section4_intro">The app uses third-party services for payments, subscriptions, ads and product name lookup:</string>
     <string-array name="privacy_section4_bullets">
-        <item>Camera — required only to scan warehouse barcodes and to photograph receipts.</item>
-        <item>Notifications — required to remind you about invoice due dates and exceeded limits (e.g. unregistered activity).</item>
-        <item>Storage — required on older Android versions to save backups and export reports (e.g. PDF / CSV).</item>
-        <item>Internet access — required only by the ad and billing modules described above; it is not used to upload your financial data.</item>
+        <item>Google Play Billing — handles the purchase of the FinArs Pro subscription. We have no access to your payment card details. Policy: policies.google.com/privacy</item>
+        <item>RevenueCat — manages Pro subscription status (active, expired, trial). It processes an anonymous user ID, technical device information (e.g. IP address) and purchase data. It does not receive your financial data from the app. Policy: revenuecat.com/privacy</item>
+        <item>Google AdMob and Google UMP — ads for users without Pro. AdMob may process the advertising ID, IP address and diagnostic data, in line with the consent you give in the UMP form. Policy: policies.google.com/privacy</item>
+        <item>Open Food Facts — after you scan a barcode in the warehouse, the app may ask this open database for the product name. Only the barcode number is sent (the service also technically receives your IP address). If the product is not found, you enter the name manually. Policy: world.openfoodfacts.org/privacy</item>
     </string-array>
 
-    <string name="privacy_section5_title">5. Data management and your rights</string>
-    <string name="privacy_section5_body">Since your data lives on your phone, you are always in full control: you can clear all data in the app at any time (Settings -> Backup -> Clear data), or simply uninstall the app. You decide yourself where and when to export your backup file.</string>
+    <string name="privacy_section5_title">5. Data shared with third parties</string>
+    <string name="privacy_section5_body">We do not share revenue, expenses, invoice or counterparty data, tax IDs, product data, stock levels or receipt photos with advertising services or the payment system. The only warehouse-related information that leaves the device is the scanned barcode number sent to Open Food Facts. All other data stays on your device unless you export or share it yourself.</string>
 
-    <string name="privacy_section6_title">6. Children</string>
-    <string name="privacy_section6_body">The app is not directed at people under 16 years of age and does not knowingly collect any data from children.</string>
+    <string name="privacy_section6_title">6. Legal bases for processing</string>
+    <string name="privacy_section6_intro">Where we process personal data, we rely on the following bases (GDPR):</string>
+    <string-array name="privacy_section6_bullets">
+        <item>Pro subscription handling — Art. 6(1)(b) (performance of a contract).</item>
+        <item>Ads and advertising ID — Art. 6(1)(a) (consent collected via Google UMP).</item>
+        <item>Product name lookup by barcode — Art. 6(1)(b) (a feature you trigger).</item>
+        <item>Email contact, security and legal claims — Art. 6(1)(f) (legitimate interests).</item>
+    </string-array>
 
-    <string name="privacy_section7_title">7. Changes to this Privacy Policy</string>
-    <string name="privacy_section7_body">We reserve the right to update this Privacy Policy. Any change will be published here with a new update date.</string>
+    <string name="privacy_section7_title">7. Transfers outside the EEA</string>
+    <string name="privacy_section7_body">Google and RevenueCat may process data outside the European Economic Area, including in the United States, using mechanisms provided for in the GDPR (e.g. an adequacy decision or standard contractual clauses). Locally stored financial and business data is not transferred outside the EEA.</string>
 
-    <string name="privacy_section8_title">8. Contact</string>
-    <string name="privacy_section8_body">If you have any questions about privacy or how the app works, contact us: finars2026@gmail.com</string>
+    <string name="privacy_section8_title">8. App permissions</string>
+    <string name="privacy_section8_intro">The app asks only for permissions needed for it to work:</string>
+    <string-array name="privacy_section8_bullets">
+        <item>Camera — only for scanning barcodes in the warehouse and taking receipt photos.</item>
+        <item>Notifications — reminders about invoice due dates and exceeded limits.</item>
+        <item>Storage — on older Android versions, for saving backups and exporting reports (PDF / CSV).</item>
+        <item>Internet — only for subscriptions, ads and barcode product lookup; it is not used to send your financial data.</item>
+    </string-array>
+
+    <string name="privacy_section9_title">9. Data retention and deletion</string>
+    <string name="privacy_section9_body">Local data stays on your device until you delete it — you can clear all data in the app at any time (Settings -> Backup -> Clear data) or uninstall the app. You decide where and when to export a backup file. Messages sent to the controller’s email are kept for as long as needed to handle your request and, if necessary, to establish or defend legal claims. Data held by third-party providers is subject to their retention and deletion policies.</string>
+
+    <string name="privacy_section10_title">10. Your rights</string>
+    <string name="privacy_section10_intro">You can delete local data yourself in the app or in your device settings. Where the GDPR applies, you may have the right to:</string>
+    <string-array name="privacy_section10_bullets">
+        <item>access, rectification and erasure of your data;</item>
+        <item>restriction of processing;</item>
+        <item>object to processing;</item>
+        <item>data portability, where applicable;</item>
+        <item>withdraw consent at any time (without affecting the lawfulness of earlier processing);</item>
+        <item>lodge a complaint with the Polish supervisory authority, the President of the Personal Data Protection Office (UODO).</item>
+    </string-array>
+
+    <string name="privacy_section11_title">11. Children</string>
+    <string name="privacy_section11_body">The app is not directed at people under 16 and does not knowingly collect data from children.</string>
+
+    <string name="privacy_section12_title">12. Security</string>
+    <string name="privacy_section12_body">We use reasonable technical and organisational measures to protect data. However, no method of storage or transmission over the Internet can guarantee absolute security.</string>
+
+    <string name="privacy_section13_title">13. Changes to this policy</string>
+    <string name="privacy_section13_body">This policy may be updated from time to time, e.g. when app features, third-party services or regulations change. The current version is always published here together with its update date.</string>
+
+    <string name="privacy_section14_title">14. Contact</string>
+    <string name="privacy_section14_body">If you have questions about privacy or how the app works, contact us: apstudiomobile@gmail.com</string>
 
     <string name="about_intro">FinArs is a comprehensive app for managing the finances of unregistered business activity. Track income and expenses, monitor limits, automatically calculate taxes, issue invoices, manage your warehouse, and generate ready-made reports and tax returns — all in one place, with the full history of operations and notifications always at hand.</string>
     <string name="about_subscription_note">⭐ Pro subscription: monthly or yearly plan, 7 days free trial, cancel anytime.</string>
@@ -198,7 +232,6 @@
     <string name="paywall_footer_1">Free for the first 7 days.\nCancel anytime in your app store.</string>
     <string name="paywall_footer_1_store">Free for the first 7 days.\nCancel anytime in %1$s.</string>
     <string name="store_name_google_play">Google Play</string>
-    <string name="store_name_galaxy_store">Galaxy Store</string>
     <string name="paywall_data_safe">Your data is safe</string>
     <string name="paywall_footer_2">Billing starts after 7 days.\nYou can cancel at any time.</string>
     <string name="paywall_restore_purchases">Restore purchases</string>

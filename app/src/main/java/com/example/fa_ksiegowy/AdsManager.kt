@@ -32,7 +32,7 @@ import com.google.android.ump.UserMessagingPlatform
  * Диагностика (для отладки показа рекламы): каждый шаг пишет свой статус в
  * debugView — маленькую серую строку под баннером. Работает ТОЛЬКО в debug-
  * сборке (проверка applicationInfo.FLAG_DEBUGGABLE) — в релизной сборке,
- * которая уходит в Google Play/Galaxy Store, ни Log.i, ни текст в debugView
+ * которая уходит в Google Play, ни Log.i, ни текст в debugView
  * не пишутся, так что диагностический вывод не может попасть на экран
  * обычного пользователя или в системный logcat.
  */

@@ -61,7 +61,7 @@ class SettingsProActivity : BaseActivity() {
 
     /**
      * Текст "Отмена в любой момент в ..." должен называть тот магазин, через который
-     * реально пройдёт подписка (Google Play или Galaxy Store) — а не быть жёстко
+     * реально пройдёт подписка (Google Play) — а не быть жёстко
      * зашитым на Google Play, как раньше. Если магазин не определён (тестовая
      * установка через Termux/adb, Test Store) — оставляем нейтральный текст без
      * названия магазина.
@@ -70,7 +70,6 @@ class SettingsProActivity : BaseActivity() {
         val tvFooter = findViewById<TextView>(R.id.tv_footer_cancel_anytime)
         val storeNameRes = when (SubscriptionService.detectedStore) {
             StoreSource.GOOGLE_PLAY -> R.string.store_name_google_play
-            StoreSource.GALAXY_STORE -> R.string.store_name_galaxy_store
             StoreSource.OTHER -> null
         }
         tvFooter.text = if (storeNameRes != null) {
@@ -125,7 +124,7 @@ class SettingsProActivity : BaseActivity() {
     /**
      * Считает реальный эквивалент "в месяц" для годового плана из ЦЕНЫ, которую фактически
      * покажет магазин (amountMicros/currencyCode из RevenueCat) — она уже включает локальный
-     * налог (VAT/GST и т.п.), который Google Play/Galaxy Store добавляют поверх цены,
+     * налог (VAT/GST и т.п.), который Google Play добавляет поверх цены,
      * заданной в консоли. Раньше это число было зашито строкой (8,33 zł) и не совпадало
      * с реальной ценой после налога — см. Update-67.
      */

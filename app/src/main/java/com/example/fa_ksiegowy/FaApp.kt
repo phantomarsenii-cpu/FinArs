@@ -26,7 +26,7 @@ import java.util.Locale
  * файл не всплывает первым при обычном открытии папки "Загрузки" в
  * файловом менеджере.
  *
- * В RELEASE-сборке (то, что уходит в Google Play / Galaxy Store) стектрейс
+ * В RELEASE-сборке (то, что уходит в Google Play) стектрейс
  * НЕ пишется в публичную папку — детальная информация об ошибке (имена
  * классов/методов, внутренняя структура приложения) не должна быть доступна
  * произвольному приложению на устройстве пользователя. Вместо этого лог
@@ -44,8 +44,8 @@ class FaApp : Application() {
         // Синхронизируем официальный механизм AndroidX для языка приложения с нашим
         // сохранённым выбором — см. комментарий в LocaleHelper.setLanguage().
         LocaleHelper.syncAppCompatDelegate(this)
-        // Инициализация RevenueCat: определяет магазин установки (Google Play / Galaxy
-        // Store / прочее) и конфигурирует Purchases SDK соответствующим ключом.
+        // Инициализация RevenueCat: определяет магазин установки (Google Play /
+        // прочее) и конфигурирует Purchases SDK соответствующим ключом.
         // См. SubscriptionService.kt и StoreDetector.kt.
         SubscriptionService.init(this)
         LimitsNotificationWorker.createChannel(this)

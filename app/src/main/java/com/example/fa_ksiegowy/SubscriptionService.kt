@@ -12,8 +12,6 @@ import com.revenuecat.purchases.PurchaseParams
 import com.revenuecat.purchases.Purchases
 import com.revenuecat.purchases.PurchasesConfiguration
 import com.revenuecat.purchases.PurchasesError
-import com.revenuecat.purchases.galaxy.GalaxyBillingMode
-import com.revenuecat.purchases.galaxy.GalaxyConfiguration
 import com.revenuecat.purchases.getCustomerInfoWith
 import com.revenuecat.purchases.getOfferingsWith
 import com.revenuecat.purchases.interfaces.UpdatedCustomerInfoListener
@@ -23,8 +21,7 @@ import com.revenuecat.purchases.restorePurchasesWith
 
 /**
  * Единая точка входа в RevenueCat — определяет магазин установки (Google Play /
- * Galaxy Store / прочее), конфигурирует Purchases SDK нужным ключом и store-специфичным
- * способом, следит за статусом Entitlement "premium" и даёт остальному приложению
+ * прочее), конфигурирует Purchases SDK нужным ключом, следит за статусом Entitlement "premium" и даёт остальному приложению
  * простой синхронный флаг isProActive().
  *
  * BillingManager.kt — это тонкая обёртка НАД этим сервисом, сохраняющая старые
@@ -39,23 +36,16 @@ object SubscriptionService {
 
     // Тестовый ключ (RevenueCat Test Store) — им сейчас проверяется весь сценарий покупки
     // (offerings/paywall/purchase/restore) БЕЗ реального биллинга какого-либо магазина.
-    // Test Store не привязан к Google Play или Galaxy Store — работает одинаково для обоих.
+    // Test Store не привязан к Google Play — работает одинаково на любом устройстве.
     private const val TEST_API_KEY = "test_BFXzgXddRkopsjEDdnaRTNtVXuY"
 
-    // Боевые публичные ключи RevenueCat (RevenueCat Dashboard -> Project settings -> API keys).
-    // У каждого магазина СВОЙ ключ (goog_ для Google Play, galx_ для Galaxy Store).
-    // Используются ТОЛЬКО когда StoreDetector реально определил соответствующий магазин
+    // Боевой публичный ключ RevenueCat (RevenueCat Dashboard -> Project settings -> API keys).
+    // Используется ТОЛЬКО когда StoreDetector реально определил Google Play
     // как источник установки — см. buildConfiguration(). При установке не через сам
     // магазин (adb install, тестовая сборка из Termux и т.п.) SDK всё равно уходит на
-    // Test Store — это ожидаемо, т.к. ни Google Play, ни Galaxy Store не признают такую
-    // установку "своей" и не смогут провести боевую покупку.
+    // Test Store — это ожидаемо, т.к. Google Play не признаёт такую
+    // установку "своей" и не сможет провести боевую покупку.
     private const val GOOGLE_PLAY_API_KEY = "goog_BCFJgInKuKxeVFyaScMVzMJMqCi"
-    private const val GALAXY_STORE_API_KEY = "galx_EKAyCEqEnDpKXmPjQCvobAludwy"
-
-    // Пока идёт тестирование на Galaxy-устройстве через боевой ключ (после того как он появится),
-    // GalaxyBillingMode.TEST позволяет проверить покупку без реального списания денег.
-    // ВАЖНО: перед сборкой релиза для Galaxy Store — переключить на GalaxyBillingMode.PRODUCTION.
-    private val GALAXY_BILLING_MODE_FOR_TESTING = GalaxyBillingMode.TEST
 
     /**
      * Идентификатор Entitlement в RevenueCat Dashboard, дающий доступ ко всем Pro-функциям
@@ -75,8 +65,8 @@ object SubscriptionService {
     private const val KEY_IS_PRO_RC = "isProRevenueCat"
 
     /**
-     * amountMicros/currencyCode — «сырая» цена без форматирования (цена, которую Google Play /
-     * Galaxy Store реально показывают пользователю, УЖЕ с учётом локального налога/VAT).
+     * amountMicros/currencyCode — «сырая» цена без форматирования (цена, которую Google Play
+     * реально показывает пользователю, УЖЕ с учётом локального налога/VAT).
      * Нужны, чтобы посчитать эквивалент "в месяц" для годового плана в правильной валюте
      * пользователя, а не полагаться на один захардкоженный курс/налог (см. Update-67).
      */
@@ -132,25 +122,18 @@ object SubscriptionService {
     /**
      * Выбирает конфигурацию SDK в зависимости от того, откуда установлено приложение:
      * - Установлено из Google Play -> покупки идут через Google Play Billing.
-     * - Установлено из Galaxy Store -> покупки идут через Samsung IAP (GalaxyConfiguration).
      * - Иначе (adb install / сборка для разработки) -> Test Store, чтобы можно было
      *   тестировать весь сценарий на любом устройстве без реального магазина.
      *
-     * Пока боевые ключи (GOOGLE_PLAY_API_KEY / GALAXY_STORE_API_KEY) не заданы, всегда
+     * Пока боевые ключи (GOOGLE_PLAY_API_KEY) не заданы, всегда
      * используется Test Store — так безопаснее: приложение никогда случайно не попытается
      * достучаться до боевого проекта RevenueCat без настроенного ключа.
      */
     private fun buildConfiguration(context: Context): PurchasesConfiguration {
         val appContext = context.applicationContext
-        val useGalaxy = detectedStore == StoreSource.GALAXY_STORE && GALAXY_STORE_API_KEY.isNotBlank()
         val useGooglePlay = detectedStore == StoreSource.GOOGLE_PLAY && GOOGLE_PLAY_API_KEY.isNotBlank()
 
         return when {
-            useGalaxy -> {
-                Log.i(TAG, "Configuring RevenueCat for Galaxy Store")
-                GalaxyConfiguration.Builder(appContext, GALAXY_STORE_API_KEY, GALAXY_BILLING_MODE_FOR_TESTING)
-                    .build()
-            }
             useGooglePlay -> {
                 Log.i(TAG, "Configuring RevenueCat for Google Play")
                 PurchasesConfiguration.Builder(appContext, GOOGLE_PLAY_API_KEY).build()

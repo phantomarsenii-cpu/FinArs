@@ -30,7 +30,7 @@ import java.security.spec.X509EncodedKeySpec
 /**
  * Update: с переходом на RevenueCat (см. SubscriptionService.kt) этот класс больше НЕ
  * используется — валидацию покупок теперь делает сервер RevenueCat (для Test Store —
- * сам RevenueCat, для боевых Google Play / Galaxy Store — соответствующий магазин).
+ * сам RevenueCat, для боевого Google Play — сам магазин).
  * Класс оставлен в проекте на случай, если понадобится доп. локальная проверка,
  * но нигде не вызывается.
  */

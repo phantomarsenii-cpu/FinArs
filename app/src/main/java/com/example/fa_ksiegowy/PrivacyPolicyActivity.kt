@@ -20,12 +20,18 @@ class PrivacyPolicyActivity : BaseActivity() {
     private val sections = listOf(
         Section(R.string.privacy_section1_title, null, R.string.privacy_section1_body, null),
         Section(R.string.privacy_section2_title, R.string.privacy_section2_intro, null, R.array.privacy_section2_bullets),
-        Section(R.string.privacy_section3_title, R.string.privacy_section3_intro, null, R.array.privacy_section3_bullets),
+        Section(R.string.privacy_section3_title, null, R.string.privacy_section3_body, null),
         Section(R.string.privacy_section4_title, R.string.privacy_section4_intro, null, R.array.privacy_section4_bullets),
         Section(R.string.privacy_section5_title, null, R.string.privacy_section5_body, null),
-        Section(R.string.privacy_section6_title, null, R.string.privacy_section6_body, null),
+        Section(R.string.privacy_section6_title, R.string.privacy_section6_intro, null, R.array.privacy_section6_bullets),
         Section(R.string.privacy_section7_title, null, R.string.privacy_section7_body, null),
-        Section(R.string.privacy_section8_title, null, R.string.privacy_section8_body, null)
+        Section(R.string.privacy_section8_title, R.string.privacy_section8_intro, null, R.array.privacy_section8_bullets),
+        Section(R.string.privacy_section9_title, null, R.string.privacy_section9_body, null),
+        Section(R.string.privacy_section10_title, R.string.privacy_section10_intro, null, R.array.privacy_section10_bullets),
+        Section(R.string.privacy_section11_title, null, R.string.privacy_section11_body, null),
+        Section(R.string.privacy_section12_title, null, R.string.privacy_section12_body, null),
+        Section(R.string.privacy_section13_title, null, R.string.privacy_section13_body, null),
+        Section(R.string.privacy_section14_title, null, R.string.privacy_section14_body, null)
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {
