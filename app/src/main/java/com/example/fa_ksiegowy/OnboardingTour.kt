@@ -120,6 +120,7 @@ class OnboardingTour(private val activity: MainActivity) {
         index = i
         saveStep(activity, i)
         val step = steps[i]
+        ov.beginTransition()
 
         // Показываем вкладку, к которой относится шаг (openTab сам ничего не делает, если она уже открыта).
         activity.openTab(step.tab)

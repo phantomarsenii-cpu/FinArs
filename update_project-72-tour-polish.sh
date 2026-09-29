@@ -1,3 +1,21 @@
+#!/usr/bin/env bash
+# Update 72: обучающий тур — плавная анимация + исправление текстов.
+#  - анимация: затемнение рисуется одним Path (без аппаратного offscreen-слоя и PorterDuff.CLEAR),
+#    подсветка плавно переезжает к новой цели, карточка мягко гаснет/появляется со сдвигом,
+#    при смене вкладки экран под оверлеем перестраивается за ровным затемнением (нет рывков);
+#  - тексты приведены в соответствие с приложением: квартальный лимит (не месячный), нет выбора
+#    вида деятельности, в "Налог и лимиты" — ввод прочих доходов из других источников,
+#    отчёты Excel/PDF, что входит в Pro, что в резервной копии и т. д.
+# Запускать из КОРНЯ репозитория.
+set -euo pipefail
+
+M=app/src/main
+J=$M/java/com/example/fa_ksiegowy
+for f in "$J/TourOverlayView.kt" "$J/OnboardingTour.kt" "$M/res/values/strings.xml"; do
+  [ -f "$f" ] || { echo "Запусти из корня репозитория (нет $f)"; exit 1; }
+done
+
+cat > "$J/TourOverlayView.kt" <<'KT_OVERLAY'
 package com.example.fa_ksiegowy
 
 import android.animation.ValueAnimator
@@ -418,3 +436,42 @@ class TourOverlayView(context: Context) : FrameLayout(context) {
         private const val CARD_MARGIN_DP = 16
     }
 }
+KT_OVERLAY
+echo "обновлён: $J/TourOverlayView.kt"
+
+python3 - <<'PY'
+import re
+M = "app/src/main"
+J = M + "/java/com/example/fa_ksiegowy"
+def read(p): return open(p, encoding="utf-8").read()
+def write(p, s): open(p, "w", encoding="utf-8").write(s); print("изменён:", p)
+
+# --- OnboardingTour.kt: перед сменой шага "схлопываем" подсветку и гасим карточку ---
+p = J + "/OnboardingTour.kt"
+s = read(p)
+if "ov.beginTransition()" not in s:
+    old = "        val step = steps[i]\n\n"
+    assert s.count(old) == 1, "не найден фрагмент в OnboardingTour.goTo"
+    s = s.replace(old, "        val step = steps[i]\n        ov.beginTransition()\n\n")
+    write(p, s)
+else:
+    print("OnboardingTour: уже применено")
+
+# --- тексты ---
+U = {'tour_balance_text': {'values': 'Your balance, income and expenses for the current period. Everything updates instantly after each entry.', 'values-pl': 'Saldo, przychody i wydatki za bieżący okres. Wszystko odświeża się od razu po dodaniu wpisu.', 'values-ru': 'Баланс, доходы и расходы за текущий период. Данные обновляются сразу после каждой записи.', 'values-uk': 'Баланс, доходи й витрати за поточний період. Дані оновлюються одразу після кожного запису.'}, 'tour_limits_title': {'values': 'Quarterly limit', 'values-pl': 'Limit kwartalny', 'values-ru': 'Квартальный лимит', 'values-uk': 'Квартальний ліміт'}, 'tour_limits_text': {'values': 'FinArs tracks the quarterly income limit for unregistered activity and the yearly tax thresholds, and warns you at 80%, 95% and 100%. Tap the card for details.', 'values-pl': 'FinArs pilnuje kwartalnego limitu przychodu dla działalności nierejestrowanej oraz rocznych progów podatkowych i ostrzega przy 80%, 95% i 100%. Dotknij karty, aby zobaczyć szczegóły.', 'values-ru': 'FinArs следит за квартальным лимитом дохода незарегистрированной деятельности и годовыми налоговыми порогами и предупреждает при 80%, 95% и 100%. Нажмите на карточку, чтобы увидеть подробности.', 'values-uk': 'FinArs стежить за квартальним лімітом доходу незареєстрованої діяльності та річними податковими порогами й попереджає при 80%, 95% і 100%. Натисніть на картку, щоб побачити подробиці.'}, 'tour_chart_text': {'values': 'Two lines show how your income and expenses change during the month, so trends are easy to spot.', 'values-pl': 'Dwie linie pokazują, jak w ciągu miesiąca zmieniają się Twoje przychody i wydatki — trendy widać od razu.', 'values-ru': 'Две линии показывают, как в течение месяца меняются ваши доходы и расходы, — тренды видны сразу.', 'values-uk': 'Дві лінії показують, як протягом місяця змінюються ваші доходи й витрати, — тенденції видно одразу.'}, 'tour_bell_text': {'values': 'Reminders about limits, tax advance payments, the annual return deadline, low stock and invoice due dates appear here.', 'values-pl': 'Tutaj pojawiają się przypomnienia o limitach, zaliczkach na podatek, terminie rocznego zeznania, niskim stanie magazynu i terminach płatności faktur.', 'values-ru': 'Здесь появляются напоминания о лимитах, авансовых платежах по налогу, сроке подачи годовой декларации, низких остатках на складе и сроках оплаты фактур.', 'values-uk': 'Тут з’являються нагадування про ліміти, авансові платежі з податку, строк подання річної декларації, низькі залишки на складі та строки оплати фактур.'}, 'tour_add_text': {'values': 'Tap + to add income or an expense: amount, date, category, comment and an attachment such as a receipt photo. You can also make an entry recurring.', 'values-pl': 'Dotknij +, aby dodać przychód lub wydatek: kwotę, datę, kategorię, komentarz i załącznik, np. zdjęcie paragonu. Wpis możesz też ustawić jako cykliczny.', 'values-ru': 'Нажмите +, чтобы добавить доход или расход: сумму, дату, категорию, комментарий и вложение, например фото чека. Запись можно сделать повторяющейся.', 'values-uk': 'Натисніть +, щоб додати дохід або витрату: суму, дату, категорію, коментар і вкладення, наприклад фото чека. Запис можна зробити повторюваним.'}, 'tour_history_text': {'values': 'Your latest entries are listed here. Open the full history to search, filter by date, and switch between All, Income and Expenses.', 'values-pl': 'Tu widać ostatnie wpisy. W pełnej historii możesz wyszukiwać, filtrować według daty i przełączać Wszystkie, Przychody i Wydatki.', 'values-ru': 'Здесь видны последние записи. В полной истории можно искать, фильтровать по дате и переключаться между «Все», «Доходы» и «Расходы».', 'values-uk': 'Тут видно останні записи. У повній історії можна шукати, фільтрувати за датою та перемикатися між «Усі», «Доходи» і «Витрати».'}, 'tour_reports_text': {'values': 'Pick a period to see how income, expenses and tax are split. Reports for a month, a year or any period export to Excel, and the sales register (Ewidencja) to PDF. Yearly and custom reports are Pro.', 'values-pl': 'Wybierz okres, aby zobaczyć podział przychodów, wydatków i podatku. Raporty za miesiąc, rok lub dowolny okres eksportujesz do Excela, a ewidencję sprzedaży do PDF. Raport roczny i dowolny okres to funkcje Pro.', 'values-ru': 'Выберите период, чтобы увидеть распределение доходов, расходов и налога. Отчёты за месяц, год или любой период выгружаются в Excel, а книга продаж (Ewidencja) — в PDF. Годовой и произвольный отчёты — функции Pro.', 'values-uk': 'Оберіть період, щоб побачити розподіл доходів, витрат і податку. Звіти за місяць, рік або будь-який період вивантажуються в Excel, а книга продажів (Ewidencja) — у PDF. Річний і довільний звіти — функції Pro.'}, 'tour_tax_title': {'values': 'Tax and limits', 'values-pl': 'Podatek i limity', 'values-ru': 'Налог и лимиты', 'values-uk': 'Податки та ліміти'}, 'tour_tax_text': {'values': 'Important: enter your other income for the year here (employment, another business and so on), if you have any. It is added to the income from this app when FinArs calculates your tax and checks the 30,000 zł tax-free amount.', 'values-pl': 'Ważne: wpisz tutaj swoje inne przychody z tego roku (etat, inna działalność itp.), jeśli je masz. Są one doliczane do przychodów z aplikacji, gdy FinArs liczy podatek i sprawdza kwotę wolną 30 000 zł.', 'values-ru': 'Важно: укажите здесь свои прочие доходы за год из других источников (работа по найму, другая деятельность и т. п.), если они есть. Они прибавляются к доходу из приложения, когда FinArs считает налог и проверяет необлагаемый минимум 30 000 zł.', 'values-uk': 'Важливо: вкажіть тут свої інші доходи за рік з інших джерел (робота за наймом, інша діяльність тощо), якщо вони є. Вони додаються до доходу із застосунку, коли FinArs рахує податок і перевіряє неоподатковуваний мінімум 30 000 zł.'}, 'tour_backup_text': {'values': 'Save your entries, including receipt photos, to a file and restore them after losing your phone or reinstalling. This is a Pro feature. Do it regularly.', 'values-pl': 'Zapisz wpisy, także zdjęcia paragonów, do pliku i przywróć je po utracie telefonu lub reinstalacji. To funkcja Pro. Rób to regularnie.', 'values-ru': 'Сохраните записи, включая фото чеков, в файл и восстановите их при потере телефона или переустановке. Это функция Pro. Делайте это регулярно.', 'values-uk': 'Збережіть записи, зокрема фото чеків, у файл і відновіть їх після втрати телефона чи перевстановлення. Це функція Pro. Робіть це регулярно.'}, 'tour_pro_text': {'values': 'Pro unlocks invoices (PDF), yearly and custom-period reports in Excel, PIT-36 return, backup and restore, and removes ads. It starts with a 7-day free trial.', 'values-pl': 'Pro odblokowuje faktury (PDF), raporty roczne i za dowolny okres w Excelu, deklarację PIT-36, kopię zapasową i przywracanie oraz usuwa reklamy. Na start jest 7 dni za darmo.', 'values-ru': 'Pro открывает счета и фактуры (PDF), годовой и произвольный отчёты в Excel, декларацию PIT-36, резервное копирование и восстановление и убирает рекламу. Начинается с 7 дней бесплатно.', 'values-uk': 'Pro відкриває рахунки та фактури (PDF), річний і довільний звіти в Excel, декларацію PIT-36, резервне копіювання й відновлення та прибирає рекламу. Починається з 7 днів безкоштовно.'}}
+
+for d, items in {}.items():
+    pass
+langs = ["values", "values-pl", "values-ru", "values-uk"]
+for d in langs:
+    p = M + "/res/" + d + "/strings.xml"
+    s = read(p)
+    for key, per in U.items():
+        pat = re.compile(r'(<string name="' + re.escape(key) + r'"[^>]*>)(.*?)(</string>)', re.S)
+        assert len(pat.findall(s)) == 1, d + ": не найден ключ " + key
+        s = pat.sub(lambda m: m.group(1) + per[d] + m.group(3), s, count=1)
+    write(p, s)
+PY
+
+echo
+echo "Готово: анимация тура сглажена, тексты исправлены."
