@@ -174,11 +174,12 @@ class OnboardingTour(private val activity: MainActivity) {
 
     /** Если элемент внутри ScrollView — плавно докручиваем так, чтобы он оказался по центру. */
     private fun scrollIntoView(v: View, done: () -> Unit) {
-        var p = v.parent
+        var cur: View? = v
         var sv: ScrollView? = null
-        while (p is View) {
-            if (p is ScrollView) { sv = p; break }
-            p = p.parent
+        while (cur != null) {
+            val par = cur.parent
+            if (par is ScrollView) { sv = par; break }
+            cur = par as? View
         }
         if (sv == null) { done(); return }
 
