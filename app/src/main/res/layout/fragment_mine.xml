@@ -99,6 +99,7 @@
 
         <!-- ===================== Karta Bilans ===================== -->
         <LinearLayout
+            android:id="@+id/card_balance"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
@@ -299,6 +300,7 @@
 
         <!-- ===================== Karta Podsumowanie miesiaca ===================== -->
         <LinearLayout
+            android:id="@+id/card_monthly_summary"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"

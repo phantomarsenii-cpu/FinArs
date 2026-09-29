@@ -790,4 +790,40 @@
 
     <!-- Update: explain why screenshots are blocked (shown once per app session) -->
     <string name="screenshot_blocked_hint">Zrzuty ekranu są wyłączone na tym ekranie, aby chronić Twoje dane finansowe</string>
+
+    <!-- ===== Update 70: обучающий тур (onboarding) ===== -->
+    <string name="tour_skip">Pomiń</string>
+    <string name="tour_back">Wstecz</string>
+    <string name="tour_next">Dalej</string>
+    <string name="tour_done">Zaczynamy</string>
+    <string name="tour_counter">%1$d / %2$d</string>
+    <string name="settings_menu_tutorial">Samouczek</string>
+    <string name="tour_welcome_title">Witaj w FinArs</string>
+    <string name="tour_welcome_text">Krótki przewodnik pokaże, gdzie co jest i jak prowadzić ewidencję. Zajmie około minuty. Możesz go pominąć w każdej chwili i powtórzyć później w Ustawieniach.</string>
+    <string name="tour_balance_title">Twoje saldo</string>
+    <string name="tour_balance_text">Przychody, wydatki i szacowany podatek w jednym miejscu. Wszystko odświeża się od razu po dodaniu wpisu.</string>
+    <string name="tour_limits_title">Limity i progi</string>
+    <string name="tour_limits_text">FinArs pilnuje Twoich miesięcznych i rocznych limitów i ostrzega, zanim się do nich zbliżysz. Dotknij karty, aby zobaczyć szczegóły, lub „Edytuj”, aby zmienić formę działalności.</string>
+    <string name="tour_chart_title">Przychody i wydatki</string>
+    <string name="tour_chart_text">Dwie linie pokazują, jak zmieniają się Twoje przychody i wydatki w czasie — trendy widać od razu.</string>
+    <string name="tour_bell_title">Powiadomienia</string>
+    <string name="tour_bell_text">Tutaj pojawiają się przypomnienia o limitach, zaliczkach na podatek, niskim stanie magazynu i nieopłaconych fakturach.</string>
+    <string name="tour_add_title">Dodaj wpis</string>
+    <string name="tour_add_text">Dotknij +, aby zapisać przychód lub wydatek: kwotę, datę, komentarz, metodę płatności i zdjęcie paragonu.</string>
+    <string name="tour_history_title">Wszystkie transakcje</string>
+    <string name="tour_history_text">Tu widać ostatnie wpisy. Pełna historia pozwala wyszukiwać i filtrować wpisy według daty.</string>
+    <string name="tour_magazin_title">Magazyn</string>
+    <string name="tour_magazin_text">Zarządzaj produktami i stanami: dodawaj towary ręcznie lub skanerem kodów kreskowych, rób inwentaryzację i otrzymuj alerty o niskim stanie.</string>
+    <string name="tour_reports_title">Raporty</string>
+    <string name="tour_reports_text">Wybierz okres, aby zobaczyć podział przychodów, wydatków i podatku. Możesz też wyeksportować raport lub ewidencję sprzedaży do PDF.</string>
+    <string name="tour_tax_title">Ustawienia podatkowe</string>
+    <string name="tour_tax_text">Na początku ustaw formę działalności, stawki i inne dochody. Na tej podstawie FinArs poprawnie liczy podatek i limity.</string>
+    <string name="tour_backup_title">Kopia zapasowa</string>
+    <string name="tour_backup_text">Zapisz wszystkie dane do pliku, także zdjęcia paragonów, i przywróć je po utracie telefonu lub reinstalacji. Rób to regularnie.</string>
+    <string name="tour_pro_title">FinArs Pro</string>
+    <string name="tour_pro_text">Odblokuj dodatkowe funkcje, takie jak faktury i kopia zapasowa, oraz usuń reklamy.</string>
+    <string name="tour_language_title">Język</string>
+    <string name="tour_language_text">Zmieniaj język aplikacji w dowolnej chwili: English, Polski, Русский lub Українська.</string>
+    <string name="tour_final_title">Wszystko gotowe!</string>
+    <string name="tour_final_text">Zacznij od dodania pierwszego wpisu przyciskiem +. Ten samouczek możesz powtórzyć w Ustawieniach.</string>
 </resources>

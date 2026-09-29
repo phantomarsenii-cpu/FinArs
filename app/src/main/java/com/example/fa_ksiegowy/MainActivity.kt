@@ -2,6 +2,8 @@ package com.example.fa_ksiegowy
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import androidx.fragment.app.Fragment
 
 /**
@@ -104,6 +106,56 @@ class MainActivity : BaseActivity() {
         BottomNavBar.Tab.REPORTS -> ReportFragment()
         BottomNavBar.Tab.SETTINGS -> SettingsFragment()
         else -> MineFragment()
+    }
+
+    // ===================== Update 70: обучающий тур =====================
+    private var tour: OnboardingTour? = null
+    private val tourHandler = Handler(Looper.getMainLooper())
+
+    override fun onResume() {
+        super.onResume()
+        scheduleTourIfNeeded()
+    }
+
+    // Пока поверх открыта форма согласия (UMP) или другой диалог, окно теряет фокус —
+    // тур стартует, как только фокус вернулся.
+    override fun onWindowFocusChanged(hasFocus: Boolean) {
+        super.onWindowFocusChanged(hasFocus)
+        if (hasFocus) scheduleTourIfNeeded()
+    }
+
+    override fun onDestroy() {
+        tourHandler.removeCallbacksAndMessages(null)
+        tour?.dismiss(false)
+        tour = null
+        super.onDestroy()
+    }
+
+    private fun canShowTourNow(): Boolean =
+        !isFinishing && !isDestroyed && hasWindowFocus() &&
+            TermsActivity.isAccepted(this) && !AppLockState.isLocked
+
+    private fun scheduleTourIfNeeded() {
+        if (tour?.isRunning == true) return
+        if (!TermsActivity.isAccepted(this) || AppLockState.isLocked) return
+        if (!OnboardingTour.shouldAutoStart(this)) return
+        tourHandler.removeCallbacksAndMessages(null)
+        tourHandler.postDelayed({
+            if (!canShowTourNow()) return@postDelayed
+            if (tour?.isRunning == true) return@postDelayed
+            val t = tour ?: OnboardingTour(this).also { tour = it }
+            t.start()
+        }, 900)
+    }
+
+    /** Повторный запуск тура из Настроек. */
+    fun startTutorial() {
+        tourHandler.removeCallbacksAndMessages(null)
+        tour?.dismiss(false)
+        OnboardingTour.reset(this)
+        val t = OnboardingTour(this)
+        tour = t
+        t.start(fromBeginning = true)
     }
 
     companion object {

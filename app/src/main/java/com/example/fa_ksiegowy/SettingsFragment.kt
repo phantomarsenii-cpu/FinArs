@@ -80,6 +80,10 @@ class SettingsFragment : Fragment() {
         requireView().findViewById<View>(R.id.btn_menu_privacy).setOnClickListener {
             startActivity(Intent(requireContext(), PrivacyPolicyActivity::class.java))
         }
+        // Update 70: повторный запуск обучающего тура.
+        requireView().findViewById<View>(R.id.btn_menu_tutorial).setOnClickListener {
+            (activity as? MainActivity)?.startTutorial()
+        }
         requireView().findViewById<View>(R.id.btn_menu_about).setOnClickListener {
             startActivity(Intent(requireContext(), AboutActivity::class.java))
         }

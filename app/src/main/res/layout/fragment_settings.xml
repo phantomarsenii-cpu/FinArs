@@ -74,6 +74,15 @@
             <ImageView style="@style/SettingsRowChevron"/>
         </LinearLayout>
 
+        <!-- Samouczek (powtorzenie wycieczki po aplikacji) -->
+        <LinearLayout android:id="@+id/btn_menu_tutorial" style="@style/SettingsRow">
+            <FrameLayout style="@style/SettingsRowIconBadge" android:background="@drawable/icon_badge_blue_bg">
+                <ImageView style="@style/SettingsRowIcon" android:src="@drawable/ic_info"/>
+            </FrameLayout>
+            <TextView style="@style/SettingsRowLabel" android:text="@string/settings_menu_tutorial"/>
+            <ImageView style="@style/SettingsRowChevron"/>
+        </LinearLayout>
+
         <!-- Wersja Pro -->
         <LinearLayout android:id="@+id/btn_menu_pro" style="@style/SettingsRow">
             <FrameLayout style="@style/SettingsRowIconBadge" android:background="@drawable/icon_badge_orange_bg">

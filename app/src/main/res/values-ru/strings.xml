@@ -790,4 +790,40 @@
 
     <!-- Update: explain why screenshots are blocked (shown once per app session) -->
     <string name="screenshot_blocked_hint">На этом экране запрещены скриншоты для защиты ваших финансовых данных</string>
+
+    <!-- ===== Update 70: обучающий тур (onboarding) ===== -->
+    <string name="tour_skip">Пропустить</string>
+    <string name="tour_back">Назад</string>
+    <string name="tour_next">Далее</string>
+    <string name="tour_done">Начать</string>
+    <string name="tour_counter">%1$d / %2$d</string>
+    <string name="settings_menu_tutorial">Обучение</string>
+    <string name="tour_welcome_title">Добро пожаловать в FinArs</string>
+    <string name="tour_welcome_text">Короткое обучение покажет, где что находится и как вести учёт. Это займёт около минуты. Его можно пропустить в любой момент и пройти снова в Настройках.</string>
+    <string name="tour_balance_title">Ваш баланс</string>
+    <string name="tour_balance_text">Доходы, расходы и примерный налог — всё в одном месте. Данные обновляются сразу после каждой записи.</string>
+    <string name="tour_limits_title">Лимиты и пороги</string>
+    <string name="tour_limits_text">FinArs следит за месячными и годовыми лимитами и предупреждает, прежде чем вы к ним приблизитесь. Нажмите на карточку, чтобы увидеть подробности, или «Изменить», чтобы поменять форму деятельности.</string>
+    <string name="tour_chart_title">Доходы и расходы</string>
+    <string name="tour_chart_text">Две линии показывают, как меняются ваши доходы и расходы со временем, — тренды видны сразу.</string>
+    <string name="tour_bell_title">Уведомления</string>
+    <string name="tour_bell_text">Здесь появляются напоминания о лимитах, авансовых платежах по налогу, низких остатках на складе и неоплаченных счетах.</string>
+    <string name="tour_add_title">Добавить запись</string>
+    <string name="tour_add_text">Нажмите +, чтобы записать доход или расход: сумму, дату, комментарий, способ оплаты и фото чека.</string>
+    <string name="tour_history_title">Все операции</string>
+    <string name="tour_history_text">Здесь видны последние записи. В полной истории можно искать и фильтровать записи по дате.</string>
+    <string name="tour_magazin_title">Склад</string>
+    <string name="tour_magazin_text">Управляйте товарами и остатками: добавляйте позиции вручную или сканером штрихкодов, проводите инвентаризацию и получайте уведомления о низком остатке.</string>
+    <string name="tour_reports_title">Отчёты</string>
+    <string name="tour_reports_text">Выберите период, чтобы увидеть распределение доходов, расходов и налога. Отчёт или книгу продаж (Ewidencja) можно выгрузить в PDF.</string>
+    <string name="tour_tax_title">Налоговые настройки</string>
+    <string name="tour_tax_text">Сначала укажите форму деятельности, ставки и прочие доходы. На этом основании FinArs правильно считает налог и лимиты.</string>
+    <string name="tour_backup_title">Резервная копия</string>
+    <string name="tour_backup_text">Сохраните все данные в файл, включая фото чеков, и восстановите их при потере телефона или переустановке. Делайте это регулярно.</string>
+    <string name="tour_pro_title">FinArs Pro</string>
+    <string name="tour_pro_text">Откройте дополнительные функции, такие как счета и резервное копирование, и уберите рекламу.</string>
+    <string name="tour_language_title">Язык</string>
+    <string name="tour_language_text">Язык приложения можно сменить в любой момент: English, Polski, Русский или Українська.</string>
+    <string name="tour_final_title">Всё готово!</string>
+    <string name="tour_final_text">Начните с первой записи — кнопка +. Это обучение можно пройти снова в Настройках.</string>
 </resources>
