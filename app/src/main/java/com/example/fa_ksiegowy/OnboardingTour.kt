@@ -121,6 +121,10 @@ class OnboardingTour(private val activity: MainActivity) {
         saveStep(activity, i)
         val step = steps[i]
         ov.beginTransition()
+        val guardIndex = i
+        handler.postDelayed({
+            if (overlay != null && busy && index == guardIndex) render(step, null)
+        }, 3500)
 
         // Показываем вкладку, к которой относится шаг (openTab сам ничего не делает, если она уже открыта).
         activity.openTab(step.tab)

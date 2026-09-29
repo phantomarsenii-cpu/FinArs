@@ -222,9 +222,35 @@ object EdgeToEdge {
         /** Ciemny ton kladziony na rozmycie (przed maska). */
         var tintColor: Int = Color.TRANSPARENT
 
+        // Update 73: на слабых устройствах (PerformanceMode.MINIMAL) вместо размытия — простой
+        // градиент-затемнение: без BlurView и без saveLayer на каждый кадр.
+        private var blurOn = true
+        private val scrimPaint = Paint(Paint.ANTI_ALIAS_FLAG)
+        private val levelListener: (Int) -> Unit = { applyLevel(it) }
+
         init {
             setWillNotDraw(false)
             addView(blurView, LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT))
+            applyLevel(PerformanceMode.level(context))
+        }
+
+        private fun applyLevel(level: Int) {
+            val on = level < PerformanceMode.MINIMAL
+            if (on == blurOn && blurView.visibility == (if (on) VISIBLE else GONE)) return
+            blurOn = on
+            blurView.visibility = if (on) VISIBLE else GONE
+            invalidate()
+        }
+
+        override fun onAttachedToWindow() {
+            super.onAttachedToWindow()
+            PerformanceMode.addListener(levelListener)
+            applyLevel(PerformanceMode.level(context))
+        }
+
+        override fun onDetachedFromWindow() {
+            PerformanceMode.removeListener(levelListener)
+            super.onDetachedFromWindow()
         }
 
         override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
@@ -253,10 +279,29 @@ object EdgeToEdge {
                     Shader.TileMode.CLAMP
                 )
             }
+            // тот же градиент, но цветом затемнения — для режима без размытия
+            val scrim = Color.argb(215, 5, 9, 24)
+            val scrimClear = Color.argb(0, 5, 9, 24)
+            scrimPaint.shader = if (fadeFromEdge == Gravity.TOP) {
+                LinearGradient(0f, 0f, 0f, h.toFloat(), scrim, scrimClear, Shader.TileMode.CLAMP)
+            } else {
+                val solid = solidPx.coerceIn(0, h - 1)
+                val frac = (h - solid).toFloat() / h
+                LinearGradient(
+                    0f, 0f, 0f, h.toFloat(),
+                    intArrayOf(scrimClear, scrim, scrim),
+                    floatArrayOf(0f, frac, 1f),
+                    Shader.TileMode.CLAMP
+                )
+            }
             invalidate()
         }
 
         override fun dispatchDraw(canvas: Canvas) {
+            if (!blurOn) {
+                canvas.drawRect(0f, 0f, width.toFloat(), height.toFloat(), scrimPaint)
+                return
+            }
             val save = canvas.saveLayer(0f, 0f, width.toFloat(), height.toFloat(), null)
             super.dispatchDraw(canvas)
             if (Color.alpha(tintColor) > 0) canvas.drawColor(tintColor)

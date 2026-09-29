@@ -815,7 +815,7 @@
     <string name="tour_chart_title">Income and expenses</string>
     <string name="tour_chart_text">Two lines show how your income and expenses change during the month, so trends are easy to spot.</string>
     <string name="tour_bell_title">Notifications</string>
-    <string name="tour_bell_text">Reminders about limits, tax advance payments, the annual return deadline, low stock and invoice due dates appear here.</string>
+    <string name="tour_bell_text">Reminders about limits, low stock, invoice due dates and the annual PIT deadline appear here.</string>
     <string name="tour_add_title">Add an entry</string>
     <string name="tour_add_text">Tap + to add income or an expense: amount, date, category, comment and an attachment such as a receipt photo. You can also make an entry recurring.</string>
     <string name="tour_history_title">All transactions</string>

@@ -360,6 +360,10 @@ class TourOverlayView(context: Context) : FrameLayout(context) {
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
+        if (PerformanceMode.level(context) >= PerformanceMode.LITE) {
+            pulse = 0.6f   // слабое устройство: рамка без бесконечной пульсации
+            return
+        }
         pulseAnimator = ValueAnimator.ofFloat(0f, 1f).apply {
             duration = 900
             repeatCount = ValueAnimator.INFINITE

@@ -807,7 +807,7 @@
     <string name="tour_chart_title">Przychody i wydatki</string>
     <string name="tour_chart_text">Dwie linie pokazują, jak w ciągu miesiąca zmieniają się Twoje przychody i wydatki — trendy widać od razu.</string>
     <string name="tour_bell_title">Powiadomienia</string>
-    <string name="tour_bell_text">Tutaj pojawiają się przypomnienia o limitach, zaliczkach na podatek, terminie rocznego zeznania, niskim stanie magazynu i terminach płatności faktur.</string>
+    <string name="tour_bell_text">Tutaj pojawiają się przypomnienia o limitach, niskim stanie magazynu, terminach płatności faktur i terminie rocznego zeznania PIT.</string>
     <string name="tour_add_title">Dodaj wpis</string>
     <string name="tour_add_text">Dotknij +, aby dodać przychód lub wydatek: kwotę, datę, kategorię, komentarz i załącznik, np. zdjęcie paragonu. Wpis możesz też ustawić jako cykliczny.</string>
     <string name="tour_history_title">Wszystkie transakcje</string>

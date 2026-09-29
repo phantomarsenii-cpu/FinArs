@@ -114,6 +114,8 @@ class MainActivity : BaseActivity() {
 
     override fun onResume() {
         super.onResume()
+        // Update 73: один раз за запуск замеряем плавность и при необходимости облегчаем анимации.
+        PerformanceMode.startMonitor(this)
         scheduleTourIfNeeded()
     }
 
