@@ -109,7 +109,7 @@ class UpdatePrompt(private val activity: MainActivity) {
             setTextSize(TypedValue.COMPLEX_UNIT_SP, 17f)
             setTypeface(typeface, Typeface.BOLD)
         }
-        val text = TextView(activity).apply {
+        val bodyView = TextView(activity).apply {
             text = activity.getString(R.string.update_available_text)
             setTextColor(ContextCompat.getColor(activity, R.color.text_secondary))
             setTextSize(TypedValue.COMPLEX_UNIT_SP, 14f)
@@ -155,7 +155,7 @@ class UpdatePrompt(private val activity: MainActivity) {
             ).apply { marginStart = dp(6) })
         }
         c.addView(title)
-        c.addView(text)
+        c.addView(bodyView)
         c.addView(row, LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT
         ).apply { topMargin = dp(10) })
