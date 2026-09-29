@@ -826,4 +826,10 @@
     <string name="tour_language_text">Язык приложения можно сменить в любой момент: English, Polski, Русский или Українська.</string>
     <string name="tour_final_title">Всё готово!</string>
     <string name="tour_final_text">Начните с первой записи — кнопка +. Это обучение можно пройти снова в Настройках.</string>
+
+    <!-- ===== Update 74: плашка обновления ===== -->
+    <string name="update_available_title">Доступно обновление</string>
+    <string name="update_available_text">Вышла новая версия FinArs с улучшениями и исправлениями.</string>
+    <string name="update_now">Обновить</string>
+    <string name="update_later">Позже</string>
 </resources>

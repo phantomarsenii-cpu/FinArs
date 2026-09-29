@@ -110,6 +110,7 @@ class MainActivity : BaseActivity() {
 
     // ===================== Update 70: обучающий тур =====================
     private var tour: OnboardingTour? = null
+    private val updatePrompt = UpdatePrompt(this)
     private val tourHandler = Handler(Looper.getMainLooper())
 
     override fun onResume() {
@@ -117,6 +118,7 @@ class MainActivity : BaseActivity() {
         // Update 73: один раз за запуск замеряем плавность и при необходимости облегчаем анимации.
         PerformanceMode.startMonitor(this)
         scheduleTourIfNeeded()
+        updatePrompt.schedule()   // Update 74: плашка "Доступно обновление"
     }
 
     // Пока поверх открыта форма согласия (UMP) или другой диалог, окно теряет фокус —
@@ -130,6 +132,7 @@ class MainActivity : BaseActivity() {
         tourHandler.removeCallbacksAndMessages(null)
         tour?.dismiss(false)
         tour = null
+        updatePrompt.dismiss()
         super.onDestroy()
     }
 

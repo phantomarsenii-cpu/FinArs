@@ -834,4 +834,10 @@
     <string name="tour_language_text">Switch the app language at any time: English, Polski, Русский or Українська.</string>
     <string name="tour_final_title">You’re all set!</string>
     <string name="tour_final_text">Start by adding your first entry with the + button. You can replay this tutorial any time in Settings.</string>
+
+    <!-- ===== Update 74: плашка обновления ===== -->
+    <string name="update_available_title">Update available</string>
+    <string name="update_available_text">A new version of FinArs is available with improvements and fixes.</string>
+    <string name="update_now">Update</string>
+    <string name="update_later">Later</string>
 </resources>

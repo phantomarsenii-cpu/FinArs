@@ -826,4 +826,10 @@
     <string name="tour_language_text">Мову застосунку можна змінити будь-коли: English, Polski, Русский або Українська.</string>
     <string name="tour_final_title">Усе готово!</string>
     <string name="tour_final_text">Почніть із першого запису — кнопка +. Це навчання можна пройти знову в Налаштуваннях.</string>
+
+    <!-- ===== Update 74: плашка обновления ===== -->
+    <string name="update_available_title">Доступне оновлення</string>
+    <string name="update_available_text">Вийшла нова версія FinArs з покращеннями та виправленнями.</string>
+    <string name="update_now">Оновити</string>
+    <string name="update_later">Пізніше</string>
 </resources>
