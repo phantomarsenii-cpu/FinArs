@@ -102,7 +102,8 @@ object SubscriptionService {
         detectedStore = StoreDetector.detect(context)
         Log.i(TAG, "Detected install source: $detectedStore")
 
-        Purchases.logLevel = LogLevel.DEBUG
+        // Update 79: подробные логи RevenueCat только в debug-сборке.
+        Purchases.logLevel = if (isDebuggableBuild(context)) LogLevel.DEBUG else LogLevel.WARN
         Purchases.configure(buildConfiguration(context))
 
         // Слушатель обновлений CustomerInfo — сработает при покупке/восстановлении/
@@ -129,9 +130,15 @@ object SubscriptionService {
      * используется Test Store — так безопаснее: приложение никогда случайно не попытается
      * достучаться до боевого проекта RevenueCat без настроенного ключа.
      */
+    private fun isDebuggableBuild(context: Context): Boolean =
+        (context.applicationInfo.flags and android.content.pm.ApplicationInfo.FLAG_DEBUGGABLE) != 0
+
     private fun buildConfiguration(context: Context): PurchasesConfiguration {
         val appContext = context.applicationContext
-        val useGooglePlay = detectedStore == StoreSource.GOOGLE_PLAY && GOOGLE_PLAY_API_KEY.isNotBlank()
+        // Update 79: в РЕЛИЗНОЙ сборке тестовый ключ Test Store не используется никогда —
+        // вне Google Play покупка просто не пройдёт. Test Store остаётся только для debug-сборок.
+        val useGooglePlay = (detectedStore == StoreSource.GOOGLE_PLAY || !isDebuggableBuild(appContext)) &&
+            GOOGLE_PLAY_API_KEY.isNotBlank()
 
         return when {
             useGooglePlay -> {
