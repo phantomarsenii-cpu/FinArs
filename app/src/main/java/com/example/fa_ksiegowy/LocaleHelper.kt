@@ -26,13 +26,23 @@ object LocaleHelper {
         // смены языка приложения: он сам корректно пересоздаёт (recreate) ВСЕ активные
         // Activity с новой конфигурацией, независимо от launchMode. Вызываем его здесь
         // же, чтобы оба механизма всегда были синхронизированы.
-        AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(code))
+        // Update 78: на Android 12 и ниже (API < 33) AppCompat использует свой обходной механизм,
+        // который конфликтует с attachBaseContext-обёрткой и вызывает лаги/пересоздание Activity.
+        // Там язык применяют attachBaseContext + перезапуск MainActivity, поэтому вызов пропускаем.
+        if (android.os.Build.VERSION.SDK_INT >= 33) {
+            AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(code))
+        }
     }
 
     /** Синхронизирует AppCompatDelegate с уже сохранённым языком — вызывается один раз
      *  при старте процесса (FaApp.onCreate), ДО создания первой Activity. */
     fun syncAppCompatDelegate(context: Context) {
-        AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(getOrInitLanguage(context)))
+        // Update 78: на Android 12 и ниже (API < 33) AppCompat использует свой обходной механизм,
+        // который конфликтует с attachBaseContext-обёрткой и вызывает лаги/пересоздание Activity.
+        // Там язык применяют attachBaseContext + перезапуск MainActivity, поэтому вызов пропускаем.
+        if (android.os.Build.VERSION.SDK_INT >= 33) {
+            AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(getOrInitLanguage(context)))
+        }
     }
 
     /** Текущий язык приложения — сохранённый выбор пользователя, а если его ещё
