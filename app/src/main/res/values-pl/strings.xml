@@ -67,7 +67,7 @@
     <string name="settings_menu_privacy">Polityka prywatności</string>
     <string name="about_email">apstudiomobile@gmail.com</string>
 
-    <string name="privacy_updated_label">Ostatnia aktualizacja: 28 września 2026 r.</string>
+    <string name="privacy_updated_label">Ostatnia aktualizacja: 5 października 2026 r.</string>
     <string name="privacy_intro">Szanujemy Twoją prywatność. Aplikacja FinArs została zaprojektowana tak, aby dane finansowe i biznesowe były przechowywane lokalnie na Twoim urządzeniu. Aplikacja nie posiada własnego serwera do przechowywania danych finansowych użytkowników.</string>
 
     <string name="privacy_section1_title">1. Administrator danych</string>
@@ -81,6 +81,7 @@
         <item>Produkty, stany magazynowe i inwentaryzacja.</item>
         <item>Zdjęcia paragonów dodane do transakcji oraz lokalnie tworzone raporty.</item>
         <item>Kopie zapasowe i eksporty są zapisywane w miejscu wybranym przez Ciebie; aplikacja nie korzysta z automatycznej kopii zapasowej systemu Android.</item>
+        <item>Pliki PDF faktur utworzone w aplikacji są zapisywane automatycznie w folderze Dokumenty/FinArs/Invoices na urządzeniu; inne aplikacje, którym zezwolisz na dostęp do plików, mogą je odczytać. Możesz je w każdej chwili usunąć.</item>
     </string-array>
 
     <string name="privacy_section3_title">3. Kod PIN i biometria</string>
@@ -93,6 +94,7 @@
         <item>RevenueCat — zarządza statusem subskrypcji Pro (aktywna, wygasła, okres próbny). Przetwarza anonimowy identyfikator użytkownika, informacje techniczne o urządzeniu (np. adres IP) i dane zakupu. Nie otrzymuje Twoich danych finansowych z aplikacji. Polityka: revenuecat.com/privacy</item>
         <item>Google AdMob i Google UMP — reklamy dla użytkowników bez Pro. AdMob może przetwarzać identyfikator reklamowy, adres IP i dane diagnostyczne, zgodnie ze zgodą wyrażoną w formularzu UMP. Polityka: policies.google.com/privacy</item>
         <item>Open Food Facts — po zeskanowaniu kodu kreskowego w magazynie aplikacja może zapytać tę otwartą bazę o nazwę produktu. Wysyłany jest wyłącznie numer kodu (serwis technicznie otrzymuje też adres IP). Jeśli produktu nie znajdzie, wpiszesz nazwę ręcznie. Polityka: world.openfoodfacts.org/privacy</item>
+        <item>Google Play (aktualizacje aplikacji) — aplikacja może pytać Google Play, czy dostępna jest nowsza wersja. W tym celu nie są wysyłane żadne dane finansowe ani biznesowe. Polityka: policies.google.com/privacy</item>
     </string-array>
 
     <string name="privacy_section5_title">5. Dane przekazywane usługom zewnętrznym</string>

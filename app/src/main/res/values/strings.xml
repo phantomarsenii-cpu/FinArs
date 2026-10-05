@@ -67,7 +67,7 @@
     <string name="settings_menu_privacy">Privacy Policy</string>
     <string name="about_email">apstudiomobile@gmail.com</string>
 
-    <string name="privacy_updated_label">Last updated: September 28, 2026</string>
+    <string name="privacy_updated_label">Last updated: October 5, 2026</string>
     <string name="privacy_intro">We respect your privacy. FinArs is designed so that your financial and business data stays on your device. The app has no server of its own for storing users’ financial data.</string>
 
     <string name="privacy_section1_title">1. Data controller</string>
@@ -81,6 +81,7 @@
         <item>Products, stock levels and stocktaking.</item>
         <item>Receipt photos attached to transactions and locally created reports.</item>
         <item>Backups and exports are saved where you choose; the app does not use Android automatic backup.</item>
+        <item>Invoice PDF files created in the app are saved automatically in the Documents/FinArs/Invoices folder on your device; other apps you allow to access your files may be able to read them, and you can delete them at any time.</item>
     </string-array>
 
     <string name="privacy_section3_title">3. PIN and biometrics</string>
@@ -93,6 +94,7 @@
         <item>RevenueCat — manages Pro subscription status (active, expired, trial). It processes an anonymous user ID, technical device information (e.g. IP address) and purchase data. It does not receive your financial data from the app. Policy: revenuecat.com/privacy</item>
         <item>Google AdMob and Google UMP — ads for users without Pro. AdMob may process the advertising ID, IP address and diagnostic data, in line with the consent you give in the UMP form. Policy: policies.google.com/privacy</item>
         <item>Open Food Facts — after you scan a barcode in the warehouse, the app may ask this open database for the product name. Only the barcode number is sent (the service also technically receives your IP address). If the product is not found, you enter the name manually. Policy: world.openfoodfacts.org/privacy</item>
+        <item>Google Play (app updates) — the app may ask Google Play whether a newer version is available. No financial or business data is sent for this. Policy: policies.google.com/privacy</item>
     </string-array>
 
     <string name="privacy_section5_title">5. Data shared with third parties</string>
