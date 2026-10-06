@@ -59,7 +59,10 @@ class ReportFragment : Fragment() {
             runIfPro { showCustomRangePicker() }
         }
         requireView().findViewById<View>(R.id.btn_period).setOnClickListener { showPeriodPicker() }
-        requireView().findViewById<Button>(R.id.btn_report_ewidencja).setOnClickListener { showEwidencjaPeriodPicker() }
+        requireView().findViewById<Button>(R.id.btn_report_ewidencja).setOnClickListener {
+            // Update 80: Ewidencja sprzedaży PDF — только Pro.
+            ProGate.require(requireContext(), R.string.ewidencja_pro_locked_message) { showEwidencjaPeriodPicker() }
+        }
         loadSummary()
         loadTrend()
     }
@@ -311,18 +314,8 @@ class ReportFragment : Fragment() {
 
     /** Годовой и произвольный отчёт — платная функция; месячный остаётся бесплатным. */
     private fun runIfPro(action: () -> Unit) {
-        if (BillingManager.isPro(requireContext())) {
-            action()
-        } else {
-            androidx.appcompat.app.AlertDialog.Builder(requireContext())
-                .setTitle(getString(R.string.pro_feature_locked_title))
-                .setMessage(getString(R.string.pro_feature_locked_message))
-                .setPositiveButton(getString(R.string.pro_feature_locked_go_settings)) { _, _ ->
-                    (activity as? MainActivity)?.openTab(BottomNavBar.Tab.SETTINGS)
-                }
-                .setNegativeButton(getString(R.string.dialog_close), null)
-                .show()
-        }
+        // Update 80: единый диалог Pro (замок + переход к подписке).
+        ProGate.require(requireContext(), R.string.pro_feature_locked_message, action)
     }
 
     /**

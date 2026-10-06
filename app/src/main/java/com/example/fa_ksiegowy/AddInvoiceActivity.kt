@@ -120,10 +120,16 @@ class AddInvoiceActivity : BaseActivity() {
         findViewById<Button>(R.id.btn_due_date).setOnClickListener { showDueDatePicker() }
         updateDueDateButton()
 
+        // Update 80: список контрагентов и их сохранение — только Pro (страховка: сам экран
+        // фактур уже доступен только с Pro).
         findViewById<Button>(R.id.btn_select_contractor).setOnClickListener {
-            selectContractorLauncher.launch(Intent(this, SelectContractorActivity::class.java))
+            ProGate.require(this, R.string.contractors_pro_locked_message) {
+                selectContractorLauncher.launch(Intent(this, SelectContractorActivity::class.java))
+            }
         }
-        findViewById<Button>(R.id.btn_save_contractor).setOnClickListener { confirmSaveContractor() }
+        findViewById<Button>(R.id.btn_save_contractor).setOnClickListener {
+            ProGate.require(this, R.string.contractors_pro_locked_message) { confirmSaveContractor() }
+        }
 
         findViewById<Button>(R.id.btn_add_warehouse_items).setOnClickListener {
             selectProductsLauncher.launch(Intent(this, SelectProductsActivity::class.java))

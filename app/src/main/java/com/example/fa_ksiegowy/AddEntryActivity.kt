@@ -97,7 +97,13 @@ class AddEntryActivity : BaseActivity() {
         findViewById<Button>(R.id.btn_delete).setOnClickListener { confirmDelete() }
         findViewById<View>(R.id.btn_date).setOnClickListener { showDatePicker() }
         findViewById<Button>(R.id.btn_ryczalt_category).setOnClickListener { showRyczaltCategoryPicker() }
-        findViewById<android.widget.Switch>(R.id.sw_recurring).setOnCheckedChangeListener { _, checked ->
+        // Update 80: повторяющиеся записи — только Pro.
+        findViewById<android.widget.Switch>(R.id.sw_recurring).setOnCheckedChangeListener { btn, checked ->
+            if (checked && !BillingManager.isPro(this)) {
+                btn.isChecked = false
+                ProGate.showLockedDialog(this, R.string.recurring_pro_locked_message)
+                return@setOnCheckedChangeListener
+            }
             wantsRecurring = checked
         }
 
@@ -160,6 +166,19 @@ class AddEntryActivity : BaseActivity() {
             val existing = editingEntry
             CoroutineScope(Dispatchers.IO).launch {
                 val dao = AppDatabase.getInstance(applicationContext).entryDao()
+                // Update 80: бесплатный потолок — 30 приходов и 30 расходов в месяц.
+                // Проверяем только новые записи (и смену типа при редактировании).
+                if ((existing == null || existing.isIncome != currentIsIncome) &&
+                    ProGate.freeLimitReached(applicationContext, currentIsIncome, selectedDateMillis)) {
+                    withContext(Dispatchers.Main) {
+                        findViewById<Button>(R.id.btn_save).isEnabled = true
+                        ProGate.showLockedDialog(
+                            this@AddEntryActivity,
+                            if (currentIsIncome) R.string.free_limit_income_message else R.string.free_limit_expense_message
+                        )
+                    }
+                    return@launch
+                }
                 val finalReceiptPath = renameReceiptToStandardName(
                     selectedImagePath, selectedDateMillis, currentIsIncome, amt, existing?.id
                 )
@@ -247,23 +266,10 @@ class AddEntryActivity : BaseActivity() {
         // Update: ta sciezka pomijala sprawdzenie Pro (w przeciwienstwie do analogicznego
         // przycisku na ekranie glownym) — kazdy mogl wystawiac faktury bez subskrypcji.
         findViewById<Button>(R.id.btn_type_invoice).setOnClickListener {
-            if (BillingManager.isPro(this)) {
+            // Update 80: единый диалог Pro (замок + переход к подписке).
+            ProGate.require(this, R.string.invoice_pro_locked_message) {
                 startActivity(Intent(this, AddInvoiceActivity::class.java))
                 finish()
-            } else {
-                androidx.appcompat.app.AlertDialog.Builder(this)
-                    .setTitle(getString(R.string.pro_feature_locked_title))
-                    .setMessage(getString(R.string.invoice_pro_locked_message))
-                    .setPositiveButton(getString(R.string.pro_feature_locked_go_settings)) { _, _ ->
-                        // Update: SettingsActivity удалён — теперь MainActivity (единый
-                        // фрагмент-хост), с флагом, какую вкладку открыть.
-                        startActivity(Intent(this, MainActivity::class.java).apply {
-                            flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
-                            putExtra(MainActivity.EXTRA_OPEN_TAB, MainActivity.TAB_SETTINGS)
-                        })
-                    }
-                    .setNegativeButton(getString(R.string.dialog_close), null)
-                    .show()
             }
         }
     }

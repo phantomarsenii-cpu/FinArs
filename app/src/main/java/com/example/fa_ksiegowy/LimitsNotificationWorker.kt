@@ -37,6 +37,9 @@ class LimitsNotificationWorker(context: Context, params: WorkerParameters) : Cor
             val limits = LimitsHelper.compute(applicationContext)
             val prefs = applicationContext.getSharedPreferences("settings", Context.MODE_PRIVATE)
             val today = SDF_DAY.format(java.util.Date())
+            // Update 80: напоминания об авансах и о сроке PIT — только Pro; все предупреждения
+            // о лимитах остаются бесплатными.
+            val isPro = BillingManager.isPro(applicationContext)
 
             // 1) Kwartalny limit działalności nierejestrowanej (10 813,50 zł od 2026 r.) — 80% / 95% / превышение.
             if (limits.activityType == ActivityType.NIEZAREJESTROWANA) {
@@ -115,7 +118,7 @@ class LimitsNotificationWorker(context: Context, params: WorkerParameters) : Cor
             // толку (см. isRegisteredJdg в ActivityTypeHelper.kt).
             val cal = Calendar.getInstance()
             val day = cal.get(Calendar.DAY_OF_MONTH)
-            if (limits.activityType.isRegisteredJdg && day in 15..20) {
+            if (isPro && limits.activityType.isRegisteredJdg && day in 15..20) {
                 notifyOnce(
                     prefs, "advance_${cal.get(Calendar.YEAR)}_${cal.get(Calendar.MONTH)}",
                     ctx.getString(R.string.notif_advance_title),
@@ -129,8 +132,8 @@ class LimitsNotificationWorker(context: Context, params: WorkerParameters) : Cor
 
             // 5) Напоминание о сроке подачи PIT (15 lutego – 30 kwietnia).
             val month = cal.get(Calendar.MONTH) // 0-based
-            if (month == Calendar.FEBRUARY || month == Calendar.MARCH ||
-                (month == Calendar.APRIL && day <= 30)
+            if (isPro && (month == Calendar.FEBRUARY || month == Calendar.MARCH ||
+                (month == Calendar.APRIL && day <= 30))
             ) {
                 notifyOnce(
                     prefs, "pit_deadline_${cal.get(Calendar.YEAR)}_$month",

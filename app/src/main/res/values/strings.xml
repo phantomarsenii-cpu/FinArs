@@ -148,18 +148,19 @@
     <string name="privacy_section14_body">If you have questions about privacy or how the app works, contact us: apstudiomobile@gmail.com</string>
 
     <string name="about_intro">FinArs is a comprehensive app for managing the finances of unregistered business activity. Track income and expenses, monitor limits, automatically calculate taxes, issue invoices, manage your warehouse, and generate ready-made reports and tax returns — all in one place, with the full history of operations and notifications always at hand.</string>
-    <string name="about_subscription_note">⭐ Pro subscription: monthly or yearly plan, 7 days free trial, cancel anytime.</string>
+    <string name="about_subscription_note">⭐ Free plan: up to 30 income and 30 expense entries per month, monthly report, limit tracking and warnings, PIN lock. Pro subscription: monthly or yearly plan, 7 days free trial, cancel anytime.</string>
 
     <string name="about_section_finance_title">📊 Finances and taxes</string>
     <string-array name="about_bullets_finance">
         <item>Income and expense tracking with attached receipts and colour-coded categories</item>
+        <item>Free plan: up to 30 income and 30 expense entries per month — Pro removes the limit</item>
         <item>Automatic profit and tax calculation (12%/32% scale)</item>
-        <item>Recurring transactions (rent, subscriptions) created automatically every month</item>
+        <item>Recurring transactions (rent, subscriptions) created automatically every month (Pro)</item>
         <item>Unregistered-activity limit tracking (120,000 zł threshold)</item>
-        <item>Notification history for approaching and exceeded limits, invoice reminders and more</item>
+        <item>Warnings about approaching and exceeded limits (free); PIT deadline and advance-payment reminders (Pro)</item>
     </string-array>
 
-    <string name="about_section_warehouse_title">📦 Warehouse</string>
+    <string name="about_section_warehouse_title">📦 Warehouse (Pro)</string>
     <string-array name="about_bullets_warehouse">
         <item>Product catalogue with barcode scanning, stock levels and low-stock alerts</item>
         <item>Stocktaking sessions with history</item>
@@ -169,6 +170,7 @@
     <string name="about_section_invoices_title">🧾 Invoices and receipts (Pro)</string>
     <string-array name="about_bullets_invoices">
         <item>Issue invoices/receipts to individuals with PDF generation</item>
+        <item>Saved contractors — pick a buyer from the list in one tap</item>
         <item>Statuses: Paid / Pending / Overdue, plus due-date reminders</item>
         <item>Tracking of the annual 20,000 zł cash-sales limit for private individuals</item>
         <item>Invoice history with search and filters</item>
@@ -178,6 +180,7 @@
     <string-array name="about_bullets_reports">
         <item>Income/expense summary and 6-month trend chart</item>
         <item>Export monthly report (free), yearly and custom-period reports (Pro) to Excel with receipts</item>
+        <item>Sales register (Ewidencja sprzedaży) in PDF for a month, quarter, year or custom period (Pro)</item>
         <item>Generate PIT-36 tax returns — helper PDF and official form filling (Pro)</item>
     </string-array>
 
@@ -191,7 +194,7 @@
     </string-array>
     <string name="dialog_close">Close</string>
     <string name="dialog_write">Write</string>
-    <string name="pro_status_locked">Pro is locked. Unlock to get yearly/custom Excel reports, backup \&amp; restore, and remove ads.</string>
+    <string name="pro_status_locked">Pro is locked. Unlock to remove the monthly entry limit and get warehouse, invoices, reports, backup and more.</string>
     <string name="pro_status_active">Pro unlocked. Thank you for your support!</string>
     <string name="pro_unlock_button">Unlock Pro</string>
     <string name="pro_unlock_button_price">Unlock Pro — %1$s</string>
@@ -208,16 +211,19 @@
     <string name="backup_pro_locked_message">Backup and restore is a Pro feature. Unlock Pro to keep your data safe with a backup file.</string>
     <string name="pro_purchase_error">Could not start the purchase. Check your connection and try again.</string>
     <string name="pro_info_title">Pro version</string>
-    <string name="pro_info_message">Pro unlocks:\n\n\u2022 Issuing invoices and receipts (PDF)\n\u2022 Yearly Excel report\n\u2022 Custom-period Excel report\n\u2022 PIT-36 tax return generation\n\u2022 Backup &amp; restore\n\u2022 No ads</string>
+    <string name="pro_info_message">Pro unlocks:\n\n\u2022 Unlimited income and expense entries (free plan: 30 + 30 per month)\n\u2022 Warehouse: barcode scanning, stock, inventory, low-stock alerts\n\u2022 Invoices and receipts (PDF), saved contractors\n\u2022 PIT-36 return and sales register (Ewidencja) PDF\n\u2022 Yearly and custom-period Excel reports\n\u2022 Recurring entries, PIT deadline and advance-payment reminders\n\u2022 Backup &amp; restore\n\u2022 No ads</string>
     <string name="pro_info_continue">Continue to purchase</string>
     <string name="paywall_header_white">Unlock</string>
     <string name="paywall_header_blue">FinArs Pro</string>
     <string name="paywall_subtitle">Get full control over your finances\nand work without limits.</string>
-    <string name="paywall_feature_1">Issuing invoices and receipts (PDF)</string>
-    <string name="paywall_feature_2">PIT-36 tax return generation</string>
-    <string name="paywall_feature_3">Yearly and custom Excel reports</string>
-    <string name="paywall_feature_4">Local data backup</string>
-    <string name="paywall_feature_5">No ads</string>
+    <string name="paywall_feature_1">Unlimited income and expense entries</string>
+    <string name="paywall_feature_2">Warehouse: barcode scanner, stock and inventory</string>
+    <string name="paywall_feature_3">Invoices and receipts (PDF), saved contractors</string>
+    <string name="paywall_feature_4">PIT-36 return and sales register (Ewidencja) PDF</string>
+    <string name="paywall_feature_5">Yearly and custom-period Excel reports</string>
+    <string name="paywall_feature_6">Recurring entries and PIT / advance reminders</string>
+    <string name="paywall_feature_7">Data backup and restore</string>
+    <string name="paywall_feature_8">No ads</string>
     <string name="paywall_badge">MOST POPULAR • SAVE 30%</string>
     <string name="paywall_plan_yearly_title">Yearly Plan</string>
     <string name="paywall_plan_monthly_title">Monthly Plan</string>
@@ -817,21 +823,21 @@
     <string name="tour_chart_title">Income and expenses</string>
     <string name="tour_chart_text">Two lines show how your income and expenses change during the month, so trends are easy to spot.</string>
     <string name="tour_bell_title">Notifications</string>
-    <string name="tour_bell_text">Reminders about limits, low stock, invoice due dates and the annual PIT deadline appear here.</string>
+    <string name="tour_bell_text">Reminders about limits, low stock, invoice due dates and the annual PIT deadline appear here. Limit warnings are free; low-stock and PIT reminders need Pro.</string>
     <string name="tour_add_title">Add an entry</string>
-    <string name="tour_add_text">Tap + to add income or an expense: amount, date, category, comment and an attachment such as a receipt photo. You can also make an entry recurring.</string>
+    <string name="tour_add_text">Tap + to add income or an expense: amount, date, category, comment and an attachment such as a receipt photo. You can also make an entry recurring (Pro). Free plan: up to 30 income and 30 expense entries per month.</string>
     <string name="tour_history_title">All transactions</string>
     <string name="tour_history_text">Your latest entries are listed here. Open the full history to search, filter by date, and switch between All, Income and Expenses.</string>
     <string name="tour_magazin_title">Warehouse</string>
-    <string name="tour_magazin_text">Manage products and stock: add items by hand or with the barcode scanner, run an inventory count and get low-stock alerts.</string>
+    <string name="tour_magazin_text">Manage products and stock: add items by hand or with the barcode scanner, run an inventory count and get low-stock alerts. Warehouse is a Pro feature.</string>
     <string name="tour_reports_title">Reports</string>
-    <string name="tour_reports_text">Pick a period to see how income, expenses and tax are split. Reports for a month, a year or any period export to Excel, and the sales register (Ewidencja) to PDF. Yearly and custom reports are Pro.</string>
+    <string name="tour_reports_text">Pick a period to see how income, expenses and tax are split. The monthly report exports to Excel for free; yearly and custom reports and the sales register (Ewidencja) PDF are Pro.</string>
     <string name="tour_tax_title">Tax and limits</string>
     <string name="tour_tax_text">Important: enter your other income for the year here (employment, another business and so on), if you have any. It is added to the income from this app when FinArs calculates your tax and checks the 30,000 zł tax-free amount.</string>
     <string name="tour_backup_title">Backup</string>
     <string name="tour_backup_text">Save your entries, including receipt photos, to a file and restore them after losing your phone or reinstalling. This is a Pro feature. Do it regularly.</string>
     <string name="tour_pro_title">FinArs Pro</string>
-    <string name="tour_pro_text">Pro unlocks invoices (PDF), yearly and custom-period reports in Excel, PIT-36 return, backup and restore, and removes ads. It starts with a 7-day free trial.</string>
+    <string name="tour_pro_text">Pro removes the monthly entry limit and unlocks warehouse, invoices (PDF), saved contractors, PIT-36 and sales register PDFs, yearly and custom-period Excel reports, recurring entries, PIT deadline and advance-payment reminders, backup and restore, and removes ads. It starts with a 7-day free trial.</string>
     <string name="tour_language_title">Language</string>
     <string name="tour_language_text">Switch the app language at any time: English, Polski, Русский or Українська.</string>
     <string name="tour_final_title">You’re all set!</string>
@@ -842,4 +848,13 @@
     <string name="update_available_text">A new version of FinArs is available with improvements and fixes.</string>
     <string name="update_now">Update</string>
     <string name="update_later">Later</string>
+    <!-- Update 80: Pro-ограничения -->
+    <string name="free_limit_income_message">You have reached the free limit of 30 income entries per month. Unlock Pro to add more.</string>
+    <string name="free_limit_expense_message">You have reached the free limit of 30 expense entries per month. Unlock Pro to add more.</string>
+    <string name="recurring_pro_locked_message">Recurring entries are a Pro feature. Unlock Pro to use them.</string>
+    <string name="ewidencja_pro_locked_message">The sales register (Ewidencja) PDF is a Pro feature. Unlock Pro to generate it.</string>
+    <string name="contractors_pro_locked_message">Saved contractors are a Pro feature. Unlock Pro to use them.</string>
+    <string name="magazin_locked_title">Warehouse is a Pro feature</string>
+    <string name="magazin_locked_message">Stock levels, barcode scanning, inventory counts and low-stock alerts are available with Pro. Start your free trial.</string>
+    <string name="magazin_locked_button">Try Pro</string>
 </resources>

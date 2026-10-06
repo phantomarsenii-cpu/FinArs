@@ -22,6 +22,8 @@ import kotlinx.coroutines.withContext
 /** Склад: список товаров, добавление вручную или сканированием штрихкода, удаление. */
 class MagazinFragment : Fragment() {
     private lateinit var adapter: ProductAdapter
+    // Update 80: заглушка с замком поверх экрана склада (видна, пока нет Pro).
+    private var lockOverlay: View? = null
 
     private val scanLauncher = registerForActivityResult(ScanContract()) { result ->
         val barcode = result.contents
@@ -38,6 +40,7 @@ class MagazinFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        lockOverlay = null
 
         adapter = ProductAdapter(
             onClick = { p ->
@@ -65,10 +68,27 @@ class MagazinFragment : Fragment() {
         requireView().findViewById<Button>(R.id.btn_inventory).setOnClickListener {
             startActivity(Intent(requireContext(), InventoryActivity::class.java))
         }
+
+        // Update 80: Magazyn закрыт целиком под Pro — вкладку не прячем, а закрываем
+        // экраном с замком (корень fragment_magazin — FrameLayout, оверлей ложится сверху).
+        val root = view as ViewGroup
+        val overlay = layoutInflater.inflate(R.layout.view_magazin_locked, root, false)
+        overlay.findViewById<Button>(R.id.btn_magazin_locked_try).setOnClickListener {
+            ProGate.openPaywall(requireContext())
+        }
+        root.addView(overlay)
+        lockOverlay = overlay
+        updateLockOverlay()
+    }
+
+    /** Показывает/скрывает замок — вызывается и при возврате с экрана подписки. */
+    private fun updateLockOverlay() {
+        lockOverlay?.visibility = if (BillingManager.isPro(requireContext())) View.GONE else View.VISIBLE
     }
 
     override fun onResume() {
         super.onResume()
+        updateLockOverlay()
         loadProducts()
     }
 

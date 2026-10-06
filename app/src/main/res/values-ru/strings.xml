@@ -148,18 +148,19 @@
     <string name="privacy_section14_body">По вопросам приватности или работы приложения свяжитесь с нами: apstudiomobile@gmail.com</string>
 
     <string name="about_intro">FinArs — комплексное приложение для управления финансами нерегистрируемой деятельности. Ведите учёт доходов и расходов, контролируйте лимиты, автоматически считайте налоги, выставляйте счета, управляйте складом и формируйте готовые отчёты и налоговые декларации — всё в одном месте, с полной историей операций и уведомлений всегда под рукой.</string>
-    <string name="about_subscription_note">⭐ Подписка Pro: месячный или годовой план, 7 дней бесплатно, отмена в любой момент.</string>
+    <string name="about_subscription_note">⭐ Бесплатный план: до 30 приходов и 30 расходов в месяц, месячный отчёт, контроль лимита и предупреждения, PIN-блокировка. Подписка Pro: месячный или годовой план, 7 дней бесплатно, отмена в любой момент.</string>
 
     <string name="about_section_finance_title">📊 Финансы и налоги</string>
     <string-array name="about_bullets_finance">
         <item>Учёт доходов и расходов с чеками и цветными категориями</item>
+        <item>Бесплатный план: до 30 приходов и 30 расходов в месяц — Pro снимает ограничение</item>
         <item>Автоматический расчёт прибыли и налога (шкала 12%/32%)</item>
-        <item>Повторяющиеся операции (аренда, подписки) создаются автоматически каждый месяц</item>
+        <item>Повторяющиеся операции (аренда, подписки) создаются автоматически каждый месяц (Pro)</item>
         <item>Контроль лимита незарегистрированной деятельности (порог 120 000 zł)</item>
-        <item>История уведомлений о приближении и превышении лимитов, сроках счетов и другом</item>
+        <item>Предупреждения о приближении и превышении лимитов (бесплатно); напоминания о сроке PIT и авансах (Pro)</item>
     </string-array>
 
-    <string name="about_section_warehouse_title">📦 Склад</string>
+    <string name="about_section_warehouse_title">📦 Склад (Pro)</string>
     <string-array name="about_bullets_warehouse">
         <item>Каталог товаров со сканированием штрихкодов, остатками и уведомлениями о низком запасе</item>
         <item>Сессии инвентаризации с историей</item>
@@ -169,6 +170,7 @@
     <string name="about_section_invoices_title">🧾 Счета и чеки (Pro)</string>
     <string-array name="about_bullets_invoices">
         <item>Выставление счетов/чеков физлицам с созданием PDF</item>
+        <item>Сохранённые контрагенты — выбор покупателя из списка в одно касание</item>
         <item>Статусы: Оплачен / Ожидает оплаты / Просрочен, плюс напоминания о сроке оплаты</item>
         <item>Контроль годового лимита наличных (20 000 zł) для продаж физлицам</item>
         <item>История счетов с поиском и фильтрами</item>
@@ -178,6 +180,7 @@
     <string-array name="about_bullets_reports">
         <item>Сводка доходов/расходов и график тренда за 6 месяцев</item>
         <item>Экспорт месячного отчёта (бесплатно), годового и за произвольный период (Pro) в Excel с чеками</item>
+        <item>Ewidencja sprzedaży в PDF за месяц, квартал, год или произвольный период (Pro)</item>
         <item>Формирование декларации PIT-36 — вспомогательный PDF и заполнение официальной формы (Pro)</item>
     </string-array>
 
@@ -191,7 +194,7 @@
     </string-array>
     <string name="dialog_close">Закрыть</string>
     <string name="dialog_write">Написать</string>
-    <string name="pro_status_locked">Pro не активирован. Разблокируйте, чтобы получить годовые и произвольные отчёты в Excel, резервное копирование и восстановление, а также убрать рекламу.</string>
+    <string name="pro_status_locked">Pro не активирован. Разблокируйте, чтобы снять месячный лимит записей и получить склад, счета, отчёты, резервное копирование и многое другое.</string>
     <string name="pro_status_active">Pro активирован. Спасибо за поддержку!</string>
     <string name="pro_unlock_button">Разблокировать Pro</string>
     <string name="pro_unlock_button_price">Разблокировать Pro — %1$s</string>
@@ -208,16 +211,19 @@
     <string name="backup_pro_locked_message">Резервное копирование и восстановление — Pro-функция. Разблокируйте Pro, чтобы сохранить данные в файл на случай потери.</string>
     <string name="pro_purchase_error">Не удалось открыть окно оплаты. Проверьте соединение и попробуйте снова.</string>
     <string name="pro_info_title">Pro-версия</string>
-    <string name="pro_info_message">Pro открывает:\n\n\u2022 Выставление счетов и фактур (PDF)\n\u2022 Годовой отчёт в Excel\n\u2022 Отчёт за произвольный период\n\u2022 Формирование декларации PIT-36\n\u2022 Резервное копирование и восстановление\n\u2022 Без рекламы</string>
+    <string name="pro_info_message">Pro открывает:\n\n\u2022 Без лимита на доходы и расходы (бесплатный план: 30 + 30 в месяц)\n\u2022 Склад: сканирование штрихкодов, остатки, инвентаризация, уведомления о низком остатке\n\u2022 Счета и фактуры (PDF), сохранённые контрагенты\n\u2022 Декларация PIT-36 и Ewidencja sprzedaży (PDF)\n\u2022 Годовые и произвольные отчёты в Excel\n\u2022 Повторяющиеся записи, напоминания о сроке PIT и авансах\n\u2022 Резервное копирование и восстановление\n\u2022 Без рекламы</string>
     <string name="pro_info_continue">Перейти к покупке</string>
     <string name="paywall_header_white">Откройте</string>
     <string name="paywall_header_blue">FinArs Pro</string>
     <string name="paywall_subtitle">Получите полный контроль над финансами\nи работайте без ограничений.</string>
-    <string name="paywall_feature_1">Выставление счетов и фактур (PDF)</string>
-    <string name="paywall_feature_2">Формирование декларации PIT-36</string>
-    <string name="paywall_feature_3">Годовые и произвольные отчёты Excel</string>
-    <string name="paywall_feature_4">Резервная копия данных на устройстве</string>
-    <string name="paywall_feature_5">Без рекламы</string>
+    <string name="paywall_feature_1">Без лимита на доходы и расходы</string>
+    <string name="paywall_feature_2">Склад: сканер штрихкодов, остатки и инвентаризация</string>
+    <string name="paywall_feature_3">Счета и фактуры (PDF), сохранённые контрагенты</string>
+    <string name="paywall_feature_4">Декларация PIT-36 и Ewidencja sprzedaży (PDF)</string>
+    <string name="paywall_feature_5">Годовые и произвольные отчёты Excel</string>
+    <string name="paywall_feature_6">Повторяющиеся записи и напоминания о PIT и авансах</string>
+    <string name="paywall_feature_7">Резервная копия и восстановление данных</string>
+    <string name="paywall_feature_8">Без рекламы</string>
     <string name="paywall_badge">САМЫЙ ПОПУЛЯРНЫЙ • ЭКОНОМИЯ 30%</string>
     <string name="paywall_plan_yearly_title">Годовой план</string>
     <string name="paywall_plan_monthly_title">Месячный план</string>
@@ -809,21 +815,21 @@
     <string name="tour_chart_title">Доходы и расходы</string>
     <string name="tour_chart_text">Две линии показывают, как в течение месяца меняются ваши доходы и расходы, — тренды видны сразу.</string>
     <string name="tour_bell_title">Уведомления</string>
-    <string name="tour_bell_text">Здесь появляются напоминания о лимитах, низких остатках на складе, сроках оплаты фактур и сроке подачи годовой декларации PIT.</string>
+    <string name="tour_bell_text">Здесь появляются напоминания о лимитах, низком остатке, сроках счетов и годовом сроке PIT. Предупреждения о лимитах бесплатны; уведомления об остатках и напоминания о PIT — в Pro.</string>
     <string name="tour_add_title">Добавить запись</string>
-    <string name="tour_add_text">Нажмите +, чтобы добавить доход или расход: сумму, дату, категорию, комментарий и вложение, например фото чека. Запись можно сделать повторяющейся.</string>
+    <string name="tour_add_text">Нажмите +, чтобы добавить доход или расход: сумма, дата, категория, комментарий и вложение, например фото чека. Запись можно сделать повторяющейся (Pro). Бесплатный план: до 30 приходов и 30 расходов в месяц.</string>
     <string name="tour_history_title">Все операции</string>
     <string name="tour_history_text">Здесь видны последние записи. В полной истории можно искать, фильтровать по дате и переключаться между «Все», «Доходы» и «Расходы».</string>
     <string name="tour_magazin_title">Склад</string>
-    <string name="tour_magazin_text">Управляйте товарами и остатками: добавляйте позиции вручную или сканером штрихкодов, проводите инвентаризацию и получайте уведомления о низком остатке.</string>
+    <string name="tour_magazin_text">Управляйте товарами и остатками: добавляйте позиции вручную или сканером штрихкодов, проводите инвентаризацию и получайте уведомления о низком остатке. Склад — функция Pro.</string>
     <string name="tour_reports_title">Отчёты</string>
-    <string name="tour_reports_text">Выберите период, чтобы увидеть распределение доходов, расходов и налога. Отчёты за месяц, год или любой период выгружаются в Excel, а книга продаж (Ewidencja) — в PDF. Годовой и произвольный отчёты — функции Pro.</string>
+    <string name="tour_reports_text">Выберите период, чтобы увидеть структуру доходов, расходов и налога. Месячный отчёт экспортируется в Excel бесплатно; годовой и произвольный отчёты и Ewidencja sprzedaży в PDF — Pro.</string>
     <string name="tour_tax_title">Налог и лимиты</string>
     <string name="tour_tax_text">Важно: укажите здесь свои прочие доходы за год из других источников (работа по найму, другая деятельность и т. п.), если они есть. Они прибавляются к доходу из приложения, когда FinArs считает налог и проверяет необлагаемый минимум 30 000 zł.</string>
     <string name="tour_backup_title">Резервная копия</string>
     <string name="tour_backup_text">Сохраните записи, включая фото чеков, в файл и восстановите их при потере телефона или переустановке. Это функция Pro. Делайте это регулярно.</string>
     <string name="tour_pro_title">FinArs Pro</string>
-    <string name="tour_pro_text">Pro открывает счета и фактуры (PDF), годовой и произвольный отчёты в Excel, декларацию PIT-36, резервное копирование и восстановление и убирает рекламу. Начинается с 7 дней бесплатно.</string>
+    <string name="tour_pro_text">Pro снимает месячный лимит записей и открывает склад, счета и фактуры (PDF), сохранённых контрагентов, PIT-36 и Ewidencja sprzedaży в PDF, годовой и произвольный отчёты в Excel, повторяющиеся записи, напоминания о сроке PIT и авансах, резервное копирование и восстановление, а также убирает рекламу. Начинается с 7 дней бесплатно.</string>
     <string name="tour_language_title">Язык</string>
     <string name="tour_language_text">Язык приложения можно сменить в любой момент: English, Polski, Русский или Українська.</string>
     <string name="tour_final_title">Всё готово!</string>
@@ -834,4 +840,13 @@
     <string name="update_available_text">Вышла новая версия FinArs с улучшениями и исправлениями.</string>
     <string name="update_now">Обновить</string>
     <string name="update_later">Позже</string>
+    <!-- Update 80: Pro-ограничения -->
+    <string name="free_limit_income_message">Достигнут бесплатный лимит: 30 приходов в месяц. Разблокируйте Pro, чтобы добавлять больше.</string>
+    <string name="free_limit_expense_message">Достигнут бесплатный лимит: 30 расходов в месяц. Разблокируйте Pro, чтобы добавлять больше.</string>
+    <string name="recurring_pro_locked_message">Повторяющиеся записи — функция Pro. Разблокируйте Pro, чтобы ими пользоваться.</string>
+    <string name="ewidencja_pro_locked_message">Ewidencja sprzedaży в PDF — функция Pro. Разблокируйте Pro, чтобы её сформировать.</string>
+    <string name="contractors_pro_locked_message">Сохранённые контрагенты — функция Pro. Разблокируйте Pro, чтобы ими пользоваться.</string>
+    <string name="magazin_locked_title">Склад — функция Pro</string>
+    <string name="magazin_locked_message">Остатки товаров, сканирование штрихкодов, инвентаризация и уведомления о низком остатке доступны в Pro. Начните бесплатный пробный период.</string>
+    <string name="magazin_locked_button">Попробовать Pro</string>
 </resources>

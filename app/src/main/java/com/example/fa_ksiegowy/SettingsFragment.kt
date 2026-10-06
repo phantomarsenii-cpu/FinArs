@@ -39,34 +39,18 @@ class SettingsFragment : Fragment() {
             startActivity(Intent(requireContext(), SettingsSecurityActivity::class.java))
         }
         requireView().findViewById<View>(R.id.btn_menu_pit36).setOnClickListener {
-            if (BillingManager.isPro(requireContext())) {
+            // Update 80: единый диалог Pro (замок + переход к подписке).
+            ProGate.require(requireContext(), R.string.pit36_pro_locked_message) {
                 startActivity(Intent(requireContext(), Pit36Activity::class.java))
-            } else {
-                AlertDialog.Builder(requireContext())
-                    .setTitle(getString(R.string.pro_feature_locked_title))
-                    .setMessage(getString(R.string.pit36_pro_locked_message))
-                    .setPositiveButton(getString(R.string.settings_menu_pro)) { _, _ ->
-                        startActivity(Intent(requireContext(), SettingsProActivity::class.java))
-                    }
-                    .setNegativeButton(getString(R.string.dialog_close), null)
-                    .show()
             }
         }
         requireView().findViewById<View>(R.id.btn_menu_language).setOnClickListener {
             startActivity(Intent(requireContext(), SettingsLanguageActivity::class.java))
         }
         requireView().findViewById<View>(R.id.btn_menu_backup).setOnClickListener {
-            if (BillingManager.isPro(requireContext())) {
+            // Update 80: единый диалог Pro (замок + переход к подписке).
+            ProGate.require(requireContext(), R.string.backup_pro_locked_message) {
                 startActivity(Intent(requireContext(), SettingsBackupActivity::class.java))
-            } else {
-                AlertDialog.Builder(requireContext())
-                    .setTitle(getString(R.string.pro_feature_locked_title))
-                    .setMessage(getString(R.string.backup_pro_locked_message))
-                    .setPositiveButton(getString(R.string.settings_menu_pro)) { _, _ ->
-                        startActivity(Intent(requireContext(), SettingsProActivity::class.java))
-                    }
-                    .setNegativeButton(getString(R.string.dialog_close), null)
-                    .show()
             }
         }
         requireView().findViewById<View>(R.id.btn_menu_pro).setOnClickListener {

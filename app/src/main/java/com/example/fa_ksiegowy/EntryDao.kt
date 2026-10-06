@@ -32,6 +32,11 @@ interface EntryDao {
     @Query("SELECT * FROM entries WHERE isIncome = 1 AND dateMillis BETWEEN :from AND :to ORDER BY dateMillis ASC, id ASC")
     suspend fun getIncomeBetween(from: Long, to: Long): List<Entry>
 
+    /** Update 80: сколько записей данного типа создано ВРУЧНУЮ за период — для бесплатного
+     *  потолка (см. ProGate.freeLimitReached). Записи от фактур/корект не считаются. */
+    @Query("SELECT COUNT(*) FROM entries WHERE isIncome = :isIncome AND invoiceId IS NULL AND invoiceCorrectionId IS NULL AND dateMillis BETWEEN :from AND :to")
+    suspend fun countManualBetween(isIncome: Boolean, from: Long, to: Long): Int
+
     /** Полная очистка истории — используется кнопкой "Очистить все данные" в настройках. */
     @Query("DELETE FROM entries")
     suspend fun deleteAll()

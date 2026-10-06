@@ -148,18 +148,19 @@
     <string name="privacy_section14_body">W razie pytań dotyczących prywatności lub działania aplikacji skontaktuj się z nami: apstudiomobile@gmail.com</string>
 
     <string name="about_intro">FinArs to kompleksowa aplikacja do zarządzania finansami działalności nierejestrowanej. Śledź przychody i wydatki, kontroluj limity, automatycznie licz podatki, wystawiaj faktury, zarządzaj magazynem i generuj gotowe raporty oraz deklaracje PIT — wszystko w jednym miejscu, z pełną historią operacji i powiadomień zawsze pod ręką.</string>
-    <string name="about_subscription_note">⭐ Subskrypcja Pro: plan miesięczny lub roczny, 7 dni za darmo, anulowanie w każdej chwili.</string>
+    <string name="about_subscription_note">⭐ Plan bezpłatny: do 30 przychodów i 30 wydatków miesięcznie, raport miesięczny, kontrola limitu i ostrzeżenia, blokada PIN. Subskrypcja Pro: plan miesięczny lub roczny, 7 dni za darmo, anulowanie w każdej chwili.</string>
 
     <string name="about_section_finance_title">📊 Finanse i podatki</string>
     <string-array name="about_bullets_finance">
         <item>Ewidencja przychodów i wydatków z załącznikami paragonów i kolorowymi kategoriami</item>
+        <item>Plan bezpłatny: do 30 przychodów i 30 wydatków miesięcznie — Pro znosi limit</item>
         <item>Automatyczne obliczanie zysku i podatku (skala 12%/32%)</item>
-        <item>Transakcje cykliczne (czynsz, abonamenty) tworzone automatycznie co miesiąc</item>
+        <item>Transakcje cykliczne (czynsz, abonamenty) tworzone automatycznie co miesiąc (Pro)</item>
         <item>Kontrola limitu działalności nierejestrowanej (próg 120 000 zł)</item>
-        <item>Historia powiadomień o zbliżających się i przekroczonych limitach, terminach faktur i innych</item>
+        <item>Ostrzeżenia o zbliżających się i przekroczonych limitach (bezpłatnie); przypomnienia o terminie PIT i zaliczkach (Pro)</item>
     </string-array>
 
-    <string name="about_section_warehouse_title">📦 Magazyn</string>
+    <string name="about_section_warehouse_title">📦 Magazyn (Pro)</string>
     <string-array name="about_bullets_warehouse">
         <item>Katalog produktów ze skanowaniem kodów kreskowych, stanami magazynowymi i alertami o niskim stanie</item>
         <item>Sesje inwentaryzacji z historią</item>
@@ -169,6 +170,7 @@
     <string name="about_section_invoices_title">🧾 Faktury i rachunki (Pro)</string>
     <string-array name="about_bullets_invoices">
         <item>Wystawianie faktur/rachunków dla osób fizycznych z generowaniem PDF</item>
+        <item>Zapisani kontrahenci — wybór nabywcy z listy jednym dotknięciem</item>
         <item>Statusy: Zapłacona / Oczekuje na zapłatę / Zaległa, plus przypomnienia o terminie płatności</item>
         <item>Kontrola rocznego limitu gotówki (20 000 zł) dla sprzedaży osobom fizycznym</item>
         <item>Historia faktur z wyszukiwaniem i filtrami</item>
@@ -178,6 +180,7 @@
     <string-array name="about_bullets_reports">
         <item>Podsumowanie przychodów/wydatków i wykres trendu za 6 miesięcy</item>
         <item>Eksport raportu miesięcznego (bezpłatnie), rocznego i za dowolny okres (Pro) do Excela wraz z paragonami</item>
+        <item>Ewidencja sprzedaży w PDF za miesiąc, kwartał, rok lub dowolny okres (Pro)</item>
         <item>Generowanie deklaracji PIT-36 — pomocniczy PDF oraz wypełnienie oficjalnego formularza (Pro)</item>
     </string-array>
 
@@ -191,7 +194,7 @@
     </string-array>
     <string name="dialog_close">Zamknij</string>
     <string name="dialog_write">Napisz</string>
-    <string name="pro_status_locked">Pro jest zablokowane. Odblokuj, aby uzyskać roczne i niestandardowe raporty Excel, kopię zapasową i przywracanie danych oraz usunąć reklamy.</string>
+    <string name="pro_status_locked">Pro jest zablokowane. Odblokuj, aby znieść miesięczny limit wpisów i uzyskać magazyn, faktury, raporty, kopię zapasową i więcej.</string>
     <string name="pro_status_active">Pro odblokowane. Dziękujemy za wsparcie!</string>
     <string name="pro_unlock_button">Odblokuj Pro</string>
     <string name="pro_unlock_button_price">Odblokuj Pro — %1$s</string>
@@ -208,16 +211,19 @@
     <string name="backup_pro_locked_message">Kopia zapasowa i przywracanie to funkcja Pro. Odblokuj Pro, aby zabezpieczyć swoje dane plikiem kopii zapasowej.</string>
     <string name="pro_purchase_error">Nie udało się otworzyć zakupu. Sprawdź połączenie i spróbuj ponownie.</string>
     <string name="pro_info_title">Wersja Pro</string>
-    <string name="pro_info_message">Pro odblokowuje:\n\n\u2022 Wystawianie faktur i rachunków (PDF)\n\u2022 Raport roczny w Excelu\n\u2022 Raport za dowolny okres\n\u2022 Generowanie deklaracji PIT-36\n\u2022 Kopia zapasowa i przywracanie danych\n\u2022 Brak reklam</string>
+    <string name="pro_info_message">Pro odblokowuje:\n\n\u2022 Bez limitu przychodów i wydatków (plan bezpłatny: 30 + 30 miesięcznie)\n\u2022 Magazyn: skanowanie kodów kreskowych, stany, inwentaryzacja, alerty o niskim stanie\n\u2022 Faktury i rachunki (PDF), zapisani kontrahenci\n\u2022 Deklaracja PIT-36 i ewidencja sprzedaży (PDF)\n\u2022 Raporty roczne i za dowolny okres (Excel)\n\u2022 Wpisy cykliczne, przypomnienia o terminie PIT i zaliczkach\n\u2022 Kopia zapasowa i przywracanie danych\n\u2022 Brak reklam</string>
     <string name="pro_info_continue">Przejdź do zakupu</string>
     <string name="paywall_header_white">Odblokuj</string>
     <string name="paywall_header_blue">FinArs Pro</string>
     <string name="paywall_subtitle">Zyskaj pełną kontrolę nad finansami\ni pracuj bez ograniczeń.</string>
-    <string name="paywall_feature_1">Wystawianie faktur i rachunków (PDF)</string>
-    <string name="paywall_feature_2">Generowanie deklaracji PIT-36</string>
-    <string name="paywall_feature_3">Raporty roczne i niestandardowe (Excel)</string>
-    <string name="paywall_feature_4">Kopia zapasowa danych na urządzeniu</string>
-    <string name="paywall_feature_5">Brak reklam</string>
+    <string name="paywall_feature_1">Bez limitu przychodów i wydatków</string>
+    <string name="paywall_feature_2">Magazyn: skaner kodów kreskowych, stany i inwentaryzacja</string>
+    <string name="paywall_feature_3">Faktury i rachunki (PDF), zapisani kontrahenci</string>
+    <string name="paywall_feature_4">Deklaracja PIT-36 i ewidencja sprzedaży (PDF)</string>
+    <string name="paywall_feature_5">Raporty roczne i za dowolny okres (Excel)</string>
+    <string name="paywall_feature_6">Wpisy cykliczne i przypomnienia o PIT i zaliczkach</string>
+    <string name="paywall_feature_7">Kopia zapasowa i przywracanie danych</string>
+    <string name="paywall_feature_8">Brak reklam</string>
     <string name="paywall_badge">NAJPOPULARNIEJSZY • OSZCZĘDZASZ 30%</string>
     <string name="paywall_plan_yearly_title">Plan Roczny</string>
     <string name="paywall_plan_monthly_title">Plan Miesięczny</string>
@@ -809,21 +815,21 @@
     <string name="tour_chart_title">Przychody i wydatki</string>
     <string name="tour_chart_text">Dwie linie pokazują, jak w ciągu miesiąca zmieniają się Twoje przychody i wydatki — trendy widać od razu.</string>
     <string name="tour_bell_title">Powiadomienia</string>
-    <string name="tour_bell_text">Tutaj pojawiają się przypomnienia o limitach, niskim stanie magazynu, terminach płatności faktur i terminie rocznego zeznania PIT.</string>
+    <string name="tour_bell_text">Tu pojawiają się przypomnienia o limitach, niskim stanie magazynu, terminach faktur i rocznym terminie PIT. Ostrzeżenia o limitach są bezpłatne; alerty o niskim stanie i przypomnienia o PIT wymagają Pro.</string>
     <string name="tour_add_title">Dodaj wpis</string>
-    <string name="tour_add_text">Dotknij +, aby dodać przychód lub wydatek: kwotę, datę, kategorię, komentarz i załącznik, np. zdjęcie paragonu. Wpis możesz też ustawić jako cykliczny.</string>
+    <string name="tour_add_text">Dotknij +, aby dodać przychód lub wydatek: kwota, data, kategoria, komentarz i załącznik, np. zdjęcie paragonu. Wpis możesz też ustawić jako cykliczny (Pro). Plan bezpłatny: do 30 przychodów i 30 wydatków miesięcznie.</string>
     <string name="tour_history_title">Wszystkie transakcje</string>
     <string name="tour_history_text">Tu widać ostatnie wpisy. W pełnej historii możesz wyszukiwać, filtrować według daty i przełączać Wszystkie, Przychody i Wydatki.</string>
     <string name="tour_magazin_title">Magazyn</string>
-    <string name="tour_magazin_text">Zarządzaj produktami i stanami: dodawaj towary ręcznie lub skanerem kodów kreskowych, rób inwentaryzację i otrzymuj alerty o niskim stanie.</string>
+    <string name="tour_magazin_text">Zarządzaj produktami i stanami: dodawaj pozycje ręcznie lub skanerem kodów kreskowych, przeprowadzaj inwentaryzację i otrzymuj alerty o niskim stanie. Magazyn to funkcja Pro.</string>
     <string name="tour_reports_title">Raporty</string>
-    <string name="tour_reports_text">Wybierz okres, aby zobaczyć podział przychodów, wydatków i podatku. Raporty za miesiąc, rok lub dowolny okres eksportujesz do Excela, a ewidencję sprzedaży do PDF. Raport roczny i dowolny okres to funkcje Pro.</string>
+    <string name="tour_reports_text">Wybierz okres, aby zobaczyć podział przychodów, wydatków i podatku. Raport miesięczny eksportujesz do Excela bezpłatnie; raporty roczne i za dowolny okres oraz ewidencja sprzedaży w PDF to Pro.</string>
     <string name="tour_tax_title">Podatek i limity</string>
     <string name="tour_tax_text">Ważne: wpisz tutaj swoje inne przychody z tego roku (etat, inna działalność itp.), jeśli je masz. Są one doliczane do przychodów z aplikacji, gdy FinArs liczy podatek i sprawdza kwotę wolną 30 000 zł.</string>
     <string name="tour_backup_title">Kopia zapasowa</string>
     <string name="tour_backup_text">Zapisz wpisy, także zdjęcia paragonów, do pliku i przywróć je po utracie telefonu lub reinstalacji. To funkcja Pro. Rób to regularnie.</string>
     <string name="tour_pro_title">FinArs Pro</string>
-    <string name="tour_pro_text">Pro odblokowuje faktury (PDF), raporty roczne i za dowolny okres w Excelu, deklarację PIT-36, kopię zapasową i przywracanie oraz usuwa reklamy. Na start jest 7 dni za darmo.</string>
+    <string name="tour_pro_text">Pro znosi miesięczny limit wpisów i odblokowuje magazyn, faktury (PDF), zapisanych kontrahentów, PIT-36 i ewidencję sprzedaży w PDF, raporty roczne i za dowolny okres w Excelu, wpisy cykliczne, przypomnienia o terminie PIT i zaliczkach, kopię zapasową i przywracanie oraz usuwa reklamy. Na start jest 7 dni za darmo.</string>
     <string name="tour_language_title">Język</string>
     <string name="tour_language_text">Zmieniaj język aplikacji w dowolnej chwili: English, Polski, Русский lub Українська.</string>
     <string name="tour_final_title">Wszystko gotowe!</string>
@@ -834,4 +840,13 @@
     <string name="update_available_text">Dostępna jest nowa wersja FinArs z ulepszeniami i poprawkami.</string>
     <string name="update_now">Aktualizuj</string>
     <string name="update_later">Później</string>
+    <!-- Update 80: Pro-ограничения -->
+    <string name="free_limit_income_message">Osiągnięto bezpłatny limit: 30 przychodów miesięcznie. Odblokuj Pro, aby dodawać więcej.</string>
+    <string name="free_limit_expense_message">Osiągnięto bezpłatny limit: 30 wydatków miesięcznie. Odblokuj Pro, aby dodawać więcej.</string>
+    <string name="recurring_pro_locked_message">Wpisy cykliczne to funkcja Pro. Odblokuj Pro, aby z nich korzystać.</string>
+    <string name="ewidencja_pro_locked_message">Ewidencja sprzedaży w PDF to funkcja Pro. Odblokuj Pro, aby ją wygenerować.</string>
+    <string name="contractors_pro_locked_message">Zapisani kontrahenci to funkcja Pro. Odblokuj Pro, aby z nich korzystać.</string>
+    <string name="magazin_locked_title">Magazyn to funkcja Pro</string>
+    <string name="magazin_locked_message">Stany magazynowe, skanowanie kodów kreskowych, inwentaryzacja i powiadomienia o niskim stanie są dostępne w wersji Pro. Rozpocznij bezpłatny okres próbny.</string>
+    <string name="magazin_locked_button">Wypróbuj Pro</string>
 </resources>

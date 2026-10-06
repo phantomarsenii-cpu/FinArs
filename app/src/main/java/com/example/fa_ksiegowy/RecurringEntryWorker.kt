@@ -18,6 +18,8 @@ import java.util.concurrent.TimeUnit
 class RecurringEntryWorker(context: Context, params: WorkerParameters) : CoroutineWorker(context, params) {
 
     override suspend fun doWork(): Result {
+        // Update 80: автозапись повторяющихся операций — только Pro.
+        if (!BillingManager.isPro(applicationContext)) return Result.success()
         return try {
             val db = AppDatabase.getInstance(applicationContext)
             val recurringDao = db.recurringEntryDao()

@@ -78,17 +78,9 @@ class MineFragment : Fragment() {
             startActivity(Intent(requireContext(), HistoryActivity::class.java))
         }
         requireView().findViewById<Button>(R.id.btn_invoices).setOnClickListener {
-            if (BillingManager.isPro(requireContext())) {
+            // Update 80: единый диалог Pro (замок + переход к подписке).
+            ProGate.require(requireContext(), R.string.invoice_pro_locked_message) {
                 startActivity(Intent(requireContext(), AddInvoiceActivity::class.java))
-            } else {
-                androidx.appcompat.app.AlertDialog.Builder(requireContext())
-                    .setTitle(getString(R.string.pro_feature_locked_title))
-                    .setMessage(getString(R.string.invoice_pro_locked_message))
-                    .setPositiveButton(getString(R.string.pro_feature_locked_go_settings)) { _, _ ->
-                        (activity as? MainActivity)?.openTab(BottomNavBar.Tab.SETTINGS)
-                    }
-                    .setNegativeButton(getString(R.string.dialog_close), null)
-                    .show()
             }
         }
         // Update: przycisk "Magazyn" przeniesiony do dolnej nawigacji (patrz

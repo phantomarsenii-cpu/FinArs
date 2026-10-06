@@ -16,6 +16,8 @@ import java.util.concurrent.TimeUnit
 class StockNotificationWorker(context: Context, params: WorkerParameters) : CoroutineWorker(context, params) {
 
     override suspend fun doWork(): Result {
+        // Update 80: уведомления о низком остатке — только Pro (склад целиком под Pro).
+        if (!BillingManager.isPro(applicationContext)) return Result.success()
         return try {
             // Уведомления должны быть на языке, выбранном В ПРИЛОЖЕНИИ (LocaleHelper),
             // а не на системном языке телефона — раньше ctx.getString(...)
