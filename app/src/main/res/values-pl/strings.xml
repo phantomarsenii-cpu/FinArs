@@ -849,4 +849,5 @@
     <string name="magazin_locked_title">Magazyn to funkcja Pro</string>
     <string name="magazin_locked_message">Stany magazynowe, skanowanie kodów kreskowych, inwentaryzacja i powiadomienia o niskim stanie są dostępne w wersji Pro. Rozpocznij bezpłatny okres próbny.</string>
     <string name="magazin_locked_button">Wypróbuj Pro</string>
+    <string name="pro_gate_subscribe">Odblokuj Pro</string>
 </resources>

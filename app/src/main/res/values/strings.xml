@@ -857,4 +857,5 @@
     <string name="magazin_locked_title">Warehouse is a Pro feature</string>
     <string name="magazin_locked_message">Stock levels, barcode scanning, inventory counts and low-stock alerts are available with Pro. Start your free trial.</string>
     <string name="magazin_locked_button">Try Pro</string>
+    <string name="pro_gate_subscribe">Get Pro</string>
 </resources>

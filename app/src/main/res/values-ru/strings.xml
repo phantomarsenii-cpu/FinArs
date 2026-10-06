@@ -849,4 +849,5 @@
     <string name="magazin_locked_title">Склад — функция Pro</string>
     <string name="magazin_locked_message">Остатки товаров, сканирование штрихкодов, инвентаризация и уведомления о низком остатке доступны в Pro. Начните бесплатный пробный период.</string>
     <string name="magazin_locked_button">Попробовать Pro</string>
+    <string name="pro_gate_subscribe">Оформить Pro</string>
 </resources>

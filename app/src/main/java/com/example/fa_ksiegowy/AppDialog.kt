@@ -94,6 +94,12 @@ object AppDialog {
                 isAllCaps = false
                 setTextColor(context.resources.getColor(R.color.text_secondary, context.theme))
                 setBackgroundResource(R.drawable.btn_pill_outline)
+                // Update 81: длинный текст не переносится на 2 строки и не обрезается.
+                maxLines = 1
+                setPadding((8 * density).toInt(), 0, (8 * density).toInt(), 0)
+                androidx.core.widget.TextViewCompat.setAutoSizeTextTypeUniformWithConfiguration(
+                    this, 10, 14, 1, android.util.TypedValue.COMPLEX_UNIT_SP
+                )
                 setOnClickListener {
                     onNegative?.invoke()
                     dialog.dismiss()
@@ -109,6 +115,12 @@ object AppDialog {
             isAllCaps = false
             setTextColor(context.resources.getColor(R.color.text_primary, context.theme))
             setBackgroundResource(R.drawable.btn_pill_primary)
+            // Update 81: длинный текст не переносится на 2 строки и не обрезается.
+            maxLines = 1
+            setPadding((8 * density).toInt(), 0, (8 * density).toInt(), 0)
+            androidx.core.widget.TextViewCompat.setAutoSizeTextTypeUniformWithConfiguration(
+                this, 10, 14, 1, android.util.TypedValue.COMPLEX_UNIT_SP
+            )
             setOnClickListener {
                 onPositive()
                 dialog.dismiss()

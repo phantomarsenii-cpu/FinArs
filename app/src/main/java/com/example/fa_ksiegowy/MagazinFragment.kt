@@ -69,16 +69,32 @@ class MagazinFragment : Fragment() {
             startActivity(Intent(requireContext(), InventoryActivity::class.java))
         }
 
-        // Update 80: Magazyn закрыт целиком под Pro — вкладку не прячем, а закрываем
-        // экраном с замком (корень fragment_magazin — FrameLayout, оверлей ложится сверху).
+        // Update 81: Magazyn закрыт под Pro, но выглядит как обычный экран приложения — он слегка
+        // затемнён и не реагирует на нажатия; любое касание показывает окно "Функция Pro".
         val root = view as ViewGroup
-        val overlay = layoutInflater.inflate(R.layout.view_magazin_locked, root, false)
-        overlay.findViewById<Button>(R.id.btn_magazin_locked_try).setOnClickListener {
-            ProGate.openPaywall(requireContext())
+        val overlay = View(requireContext()).apply {
+            setBackgroundColor(0x66000000)
+            isClickable = true
+            isFocusable = true
+            setOnClickListener { showLockedPopup() }
         }
-        root.addView(overlay)
+        root.addView(overlay, ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))
         lockOverlay = overlay
         updateLockOverlay()
+        // Окно "Функция Pro" при первом заходе на вкладку (при повторных заходах — onHiddenChanged).
+        if (savedInstanceState == null && !BillingManager.isPro(requireContext())) showLockedPopup()
+    }
+
+    private fun showLockedPopup() {
+        ProGate.showLockedDialog(requireContext(), R.string.magazin_locked_message)
+    }
+
+    override fun onHiddenChanged(hidden: Boolean) {
+        super.onHiddenChanged(hidden)
+        if (!hidden) {
+            updateLockOverlay()
+            if (!BillingManager.isPro(requireContext())) showLockedPopup()
+        }
     }
 
     /** Показывает/скрывает замок — вызывается и при возврате с экрана подписки. */

@@ -849,4 +849,5 @@
     <string name="magazin_locked_title">Склад — це функція Pro</string>
     <string name="magazin_locked_message">Залишки товарів, сканування штрихкодів, інвентаризація та сповіщення про низький залишок доступні в Pro. Почніть безкоштовний пробний період.</string>
     <string name="magazin_locked_button">Спробувати Pro</string>
+    <string name="pro_gate_subscribe">Оформити Pro</string>
 </resources>

@@ -33,7 +33,7 @@ object ProGate {
             context = context,
             title = "🔒 " + context.getString(R.string.pro_feature_locked_title),
             message = context.getString(messageRes),
-            positiveText = context.getString(R.string.pro_unlock_button),
+            positiveText = context.getString(R.string.pro_gate_subscribe),
             onPositive = { openPaywall(context) },
             negativeText = context.getString(R.string.dialog_close)
         )
