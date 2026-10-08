@@ -196,6 +196,8 @@
     <string name="dialog_write">Write</string>
     <string name="pro_status_locked">Pro is locked. Unlock to remove the monthly entry limit and get warehouse, invoices, reports, backup and more.</string>
     <string name="pro_status_active">Pro unlocked. Thank you for your support!</string>
+    <string name="pro_cta_active_title">Pro activated</string>
+    <string name="pro_cta_active_sub">Thank you for your support!</string>
     <string name="pro_unlock_button">Unlock Pro</string>
     <string name="pro_unlock_button_price">Unlock Pro — %1$s</string>
     <string name="pro_trial_hint">7 days free, then billed automatically. Cancel anytime.</string>
@@ -855,7 +857,7 @@
     <string name="ewidencja_pro_locked_message">The sales register (Ewidencja) PDF is a Pro feature. Unlock Pro to generate it.</string>
     <string name="contractors_pro_locked_message">Saved contractors are a Pro feature. Unlock Pro to use them.</string>
     <string name="magazin_locked_title">Warehouse is a Pro feature</string>
-    <string name="magazin_locked_message">Stock levels, barcode scanning, inventory counts and low-stock alerts are available with Pro. Start your free trial.</string>
+    <string name="magazin_locked_message">Stock levels, barcode scanning, inventory counts and low-stock alerts are available with Pro.</string>
     <string name="magazin_locked_button">Try Pro</string>
     <string name="pro_gate_subscribe">Get Pro</string>
 </resources>

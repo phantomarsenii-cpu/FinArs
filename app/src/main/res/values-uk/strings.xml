@@ -196,6 +196,8 @@
     <string name="dialog_write">Написати</string>
     <string name="pro_status_locked">Pro заблоковано. Розблокуйте, щоб зняти місячний ліміт записів і отримати склад, рахунки, звіти, резервне копіювання та інше.</string>
     <string name="pro_status_active">Pro розблоковано. Дякуємо за підтримку!</string>
+    <string name="pro_cta_active_title">Pro розблоковано</string>
+    <string name="pro_cta_active_sub">Дякуємо за підтримку!</string>
     <string name="pro_unlock_button">Розблокувати Pro</string>
     <string name="pro_unlock_button_price">Розблокувати Pro — %1$s</string>
     <string name="pro_trial_hint">7 днів безкоштовно, потім оплата автоматично. Скасування в будь-який час.</string>
@@ -847,7 +849,7 @@
     <string name="ewidencja_pro_locked_message">Ewidencja sprzedaży у PDF — це функція Pro. Розблокуйте Pro, щоб її сформувати.</string>
     <string name="contractors_pro_locked_message">Збережені контрагенти — це функція Pro. Розблокуйте Pro, щоб їх використовувати.</string>
     <string name="magazin_locked_title">Склад — це функція Pro</string>
-    <string name="magazin_locked_message">Залишки товарів, сканування штрихкодів, інвентаризація та сповіщення про низький залишок доступні в Pro. Почніть безкоштовний пробний період.</string>
+    <string name="magazin_locked_message">Залишки товарів, сканування штрихкодів, інвентаризація та сповіщення про низький залишок доступні в Pro.</string>
     <string name="magazin_locked_button">Спробувати Pro</string>
     <string name="pro_gate_subscribe">Оформити Pro</string>
 </resources>

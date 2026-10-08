@@ -196,6 +196,8 @@
     <string name="dialog_write">Napisz</string>
     <string name="pro_status_locked">Pro jest zablokowane. Odblokuj, aby znieść miesięczny limit wpisów i uzyskać magazyn, faktury, raporty, kopię zapasową i więcej.</string>
     <string name="pro_status_active">Pro odblokowane. Dziękujemy za wsparcie!</string>
+    <string name="pro_cta_active_title">Pro odblokowane</string>
+    <string name="pro_cta_active_sub">Dziękujemy za wsparcie!</string>
     <string name="pro_unlock_button">Odblokuj Pro</string>
     <string name="pro_unlock_button_price">Odblokuj Pro — %1$s</string>
     <string name="pro_trial_hint">7 dni za darmo, potem naliczana automatycznie. Anuluj w każdej chwili.</string>
@@ -847,7 +849,7 @@
     <string name="ewidencja_pro_locked_message">Ewidencja sprzedaży w PDF to funkcja Pro. Odblokuj Pro, aby ją wygenerować.</string>
     <string name="contractors_pro_locked_message">Zapisani kontrahenci to funkcja Pro. Odblokuj Pro, aby z nich korzystać.</string>
     <string name="magazin_locked_title">Magazyn to funkcja Pro</string>
-    <string name="magazin_locked_message">Stany magazynowe, skanowanie kodów kreskowych, inwentaryzacja i powiadomienia o niskim stanie są dostępne w wersji Pro. Rozpocznij bezpłatny okres próbny.</string>
+    <string name="magazin_locked_message">Stany magazynowe, skanowanie kodów kreskowych, inwentaryzacja i powiadomienia o niskim stanie są dostępne w wersji Pro.</string>
     <string name="magazin_locked_button">Wypróbuj Pro</string>
     <string name="pro_gate_subscribe">Odblokuj Pro</string>
 </resources>

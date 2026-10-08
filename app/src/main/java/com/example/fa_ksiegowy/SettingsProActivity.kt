@@ -171,15 +171,20 @@ class SettingsProActivity : BaseActivity() {
         val tvCta = findViewById<TextView>(R.id.tv_cta)
 
         if (BillingManager.isPro(this)) {
-            tvStatus.text = getString(R.string.pro_status_active)
-            tvStatus.visibility = View.VISIBLE
+            // Update 82: верхний дубль текста убран — статус виден только на самой кнопке.
+            tvStatus.visibility = View.GONE
             cardYearly.isEnabled = false
             cardMonthly.isEnabled = false
             cardYearly.alpha = 0.5f
             cardMonthly.alpha = 0.5f
             btnCta.isEnabled = false
             btnCta.alpha = 0.5f
-            tvCta.text = getString(R.string.pro_status_active)
+            // Update 82: две строки по центру; корона отодвинута от края кнопки.
+            tvCta.text = getString(R.string.pro_cta_active_title) + "\n" + getString(R.string.pro_cta_active_sub)
+            tvCta.textSize = 14f
+            tvCta.gravity = android.view.Gravity.CENTER
+            tvCta.textAlignment = View.TEXT_ALIGNMENT_CENTER
+            (tvCta.parent as View).setPadding((14 * resources.displayMetrics.density).toInt(), 0, (14 * resources.displayMetrics.density).toInt(), 0)
         } else {
             tvStatus.visibility = View.GONE
             cardYearly.isEnabled = true
@@ -189,6 +194,8 @@ class SettingsProActivity : BaseActivity() {
             btnCta.isEnabled = true
             btnCta.alpha = 1f
             tvCta.text = getString(R.string.paywall_cta, zeroPriceText())
+            tvCta.textSize = 17f
+            (tvCta.parent as View).setPadding(0, 0, 0, 0)
             applySelectionState()
         }
     }
